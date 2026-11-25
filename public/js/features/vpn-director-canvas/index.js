@@ -119,21 +119,8 @@ async function screen(ctx) {
   return () => (clearInterval(timer), off());
 }
 
-// Wherever the rule list shows up as a setting, show it decoded and send the person to the canvas.
-function rulesControl(entry, current, _commit, _locked, ctx) {
-  const { h, icon, t } = ctx;
-  const list = h("ol", { class: "vd-column" });
-  const draw = () => {
-    ctx.clear(list).append(...readRules(current()).map((r) => h("li", {}, `${r.enabled ? "" : `${t("off", "關")}: `}${r.desc} (${r.local}${r.remote ? ` → ${r.remote}` : ""} → ${r.iface})`)));
-    if (!list.children.length) list.append(h("li", { class: "muted" }, t("No rules", "冇規則")));
-  };
-  draw();
-  return { el: h("div", {}, list, h("button", { class: "btn t sm", type: "button", onClick: () => ctx.navigate("vpn-director-canvas") }, icon("open_in_new", "sm"), t("Edit on the VPN Director canvas", "喺 VPN Director 畫布編輯"))), sync: draw };
-}
-
 export default {
   id: "vpn-director-canvas",
-  controls: { "director-rules": rulesControl },
   screens: [{ id: "vpn-director-canvas", group: { en: "Network", yue: "網絡" }, icon: "alt_route", label, render: screen }],
   commands: [{ id: "vpn-director-canvas.open", icon: "alt_route", label: { en: "Open the VPN Director canvas", yue: "開啟 VPN Director 畫布" }, keywords: "vpn director route device tunnel wireguard openvpn policy 隧道 路由 裝置", run: (ctx) => ctx.navigate("vpn-director-canvas") }],
 };

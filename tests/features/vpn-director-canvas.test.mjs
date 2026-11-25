@@ -48,7 +48,7 @@ test("vpn-director-canvas: the domain, the catalogue entry and a real change on 
     assert.equal(data.tunnels.find((x) => x.id === "OVPN1").followsPolicy, true);
     const entry = data.entries[0];
     assert.equal(entry.id, "vpn-director-canvas.rules");
-    assert.equal(entry.control, "director-rules");
+    assert.equal(entry.control, "rule-table");
     const value = writeRules(route(readRules(entry.value), { ip: "198.51.100.101", name: "Living room TV" }, "OVPN1"));
     const preview = await t.owner.post("/api/changes/preview", { changes: [{ id: entry.id, value }, { id: "vpn-pro.director", value: "1" }] });
     assert.equal(preview.status, 200, preview.text);
@@ -87,7 +87,7 @@ test("vpn-director-canvas: stock firmware says why it cannot be used, and a miss
   }
 });
 
-test("vpn-director-canvas: the module is listed, well formed and brings its own rule-list control", async () => {
+test("vpn-director-canvas: the module is listed and well formed", async () => {
   const t = await startApp();
   try {
     const manifest = (await t.owner.get("/api/features/manifest")).data;
@@ -97,5 +97,4 @@ test("vpn-director-canvas: the module is listed, well formed and brings its own 
     await t.stop();
   }
   assert.equal(checkFeatureModule(feature, "vpn-director-canvas"), null);
-  assert.equal(typeof feature.controls["director-rules"], "function");
 });
