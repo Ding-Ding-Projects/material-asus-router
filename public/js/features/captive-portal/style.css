@@ -1,0 +1,16 @@
+/* Guest welcome page: the phone illustration. */
+.cp-hero { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 18px; align-items: center; }
+.cp-phone { width: 190px; max-width: 100%; border: 3px solid var(--line); border-radius: 26px; padding: 10px; background: var(--surf); display: grid; gap: 10px; }
+.cp-bar { display: flex; align-items: center; gap: 6px; font-size: .85rem; color: var(--sub); overflow-wrap: anywhere; }
+.cp-card { display: grid; justify-items: center; gap: 4px; text-align: center; padding: 14px 8px; border-radius: 16px; background: var(--tone, rgba(127, 127, 127, .12)); }
+.cp-phone.off .cp-card, .cp-phone.network-off .cp-card { opacity: .6; }
+.cp-go { margin-top: 6px; padding: 6px 18px; border-radius: 999px; background: var(--primary); color: var(--on-primary, #fff); font-weight: 650; }
+.cp-note { text-align: center; font-size: .75rem; color: var(--sub); }
+.cp-story { min-width: 0; overflow-wrap: anywhere; }
+@media (max-width: 520px) { .cp-hero { grid-template-columns: minmax(0, 1fr); justify-items: center; } }
+@media (prefers-reduced-motion: no-preference) {
+  .cp-card { animation: cp-pop 380ms cubic-bezier(.2, .9, .25, 1.2) both; }
+  .cp-go { animation: cp-bounce 1.6s ease-in-out 600ms infinite; }
+  @keyframes cp-pop { from { opacity: 0; transform: scale(.9); } to { opacity: 1; transform: none; } }
+  @keyframes cp-bounce { 0%, 100% { transform: none; } 50% { transform: translateY(-3px); } }
+}
