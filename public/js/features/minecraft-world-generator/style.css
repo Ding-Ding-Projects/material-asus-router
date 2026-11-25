@@ -1,0 +1,2 @@
+.mcmap{display:block;width:100%;max-width:560px;height:auto;aspect-ratio:1/1;touch-action:none;cursor:crosshair;border-radius:16px;border:1.5px solid var(--line);background:#f4f6f0}
+.mcmap:focus-visible{outline:3px solid var(--primary);outline-offset:2px}

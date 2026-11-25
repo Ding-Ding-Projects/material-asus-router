@@ -1,0 +1,15 @@
+.draw-wrap{position:relative;display:grid;gap:12px}
+.draw-stage{position:relative;outline-offset:3px;border-radius:18px}
+.draw-canvas{display:block;width:100%;height:auto;max-width:100%;aspect-ratio:3/2;touch-action:none;border-radius:16px;border:1.5px solid var(--line);background:#fff;cursor:crosshair}
+.draw-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px;border-radius:24px;background:var(--surf-high);transition:padding .25s,border-radius .25s,gap .25s}
+.draw-bar.sliders{padding:8px 14px;border-radius:20px}
+.draw-bar.disc{width:56px;height:56px;padding:0;border-radius:28px;justify-content:center;box-shadow:var(--e2)}
+.draw-bar .pen{min-width:44px;min-height:44px;padding:0 10px;border-radius:22px;border:0;background:var(--surf);color:var(--text);font-weight:700;font-size:13px;display:inline-flex;align-items:center;gap:6px}
+.draw-bar .pen[aria-pressed=true]{background:var(--primary);color:var(--on-primary)}
+.draw-bar .swatch-btn{width:36px;height:36px;border-radius:18px;border:2px solid var(--line);padding:0}
+.draw-bar .swatch-btn[aria-pressed=true]{border-color:var(--text);box-shadow:0 0 0 2px var(--surf)}
+.draw-bar .disc-btn{width:44px;height:44px;border-radius:22px;border:3px solid var(--surf);padding:0}
+.draw-bar .grow{flex:1 1 auto}
+.draw-keys{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--sub)}
+.draw-keys kbd{font-family:ui-monospace,Consolas,monospace;font-size:12px;padding:1px 6px;border-radius:6px;border:1px solid var(--line);background:var(--surf)}
+@media (max-width:480px){.draw-bar .pen span.name{display:none}}
