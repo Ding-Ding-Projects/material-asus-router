@@ -170,6 +170,7 @@ export class FakeRouter {
     this.services = [];
     this.commands = [];
     this.timers = new Map();
+    this.guardFiles = new Set(); // safety-net scripts armed and not yet run or removed
     this.nextPid = 4000;
     this.bootedAt = Date.now() - 3 * 86400 * 1000 - 5 * 3600 * 1000;
     this.counters = { rx: 9.1e10, tx: 1.2e10, at: Date.now() };
@@ -194,7 +195,7 @@ export class FakeRouter {
   // The router is unreachable while its address or SSH service no longer
   // matches what the app connects to, like a real router after a bad change.
   get reachable() {
-    return this.committed.lan_ipaddr === this.startLanIp && this.committed.sshd_enable !== "0" && this.committed.sshd_port === "22";
+    return !this.cutOff && this.committed.lan_ipaddr === this.startLanIp && this.committed.sshd_enable !== "0" && this.committed.sshd_port === "22";
   }
 
   authorizedKeys() {
@@ -222,13 +223,28 @@ export class FakeRouter {
       client.on("ready", () => {
         client.on("session", (accept) => {
           const session = accept();
-          session.on("exec", (acceptExec, _reject, info) => {
+          // An interactive shell, for the owner's terminal.
+          session.on("pty", (acceptPty) => acceptPty?.());
+          session.on("window-change", (acceptResize, _reject, size) => {
+            this.lastWindow = size;
+            acceptResize?.();
+          });
+          session.on("shell", (acceptShell) => this.#shell(acceptShell()));
+          session.on("exec",(acceptExec, _reject, info) => {
             const stream = acceptExec();
             const result = this.execute(info.command);
+            const finish = () => {
+              if (result.stderr) stream.stderr.write(result.stderr);
+              stream.exit(result.code);
+              stream.end();
+            };
             if (result.stdout) stream.write(result.stdout);
-            if (result.stderr) stream.stderr.write(result.stderr);
-            stream.exit(result.code);
-            stream.end();
+            // A handler may answer with pieces and a pause between them, to show live output.
+            if (result.chunks?.length) {
+              let at = 0;
+              const next = () => (at < result.chunks.length ? (stream.write(result.chunks[at++]), setTimeout(next, result.chunkDelayMs ?? 30)) : finish());
+              next();
+            } else finish();
           });
         });
       });
@@ -264,7 +280,7 @@ export class FakeRouter {
     const guard = command.match(
       /^mkdir -p \/tmp\/mar; printf '%s' '([A-Za-z0-9+/=]+)' \| base64 -d > (\/tmp\/mar\/r-[A-Za-z0-9-]+\.sh); \( trap '' HUP; sleep (\d+); sh \2 \) <\/dev\/null >\/dev\/null 2>&1 & echo \$!$/,
     );
-    if (guard) return this.#arm(Buffer.from(guard[1], "base64").toString("utf8"), Number(guard[3]));
+    if (guard) return this.#arm(Buffer.from(guard[1], "base64").toString("utf8"), Number(guard[3]), guard[2]);
     let stdout = "";
     let code = 0;
     for (const part of segments(command)) {
@@ -275,8 +291,53 @@ export class FakeRouter {
     return { stdout, code };
   }
 
-  #arm(script, seconds) {
+  // A tiny interactive shell: echoes what is typed, runs each line through
+  // execute() and prints the answer with a prompt.
+  #shell(stream) {
+    const prompt = () => stream.write(`${this.nvram.productid}:/tmp/home/root# `);
+    let line = "";
+    this.shells = (this.shells ?? 0) + 1;
+    stream.write("Welcome to the pretend router.\r\n");
+    prompt();
+    stream.on("data", (data) => {
+      for (const ch of String(data)) {
+        if (ch === "\r" || ch === "\n") {
+          stream.write("\r\n");
+          const text = line.trim();
+          line = "";
+          if (text === "exit" || text === "logout") {
+            stream.exit(0);
+            return void stream.end();
+          }
+          if (text) {
+            const out = this.execute(text);
+            const body = `${out.stdout ?? ""}${out.stderr ?? ""}`;
+            if (body) stream.write(body.replace(/\r?\n/g, "\r\n"));
+          }
+          prompt();
+        } else if (ch === "\x7f" || ch === "\b") {
+          if (line) {
+            line = line.slice(0, -1);
+            stream.write("\b \b");
+          }
+        } else if (ch === "\x03") {
+          line = "";
+          stream.write("^C\r\n");
+          prompt();
+        } else if (ch === "\x04") {
+          stream.exit(0);
+          return void stream.end();
+        } else if (ch >= " ") {
+          line += ch;
+          stream.write(ch);
+        }
+      }
+    });
+  }
+
+  #arm(script, seconds, file) {
     const pid = this.nextPid++;
+    this.guardFiles.add(file);
     const timer = setTimeout(() => {
       this.timers.delete(pid);
       this.revertedBy = pid;
@@ -316,7 +377,7 @@ export class FakeRouter {
       this.timers.delete(Number(m[1]));
       return {};
     }
-    if (/^rm -f \/tmp\/mar\/r-[A-Za-z0-9-]+\.sh$/.test(cmd)) return {};
+    if (/^rm -f \/tmp\/mar\/r-[A-Za-z0-9-]+\.sh$/.test(cmd)) return (this.guardFiles.delete(cmd.slice(6)), {});
     if (cmd === "head -n 100000 /proc/uptime") return { stdout: `${((Date.now() - this.bootedAt) / 1000).toFixed(2)} 1234567.00\n` };
     if (cmd === "head -n 100000 /proc/loadavg") return { stdout: `0.${10 + Math.floor(Math.random() * 40)} 0.22 0.19 1/180 4321\n` };
     if (cmd === "head -n 100000 /proc/meminfo") return { stdout: "MemTotal:        1018332 kB\nMemFree:          301204 kB\nBuffers:           20480 kB\nCached:           180224 kB\n" };
