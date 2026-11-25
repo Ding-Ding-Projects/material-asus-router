@@ -1,0 +1,12 @@
+/* The owner's terminal. */
+.ot-warn{background:var(--bad-c);box-shadow:inset 4px 0 0 var(--bad);animation:ot-pulse 3.2s ease-in-out 1}
+@keyframes ot-pulse{0%,100%{box-shadow:inset 4px 0 0 var(--bad)}50%{box-shadow:inset 10px 0 0 var(--bad)}}
+.ot-left{justify-content:flex-start}
+.ot-bar{gap:8px;padding:8px 0}
+.ot-sr{display:inline-flex;align-items:center;gap:8px;font-size:13.5px}
+.ot-term{height:min(62vh,560px);min-height:220px;padding:10px;border-radius:16px;background:#12141f;overflow:hidden;animation:ot-open .45s cubic-bezier(.2,0,0,1) both}
+@keyframes ot-open{from{opacity:0;transform:translateY(16px) scale(.98)}}
+.ot-term:focus-within{outline:3px solid var(--primary)}
+.ot-term .xterm{height:100%}
+.ot-term .xterm-viewport{scrollbar-width:thin}
+@media (max-width:480px){.ot-term{height:56vh;padding:6px}}

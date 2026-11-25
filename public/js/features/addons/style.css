@@ -1,0 +1,15 @@
+/* Merlin add-ons. */
+.ad-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:16px}
+.ad-card{gap:12px;animation-delay:calc(var(--i,0) * 60ms);transition:transform .3s cubic-bezier(.2,0,0,1),box-shadow .3s cubic-bezier(.2,0,0,1)}
+.ad-card:hover{transform:translateY(-3px) rotate(-.2deg);box-shadow:var(--e2)}
+.ad-head{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}
+.ad-head .grow{min-width:140px;overflow-wrap:anywhere}
+.ad-head .tag{white-space:normal}
+.ad-ico{display:grid;place-items:center;width:44px;height:44px;border-radius:16px;background:var(--tertiary-c);color:var(--on-tertiary-c);flex:none}
+.ad-cmd{overflow-wrap:anywhere}
+.ad-out{margin:0;padding:12px 14px;border-radius:14px;background:var(--surf-low);font-size:13px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere;max-height:240px;overflow:auto;animation:ad-in .35s cubic-bezier(.2,0,0,1)}
+.ad-out[hidden]{display:none}
+.ad-out.ad-bad{background:var(--bad-c)}
+@keyframes ad-in{from{opacity:0;transform:translateY(-6px)}}
+.ad-scripts{display:flex;gap:8px;flex-wrap:wrap}
+.ad-empty{align-items:center;text-align:center}

@@ -1,0 +1,21 @@
+/* The live output panel and command line, as on the action catalogue. */
+.fb-cmd{display:flex;gap:10px;align-items:flex-start;padding:10px 14px;border-radius:14px;background:var(--surf-high);font-size:13px;line-height:1.45;overflow-wrap:anywhere;word-break:break-word;white-space:pre-wrap}
+.fb-cmd.fb-wait{color:var(--sub)}
+.fb-cmd.fb-bad{background:var(--bad-c)}
+.fb-log{max-height:min(52vh,460px);overflow:auto;padding:14px 16px;border-radius:16px;background:var(--surf-low);font-size:13px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere;margin:0;scroll-behavior:smooth}
+.fb-log .fb-note{color:var(--primary);font-weight:650}
+.fb-log .fb-err{color:var(--bad)}
+.fb-log .fb-cut{color:var(--warn)}
+.fb-timeline{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.fb-timeline:empty{display:none}
+.fb-step{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:14px;background:var(--surf-high);font-size:12.5px;animation:fb-step .5s cubic-bezier(.3,1.4,.5,1) both}
+@keyframes fb-step{from{opacity:0;transform:translateX(-14px) scale(.9)}}
+.tag.fb-spin .ms{animation:spin 1.1s linear infinite}
+.fb-safe{background:var(--primary-c);color:var(--on-primary-c)}
+.fb-safe .t2{color:inherit;opacity:.85}
+.fb-part{animation:fb-in .45s cubic-bezier(.2,0,0,1) both;animation-delay:calc(var(--i,0) * 60ms)}
+@keyframes fb-in{from{opacity:0;transform:translateX(-12px)}}
+.fb-off{opacity:.65}
+.fb-targets{max-width:100%}
+.fb-targets button{white-space:normal}
+.fb-name{overflow-wrap:anywhere}
