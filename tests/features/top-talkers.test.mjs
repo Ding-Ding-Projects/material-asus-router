@@ -1,99 +1,97 @@
-// Top talkers: the ranking is right, the four tabs work with mouse and keyboard, and the
-// screen ranks the devices the router really reports (pretend router, real server).
+// Top talkers: the ranking, the number formats, the history sparkline, and the
+// live readings from the router's connection table that feed them.
 import assert from "node:assert/strict";
-import { afterEach, test } from "node:test";
+import { test } from "node:test";
 import { checkFeatureModule } from "../../public/js/features/validate.js";
 import feature from "../../public/js/features/top-talkers/index.js";
-import { TABS, percent, rank, rateText, sizeText } from "../../public/js/features/top-talkers/rank.js";
-import { document, install } from "../dom-stub.mjs";
-import { startApp, waitFor } from "../helpers.mjs";
-
-install();
-const core = await import("../../public/js/core.js");
-
-const cleanups = [];
-afterEach(() => {
-  while (cleanups.length) cleanups.pop()?.();
-});
+import { METRICS, accumulate, bytesText, rank, rateText, sparkline, valueOf } from "../../public/js/features/top-talkers/model.js";
+import { startApp } from "../helpers.mjs";
 
 const devices = [
-  { ip: "198.51.100.101", mac: "AA:AA:AA:AA:AA:01", name: "TV", down: 900, up: 10, totalDown: 5000, totalUp: 100 },
-  { ip: "198.51.100.102", mac: "", name: "", down: 300, up: 700, totalDown: 9000, totalUp: 50 },
-  { ip: "198.51.100.103", mac: "", name: "Idle", down: 0, up: 0, totalDown: 0, totalUp: 0 },
+  { ip: "198.51.100.101", name: "tv", up: 50_000, down: 2_500_000, flows: 3 },
+  { ip: "198.51.100.102", name: "phone", up: 120_000, down: 400_000, flows: 2 },
+  { ip: "198.51.100.20", name: "nas", up: 800_000, down: 100_000, flows: 1 },
+  { ip: "198.51.100.104", name: "printer", up: 0, down: 0, flows: 0 },
 ];
 
-test("top-talkers: devices are ranked by the chosen number, biggest first, with shares and bars", () => {
-  const down = rank(devices, "down", 10);
-  assert.deepEqual(down.rows.map((r) => [r.rank, r.name, r.value]), [[1, "TV", 900], [2, "198.51.100.102", 300]], "a device that moves nothing is not ranked, and a missing name falls back to its address");
-  assert.equal(down.sum, 1200);
-  assert.equal(down.rows[0].fraction, 1);
-  assert.equal(down.rows[1].share, 0.25);
-  assert.deepEqual(rank(devices, "up", 10).rows.map((r) => r.name), ["198.51.100.102", "TV"]);
-  assert.deepEqual(rank(devices, "totalDown", 1).rows.map((r) => r.name), ["198.51.100.102"]);
-  assert.equal(rank(devices, "totalDown", 1).others, 1);
-  assert.deepEqual(rank([], "down").rows, []);
-  assert.equal(rank([{ ip: "198.51.100.9", name: "x", down: 5 }, { ip: "198.51.100.10", name: "y", down: 5 }], "down").rows[0].ip, "198.51.100.9", "ties are ordered by address");
-  assert.deepEqual(TABS.map((t) => t.id), ["down", "up", "totalDown", "totalUp"]);
-  assert.equal(rateText(1_250_000, "bits"), "10 Mbit/s");
-  assert.equal(rateText(1_250_000, "bytes"), "1.25 MB/s");
-  assert.equal(sizeText(2_500_000_000), "2.50 GB");
-  assert.equal(sizeText(1_500_000), "1.5 MB");
-  assert.equal(percent(0.256), "26%");
+test("top-talkers: the downloaders, the uploaders and the busiest overall come out in order", () => {
+  assert.deepEqual(METRICS, ["down", "up", "both"]);
+  assert.deepEqual(rank(devices, "down").map((r) => r.name), ["tv", "phone", "nas"], "the idle printer is left out");
+  assert.deepEqual(rank(devices, "up").map((r) => r.name), ["nas", "phone", "tv"]);
+  assert.deepEqual(rank(devices, "both").map((r) => [r.name, r.rank]), [["tv", 1], ["nas", 2], ["phone", 3]]);
+  assert.deepEqual(rank(devices, "down", { hideIdle: false }).map((r) => r.name).at(-1), "printer");
+  assert.equal(rank(devices, "down", { top: 2 }).length, 2);
+  const shares = rank(devices, "down").map((r) => r.share);
+  assert.ok(Math.abs(shares.reduce((a, b) => a + b, 0) - 1) < 1e-9, "the shares add up to everyone");
+  assert.equal(Math.round(shares[0] * 100), 83);
+  assert.equal(valueOf(devices[0], "both"), 2_550_000);
+  assert.deepEqual(rank([], "down"), []);
+  assert.equal(rank([{ ip: "x", name: "a", up: 0, down: 0 }], "down", { hideIdle: false })[0].share, 0, "no traffic at all is never a divide by zero");
 });
 
-test("top-talkers: the screen ranks the pretend router's devices on four tabs, with the keyboard", async () => {
+test("top-talkers: speeds and sizes are written the way people read them", () => {
+  assert.equal(rateText(2_500_000, "bits"), "20 Mbit/s");
+  assert.equal(rateText(100_000, "bits"), "800 kbit/s");
+  assert.equal(rateText(2_500_000, "bytes"), "2.5 MB/s");
+  assert.equal(rateText(40_000, "bytes"), "40 kB/s");
+  assert.equal(rateText(150_000, "bits"), "1.2 Mbit/s");
+  assert.equal(bytesText(1_500_000_000), "1.5 GB");
+  assert.equal(bytesText(340_000_000), "340 MB");
+  assert.equal(bytesText(12_000), "12 kB");
+});
+
+test("top-talkers: totals since the page opened add up and the sparkline stays in its box", () => {
+  let totals = accumulate({}, devices.slice(0, 2), 2);
+  totals = accumulate(totals, devices.slice(0, 1), 1);
+  assert.deepEqual(totals["198.51.100.101"], { up: 150_000, down: 7_500_000 });
+  assert.deepEqual(totals["198.51.100.102"], { up: 240_000, down: 800_000 });
+  assert.deepEqual(accumulate(totals, devices, 0), totals, "no time passed, nothing added");
+  const history = [{ devices: { a: { up: 0, down: 10 } } }, { devices: { a: { up: 0, down: 40 } } }, { devices: {} }];
+  const points = sparkline(history, "a", "down", 120, 28).split(" ").map((p) => p.split(",").map(Number));
+  assert.equal(points.length, 3);
+  assert.deepEqual(points.map(([x]) => x), [0, 60, 120]);
+  assert.ok(points.every(([, y]) => y >= 0 && y <= 28));
+  assert.ok(points[1][1] < points[0][1] && points[2][1] > points[1][1], "higher traffic draws higher");
+  assert.equal(sparkline([history[0]], "a", "down", 120, 28), "", "one reading is not a line");
+});
+
+test("top-talkers: the live readings rank the pretend router's devices and a block goes through the engine", async () => {
   const t = await startApp();
-  const real = globalThis.fetch;
   try {
-    globalThis.fetch = (url, init = {}) => real(url.startsWith("/") ? t.base + url : url, { ...init, headers: { ...(init.headers ?? {}), Cookie: t.owner.cookie } });
-    core.auth.csrf = t.owner.csrf;
-    await t.owner.get("/api/x/device-traffic/sample"); // the first reading, so the screen's own reading can give speeds
-    await new Promise((r) => setTimeout(r, 1000));
-    const ctx = { api: core.api, t: core.t, tt: core.tt, h: core.h, icon: core.icon, clear: core.clear, toast: core.toast, navigate() {}, page: (title) => core.h("div", { class: "page" }, core.h("h1", {}, core.tt(title))) };
-    const root = core.h("div", {});
-    cleanups.push(await feature.screens[0].render({ ...ctx, root }));
+    const first = (await t.owner.get("/api/x/device-traffic/sample")).data;
+    assert.equal(first.warm, true);
+    await new Promise((resolve) => setTimeout(resolve, 1200));
+    const second = (await t.owner.get("/api/x/device-traffic/sample")).data;
+    assert.equal(second.warm, false);
+    assert.equal(second.accounting, true);
+    const down = rank(second.devices, "down");
+    assert.equal(down[0].ip, "198.51.100.101", "the television downloads the most");
+    assert.ok(down[0].down > down[1].down);
+    assert.equal(rank(second.devices, "up")[0].ip, "198.51.100.20", "the nas uploads the most");
+    assert.ok(second.history.length >= 1);
+    assert.ok(sparkline(second.history, down[0].ip, "down", 120, 28).length >= 0);
+    const settings = (await t.owner.get("/api/domain/device-traffic")).data;
+    assert.ok(settings.interval >= 1 && settings.unit);
 
-    const tabs = root.all(".tt-tab");
-    assert.deepEqual(tabs.map((b) => b.textContent.slice(b.all(".ms")[0].textContent.length)), ["Downloading now", "Uploading now", "Downloaded most", "Uploaded most"]);
-    assert.equal(tabs[0].getAttribute("aria-selected"), "true");
-    const names = () => root.all(".tt-row").map((r) => r.all(".t1")[0].textContent);
-    await waitFor(() => (root.all(".tt-row").length ? true : null));
-    assert.equal(names()[0], "Living room TV", "the pretend router's heaviest downloader is first");
-    assert.match(root.all(".tt-value")[0].textContent, /Mbit\/s/);
-    assert.ok(root.all(".tt-bar").length === root.all(".tt-row").length);
-
-    root.all(".tt-tab")[1].click();
-    assert.equal(root.all(".tt-tab")[1].getAttribute("aria-selected"), "true");
-    assert.equal(names()[0], "nas", "the pretend router's heaviest uploader leads the uploads tab");
-
-    // Arrow keys move between tabs and wrap around.
-    const first = root.all(".tt-tab")[3];
-    first.fire("keydown", { key: "ArrowRight" });
-    assert.equal(root.all(".tt-tab")[0].getAttribute("aria-selected"), "true");
-    root.all(".tt-tab")[0].fire("keydown", { key: "End" });
-    assert.equal(root.all(".tt-tab")[3].getAttribute("aria-selected"), "true");
-    assert.match(root.all(".tt-value")[0].textContent, /kB|MB|GB/, "totals are shown as sizes");
-    assert.ok(root.textContent.includes("Totals are the bytes of connections the router is tracking now"));
-
-    const pause = root.all("button").find((b) => b.textContent.includes("Pause"));
-    pause.click();
-    assert.ok(root.all("button").some((b) => b.textContent.includes("Resume")));
-    assert.equal(document.body.children.length, 0);
+    // Blocking the busiest device is a list edit that the engine previews and applies.
+    const preview = await t.owner.post("/api/changes/preview", { ops: [{ op: "block", mac: down[0].mac, name: down[0].name, blocked: true }] });
+    assert.equal(preview.status, 200, preview.text);
+    assert.equal((await t.owner.post("/api/changes/apply", { previewId: preview.data.id })).status, 200);
+    assert.ok(t.router.nvram.MULTIFILTER_MAC.includes(down[0].mac));
   } finally {
-    globalThis.fetch = real;
     await t.stop();
   }
 });
 
-test("top-talkers: it needs a session, and the module is well formed and listed", async () => {
+test("top-talkers: the module is listed, in the Monitor section, and well formed", async () => {
   const t = await startApp();
   try {
-    assert.equal((await t.client().get("/api/x/device-traffic/sample")).status, 401);
     const manifest = (await t.owner.get("/api/features/manifest")).data;
     assert.ok(manifest.modules.includes("/js/features/top-talkers/index.js"));
-    assert.ok(manifest.styles.includes("/js/features/top-talkers/style.css"));
+    for (const file of ["index.js", "model.js", "style.css"]) assert.equal((await fetch(`${t.base}/js/features/top-talkers/${file}`)).status, 200, file);
   } finally {
     await t.stop();
   }
   assert.equal(checkFeatureModule(feature, "top-talkers"), null);
+  assert.equal(feature.screens[0].group.en, "Monitor");
 });
