@@ -221,7 +221,7 @@ export async function historyScreen(root) {
       out.append(h("div", { class: "row" }, h("div", { class: "spin" }), t("Comparing…", "比較緊…")));
       try {
         const diff = await api.get(`/api/safety/history/diff?a=${encodeURIComponent(state.a)}&b=${encodeURIComponent(state.b)}`);
-        clear(out).append(diff.changes.length ? diff.changes.map((c, i) => changeRow(c, { oid: state.b, areas: [] }, diff.changes, i === 0)) : h("div", { class: "note" }, icon("check_circle"), h("div", {}, t("These two versions are the same.", "呢兩個版本一模一樣。"))), diff.changes.length ? h("div", { class: "he-actions" }, h("button", { class: "btn f sm", onClick: () => restore(state.a, { all: true }) }, icon("restore", "sm"), t("Restore the first version", "還原第一個版本"))) : null);
+        clear(out).append(diff.changes.length ? h("div", { class: "cmp-list" }, diff.changes.map((c, i) => changeRow(c, { oid: state.b, areas: [] }, diff.changes, i === 0))) : h("div", { class: "note" }, icon("check_circle"), h("div", {}, t("These two versions are the same.", "呢兩個版本一模一樣。"))), diff.changes.length ? h("div", { class: "he-actions" }, h("button", { class: "btn f sm", onClick: () => restore(state.a, { all: true }) }, icon("restore", "sm"), t("Restore the first version", "還原第一個版本"))) : null);
       } catch (error) {
         clear(out).append(h("div", { class: "note bad" }, icon("error"), h("div", {}, errText(error))));
       }
@@ -281,7 +281,7 @@ export async function historyScreen(root) {
     const draw = async () => {
       try {
         const { items } = await api.get("/api/safety/pending");
-        clear(out).append(items.length ? items.map((p) => h("div", { class: "row card" }, icon(p.when?.quiet ? "bedtime" : "schedule"), h("div", { class: "grow" }, h("div", { class: "t1" }, p.title ? tt(p.title) : p.id), h("div", { class: "t2" }, p.when?.quiet ? t("When the house is quiet", "屋企冇人用嗰陣") : whenText(p.when?.at), p.status ? ` · ${p.status}` : "")), h("button", { class: "btn o sm", onClick: async () => { try { await api.del(`/api/safety/pending/${p.id}`); draw(); } catch (error) { toast(errText(error), "bad"); } } }, icon("cancel", "sm"), t("Cancel", "取消")))) : h("div", { class: "empty" }, icon("schedule", "lg"), t("Nothing is waiting.", "冇等緊嘅改動。")));
+        clear(out).append(items.length ? h("div", { class: "pend-list" }, items.map((p) => h("div", { class: "row card" }, levelBadge(p.impact ?? 0, { label: false }), icon(p.when?.type === "quiet" ? "bedtime" : "schedule"), h("div", { class: "grow" }, h("div", { class: "t1" }, (p.summary ?? []).map((x) => tt(x.label)).join(", ") || p.shortName || p.id), h("div", { class: "t2" }, p.when?.type === "quiet" ? t("When the house is quiet", "屋企冇人用嗰陣") : whenText(p.when?.at), p.when?.notAfter ? ` · ${t("not after", "唔遲過")} ${whenText(p.when.notAfter)}` : "", ` · ${p.status ?? ""} · ${p.user ?? ""}`)), p.status === "pending" ? h("button", { class: "btn o sm", onClick: async () => { try { await api.del(`/api/safety/pending/${p.id}`); draw(); } catch (error) { toast(errText(error), "bad"); } } }, icon("cancel", "sm"), t("Cancel", "取消")) : null))) : h("div", { class: "empty" }, icon("schedule", "lg"), t("Nothing is waiting.", "冇等緊嘅改動。")));
       } catch (error) {
         clear(out).append(h("div", { class: "note bad" }, icon("error"), h("div", {}, errText(error))));
       }

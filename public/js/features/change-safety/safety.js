@@ -362,7 +362,8 @@ export async function applyPreviewId(previewId, { verifyHost, preview = null, ti
 async function afterApply(record, preview, title) {
   await refreshUndo();
   bus.emit("changed");
-  if (record.runId) openProgress(record.runId, title);
+  // The picture comes from the preview when there is one, and from the record's own old and new values otherwise (undo, redo, restore).
+  if (record.runId && !seen.has(record.runId)) openProgress(record.runId, title, preview ?? { items: record.items ?? [] });
   if (record.status === "applied") undoToast(record, preview);
 }
 
@@ -580,7 +581,7 @@ export function mountBar(host, { onOpenHistory } = {}) {
   };
   draw();
   host.append(chip, live, undoBtn, redoBtn);
-  const off = [bus.on("safety", draw), bus.on("lang", draw)];
+  const off = [bus.on("safety", draw), bus.on("lang", draw), bus.on("changed", refreshAllowance)];
   refreshAllowance();
   const poll = setInterval(refreshAllowance, 30000);
   return () => { off.forEach((f) => f()); clearInterval(poll); };

@@ -164,9 +164,9 @@ function impactSummary(preview) {
     h("div", { class: "ib-head" }, levelBadge(info.level), h("b", {}, tt(info.about))),
     (imp.reasons ?? []).slice(0, 4).map((r) => h("div", { class: "row" }, levelBadge(r.level, { label: false }), h("div", { class: "grow" }, h("span", { class: "t1" }, tt(r.label)), r.why ? h("div", { class: "t2" }, tt(r.why)) : null))),
     h("div", { class: "t2" }, icon("timer", "sm"), tt(outageText(info.level))),
-    preview.allowance && imp.level >= 1 ? h("div", { class: `note ${preview.allowance.allowed ? "" : "warn"}` }, icon(preview.allowance.allowed ? "family_restroom" : "block"), h("div", {}, preview.allowance.allowed
+    preview.allowance && imp.level >= 1 ? h("div", { class: `note ${preview.allowance.ok ? "" : "warn"}` }, icon(preview.allowance.ok ? "family_restroom" : "block"), h("div", {}, preview.allowance.ok
       ? t("The household allows this right now.", "屋企依家容許呢個改動。")
-      : t(`The household does not allow this right now (up to Level ${preview.allowance.ok ?? 0}). The owner can override.`, `屋企依家唔容許（最多容許級數 ${preview.allowance.ok ?? 0}），擁有人可以覆寫。`))) : null);
+      : t(`The household does not allow this right now (up to Level ${preview.allowance.allowed ?? 0}). The owner can override.`, `屋企依家唔容許（最多容許級數 ${preview.allowance.allowed ?? 0}），擁有人可以覆寫。`))) : null);
 }
 
 export function runPreview(preview, { clearOnApplied = false, title, applyVia } = {}) {
