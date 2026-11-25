@@ -11,269 +11,62 @@
 <helmet>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,100..1000&amp;display=swap" rel="stylesheet">
-<style>body{margin:0}
-.card.ov{overflow:visible}
-.cbw{width:44px;height:44px;border:0;background:none;display:grid;place-items:center;flex:none;padding:0}
-.cb2{width:22px;height:22px;border-radius:7px;border:2px solid var(--sub);display:grid;place-items:center;color:var(--on-primary)}
-.cb2 svg{opacity:0}.cb2.on{background:var(--primary);border-color:var(--primary)}.cb2.on svg{opacity:1}
-.lockedcard{outline:3px solid var(--primary);outline-offset:-3px}
-.pos{position:relative}
-.tilehead{display:flex;align-items:center;gap:4px}.tilehead .k{flex:1}
-.legend{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub)}.legend i{width:12px;height:12px;border-radius:6px;display:inline-block}
-.struck{text-decoration:line-through;opacity:.6}
-.onp{background:color-mix(in srgb,var(--on-primary) 18%,transparent);color:var(--on-primary)}
-.inp{height:48px;border-radius:24px;border:1.5px solid var(--line);background:var(--surf);padding:0 18px;font:inherit;font-size:15px;color:var(--text);min-width:0}
-.code{font-family:ui-monospace,'Cascadia Code',Consolas,monospace;font-size:13px;line-height:1.6}
-.scroll{overflow:auto;max-height:340px;scrollbar-width:thin}
-.dt{overflow-x:auto;border-radius:24px;background:var(--surf-low)}
-.dt .r{display:grid;grid-template-columns:var(--cols);gap:12px;align-items:center;padding:8px 18px;border-top:1px solid var(--line);min-width:var(--mw,760px);font-size:14.5px;position:relative}
-.dt .r.h{border-top:0;font-size:12.5px;font-weight:750;color:var(--sub);letter-spacing:.3px;padding-top:12px;padding-bottom:12px}
-.dt .r>*{min-width:0}
-.dis{opacity:.5;cursor:not-allowed}
-.glassbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-radius:22px;padding:8px 8px 8px 20px}
-.spin{animation:spin 8s linear infinite;transform-origin:center}@keyframes spin{to{transform:rotate(360deg)}}
-.calm .spin,.std .spin{animation:none}@media (prefers-reduced-motion:reduce){.spin{animation:none}}
-.clip{position:absolute;inset:0;overflow:hidden;border-radius:32px;pointer-events:none}
-.card.hero>:not(.clip):not(.tip){position:relative}
-button.navi{border:0;background:transparent;width:100%;text-align:left;font-family:inherit;cursor:pointer}
-button.navi.on{background:var(--secondary-c)}
-.navi svg{flex:none}
-</style>
+<style>body{margin:0}</style>
 </helmet>
-<div class="mx shell {{motionCls}}" style="--accent:{{accent}};--dark:{{darkNum}}"><div class="railwrap"><dc-import name="Rail" page="settings" lang="{{lang}}" role="{{role}}" firmware="{{firmware}}" pending="{{pendCount}}" accent="{{accent}}" dark="{{dark}}" hint-size="288px,900px"></dc-import></div><div class="main"><dc-import name="TopBar" title="{{t.title}}" lang="{{lang}}" role="{{role}}" firmware="{{firmware}}" tabs="{{tabsStr}}" active="0" accent="{{accent}}" dark="{{dark}}" hint-size="1152px,170px"></dc-import>
-<main class="page">
-
-  <section class="card hero ov rise {{cardCls.hero}}" aria-label="{{t.hero}}">
-    <div class="clip" aria-hidden="true">
-      <svg class="deco a spin" viewBox="0 0 200 200" style="right:-70px;top:-90px;width:320px;height:320px"><path d="{{shapeA}}"/></svg>
-      <svg class="deco b" viewBox="0 0 200 200" style="left:52%;bottom:-120px;width:220px;height:220px"><path d="{{shapeB}}"/></svg>
-    </div>
-    <div class="tilehead"><span class="k" style="opacity:1">{{t.hero}}</span><button class="info" aria-label="{{tips.hero.label}}" aria-expanded="{{tips.hero.on}}" onClick="{{tips.hero.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.hero.label}}" aria-pressed="{{lk.hero.pressed}}" style="{{lk.hero.style}}" onClick="{{lk.hero.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11h14v10H5z"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></button></div><sc-if value="{{tips.hero.on}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:52px;right:16px">{{tips.hero.text}}</div></sc-if>
-    <div style="display:flex;flex-wrap:wrap;gap:8px">
-      <span class="tag onp"><span class="dot live" style="background:var(--on-primary)"></span>{{t.localTag}}</span>
-      <span class="tag onp">{{t.roleTag}}</span>
-    </div>
-    <h1 class="disp s" style="max-width:16ch">{{t.headline}}</h1>
-    <p class="lede" style="color:color-mix(in srgb,var(--on-primary) 86%,transparent)">{{t.lede}}</p>
-    <div style="display:flex;flex-wrap:wrap;gap:24px 48px;margin-top:4px">
-      <div><div class="k">{{t.statTotal}}</div><div class="big" style="font-size:52px">{{counts.total}}</div></div>
-      <div><div class="k">{{t.statChanged}}</div><div class="big" style="font-size:52px">{{counts.changed}}</div></div>
-      <div><div class="k">{{t.statGroups}}</div><div class="big" style="font-size:52px">{{counts.groups}}</div></div>
-    </div>
-  </section>
-
-  <div class="cols" style="align-items:stretch">
-    <label class="search" style="flex:1 1 420px;background:var(--surf-high)">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14z"/><path d="M20 20l-3.5-3.5"/></svg>
-      <input aria-label="{{t.searchLabel}}" placeholder="{{t.searchPh}}" value="{{q}}" onInput="{{onQ}}" class="{{inputCls}}">
-      <sc-if value="{{rxOn}}" hint-placeholder-val="{{ false }}"><span class="{{rxTagCls}}">{{rxTag}}</span></sc-if>
-      <button class="rxbtn" aria-pressed="{{rxPressed}}" aria-label="{{t.rxBtn}}" title="{{t.rxBtn}}" onClick="{{toggleRx}}">.*</button>
-    </label>
-    <button class="btn t" onClick="{{exportSettings}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M4 19h16"/></svg>{{t.export}}</button>
-    <button class="btn o" onClick="{{importSettings}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20V9M7 14l5-5 5 5M4 5h16"/></svg>{{t.import}}</button>
-  </div>
-  <sc-if value="{{rxOn}}" hint-placeholder-val="{{ false }}">
-    <div class="card tone" style="border-radius:22px;padding:14px 18px;flex-direction:row;flex-wrap:wrap;align-items:center;gap:10px">
-      <span class="k">{{t.rxMini}}</span>
-      <div class="cols" style="gap:6px"><sc-for list="{{rxPresets}}" as="rp" hint-placeholder-count="4"><button class="chip mono" title="{{rp.title}}" onClick="{{rp.pick}}">{{rp.tok}}</button></sc-for></div>
-      <span class="t2" style="margin:0">{{t.rxHint}}</span>
-    </div>
-  </sc-if>
-  <sc-if value="{{noteOn}}" hint-placeholder-val="{{ false }}"><div class="tag good" style="align-self:flex-start">{{note}}</div></sc-if>
-
-  <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start">
-    <nav class="card tone rise" style="flex:1 1 260px;max-width:320px;padding:14px;gap:2px;border-radius:28px" aria-label="{{t.groupsLabel}}">
-      <sc-for list="{{groups}}" as="g" hint-placeholder-count="9">
-        <button class="{{g.cls}}" aria-current="{{g.cur}}" onClick="{{g.pick}}">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{g.icon}}"/></svg>
-          <span>{{g.label}}</span>
-          <sc-if value="{{g.hasCt}}" hint-placeholder-val="{{ false }}"><span class="ct">{{g.ct}}</span></sc-if>
-        </button>
-      </sc-for>
-    </nav>
-
-    <section class="card ov rise {{cardCls.group}}" style="flex:3 1 560px;min-width:0" aria-label="{{t.groupCard}}">
-      <div class="tilehead"><span class="k" style="opacity:1">{{t.group}}</span><button class="info" aria-label="{{tips.group.label}}" aria-expanded="{{tips.group.on}}" onClick="{{tips.group.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.group.label}}" aria-pressed="{{lk.group.pressed}}" style="{{lk.group.style}}" onClick="{{lk.group.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11h14v10H5z"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></button></div><sc-if value="{{tips.group.on}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:52px;right:16px">{{tips.group.text}}</div></sc-if>
-      <div class="cols">
-        <span class="cookie" style="width:56px;height:56px;color:var(--secondary-c)"><svg viewBox="0 0 200 200" aria-hidden="true"><path d="{{shapeC}}"/></svg><span style="color:var(--on-secondary-c)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{cur.icon}}"/></svg></span></span>
-        <div class="grow"><h2 class="h2">{{cur.title}}</h2><div class="t2" style="margin:0">{{cur.sub}}</div></div>
-        <sc-if value="{{cur.ownerOnly}}" hint-placeholder-val="{{ false }}"><span class="tag warn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11h14v10H5z"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>{{t.ownerOnly}}</span></sc-if>
-        <button class="btn o sm" onClick="{{resetGroup}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg>{{t.resetGroup}}</button>
-      </div>
-      <sc-if value="{{inSearch}}" hint-placeholder-val="{{ false }}"><div class="tag" style="align-self:flex-start">{{t.searchResults}} {{shownCount}}</div></sc-if>
-      <div class="tl">
-        <sc-for list="{{controls}}" as="c" hint-placeholder-count="6">
-          <div class="row pos" style="align-items:center;flex-wrap:wrap">
-            <button class="info" aria-label="{{c.infoLabel}}" aria-expanded="{{c.tipOn}}" onClick="{{c.tipToggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button>
-            <div class="grow" style="min-width:220px">
-              <div class="t1">{{c.label}} <sc-if value="{{c.changed}}" hint-placeholder-val="{{ false }}"><span class="tag warn" style="margin-left:6px">{{t.modified}}</span></sc-if><sc-if value="{{c.showGroup}}" hint-placeholder-val="{{ false }}"><span class="tag" style="margin-left:6px">{{c.groupName}}</span></sc-if></div>
-              <div class="t2">{{c.desc}}</div>
-            </div>
-            <sc-if value="{{c.isSw}}" hint-placeholder-val="{{ false }}"><button class="{{c.swCls}}" role="switch" aria-checked="{{c.swOn}}" aria-label="{{c.label}}" onClick="{{c.toggle}}"><i></i></button></sc-if>
-            <sc-if value="{{c.isSeg}}" hint-placeholder-val="{{ false }}">
-              <div class="seg" role="group" aria-label="{{c.label}}">
-                <sc-if value="{{c.o1.show}}" hint-placeholder-val="{{ true }}"><button aria-pressed="{{c.o1.pressed}}" onClick="{{c.o1.pick}}">{{c.o1.label}}</button></sc-if>
-                <sc-if value="{{c.o2.show}}" hint-placeholder-val="{{ true }}"><button aria-pressed="{{c.o2.pressed}}" onClick="{{c.o2.pick}}">{{c.o2.label}}</button></sc-if>
-                <sc-if value="{{c.o3.show}}" hint-placeholder-val="{{ true }}"><button aria-pressed="{{c.o3.pressed}}" onClick="{{c.o3.pick}}">{{c.o3.label}}</button></sc-if>
-                <sc-if value="{{c.o4.show}}" hint-placeholder-val="{{ false }}"><button aria-pressed="{{c.o4.pressed}}" onClick="{{c.o4.pick}}">{{c.o4.label}}</button></sc-if>
-                <sc-if value="{{c.o5.show}}" hint-placeholder-val="{{ false }}"><button aria-pressed="{{c.o5.pressed}}" onClick="{{c.o5.pick}}">{{c.o5.label}}</button></sc-if>
-              </div>
-            </sc-if>
-            <sc-if value="{{c.isRange}}" hint-placeholder-val="{{ false }}">
-              <div style="display:flex;align-items:center;gap:12px;flex:0 1 280px;min-width:200px"><input type="range" aria-label="{{c.label}}" min="{{c.min}}" max="{{c.max}}" step="{{c.step}}" value="{{c.value}}" onInput="{{c.onRange}}" style="flex:1;accent-color:var(--primary);height:44px"><b class="mono" style="min-width:64px;text-align:right">{{c.valText}}</b></div>
-            </sc-if>
-            <sc-if value="{{c.isField}}" hint-placeholder-val="{{ false }}"><input class="inp mono" style="flex:0 1 260px" aria-label="{{c.label}}" value="{{c.value}}" onInput="{{c.onField}}"></sc-if>
-            <sc-if value="{{c.isBtn}}" hint-placeholder-val="{{ false }}"><button class="btn t sm" onClick="{{c.act}}">{{c.btnLabel}}</button></sc-if>
-            <button class="{{c.resetCls}}" aria-label="{{c.resetLabel}}" title="{{c.resetLabel}}" onClick="{{c.reset}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg></button>
-            <sc-if value="{{c.tipOn}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:46px;left:44px">{{c.tip}}</div></sc-if>
-          </div>
-        </sc-for>
-        <sc-if value="{{noControls}}" hint-placeholder-val="{{ false }}"><div class="muted" style="padding:28px;text-align:center">{{t.noControls}}</div></sc-if>
-      </div>
-    </section>
-  </div>
-</main>
+<div class="mx shell {{motionCls}} {{rootCls}}" style="position:relative;--accent:{{accent}};--dark:{{darkNum}}">
+<div class="railwrap"><dc-import name="Rail" page="settings" pending="{{pendCount}}" lang="{{lang}}" role="{{role}}" firmware="{{firmware}}" motion="{{motion}}" accent="{{accent}}" dark="{{dark}}" hint-size="272px,900px"></dc-import></div>
+<div class="main"><dc-import name="TopBar" title="{{title}}" tabs="{{tabsStr}}" active="0" lang="{{lang}}" role="{{role}}" firmware="{{firmware}}" motion="{{motion}}" accent="{{accent}}" dark="{{dark}}" hint-size="1168px,150px"></dc-import>
+<main class="content"><sc-if value="{{viewer}}" hint-placeholder-val="{{ false }}"><div class="ro" role="status"><svg class="i" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6"/></svg><span>{{readOnly}}</span></div></sc-if><div class="stagebar"><span>{{t.k46}}</span><div class="seg" role="group" aria-label="{{t.k47}}" style="--cnt:5;--idx:{{stIdx}}"><i class="ind"></i><button aria-pressed="{{stp.loading}}" onClick="{{f.st_loading}}">{{t.k48}}</button><button aria-pressed="{{stp.empty}}" onClick="{{f.st_empty}}">{{t.k49}}</button><button aria-pressed="{{stp.ready}}" onClick="{{f.st_ready}}">{{t.k50}}</button><button aria-pressed="{{stp.success}}" onClick="{{f.st_success}}">{{t.k51}}</button><button aria-pressed="{{stp.failure}}" onClick="{{f.st_failure}}">{{t.k52}}</button></div></div><sc-if value="{{st.loading}}" hint-placeholder-val="{{ false }}"><div class="bento" aria-busy="true" aria-label="{{t.k48}}"><div class="sk w12" style="--h:300px;--i:0;grid-column:span 12"></div><div class="sk w4" style="--h:200px;--i:1;grid-column:span 4"></div><div class="sk w4" style="--h:200px;--i:2;grid-column:span 4"></div><div class="sk w4" style="--h:200px;--i:3;grid-column:span 4"></div><div class="sk w8" style="--h:260px;--i:4;grid-column:span 8"></div><div class="sk w4" style="--h:260px;--i:5;grid-column:span 4"></div></div></sc-if><sc-if value="{{st.empty}}" hint-placeholder-val="{{ false }}"><div class="empty rise"><div class="aurora dr" aria-hidden="true" style="opacity:.25"><i></i><i></i><i></i></div><span class="eshape dr"><svg class="i" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h18v12H3z M8 8V5h8v3 M3 13h18"/></svg></span><h2>{{t.k53}}</h2><p>{{t.k54}}</p><button class="btn fill hot dr w" onClick="{{f.st_ready}}"><svg class="i" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>{{t.k55}}</span></button></div></sc-if><sc-if value="{{st.main}}" hint-placeholder-val="{{ true }}"><sc-if value="{{st.success}}" hint-placeholder-val="{{ false }}"><div class="banner ok" role="status"><span class="burst dr" aria-hidden="true"><i style="--a:0deg;--r:70px;--c:var(--good)"></i><i style="--a:25.7deg;--r:96px;--c:var(--b1)"></i><i style="--a:51.4deg;--r:122px;--c:var(--b3)"></i><i style="--a:77.1deg;--r:148px;--c:var(--warn)"></i><i style="--a:102.8deg;--r:70px;--c:var(--good)"></i><i style="--a:128.5deg;--r:96px;--c:var(--b1)"></i><i style="--a:154.2deg;--r:122px;--c:var(--b3)"></i><i style="--a:179.9deg;--r:148px;--c:var(--warn)"></i><i style="--a:205.6deg;--r:70px;--c:var(--good)"></i><i style="--a:231.29999999999998deg;--r:96px;--c:var(--b1)"></i><i style="--a:257deg;--r:122px;--c:var(--b3)"></i><i style="--a:282.7deg;--r:148px;--c:var(--warn)"></i><i style="--a:308.4deg;--r:70px;--c:var(--good)"></i><i style="--a:334.09999999999997deg;--r:96px;--c:var(--b1)"></i></span><span class="okmark"><span class="bg dr"></span><svg viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><div class="grow"><h2>{{t.k56}}</h2><div>{{t.k57}}</div></div><a class="btn out sm" href="Changes.dc.html"><svg class="i" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h10a6 6 0 0 1 0 12H8 M8 5L4 9l4 4"/></svg><span>{{t.k58}}</span></a></div></sc-if><sc-if value="{{st.failure}}" hint-placeholder-val="{{ false }}"><div class="banner no" role="alert"><span class="nomark dr"><svg class="i" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l10 18H2z M12 10v5 M12 18h.01"/></svg></span><div class="grow"><h2>{{t.k59}}</h2><div>{{t.k60}}</div></div><button class="btn dng sm" onClick="{{f.st_ready}}"><svg class="i" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.5-5.8 M20 4v5h-5"/></svg><span>{{t.k61}}</span></button><div class="reason"><svg class="i" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18 M12 11v6 M12 7.5h.01"/></svg><span><b>{{t.k62}}:</b> {{t.k63}}</span></div></div></sc-if><section class="hero rise" style="--i:0"><div class="aurora dr" aria-hidden="true"><i></i><i></i><i></i></div><span class="hshape sh-cookie morph dr" aria-hidden="true"></span><div class="hero-l"><span class="kick"><svg class="i" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h10 M18 7h2 M4 17h2 M10 17h10 M16 5v4 M8 15v4"/></svg>{{t.k8}}</span><div class="hnum"><span class="disp " aria-label="64"><span class="cnt" style="--to:64"></span></span><span class="unit">{{t.k9}}</span></div><h2>{{t.k10}}</h2><p class="hsub">{{t.k11}}</p><div class="acts"><button class="btn wh hot dr"><svg class="i" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14 M20 20l-3.5-3.5"/></svg><span>{{t.k0}}</span></button><a class="btn gh" href="Regex.dc.html"><svg class="i" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6l-5 6 5 6 M16 6l5 6-5 6 M14 4l-4 16"/></svg><span>{{t.k1}}</span></a></div></div><div class="hero-r"><div class="glass" style=""><div class="split"><a class="row" href="Appearance.dc.html" style="--j:0;text-decoration:none;color:#fff"><span class="av ink sh-cookie"><svg class="i" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1.5 0 2-1 2-2s-.7-1.6 0-2.5c1.2-1.5 7 .5 7-4.5a9 9 0 0 0-9-9z M7.5 11h.01M10 7.5h.01M15 7.5h.01"/></svg></span><span class="t1 grow">{{t.k2}}</span><svg class="i" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a><a class="row" href="Language.dc.html" style="--j:1;text-decoration:none;color:#fff"><span class="av ink sh-cookie"><svg class="i" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h9 M8.5 3v2 M5 5c.5 4 3.5 7 7 8 M12 5c-.5 4-3.5 7-7 8 M13 21l4-10 4 10 M14.5 17.5h5"/></svg></span><span class="t1 grow">{{t.k3}}</span><svg class="i" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a><a class="row" href="Locks.dc.html" style="--j:2;text-decoration:none;color:#fff"><span class="av ink sh-cookie"><svg class="i" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4"/></svg></span><span class="t1 grow">{{t.k4}}</span><svg class="i" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a><a class="row" href="Tabs.dc.html" style="--j:3;text-decoration:none;color:#fff"><span class="av ink sh-cookie"><svg class="i" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h18v12H3z M3 8V4h7l2 4"/></svg></span><span class="t1 grow">{{t.k5}}</span><svg class="i" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a><a class="row" href="Focus.dc.html" style="--j:4;text-decoration:none;color:#fff"><span class="av ink sh-cookie"><svg class="i" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8V4h4 M16 4h4v4 M20 16v4h-4 M8 20H4v-4 M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6"/></svg></span><span class="t1 grow">{{t.k6}}</span><svg class="i" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a><a class="row" href="Updates.dc.html" style="--j:5;text-decoration:none;color:#fff"><span class="av ink sh-cookie"><svg class="i" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/></svg></span><span class="t1 grow">{{t.k7}}</span><svg class="i" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a></div></div></div></section><div class="bento"><section class="tile w7 rise" style="--i:1"><header class="th"><span class="tic"><svg class="i" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6 M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6 M17 8a2.5 2.5 0 1 1 0 5 M17.5 14.2c2.3.4 3.5 2.4 3.5 5.8"/></svg></span><h3>{{t.k23}}</h3><span class="tag">3</span></header><div class="rows"><div class="row" style="--j:0"><span class="av">P</span><div class="grow"><div class="t1">Pat</div><div class="t2">{{t.k18}}</div></div><span class="tag pri">{{t.k13}}</span><div class="seg w " role="group" aria-label="{{t.k12}}" style="--cnt:3;--idx:{{gi.r1}}"><i class="ind"></i><button aria-pressed="{{g.r1_0}}" onClick="{{f.r1_0}}">{{t.k13}}</button><button aria-pressed="{{g.r1_1}}" onClick="{{f.r1_1}}">{{t.k14}}</button><button aria-pressed="{{g.r1_2}}" onClick="{{f.r1_2}}">{{t.k15}}</button></div></div><div class="row" style="--j:1"><span class="av t">A</span><div class="grow"><div class="t1">Alex</div><div class="t2">{{t.k19}}</div></div><span class="tag ter">{{t.k14}}</span><div class="seg w " role="group" aria-label="{{t.k16}}" style="--cnt:3;--idx:{{gi.r2}}"><i class="ind"></i><button aria-pressed="{{g.r2_0}}" onClick="{{f.r2_0}}">{{t.k13}}</button><button aria-pressed="{{g.r2_1}}" onClick="{{f.r2_1}}">{{t.k14}}</button><button aria-pressed="{{g.r2_2}}" onClick="{{f.r2_2}}">{{t.k15}}</button></div></div><div class="row" style="--j:2"><span class="av s">G</span><div class="grow"><div class="t1">{{t.k20}}</div><div class="t2">{{t.k21}}</div></div><span class="tag">{{t.k15}}</span><div class="seg w " role="group" aria-label="{{t.k17}}" style="--cnt:3;--idx:{{gi.r3}}"><i class="ind"></i><button aria-pressed="{{g.r3_0}}" onClick="{{f.r3_0}}">{{t.k13}}</button><button aria-pressed="{{g.r3_1}}" onClick="{{f.r3_1}}">{{t.k14}}</button><button aria-pressed="{{g.r3_2}}" onClick="{{f.r3_2}}">{{t.k15}}</button></div></div></div><div class="acts"><button class="btn ton w"><svg class="i" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>{{t.k22}}</span></button></div></section><section class="tile w5 pri rise" style="--i:2"><header class="th"><span class="tic"><svg class="i" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z M16 9a4 4 0 0 1 0 6 M18.5 6.5a8 8 0 0 1 0 11"/></svg></span><h3>{{t.k28}}</h3><button class="sw w {{c.snd}}" role="switch" aria-checked="{{a.snd}}" aria-label="{{t.k24}}" onClick="{{f.snd}}"><i></i></button></header><div class="fld"><div class="fl"><div class="t1">{{t.k25}}</div></div><div class="sl w" style="--p:{{pc.vol}}"><input type="range" min="0" max="100" step="5" value="{{n.vol}}" aria-label="{{t.k25}}" onInput="{{f.vol_in}}"><output>{{n.vol}}<small>%</small></output></div></div><div class="fld"><div class="fl"><div class="t1">{{t.k26}}</div></div><button class="sw w {{c.tick}}" role="switch" aria-checked="{{a.tick}}" aria-label="{{t.k26}}" onClick="{{f.tick}}"><i></i></button></div><div class="fld"><div class="fl"><div class="t1">{{t.k27}}</div></div><button class="sw w {{c.qh}}" role="switch" aria-checked="{{a.qh}}" aria-label="{{t.k27}}" onClick="{{f.qh}}"><i></i></button></div></section><section class="tile w4 rise" style="--i:3"><header class="th"><span class="tic"><svg class="i" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg></span><h3>{{t.k35}}</h3></header><div class="seg w wide" role="group" aria-label="{{t.k29}}" style="--cnt:3;--idx:{{gi.open}}"><i class="ind"></i><button aria-pressed="{{g.open_0}}" onClick="{{f.open_0}}">{{t.k30}}</button><button aria-pressed="{{g.open_1}}" onClick="{{f.open_1}}">{{t.k31}}</button><button aria-pressed="{{g.open_2}}" onClick="{{f.open_2}}">{{t.k32}}</button></div><div class="fld"><div class="fl"><div class="t1">{{t.k33}}</div></div><button class="sw w {{c.boot}}" role="switch" aria-checked="{{a.boot}}" aria-label="{{t.k33}}" onClick="{{f.boot}}"><i></i></button></div><div class="fld"><div class="fl"><div class="t1">{{t.k34}}</div></div><button class="sw w {{c.tray}}" role="switch" aria-checked="{{a.tray}}" aria-label="{{t.k34}}" onClick="{{f.tray}}"><i></i></button></div></section><section class="tile w4 ter rise" style="--i:4"><header class="th"><span class="tic"><svg class="i" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.5-5.8 M20 4v5h-5"/></svg></span><h3>{{t.k40}}</h3></header><div class="fld"><div class="fl"><div class="t1">{{t.k38}}</div></div><div class="sl w" style="--p:{{pc.poll}}"><input type="range" min="1" max="30" step="1" value="{{n.poll}}" aria-label="{{t.k36}}" onInput="{{f.poll_in}}"><output>{{n.poll}}<small>{{t.k37}}</small></output></div></div><div class="fld"><div class="fl"><div class="t1">{{t.k39}}</div></div><button class="sw w {{c.pz}}" role="switch" aria-checked="{{a.pz}}" aria-label="{{t.k39}}" onClick="{{f.pz}}"><i></i></button></div></section><section class="tile w4 ink rise" style="--i:5"><header class="th"><span class="tic"><svg class="i" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 14l3-8h12l3 8v5H3z M3 14h18 M17 17h.01"/></svg></span><h3>{{t.k45}}</h3></header><div class="hnum"><span class="disp m" aria-label="38"><span class="cnt" style="--to:38"></span></span><span class="unit">MB</span></div><div class="hb"><div><span style="all:unset" class="t1">{{t.k41}}</span><span><i style="--b:60%;--k:0"></i></span><b>23 MB</b></div><div><span style="all:unset" class="t1">{{t.k42}}</span><span><i style="--b:30%;--k:1"></i></span><b>11 MB</b></div><div><span style="all:unset" class="t1">{{t.k43}}</span><span><i style="--b:8%;--k:2"></i></span><b>4 MB</b></div></div><div class="acts"><a class="btn wh sm" href="Records.dc.html"><span>{{t.k44}}</span></a></div></section></div></sc-if></main></div>
 </div>
-</div>
-
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#4f5bd5","options":["#4f5bd5","#00897b","#d81b60","#f4511e","#7c4dff"],"section":"Look"},"dark":{"editor":"boolean","default":false,"section":"Look"},"motion":{"editor":"enum","options":["calm","standard","expressive"],"default":"expressive","section":"Look"},"firmware":{"editor":"enum","options":["merlin","stock"],"default":"merlin","section":"Router"},"role":{"editor":"enum","options":["owner","operator","viewer"],"default":"owner","section":"Router"},"lang":{"editor":"enum","options":["en","yue","both"],"default":"en","section":"Language"},"$preview":{"width":1440,"height":2200}}'>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#4f5bd5","options":["#4f5bd5","#00897b","#d81b60","#f4511e","#7c4dff"],"section":"Look"},"dark":{"editor":"boolean","default":false,"section":"Look"},"motion":{"editor":"enum","options":["calm","standard","expressive"],"default":"expressive","section":"Look"},"firmware":{"editor":"enum","options":["merlin","stock"],"default":"merlin","section":"Router"},"role":{"editor":"enum","options":["owner","operator","viewer"],"default":"owner","section":"Router"},"lang":{"editor":"enum","options":["en","yue","both"],"default":"en","section":"Language"},"stage":{"editor":"enum","options":["loading","empty","ready","success","failure"],"default":"ready","section":"Stage"},"$preview":{"width":1440,"height":1560}}'>
 class Component extends DCLogic {
   renderVals() {
-    const p = this.props; const s = this.state || {};
-    const lang0 = p.lang ?? 'en'; const lang = (s.lov && s.lov.base === lang0) ? s.lov.v : lang0; const role = p.role ?? 'owner'; const firmware = p.firmware ?? 'merlin'; const motion = p.motion ?? 'expressive';
+    const D = {"tx":[["Search settings","搜尋設定"],["Regex builder","正則表達式產生器"],["Appearance","外觀"],["Language","語言"],["Locks","上鎖"],["Tabs","分頁"],["App modes","應用程式模式"],["Updates","更新"],["App settings","應用程式設定"],["settings in 9 groups","個設定，分 9 組"],["Make the app yours","將個應用程式變成你嘅"],["These change this app only. Router settings live in their own areas and go through preview and guard.","呢啲淨係改呢個應用程式。路由器設定喺各自嘅範疇，要經預覽同守護。"],["Pat role","Pat 角色"],["Owner","擁有人"],["Operator","操作員"],["Viewer","檢視者"],["Alex role","Alex 角色"],["Guest role","訪客角色"],["Created the app · signed in now","建立呢個應用程式 · 而家登入緊"],["Last seen yesterday","尋日上過嚟"],["Guest screen","訪客畫面"],["The tablet in the hallway","走廊部平板"],["Invite someone","邀請人"],["People","人"],["Action sounds","動作音效"],["Volume","音量"],["Guard countdown tick","守護倒數滴答聲"],["Quiet hours follow notifications","靜音時段跟通知"],["Sound","聲音"],["Open on","打開去"],["Overview","概覽"],["Last page","上次嗰頁"],["Modes","模式"],["Start with the computer","跟電腦一齊開"],["Keep in the tray","留喺系統匣"],["When the app opens","開應用程式嗰陣"],["Refresh seconds","更新秒數"],["s","秒"],["Live values every","即時數值每"],["Pause when hidden","收埋嗰陣暫停"],["Refresh","更新頻率"],["History","記錄"],["Backups","備份"],["Settings","設定"],["Export everything","全部匯出"],["Data on this computer","呢部電腦上嘅資料"],["Preview a stage","預覽階段"],["Stage","階段"],["Loading","載入中"],["Empty","空"],["Ready","就緒"],["Success","成功"],["Failure","失敗"],["Nothing here yet","呢度暫時乜都冇"],["Connect the router or add the first item and this page fills in.","連接路由器或者加第一項，呢頁就會有嘢。"],["Get started","開始"],["Applied and verified","已套用同驗證"],["The router confirmed the change. You can undo it from change history.","路由器確認咗變更。可以喺變更記錄度還原。"],["Undo","還原"],["The change did not go through","變更未成功"],["Nothing was left half-applied. The router is as it was before.","冇嘢係做到一半。路由器同之前一模一樣。"],["Try again","再試"],["Reason","原因"],["The router closed the SSH session before confirming, so the guard put the old values back.","路由器未確認就斷咗 SSH，守護功能已經放返舊數值。"]],"sw":{"snd":1,"tick":1,"qh":1,"boot":0,"tray":1,"pz":1},"sg":{"r1":[3,0],"r2":[3,1],"r3":[3,2],"open":[3,0]},"num":{"vol":[40,5,0,100,[]],"poll":[2,1,1,30,[]]},"gr":{},"stage0":"ready","pend":2,"tabs":["General,Accounts,Sound,About","一般,帳戶,聲音,關於"],"title":["Settings","設定"]};
+    const p = this.props || {}, s = this.state || {};
+    const lang = p.lang ?? 'en', role = p.role ?? 'owner', firmware = p.firmware ?? 'merlin', motion = p.motion ?? 'expressive';
     const accent = p.accent || '#4f5bd5';
     const dark = p.dark === true || p.dark === 'true' || p.dark === 1 || p.dark === '1';
-    const T = (en, yue) => lang === 'en' ? en : lang === 'yue' ? yue : en + ' · ' + yue;
+    const T = (en, yue) => (yue === undefined || en === yue || lang === 'en') ? en : lang === 'yue' ? yue : en + ' · ' + yue;
     const canWrite = role !== 'viewer';
-    const set = (o) => this.setState(o);
-    const toggleIn = (a, v) => a.includes(v) ? a.filter(x => x !== v) : a.concat([v]);
-    const IC = {"check":"M5 12.5l4.5 4.5L19 7.5","info":"M12 11v6M12 7.5h.01","lock":"M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4","search":"M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14z M20 20l-3.5-3.5","play":"M7 4l13 8-13 8z","stop":"M6 6h12v12H6z","restart":"M20 12a8 8 0 1 1-2.6-5.9 M20 4v5h-5","copy":"M9 9h11v11H9z M5 15V5h10","logs":"M6 3h9l4 4v14H6z M14 3v5h5 M9 13h7 M9 17h7","trash":"M4 7h16 M9 7V4h6v3 M6 7l1 13h10l1-13","edit":"M12 20h9 M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z","plus":"M12 5v14M5 12h14","down":"M12 4v11M7 10l5 5 5-5M4 19h16","up":"M12 20V9M7 14l5-5 5 5M4 5h16","filter":"M3 5h18l-7 8v6l-4 2v-8z","eye":"M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6","eyeoff":"M3 3l18 18 M10.6 6.2A9.6 9.6 0 0 1 12 6c6 0 10 6 10 6a17 17 0 0 1-3.2 3.7 M6.3 7.7A17 17 0 0 0 2 12s4 6 10 6a9.6 9.6 0 0 0 3.4-.6","undo":"M9 14L4 9l5-5 M4 9h10a6 6 0 0 1 0 12h-3","warn":"M12 3l10 18H2z M12 10v5 M12 18h.01","x":"M6 6l12 12M18 6L6 18","wifi":"M2 9a15 15 0 0 1 20 0 M5 12.5a10 10 0 0 1 14 0 M8.5 16a5 5 0 0 1 7 0 M12 19.5h.01","server":"M3 4h18v6H3z M3 14h18v6H3z M7 7h.01 M7 17h.01","usb":"M12 3v13 M9 6l3-3 3 3 M12 12l-4-3v4 M12 14l4-3 M6 16h4v4H6z M16 8h3v3h-3z","pi":"M5 6h14v12H5z M9 10h6v4H9z M2 9h3 M2 15h3 M19 9h3 M19 15h3","vm":"M4 5h16v11H4z M2 20h20 M9 16v4 M15 16v4","docker":"M3 13h18c0 4-3 7-8 7s-8-3-8-7z M6 13V9h3v4 M10 13V9h3v4 M14 13V9h3v4 M10 9V6h3v3","term":"M3 5h18v14H3z M7 10l3 2-3 2 M12 15h5","globe":"M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18 M3 12h18 M12 3c3 3 3 15 0 18 M12 3c-3 3-3 15 0 18","shield":"M12 3l8 3v6c0 5-3.5 8-8 9c-4.5-1-8-4-8-9V6z","clock":"M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18 M12 7v5l3 2","bolt":"M13 3L5 14h6l-1 7 8-11h-6z","chev":"M6 9l6 6 6-6","chevr":"M9 6l6 6-6 6","bell":"M6 17V11a6 6 0 0 1 12 0v6l2 2H4z M10 21h4","home":"M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z","gear":"M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6 M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.4-2.3 1a7 7 0 0 0-2-1.2L14.3 3h-4l-.4 2.7a7 7 0 0 0-2 1.2l-2.3-1-2 3.4 2 1.5A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.5 2 3.4 2.3-1a7 7 0 0 0 2 1.2l.4 2.7h4l.4-2.7a7 7 0 0 0 2-1.2l2.3 1 2-3.4-2-1.5c.1-.4.1-.8.1-1.2z","devices":"M4 6h12v9H4z M2 18h16 M19 9h3v9h-3z","menu":"M4 6h16M4 12h16M4 18h16","spark":"M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z","code":"M8 6l-5 6 5 6 M16 6l5 6-5 6 M14 4l-4 16","sliders":"M4 7h10 M18 7h2 M4 17h2 M10 17h10 M16 5v4 M8 15v4","history":"M3 12a9 9 0 1 0 3-6.7 M3 4v5h5 M12 8v4l3 2","mic":"M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z M5 11a7 7 0 0 0 14 0 M12 18v3","sound":"M4 9h4l5-4v14l-5-4H4z M16 9a4 4 0 0 1 0 6 M18.5 6.5a8 8 0 0 1 0 11","palette":"M12 3a9 9 0 1 0 0 18c1.5 0 2-1 1.5-2s0-2.5 1.5-2.5H17a4 4 0 0 0 4-4C21 6.5 17 3 12 3z M7.5 11h.01 M10 7.5h.01 M14.5 7.5h.01","user":"M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8 M4 21c0-4 3.6-7 8-7s8 3 8 7","family":"M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6 M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6 M17 8a2.5 2.5 0 1 1 0 5 M17.5 14.2c2.3.4 3.5 2.4 3.5 5.8","backup":"M12 16V4 M7 9l5-5 5 5 M4 15v5h16v-5","route":"M6 4a2 2 0 1 0 0 4 2 2 0 0 0 0-4z M18 16a2 2 0 1 0 0 4 2 2 0 0 0 0-4z M8 6h6a3 3 0 0 1 0 6H10a3 3 0 0 0 0 6h6","box":"M3 8h18v12H3z M8 8V5h8v3 M3 13h18","link":"M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1 M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1","disk":"M3 14l3-8h12l3 8v5H3z M3 14h18 M17 17h.01","chip":"M7 7h10v10H7z M9 3v4 M15 3v4 M9 17v4 M15 17v4 M3 9h4 M3 15h4 M17 9h4 M17 15h4","pause":"M8 5v14 M16 5v14","flag":"M5 21V4 M5 4h12l-2 4 2 4H5","tag":"M3 12V4h8l10 10-8 8z M7 8h.01","help":"M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18 M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7 M12 17h.01","chart":"M5 20v-6 M12 20V6 M19 20v-10","moon":"M20 14A8 8 0 1 1 10 4a6.5 6.5 0 0 0 10 10z","grid":"M4 4h7v7H4z M13 4h7v7h-7z M4 13h7v7H4z M13 13h7v7h-7z","lan":"M9 3h6v5H9z M3 16h6v5H3z M15 16h6v5h-6z M12 8v4 M6 16v-4h12v4","mesh":"M12 3a2.2 2.2 0 1 0 0 4.4A2.2 2.2 0 0 0 12 3z M5 16a2.2 2.2 0 1 0 0 4.4A2.2 2.2 0 0 0 5 16z M19 16a2.2 2.2 0 1 0 0 4.4A2.2 2.2 0 0 0 19 16z M11 7l-5 9 M13 7l5 9 M7.2 18.2h9.6","fwd":"M3 12h14 M12 6l6 6-6 6 M21 4v16","wrench":"M15 4a5 5 0 0 0-4.5 6.8L4 17.3 6.7 20l6.5-6.5A5 5 0 0 0 20 9l-3 3-3-1-1-3z","save":"M5 3h12l4 4v14H5z M8 3v6h8V3 M8 21v-7h8v7"};
-    const tipSel = s.tip || ''; const locksOn = s.locks || [];
-    const mkTips = (defs) => { const o = {}; Object.keys(defs).forEach(k => { o[k] = { on: tipSel === k, text: defs[k][1], label: T('About: ', '關於：') + defs[k][0], toggle: () => set({ tip: tipSel === k ? '' : k }) }; }); return o; };
-    const mkLocks = (defs) => { const lk = {}, cardCls = {}; Object.keys(defs).forEach(k => { const on = !canWrite || locksOn.includes(k); lk[k] = { pressed: on ? 'true' : 'false', label: (on ? T('Unlock ', '解鎖 ') : T('Lock ', '鎖定 ')) + defs[k], toggle: () => { if (canWrite) set({ locks: toggleIn(locksOn, k) }); }, style: on ? 'background:var(--tertiary-c);color:var(--on-tertiary-c)' : '' }; cardCls[k] = on ? 'lockedcard' : ''; }); return { lk, cardCls }; };
-    const wavy = (len, y) => { let d = 'M0 ' + y; for (let i = 0; i < Math.ceil(len / 16) + 2; i++) d += ' q4 -6 8 0 t8 0'; return d; };
-    const line = (vals, w, h, pad, lo, hi) => { const mn = lo ?? Math.min(...vals), mx = hi ?? Math.max(...vals); const sp = (mx - mn) || 1; return vals.map((v, i) => { const x = pad + (w - 2 * pad) * i / Math.max(vals.length - 1, 1); const y = h - pad - (h - 2 * pad) * (v - mn) / sp; return (i ? 'L' : 'M') + x.toFixed(1) + ' ' + y.toFixed(1); }).join(' '); };
-    const cookieP = (r, a, n) => { let d = ''; for (let i = 0; i <= 120; i++) { const th = i * Math.PI * 2 / 120; const rr = r + a * Math.cos(n * th); d += (i ? 'L' : 'M') + (100 + rr * Math.cos(th)).toFixed(1) + ' ' + (100 + rr * Math.sin(th)).toFixed(1); } return d + 'Z'; };
-    const base = (title, tabs, pendN) => ({ accent, dark, darkNum: dark ? 1 : 0, lang, role, firmware, motionCls: motion === 'calm' ? 'calm' : motion === 'standard' ? 'std' : '', pendCount: pendN, tabsStr: tabs.join(','), viewer: !canWrite });
-    const shapeA = cookieP(78, 11, 10), shapeB = cookieP(66, 16, 4), shapeC = cookieP(80, 9, 8);
-    const q = s.q || ''; const rxOn = !!s.rx; const grp = s.grp || 'language'; const vals = s.vals || {}; const note = s.note || ''; const tipId = s.ctip || '';
-    const G = [
-      ['language', 'Language and voice', '語言同語音', IC.mic, false, 'How the app speaks and sounds in words.', '應用程式點樣用文字同語音同你溝通。'],
-      ['appearance', 'Appearance', '外觀', IC.palette, false, 'Colour, density and text size.', '顏色、密度同文字大小。'],
-      ['motion', 'Motion', '動畫', IC.spark, false, 'How much the interface moves.', '介面郁動嘅程度。'],
-      ['sounds', 'Sounds', '聲效', IC.sound, false, 'Short sound effects for actions.', '操作用嘅短聲效。'],
-      ['notifications', 'Notifications', '通知', IC.bell, false, 'What can interrupt you, and how.', '邊啲事會打擾你，同點樣打擾。'],
-      ['people', 'People and roles', '用戶同角色', IC.family, true, 'Who can look and who can change.', '邊個可以睇、邊個可以改。'],
-      ['router', 'Router connection and guard', '路由器連線同守衛', IC.shield, true, 'How this app reaches the router and protects writes.', '呢個應用程式點樣連接路由器同保護寫入。'],
-      ['backups', 'Backups', '備份', IC.backup, true, 'Automatic snapshots of router settings.', '路由器設定嘅自動快照。'],
-      ['privacy', 'Privacy', '私隱', IC.lock, false, 'What stays hidden and what leaves this device.', '邊啲保持隱藏、邊啲會離開呢部裝置。']
-    ];
-    const O = (arr) => arr.map(a => ({ v: a[0], en: a[1], yue: a[2] }));
-    const C = [
-      ['lang', 'language', 'seg', 'Language mode', '語言模式', 'English, Cantonese or both side by side.', '英文、廣東話，或者兩種並排。', 'both', { opts: O([['en', 'English', 'English'], ['yue', 'Cantonese', '粵語'], ['both', 'Both', '雙語']]) }],
-      ['funny', 'language', 'range', 'Funny level', '趣味程度', 'How playful the wording is. 0 is plain, 5 is chatty. Warnings are always plain.', '用字有幾好玩。0 係正經，5 係多嘴。警告永遠正經。', 2, { min: 0, max: 5, step: 1, unit: '/5' }],
-      ['voice', 'language', 'seg', 'Voice narration', '語音朗讀', 'Reads results aloud with the system voice.', '用系統語音朗讀結果。', 'key', { opts: O([['off', 'Off', '關'], ['key', 'Key results', '重要結果'], ['all', 'Everything', '全部']]) }],
-      ['h24', 'language', 'sw', '24-hour clock', '24 小時制', 'Show 17:40 instead of 5:40 PM.', '顯示 17:40 而唔係下午 5:40。', true, {}],
-      ['theme', 'appearance', 'seg', 'Theme', '主題', 'Follow the system or pick light or dark.', '跟隨系統，或者揀淺色、深色。', 'system', { opts: O([['light', 'Light', '淺色'], ['dark', 'Dark', '深色'], ['system', 'System', '跟隨系統']]) }],
-      ['accent', 'appearance', 'seg', 'Accent colour', '強調顏色', 'Re-tones every screen from one colour.', '用一種顏色重新配搭所有畫面。', 'indigo', { opts: O([['indigo', 'Indigo', '靛藍'], ['teal', 'Teal', '青綠'], ['pink', 'Pink', '粉紅'], ['orange', 'Orange', '橙'], ['violet', 'Violet', '紫']]) }],
-      ['density', 'appearance', 'seg', 'Density', '密度', 'Compact fits more rows on screen.', '緊湊可以一屏顯示更多行。', 'comfortable', { opts: O([['comfortable', 'Comfortable', '舒適'], ['compact', 'Compact', '緊湊']]) }],
-      ['textsize', 'appearance', 'range', 'Text size', '文字大小', 'Scales all text. Layouts adapt.', '放大縮小所有文字，版面會自動調整。', 100, { min: 85, max: 140, step: 5, unit: '%' }],
-      ['prov', 'appearance', 'sw', 'Show version and updated-at line', '顯示版本同更新時間', 'The small line under the top bar.', '頂部列下面嘅細字。', true, {}],
-      ['anim', 'motion', 'sw', 'Animations', '動畫', 'Master switch for all motion.', '所有動畫嘅總開關。', true, {}],
-      ['profile', 'motion', 'seg', 'Motion profile', '動畫風格', 'Calm trims motion, Playful adds bounce.', '平靜減少動畫，活潑加上彈跳。', 'expressive', { opts: O([['calm', 'Calm', '平靜'], ['standard', 'Standard', '標準'], ['expressive', 'Expressive', '豐富'], ['playful', 'Playful', '活潑']]) }],
-      ['speed', 'motion', 'range', 'Speed', '速度', 'Global multiplier for every duration.', '所有時長嘅整體倍數。', 100, { min: 50, max: 200, step: 10, unit: '%' }],
-      ['osmotion', 'motion', 'sw', 'Follow system reduced motion', '跟隨系統減少動態', 'When the system asks for less motion, motion stops.', '系統要求減少動態時，動畫會停止。', true, {}],
-      ['wavy', 'motion', 'sw', 'Wavy progress indicators', '波浪進度指示', 'Progress bars draw as a moving wave.', '進度條用流動嘅波浪顯示。', true, {}],
-      ['editor', 'motion', 'btn', 'Animation and transition editor', '動畫同轉場編輯器', 'Tune each kind of motion with a live preview.', '用即時預覽調校每種動畫。', null, { label: ['Open editor', '打開編輯器'] }],
-      ['sfx', 'sounds', 'sw', 'Action sounds', '操作聲效', 'Short cues when something finishes or fails.', '完成或者失敗時嘅短聲效。', true, {}],
-      ['vol', 'sounds', 'range', 'Volume', '音量', 'Relative to the system volume.', '相對系統音量。', 40, { min: 0, max: 100, step: 5, unit: '%' }],
-      ['sfxerr', 'sounds', 'sw', 'Error cue', '錯誤提示音', 'A lower tone when a write fails.', '寫入失敗時嘅低音提示。', true, {}],
-      ['quiet', 'sounds', 'field', 'Quiet hours', '靜音時段', 'Sounds are muted in this window.', '呢段時間聲效會靜音。', '22:00-07:00', {}],
-      ['play', 'sounds', 'btn', 'Preview sounds', '預聽聲效', 'Plays the success and error cues once.', '播放一次成功同錯誤提示音。', null, { label: ['Play', '播放'] }],
-      ['notif', 'notifications', 'sw', 'In-app notifications', '應用程式內通知', 'Show toasts and the bell list.', '顯示提示同鈴鐺清單。', true, {}],
-      ['ndev', 'notifications', 'sw', 'New device joined', '有新裝置加入', 'Tell me when an unknown device connects.', '有陌生裝置連接時通知我。', true, {}],
-      ['nfw', 'notifications', 'sw', 'Firmware update available', '有韌體更新', 'Weekly check, never installs by itself.', '每星期檢查，唔會自動安裝。', true, {}],
-      ['nrev', 'notifications', 'sw', 'Guard reverted a change', '守衛還原咗變更', 'Always on for the owner so a rollback is never missed.', '擁有人永遠開啟，唔會錯過還原。', true, { fixed: true }],
-      ['digest', 'notifications', 'seg', 'Email digest', '電郵摘要', 'A summary of router events.', '路由器事件摘要。', 'weekly', { opts: O([['off', 'Off', '關'], ['daily', 'Daily', '每日'], ['weekly', 'Weekly', '每星期']]) }],
-      ['rolePat', 'people', 'seg', 'Pat', 'Pat', 'Owner. Cannot be demoted.', '擁有人，唔可以降級。', 'owner', { opts: O([['owner', 'Owner', '擁有人'], ['operator', 'Operator', '操作員'], ['viewer', 'Viewer', '檢視者']]), fixed: true }],
-      ['roleAlex', 'people', 'seg', 'Alex', 'Alex', 'Can change settings after a preview.', '預覽之後可以改設定。', 'operator', { opts: O([['owner', 'Owner', '擁有人'], ['operator', 'Operator', '操作員'], ['viewer', 'Viewer', '檢視者']]) }],
-      ['roleGuest', 'people', 'seg', 'Guest link', '訪客連結', 'Look-only access for visitors.', '俾訪客嘅唯讀存取。', 'viewer', { opts: O([['off', 'Off', '關'], ['viewer', 'Viewer', '檢視者']]) }],
-      ['approve', 'people', 'sw', 'Owner approves new people', '新用戶要擁有人批准', 'Invites wait for approval.', '邀請要等批准。', true, {}],
-      ['addr', 'router', 'field', 'Router address', '路由器地址', 'Where this app finds the router on your network.', '呢個應用程式喺網絡入面搵路由器嘅位置。', '198.51.100.1', {}],
-      ['guard', 'router', 'seg', 'Guard seconds', '守衛秒數', 'Wait this long for confirmation before reverting.', '等候確認呢段時間，之後還原。', '60', { opts: O([['30', '30 s', '30 秒'], ['60', '60 s', '60 秒'], ['120', '120 s', '120 秒']]) }],
-      ['snapw', 'router', 'sw', 'Snapshot before every write', '每次寫入前儲存快照', 'Needed for undo.', '復原功能需要。', true, {}],
-      ['poll', 'router', 'range', 'Connection check', '連線檢查', 'How often to check the router is reachable.', '幾耐檢查一次路由器可否連線。', 15, { min: 5, max: 60, step: 5, unit: ' s' }],
-      ['https', 'router', 'sw', 'Use HTTPS to the router', '用 HTTPS 連接路由器', 'Recommended when the router has a certificate.', '路由器有證書時建議開啟。', true, {}],
-      ['autob', 'backups', 'sw', 'Automatic backups', '自動備份', 'Save a snapshot on a schedule.', '按排程儲存快照。', true, {}],
-      ['freq', 'backups', 'seg', 'How often', '頻率', 'More often means more disk used.', '愈頻密，用愈多空間。', 'weekly', { opts: O([['daily', 'Daily', '每日'], ['weekly', 'Weekly', '每星期'], ['manual', 'Manual', '手動']]) }],
-      ['keep', 'backups', 'range', 'Snapshots to keep', '保留快照數量', 'Older ones are removed first.', '最舊嘅會先移除。', 10, { min: 3, max: 30, step: 1, unit: '' }],
-      ['dest', 'backups', 'field', 'Backup folder', '備份資料夾', 'On the NAS attached to the router.', '喺連接路由器嘅 NAS 上。', '/tmp/mnt/NAS/backups', {}],
-      ['now', 'backups', 'btn', 'Back up now', '即刻備份', 'Saves a snapshot and lists it in change history.', '儲存快照並列入變更記錄。', null, { label: ['Back up', '備份'] }],
-      ['hide', 'privacy', 'sw', 'Hide secrets by default', '預設隱藏機密', 'Passwords and keys stay masked until revealed.', '密碼同金鑰預設遮蓋，要先顯示。', true, {}],
-      ['mac', 'privacy', 'sw', 'Mask device addresses', '遮蓋裝置地址', 'Hides all but the last 4 characters of MAC addresses.', '只顯示 MAC 地址最後 4 個字元。', false, {}],
-      ['stats', 'privacy', 'sw', 'Share usage statistics', '分享使用統計', 'Off by default. Nothing about your network is sent.', '預設關閉，唔會傳送任何網絡資料。', false, {}],
-      ['crash', 'privacy', 'sw', 'Send crash reports', '傳送當機報告', 'Reports never include router values.', '報告唔會包括路由器數值。', false, {}],
-      ['wipe', 'privacy', 'btn', 'Clear local data', '清除本機資料', 'Removes saved settings and tabs from this device only.', '只會清除呢部裝置上嘅設定同分頁。', null, { label: ['Clear', '清除'] }]
-    ].map(a => ({ id: a[0], group: a[1], kind: a[2], en: a[3], yue: a[4], denEn: a[5], denYue: a[6], def: a[7], x: a[8] }));
-    const isOwner = role === 'owner';
-    const gInfo = (id) => G.find(g => g[0] === id);
-    const val = (c) => (c.id in vals) ? vals[c.id] : c.def;
-    const isChanged = (c) => c.kind !== 'btn' && String(val(c)) !== String(c.def);
-    let re = null, reBad = false; if (rxOn && q) { try { re = new RegExp(q, 'i'); } catch (e) { reBad = true; } }
-    const textOf = (c) => c.en + ' ' + c.yue + ' ' + c.denEn + ' ' + c.denYue + ' ' + gInfo(c.group)[1] + ' ' + gInfo(c.group)[2];
-    const inSearch = !!q;
-    const list = inSearch ? C.filter(c => rxOn ? (re ? re.test(textOf(c)) : false) : textOf(c).toLowerCase().includes(q.toLowerCase())) : C.filter(c => c.group === grp);
-    const groupLocked = !!(locksOn.includes('group'));
-    const canEditC = (c) => { const g = gInfo(c.group); return !(g[4] && !isOwner) && !groupLocked && !c.x.fixed && (canWrite || !g[4]); };
-    const setVal = (c, v) => { if (canEditC(c)) set({ vals: Object.assign({}, vals, { [c.id]: v }) }); };
-    const controls = list.map(c => {
-      const v = val(c); const ok = canEditC(c); const g = gInfo(c.group);
-      const opts = (c.x.opts || []).map(o => ({ show: true, label: T(o.en, o.yue), pressed: String(v) === String(o.v) ? 'true' : 'false', pick: () => setVal(c, o.v) }));
-      const empty = { show: false, label: '', pressed: 'false', pick: () => {} };
-      const o = [0, 1, 2, 3, 4].map(i => opts[i] || empty);
-      return {
-        label: T(c.en, c.yue), desc: T(c.denEn, c.denYue), groupName: T(g[1], g[2]), showGroup: inSearch, changed: isChanged(c),
-        infoLabel: T('About: ', '關於：') + T(c.en, c.yue), tipOn: tipId === c.id, tip: T(c.denEn + ' Default: ' + (c.kind === 'btn' ? 'none' : String(c.def)) + '.', c.denYue + ' 預設：' + (c.kind === 'btn' ? '冇' : String(c.def)) + '。'), tipToggle: () => set({ ctip: tipId === c.id ? '' : c.id }),
-        isSw: c.kind === 'sw', swOn: v ? 'true' : 'false', swCls: (v ? 'sw on' : 'sw') + (ok ? '' : ' dis'), toggle: () => setVal(c, !v),
-        isSeg: c.kind === 'seg', o1: o[0], o2: o[1], o3: o[2], o4: o[3], o5: o[4],
-        isRange: c.kind === 'range', min: (c.x.min ?? 0), max: (c.x.max ?? 100), step: (c.x.step ?? 1), value: v, valText: c.kind === 'range' ? (c.id === 'funny' ? v + '/5' : v + (c.x.unit || '')) : '', onRange: (e) => setVal(c, Number(e.target.value)),
-        isField: c.kind === 'field', onField: (e) => setVal(c, e.target.value),
-        isBtn: c.kind === 'btn', btnLabel: c.x.label ? T(c.x.label[0], c.x.label[1]) : '', act: () => { if (ok) set({ note: T(c.en + ': done in this preview.', c.yue + '：預覽入面已完成。') }); },
-        resetCls: c.kind === 'btn' || !isChanged(c) || !ok ? 'info dis' : 'info', resetLabel: T('Reset to default: ', '重設做預設：') + T(c.en, c.yue), reset: () => { if (ok && c.id in vals) { const nv = Object.assign({}, vals); delete nv[c.id]; set({ vals: nv }); } }
-      };
-    });
-    const changedBy = (id) => C.filter(c => c.group === id && isChanged(c)).length;
-    const groups = G.map(g => ({ label: T(g[1], g[2]), icon: g[3], cls: !inSearch && grp === g[0] ? 'navi on' : 'navi', cur: !inSearch && grp === g[0] ? 'page' : 'false', hasCt: changedBy(g[0]) > 0, ct: changedBy(g[0]), pick: () => set({ grp: g[0], q: '' }) }));
-    const cg = gInfo(grp);
-    const cur = inSearch ? { title: T('Search results', '搜尋結果'), sub: T('Across every group', '涵蓋所有組別'), icon: IC.search, ownerOnly: false } : { title: T(cg[1], cg[2]), sub: T(cg[5], cg[6]), icon: cg[3], ownerOnly: cg[4] };
-    const rxPresets = [['^(notif|n)', T('Notification switches', '通知開關')], ['sound|volume|cue', T('Sound settings', '聲效設定')], ['guard|snapshot', T('Guard settings', '守衛設定')], ['hide|mask|secret', T('Privacy switches', '私隱開關')]].map(a => ({ tok: a[0], title: a[1], pick: () => set({ q: a[0], rx: true }) }));
-    const lockDefs = mkLocks({ hero: T('the summary', '摘要'), group: T('this settings group', '呢個設定組別') });
-    const tips = mkTips({
-      hero: [T('summary', '摘要'), T('These are app preferences saved on this device. Router writes always go through a preview.', '呢啲係儲存喺呢部裝置嘅應用程式偏好，寫入路由器一定要先預覽。')],
-      group: [T('settings group', '設定組別'), T('Lock keeps this group from being changed by accident. Each setting has its own info and reset button.', '鎖定可以避免誤改呢個組別，每個設定都有自己嘅資訊同重設掣。')]
-    });
-    const bg = base(T('Settings', '設定'), [T('Settings', '設定'), T('Appearance', '外觀'), T('Backups', '備份')], 2);
-    const changedTotal = C.filter(isChanged).length;
-    return Object.assign(bg, {
-      tips, lk: lockDefs.lk, cardCls: lockDefs.cardCls, shapeA, shapeB, shapeC, cur,
-      counts: { total: C.length, changed: changedTotal, groups: G.length },
-      q, onQ: (e) => set({ q: e.target.value }), rxOn, rxPressed: rxOn ? 'true' : 'false', toggleRx: () => set({ rx: !rxOn }), inputCls: rxOn ? 'mono' : '',
-      rxTagCls: reBad ? 'tag bad mono' : 'tag good mono', rxTag: reBad ? T('invalid', '無效') : T('regex · ', '正則 · ') + list.length, rxPresets,
-      exportSettings: () => set({ note: T('Exported ' + C.length + ' settings as JSON. Secrets and router values are not included.', '已將 ' + C.length + ' 項設定匯出成 JSON，唔包括機密同路由器數值。') }),
-      importSettings: () => set({ note: T('Choose a JSON file. It is checked in full before anything changes.', '請揀 JSON 檔案，會先完整檢查先至改動。') }),
-      groups, controls, noControls: controls.length === 0, inSearch, shownCount: controls.length, noteOn: !!note, note,
-      resetGroup: () => { if (!canWrite) return; const nv = Object.assign({}, vals); C.filter(c => inSearch ? list.includes(c) : c.group === grp).forEach(c => { if (canEditC(c)) delete nv[c.id]; }); set({ vals: nv, note: T('Reset to defaults.', '已重設做預設。') }); },
-      t: {
-        title: T('Settings', '設定'), hero: T('Summary', '摘要'), group: T('Settings group', '設定組別'), groupCard: T('Settings group', '設定組別'), groupsLabel: T('Settings groups', '設定組別'),
-        localTag: T('Saved on this device', '儲存喺呢部裝置'), roleTag: isOwner ? T('Owner: every group editable', '擁有人：所有組別可編輯') : T('Some groups are owner only', '部分組別只限擁有人'),
-        headline: T('Make it yours', '配合你嘅習慣'), lede: T('Every control has its own info button and a reset. Search finds a setting wherever it lives.', '每個控制都有資訊同重設掣，搜尋可以喺任何位置搵到設定。'),
-        statTotal: T('Settings', '設定'), statChanged: T('Changed from default', '同預設唔同'), statGroups: T('Groups', '組別'),
-        searchLabel: T('Search settings', '搜尋設定'), searchPh: rxOn ? '^(notif|sound)' : T('Search all settings', '搜尋所有設定'), rxBtn: T('Regex builder', '正則表達式產生器'), rxMini: T('Regex builder', '正則表達式產生器'), rxHint: T('Pick a starting pattern and refine it in the search box.', '揀一個起始表達式，再喺搜尋框修改。'),
-        export: T('Export settings', '匯出設定'), import: T('Import settings', '匯入設定'), ownerOnly: T('Owner only', '只限擁有人'), resetGroup: T('Reset group', '重設組別'), modified: T('Changed', '已更改'), searchResults: T('Matches:', '符合：'), noControls: T('No setting matches this search.', '冇設定符合呢個搜尋。')
-      }
-    });
-
+    const V = s.v || {};
+    const stageP = p.stage ?? D.stage0;
+    const stage = (s.stf === stageP && s.st) || stageP;
+    const set = (o) => this.setState({ v: Object.assign({}, V, o) });
+    const put = (k, val) => { if (k[0] === '_' || canWrite) set({ [k]: val }); };
+    const t = {}, c = {}, a = {}, b = {}, nb = {}, f = {}, g = {}, gi = {}, is = {}, n = {}, pc = {}, gd = {}, st = {}, stp = {};
+    D.tx.forEach((r, i) => { t['k' + i] = T(r[0], r[1]); });
+    Object.keys(D.sw).forEach(k => { const on = k in V ? !!V[k] : !!D.sw[k]; c[k] = on ? 'on' : ''; a[k] = on ? 'true' : 'false'; b[k] = on; nb[k] = !on; f[k] = () => put(k, !on); });
+    Object.keys(D.sg).forEach(k => { const cur = k in V ? V[k] : D.sg[k][1]; gi[k] = cur; for (let i = 0; i < D.sg[k][0]; i++) { g[k + '_' + i] = cur === i ? 'true' : 'false'; is[k + '_' + i] = cur === i; f[k + '_' + i] = () => put(k, i); } });
+    Object.keys(D.num).forEach(k => { const q = D.num[k], def = q[0], step = q[1], mn = q[2], mx = q[3], pre = q[4] || [], span = q[5]; const cur = k in V ? V[k] : def; const cl = (z) => Math.max(mn, Math.min(mx, z)); n[k] = cur; pc[k] = (span ? cur / span * 100 : mx > mn ? (cur - mn) / (mx - mn) * 100 : 0).toFixed(1) + '%'; f[k + '_up'] = () => put(k, cl(cur + step)); f[k + '_dn'] = () => put(k, cl(cur - step)); f[k + '_in'] = (e) => { const z = Number(e && e.target ? e.target.value : NaN); if (!isNaN(z)) put(k, cl(z)); }; pre.forEach((pv, i) => { f[k + '_p' + i] = () => put(k, pv); }); });
+    Object.keys(D.gr).forEach(k => { const G = D.gr[k], Cn = G.c; const cur = V[k] ?? G.d; const br = V['_br_' + k] ?? 1; const an = V['_an_' + k] ?? -1;
+      gd[k] = G.r.map((lab, ri) => ({ l: T(lab[0], lab[1]), cells: Array.from({ length: Cn }, (_, ci) => { const idx = ri * Cn + ci, on = cur[idx] === '1'; return { cls: (on ? 'on' : '') + (an === idx ? ' an' : ''), a: on ? 'true' : 'false', lb: T(lab[0], lab[1]) + ' ' + ci + ':00', f: () => { if (!canWrite) return; if (an < 0) { set({ [k]: cur.slice(0, idx) + br + cur.slice(idx + 1), ['_an_' + k]: idx }); return; } const r0 = Math.min(Math.floor(an / Cn), ri), r1 = Math.max(Math.floor(an / Cn), ri), c0 = Math.min(an % Cn, ci), c1 = Math.max(an % Cn, ci); const o = cur.split(''); for (let r = r0; r <= r1; r++) for (let q = c0; q <= c1; q++) o[r * Cn + q] = String(br); set({ [k]: o.join(''), ['_an_' + k]: -1 }); } }; }) }));
+      gi['br_' + k] = br === 1 ? 0 : 1; g['br_' + k + '_1'] = br === 1 ? 'true' : 'false'; g['br_' + k + '_0'] = br === 0 ? 'true' : 'false'; f['br_' + k + '_1'] = () => set({ ['_br_' + k]: 1 }); f['br_' + k + '_0'] = () => set({ ['_br_' + k]: 0 });
+      (G.p || []).forEach((bits, i) => { f[k + '_p' + i] = () => { if (canWrite) set({ [k]: bits, ['_an_' + k]: -1 }); }; });
+      n[k + '_on'] = cur.split('').filter(z => z === '1').length; });
+    const SG = ['loading', 'empty', 'ready', 'success', 'failure'];
+    SG.forEach(k => { st[k] = stage === k; stp[k] = stage === k ? 'true' : 'false'; f['st_' + k] = () => this.setState({ st: k, stf: stageP }); });
+    st.main = stage === 'ready' || stage === 'success' || stage === 'failure';
+    const pendKeys = Object.keys(V).filter(k => k[0] !== '_');
+    const views = {}; Object.keys(V).forEach(k => { if (k[0] === '_') views[k] = V[k]; });
+    f.discard = () => this.setState({ v: views });
+    f.apply = () => this.setState({ v: views, st: 'success', stf: stageP });
+    const h = { D, p, s, V, set, put, T, lang, role, firmware, canWrite, stage, f, self: this, owner: role === 'owner', merlin: firmware === 'merlin' };
+    const LOGIC = null;
+    const x = LOGIC ? LOGIC(h) : {};
+    const extra = (h.extraPend || 0);
+    return {
+      accent, dark, darkNum: dark ? 1 : 0, lang, role, firmware, motion,
+      motionCls: motion === 'calm' ? 'calm' : motion === 'standard' ? 'std' : '',
+      rootCls: 'role-' + role + ' fw-' + firmware + ' lang-' + lang + ' st-' + stage,
+      viewer: role === 'viewer', notOwner: role !== 'owner', stock: firmware !== 'merlin', merlin: firmware === 'merlin',
+      fwName: firmware === 'merlin' ? 'Asuswrt-Merlin 388.8_4' : T('Stock ASUS 388.24198', '原廠 ASUS 388.24198'),
+      readOnly: T('Read-only role: you can look at everything here, but every control that would change the router is switched off.', '唯讀角色：呢度樣樣都睇得，但會改到路由器嘅控制項全部閂咗。'),
+      pendCount: D.pend + pendKeys.length + extra, pendN: pendKeys.length + extra, hasPend: pendKeys.length + extra > 0,
+      stIdx: SG.indexOf(stage),
+      tabsStr: D.tabs[0].split(',').map((e, i) => T(e, D.tabs[1].split(',')[i] || e)).join(','), title: T(D.title[0], D.title[1]),
+      t, c, a, b, nb, f, g, gi, is, n, pc, gd, st, stp, x
+    };
   }
 }
 </script>

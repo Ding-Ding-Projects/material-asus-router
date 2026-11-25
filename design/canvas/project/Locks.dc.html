@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Locks, recovery and authenticator</title>
+<title>Locks and permissions</title>
 <script src="./support.js"></script>
 <link rel="stylesheet" href="theme.css">
 </head>
@@ -11,399 +11,62 @@
 <helmet>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,100..1000&amp;display=swap" rel="stylesheet">
-<style>
-body{margin:0}
-.onp{background:color-mix(in srgb,var(--on-primary) 18%,transparent);color:var(--on-primary)}
-.card.ov{overflow:visible}
-.cbw{width:44px;height:44px;border:0;background:none;display:grid;place-items:center;flex:none;padding:0}
-.cb2{width:22px;height:22px;border-radius:7px;border:2px solid var(--sub);display:grid;place-items:center;color:var(--on-primary)}
-.cb2 svg{opacity:0}
-.cb2.on{background:var(--primary);border-color:var(--primary)}
-.cb2.on svg{opacity:1}
-.struck{text-decoration:line-through;opacity:.6}
-.lockedcard{outline:3px solid var(--primary);outline-offset:-3px}
-.tilehead{display:flex;align-items:center;gap:4px}
-.tilehead .k,.tilehead .h2{flex:1}
-.legend{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub)}
-.legend i{width:12px;height:12px;border-radius:6px;display:inline-block}
-.pos{position:relative}
-.dis{opacity:.5;cursor:not-allowed}
-.rng{width:100%;min-width:120px;height:44px;accent-color:var(--primary);margin:0}
-.lbl{font-size:12.5px;font-weight:750;color:var(--sub);letter-spacing:.3px}
-.sel{height:44px;border-radius:14px;border:1.5px solid var(--line);background:var(--surf);color:var(--text);font:inherit;font-size:14px;padding:0 12px}
-.kbd{font:700 12px ui-monospace,Consolas,monospace;padding:3px 8px;border-radius:8px;background:var(--surf-high);color:var(--text)}
-.sw[aria-pressed=true]{background:var(--primary);border-color:var(--primary)}
-.sw[aria-pressed=true] i{left:26px;top:2px;width:24px;height:24px;border-radius:12px;background:#fff}
-.seg button[aria-pressed=true],.seg .on{background:var(--surf);color:var(--text);box-shadow:var(--e1)}
-.chip[aria-pressed=true]{background:var(--secondary-c);color:var(--on-secondary-c);border-color:transparent}
-.rowbtn{display:flex;align-items:center;gap:14px;padding:12px 0;border:0;border-top:1px solid var(--line);background:none;color:var(--text);text-align:left;font:inherit;width:100%;min-height:44px}
-.main{position:relative}
-.scrim{z-index:40}
-.scrim .sheet{position:sticky;top:96px}
-.toyl{position:relative;border-radius:28px;padding:20px;background:var(--surf-low);display:flex;flex-direction:column;gap:8px;border:2px solid transparent;min-height:200px}
-.toyl.locked{border-color:var(--primary);background:var(--primary-c);color:var(--on-primary-c)}
-.toyl.locked .muted{color:inherit;opacity:.85}
-.toyl .shine{position:absolute;right:12px;top:12px;width:40px;height:40px;border-radius:20px;display:grid;place-items:center;background:var(--surf);color:var(--text);border:0;padding:0;box-shadow:var(--e1)}
-.toyl.locked .shine{background:var(--primary);color:var(--on-primary)}
-.ladder{display:flex;flex-direction:column;gap:6px;position:relative}
-.rung{display:flex;gap:12px;align-items:center;width:100%;min-height:64px;padding:10px 14px;border:2px solid var(--line);border-radius:22px;background:var(--surf);color:var(--text);font:inherit;text-align:left}
-.rung[aria-pressed=true]{border-color:var(--primary);background:var(--secondary-c);color:var(--on-secondary-c)}
-.rung .num{width:36px;height:36px;border-radius:18px;background:var(--surf-high);display:grid;place-items:center;font-weight:850;flex:none;color:var(--text)}
-.rung[aria-pressed=true] .num{background:var(--primary);color:var(--on-primary)}
-.keyslot{display:flex;align-items:center;gap:12px;padding:14px;border-radius:20px;background:var(--surf-low);border:2px solid var(--line)}
-.keyslot.turned{border-color:var(--good);background:var(--good-c)}
-.codebox{display:flex;align-items:center;gap:16px;padding:16px;border-radius:24px;background:var(--surf-low)}
-.ring{width:56px;height:56px;flex:none}
-.ring circle{fill:none;stroke-width:5}
-.ring .bg{stroke:var(--surf-high)}
-.ring .fg{stroke:var(--primary);stroke-linecap:round;stroke-dasharray:100;animation:ringt 30s linear infinite;transform:rotate(-90deg);transform-origin:50% 50%}
-@keyframes ringt{from{stroke-dashoffset:0}to{stroke-dashoffset:100}}
-.calm .ring .fg{animation:none}
-@media (prefers-reduced-motion:reduce){.ring .fg{animation:none}}
-.qr{display:block;background:#fff;border-radius:20px;padding:12px;box-shadow:var(--e1)}
-.tkt{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line);flex-wrap:wrap;position:relative}
-.tkt:first-of-type{border-top:0}
-.prog{height:8px;border-radius:4px;background:var(--surf-high);overflow:hidden}
-.prog i{display:block;height:100%;background:var(--primary);border-radius:4px}
-</style>
+<style>body{margin:0}</style>
 </helmet>
-<div class="mx shell {{motionCls}}" style="--accent:{{accent}};--dark:{{darkNum}}">
-  <div class="railwrap"><dc-import name="Rail" page="settings" lang="{{lang}}" role="{{role}}" firmware="{{firmware}}" pending="{{pendCount}}" accent="{{accent}}" dark="{{dark}}" hint-size="288px,900px"></dc-import></div>
-  <div class="main">
-    <dc-import name="TopBar" title="{{t.title}}" lang="{{lang}}" role="{{role}}" firmware="{{firmware}}" tabs="{{tabsStr}}" active="0" accent="{{accent}}" dark="{{dark}}" hint-size="1152px,170px"></dc-import>
-    <main class="page">
-
-      <section class="card hero rise" aria-label="{{t.heroLabel}}" style="min-height:220px">
-        <svg class="deco a" viewBox="0 0 200 200" aria-hidden="true" style="right:-70px;top:-80px;width:330px;height:330px"><path d="M195 100L194.1 104.1L191.4 108L187.6 111.5L183.2 114.7L178.9 117.5L175.5 120.2L173.5 123.2L172.9 126.5L173.6 130.5L175.2 135L177 140.1L178.4 145.3L178.7 150.2L177.7 154.4L175.1 157.6L171.2 159.7L166.2 160.7L160.8 160.8L155.5 160.6L150.8 160.6L147.1 161.3L144.2 163.2L142.2 166.3L140.8 170.6L139.3 175.6L137.6 180.7L135.3 185.3L132.3 188.8L128.6 190.6L124.3 190.6L119.7 189L115.2 186.2L110.9 183L107 179.9L103.4 177.8L100 177L96.6 177.8L93 179.9L89.1 183L84.8 186.2L80.3 189L75.7 190.6L71.4 190.6L67.7 188.8L64.7 185.3L62.4 180.7L60.7 175.6L59.3 170.6L57.8 166.3L55.8 163.2L52.9 161.3L49.2 160.6L44.5 160.6L39.2 160.8L33.8 160.7L28.8 159.7L24.9 157.6L22.3 154.4L21.3 150.2L21.6 145.3L23 140.1L24.8 135L26.4 130.5L27.1 126.5L26.5 123.2L24.5 120.2L21.1 117.5L16.8 114.7L12.4 111.5L8.6 108L5.9 104.1L5 100L5.9 95.9L8.6 92L12.4 88.5L16.8 85.3L21.1 82.5L24.5 79.8L26.5 76.8L27.1 73.5L26.4 69.5L24.8 65L23 59.9L21.6 54.7L21.3 49.8L22.3 45.6L24.9 42.4L28.8 40.3L33.8 39.3L39.2 39.2L44.5 39.4L49.2 39.4L52.9 38.7L55.8 36.8L57.8 33.7L59.2 29.4L60.7 24.4L62.4 19.3L64.7 14.7L67.7 11.2L71.4 9.4L75.7 9.4L80.3 11L84.8 13.8L89.1 17L93 20.1L96.6 22.2L100 23L103.4 22.2L107 20.1L110.9 17L115.2 13.8L119.7 11L124.3 9.4L128.6 9.4L132.3 11.2L135.3 14.7L137.6 19.3L139.3 24.4L140.8 29.4L142.2 33.7L144.2 36.8L147.1 38.7L150.8 39.4L155.5 39.4L160.8 39.2L166.2 39.3L171.2 40.3L175.1 42.4L177.7 45.6L178.7 49.8L178.4 54.7L177 59.9L175.2 65L173.6 69.5L172.9 73.5L173.5 76.8L175.5 79.8L178.9 82.5L183.2 85.3L187.6 88.5L191.4 92L194.1 95.9L195 100Z"/></svg>
-        <svg class="deco b" viewBox="0 0 200 200" aria-hidden="true" style="right:280px;bottom:-125px;width:250px;height:250px"><path d="M192 100C192.2 117.6 168.7 138.8 153.3 153.3C138 167.9 117.3 187.8 100 187.4C82.7 187 64.6 165.3 49.3 150.7C33.9 136.2 8.9 117.8 8 100C7.1 82.2 28.7 58.9 44.1 44.1C59.4 29.2 82 10.1 100 10.8C118 11.4 136.7 33.1 152 48C167.4 62.8 191.8 82.4 192 100Z"/></svg>
-        <div class="cookie" style="position:absolute;right:66px;top:42px;width:124px;height:124px;color:var(--tertiary-c)" aria-hidden="true"><svg viewBox="0 0 200 200"><path d="M194 100L193.4 104.1L191.8 108L189.2 111.7L186.1 115.2L182.6 118.3L179.2 121.2L176.2 124L173.7 126.8L172.1 129.8L171.1 133.2L170.8 136.9L171 141L171.4 145.5L171.6 150.1L171.4 154.8L170.6 159.2L168.9 163.2L166.5 166.5L163.2 168.9L159.2 170.6L154.8 171.4L150.1 171.6L145.5 171.4L141 171L136.9 170.8L133.2 171.1L129.8 172.1L126.8 173.7L124 176.2L121.2 179.2L118.3 182.6L115.2 186.1L111.7 189.2L108 191.8L104.1 193.4L100 194L95.9 193.4L92 191.8L88.3 189.2L84.8 186.1L81.7 182.6L78.8 179.2L76 176.2L73.2 173.7L70.2 172.1L66.8 171.1L63.1 170.8L59 171L54.5 171.4L49.9 171.6L45.2 171.4L40.8 170.6L36.8 168.9L33.5 166.5L31.1 163.2L29.4 159.2L28.6 154.8L28.4 150.1L28.6 145.5L29 141L29.2 136.9L28.9 133.2L27.9 129.8L26.3 126.8L23.8 124L20.8 121.2L17.4 118.3L13.9 115.2L10.8 111.7L8.2 108L6.6 104.1L6 100L6.6 95.9L8.2 92L10.8 88.3L13.9 84.8L17.4 81.7L20.8 78.8L23.8 76L26.3 73.2L27.9 70.2L28.9 66.8L29.2 63.1L29 59L28.6 54.5L28.4 49.9L28.6 45.2L29.4 40.8L31.1 36.8L33.5 33.5L36.8 31.1L40.8 29.4L45.2 28.6L49.9 28.4L54.5 28.6L59 29L63.1 29.2L66.8 28.9L70.2 27.9L73.2 26.3L76 23.8L78.8 20.8L81.7 17.4L84.8 13.9L88.3 10.8L92 8.2L95.9 6.6L100 6L104.1 6.6L108 8.2L111.7 10.8L115.2 13.9L118.3 17.4L121.2 20.8L124 23.8L126.8 26.3L129.8 27.9L133.2 28.9L136.9 29.2L141 29L145.5 28.6L150.1 28.4L154.8 28.6L159.2 29.4L163.2 31.1L166.5 33.5L168.9 36.8L170.6 40.8L171.4 45.2L171.6 49.9L171.4 54.5L171 59L170.8 63.1L171.1 66.8L172.1 70.2L173.7 73.2L176.2 76L179.2 78.8L182.6 81.7L186.1 84.8L189.2 88.3L191.8 92L193.4 95.9L194 100Z"/></svg>
-          <svg viewBox="0 0 24 24" fill="none" stroke="var(--on-tertiary-c)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:52px;height:52px;grid-area:1/1;fill:none"><path d="{{d.lock}}"/></svg></div>
-        <div style="position:relative;display:flex;flex-wrap:wrap;gap:8px"><span class="tag onp">{{t.chipLocked}}</span><span class="tag onp">{{t.chipTwoKey}}</span><span class="tag onp">{{t.chipTotp}}</span></div>
-        <h1 class="disp" style="position:relative;max-width:16ch">{{t.headline}}</h1>
-        <p class="lede" style="position:relative;color:color-mix(in srgb,var(--on-primary) 86%,transparent)">{{t.lede}}</p>
-      </section>
-
-      <div class="dash">
-        <section class="card span2 ov rise {{cc.toys}}" aria-label="{{t.toysTitle}}">
-          <div class="cols">
-            <div class="grow" style="min-width:220px"><div class="tilehead"><h2 class="h2">{{t.toysTitle}}</h2>
-  <button class="info" aria-label="{{tips.toys.label}}" aria-expanded="{{tips.toys.on}}" onClick="{{tips.toys.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button>
-  <button class="lock" aria-label="{{lk.toys.label}}" aria-pressed="{{lk.toys.pressed}}" onClick="{{lk.toys.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.toys.d}}"/></svg></button>
-</div>
-<sc-if value="{{tips.toys.on}}" hint-placeholder-val="{{ false }}"><div class="tip" role="tooltip" style="top:52px;right:16px">{{tips.toys.text}}</div></sc-if><div class="muted">{{t.toysSub}}</div></div>
-            <button class="btn t sm {{lockAllDis}}" onClick="{{lockAll}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4"/></svg>{{t.lockAll}}</button>
-            <button class="btn o sm {{lockAllDis}}" onClick="{{unlockAll}}">{{t.unlockAll}}</button>
-          </div>
-          <sc-if value="{{viewer}}" hint-placeholder-val="{{ false }}"><div class="tag warn" style="align-self:flex-start">{{t.viewerNote}}</div></sc-if>
-          <div class="grid2" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
-            <sc-for list="{{toys}}" as="x" hint-placeholder-count="4">
-              <div class="{{x.cls}}">
-                <button class="shine" aria-pressed="{{x.pressed}}" aria-label="{{x.lockLabel}}" onClick="{{x.toggle}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{x.d}}"/></svg></button>
-                <span class="k">{{x.level}}</span>
-                <div class="t1" style="font-size:18px;padding-right:44px">{{x.name}}</div>
-                <div class="muted">{{x.sub}}</div>
-                <sc-if value="{{x.isHold}}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:6px"><div class="prog" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{x.holdN}}" aria-label="{{x.holdLabel}}"><i style="width:{{x.holdN}}%"></i></div><button class="btn f sm" onClick="{{x.hold}}">{{x.holdLabel}}</button></div></sc-if>
-                <sc-if value="{{x.isPass}}" hint-placeholder-val="{{ false }}"><div class="cols"><input class="field" style="flex:1;height:44px;min-width:140px" type="password" aria-label="{{x.passLabel}}" placeholder="{{x.passLabel}}" value="" onInput="{{x.onPass}}"><button class="btn f sm" onClick="{{x.passGo}}">{{x.passBtn}}</button></div></sc-if>
-                <div class="cols" style="margin-top:auto"><button class="{{x.editCls}}" onClick="{{x.edit}}">{{x.editLabel}}</button><span class="tag {{x.tagCls}}">{{x.tag}}</span></div>
-              </div>
-            </sc-for>
-          </div>
-        </section>
-
-        <section class="card ov rise {{cc.ladder}}" aria-label="{{t.ladderTitle}}">
-          <div class="tilehead"><h2 class="h2">{{t.ladderTitle}}</h2>
-  <button class="info" aria-label="{{tips.ladder.label}}" aria-expanded="{{tips.ladder.on}}" onClick="{{tips.ladder.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button>
-  <button class="lock" aria-label="{{lk.ladder.label}}" aria-pressed="{{lk.ladder.pressed}}" onClick="{{lk.ladder.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.ladder.d}}"/></svg></button>
-</div>
-<sc-if value="{{tips.ladder.on}}" hint-placeholder-val="{{ false }}"><div class="tip" role="tooltip" style="top:52px;right:16px">{{tips.ladder.text}}</div></sc-if>
-          <div class="muted">{{t.ladderSub}}</div>
-          <div class="ladder" role="group" aria-label="{{t.ladderTitle}}">
-            <sc-for list="{{rungs}}" as="r" hint-placeholder-count="5"><button class="rung" aria-pressed="{{r.pressed}}" onClick="{{r.pick}}"><span class="num">{{r.n}}</span><span class="grow"><b style="font-size:15px">{{r.name}}</b><span class="t2" style="display:block;margin:0">{{r.sub}}</span></span></button></sc-for>
-          </div>
-          <div class="sample" style="padding:14px 16px;border-radius:20px;background:var(--surf-low)"><span class="k">{{t.ladderNeeds}}</span><div class="t1" style="margin-top:4px">{{rungNeeds}}</div></div>
-        </section>
-      </div>
-
-      <div class="dash">
-        <section class="card ter ov rise {{cc.reboot}}" aria-label="{{t.rebootTitle}}">
-          <div class="tilehead"><h2 class="h2">{{t.rebootTitle}}</h2>
-  <button class="info" style="background:color-mix(in srgb,var(--on-tertiary-c) 14%,transparent);color:inherit" aria-label="{{tips.reboot.label}}" aria-expanded="{{tips.reboot.on}}" onClick="{{tips.reboot.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button>
-  <button class="lock" style="color:inherit" aria-label="{{lk.reboot.label}}" aria-pressed="{{lk.reboot.pressed}}" onClick="{{lk.reboot.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.reboot.d}}"/></svg></button>
-</div>
-<sc-if value="{{tips.reboot.on}}" hint-placeholder-val="{{ false }}"><div class="tip" role="tooltip" style="top:52px;right:16px">{{tips.reboot.text}}</div></sc-if>
-          <div class="muted" style="color:inherit;opacity:.88">{{t.rebootSub}}</div>
-          <div class="big" style="font-size:40px">{{t.rebootBig}}</div>
-          <div class="muted" style="color:inherit;opacity:.88">{{t.rebootEffects}}</div>
-          <button class="btn f {{rebootDis}}" style="align-self:flex-start;background:var(--bad);color:#fff" onClick="{{openDlg}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.5-5.8 M20 4v5h-5"/></svg>{{t.rebootBtn}}</button>
-          <sc-if value="{{rebooted}}" hint-placeholder-val="{{ false }}"><div class="tag good" style="align-self:flex-start">{{t.rebooted}}</div></sc-if>
-          <div class="row" style="border-color:color-mix(in srgb,currentColor 20%,transparent)"><div class="grow"><div class="t1">{{t.lastReboot}}</div><div class="t2" style="color:inherit;opacity:.8">{{t.lastRebootSub}}</div></div></div>
-          <div class="row" style="border-color:color-mix(in srgb,currentColor 20%,transparent)"><div class="grow"><div class="t1">{{t.needs}}</div><div class="t2" style="color:inherit;opacity:.8">{{t.needsSub}}</div></div><span class="badge">3</span></div>
-        </section>
-
-        <section class="card span2 ov rise {{cc.auth}}" aria-label="{{t.authTitle}}">
-          <div class="cols">
-            <div class="grow" style="min-width:220px"><div class="tilehead"><h2 class="h2">{{t.authTitle}}</h2>
-  <button class="info" aria-label="{{tips.auth.label}}" aria-expanded="{{tips.auth.on}}" onClick="{{tips.auth.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button>
-  <button class="lock" aria-label="{{lk.auth.label}}" aria-pressed="{{lk.auth.pressed}}" onClick="{{lk.auth.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.auth.d}}"/></svg></button>
-</div>
-<sc-if value="{{tips.auth.on}}" hint-placeholder-val="{{ false }}"><div class="tip" role="tooltip" style="top:52px;right:16px">{{tips.auth.text}}</div></sc-if><div class="muted">{{t.authSub}}</div></div>
-            <button class="btn t sm" onClick="{{togglePair}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>{{pairBtn}}</button>
-          </div>
-          <div class="grid2" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
-            <sc-for list="{{codes}}" as="c" hint-placeholder-count="3">
-              <div class="codebox">
-                <svg class="ring" viewBox="0 0 40 40" aria-hidden="true"><circle class="bg" cx="20" cy="20" r="16"/><circle class="fg" cx="20" cy="20" r="16" pathLength="100" style="{{c.ringStyle}}"/></svg>
-                <div class="grow" style="min-width:0"><div class="t2" style="margin:0">{{c.who}}</div><div class="big mono" style="font-size:34px;letter-spacing:2px;font-stretch:100%">{{c.code}}</div><div class="area-note">{{c.left}}</div></div>
-                <button class="btn t sm" onClick="{{c.copy}}" aria-label="{{c.copyLabel}}">{{c.copyText}}</button>
-              </div>
-            </sc-for>
-          </div>
-          <sc-if value="{{pairing}}" hint-placeholder-val="{{ true }}">
-            <div class="cols" style="align-items:flex-start;gap:24px;padding:20px;border-radius:28px;background:var(--surf-low)">
-              <svg class="qr" width="196" height="196" viewBox="-1 -1 27 27" role="img" aria-label="{{t.qrAlt}}"><path d="M9 0h1v1h-1zM15 0h1v1h-1zM16 0h1v1h-1zM10 1h1v1h-1zM11 1h1v1h-1zM15 1h1v1h-1zM8 2h1v1h-1zM12 2h1v1h-1zM13 2h1v1h-1zM16 2h1v1h-1zM10 3h1v1h-1zM11 3h1v1h-1zM14 3h1v1h-1zM8 4h1v1h-1zM11 4h1v1h-1zM15 4h1v1h-1zM8 5h1v1h-1zM11 5h1v1h-1zM13 5h1v1h-1zM14 5h1v1h-1zM12 6h1v1h-1zM13 6h1v1h-1zM14 6h1v1h-1zM10 7h1v1h-1zM15 7h1v1h-1zM1 8h1v1h-1zM2 8h1v1h-1zM3 8h1v1h-1zM4 8h1v1h-1zM5 8h1v1h-1zM6 8h1v1h-1zM7 8h1v1h-1zM8 8h1v1h-1zM14 8h1v1h-1zM15 8h1v1h-1zM17 8h1v1h-1zM20 8h1v1h-1zM23 8h1v1h-1zM0 9h1v1h-1zM1 9h1v1h-1zM4 9h1v1h-1zM5 9h1v1h-1zM9 9h1v1h-1zM10 9h1v1h-1zM11 9h1v1h-1zM12 9h1v1h-1zM14 9h1v1h-1zM19 9h1v1h-1zM20 9h1v1h-1zM21 9h1v1h-1zM6 10h1v1h-1zM10 10h1v1h-1zM17 10h1v1h-1zM19 10h1v1h-1zM21 10h1v1h-1zM22 10h1v1h-1zM23 10h1v1h-1zM2 11h1v1h-1zM8 11h1v1h-1zM11 11h1v1h-1zM12 11h1v1h-1zM13 11h1v1h-1zM16 11h1v1h-1zM17 11h1v1h-1zM19 11h1v1h-1zM20 11h1v1h-1zM22 11h1v1h-1zM23 11h1v1h-1zM1 12h1v1h-1zM2 12h1v1h-1zM3 12h1v1h-1zM4 12h1v1h-1zM5 12h1v1h-1zM6 12h1v1h-1zM7 12h1v1h-1zM10 12h1v1h-1zM11 12h1v1h-1zM12 12h1v1h-1zM14 12h1v1h-1zM15 12h1v1h-1zM18 12h1v1h-1zM19 12h1v1h-1zM23 12h1v1h-1zM24 12h1v1h-1zM1 13h1v1h-1zM4 13h1v1h-1zM7 13h1v1h-1zM12 13h1v1h-1zM14 13h1v1h-1zM16 13h1v1h-1zM17 13h1v1h-1zM19 13h1v1h-1zM23 13h1v1h-1zM24 13h1v1h-1zM9 14h1v1h-1zM11 14h1v1h-1zM12 14h1v1h-1zM19 14h1v1h-1zM20 14h1v1h-1zM22 14h1v1h-1zM1 15h1v1h-1zM4 15h1v1h-1zM5 15h1v1h-1zM6 15h1v1h-1zM8 15h1v1h-1zM9 15h1v1h-1zM14 15h1v1h-1zM15 15h1v1h-1zM16 15h1v1h-1zM21 15h1v1h-1zM22 15h1v1h-1zM23 15h1v1h-1zM24 15h1v1h-1zM1 16h1v1h-1zM3 16h1v1h-1zM4 16h1v1h-1zM5 16h1v1h-1zM8 16h1v1h-1zM9 16h1v1h-1zM12 16h1v1h-1zM13 16h1v1h-1zM14 16h1v1h-1zM15 16h1v1h-1zM16 16h1v1h-1zM21 16h1v1h-1zM22 16h1v1h-1zM23 16h1v1h-1zM8 17h1v1h-1zM11 17h1v1h-1zM18 17h1v1h-1zM19 17h1v1h-1zM20 17h1v1h-1zM21 17h1v1h-1zM11 18h1v1h-1zM12 18h1v1h-1zM14 18h1v1h-1zM15 18h1v1h-1zM22 18h1v1h-1zM10 19h1v1h-1zM11 19h1v1h-1zM12 19h1v1h-1zM15 19h1v1h-1zM16 19h1v1h-1zM17 19h1v1h-1zM18 19h1v1h-1zM19 19h1v1h-1zM20 19h1v1h-1zM23 19h1v1h-1zM8 20h1v1h-1zM11 20h1v1h-1zM12 20h1v1h-1zM14 20h1v1h-1zM15 20h1v1h-1zM23 20h1v1h-1zM24 20h1v1h-1zM8 21h1v1h-1zM20 21h1v1h-1zM23 21h1v1h-1zM24 21h1v1h-1zM9 22h1v1h-1zM12 22h1v1h-1zM14 22h1v1h-1zM17 22h1v1h-1zM22 22h1v1h-1zM23 22h1v1h-1zM8 23h1v1h-1zM11 23h1v1h-1zM17 23h1v1h-1zM22 23h1v1h-1zM24 23h1v1h-1zM9 24h1v1h-1zM10 24h1v1h-1zM12 24h1v1h-1zM13 24h1v1h-1zM14 24h1v1h-1zM18 24h1v1h-1zM19 24h1v1h-1zM20 24h1v1h-1zM23 24h1v1h-1zM0 0h7v7h-7zM1 1v5h5v-5zM2 2h3v3h-3zM18 0h7v7h-7zM19 1v5h5v-5zM20 2h3v3h-3zM0 18h7v7h-7zM1 19v5h5v-5zM2 20h3v3h-3z" fill="#14161f" fill-rule="evenodd"/></svg>
-              <div style="flex:1 1 260px;min-width:240px;display:flex;flex-direction:column;gap:10px">
-                <h3 class="h2" style="font-size:19px;margin:0">{{t.pairTitle}}</h3>
-                <ol class="muted" style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px"><li>{{t.pair1}}</li><li>{{t.pair2}}</li><li>{{t.pair3}}</li></ol>
-                <div class="cols"><span class="mono t1" style="letter-spacing:1px">{{secretShown}}</span><button class="btn o sm" onClick="{{toggleReveal}}">{{revealBtn}}</button></div>
-                <div class="cols"><label class="lbl" for="vcode">{{t.verify}}</label><input id="vcode" class="field mono" inputmode="numeric" maxlength="7" style="width:140px;height:44px" placeholder="000 000" value="{{vin}}" onInput="{{onVin}}"><button class="btn f sm" onClick="{{doVerify}}">{{t.verifyBtn}}</button></div>
-                <sc-if value="{{verOk}}" hint-placeholder-val="{{ false }}"><span class="tag good" style="align-self:flex-start">{{t.verOk}}</span></sc-if>
-                <sc-if value="{{verBad}}" hint-placeholder-val="{{ false }}"><span class="tag bad" style="align-self:flex-start">{{t.verBad}}</span></sc-if>
-              </div>
-            </div>
-          </sc-if>
-        </section>
-      </div>
-
-      <section class="card ov rise {{cc.desk}}" aria-label="{{t.deskTitle}}">
-        <div class="cols">
-          <div class="grow" style="min-width:220px"><div class="tilehead"><h2 class="h2">{{t.deskTitle}}</h2>
-  <button class="info" aria-label="{{tips.desk.label}}" aria-expanded="{{tips.desk.on}}" onClick="{{tips.desk.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button>
-  <button class="lock" aria-label="{{lk.desk.label}}" aria-pressed="{{lk.desk.pressed}}" onClick="{{lk.desk.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.desk.d}}"/></svg></button>
-</div>
-<sc-if value="{{tips.desk.on}}" hint-placeholder-val="{{ false }}"><div class="tip" role="tooltip" style="top:52px;right:16px">{{tips.desk.text}}</div></sc-if><div class="muted">{{t.deskSub}}</div></div>
-          <button class="btn o sm" onClick="{{selectAllT}}">{{t.selectAll}}</button>
-        </div>
-        <sc-if value="{{hasSel}}" hint-placeholder-val="{{ false }}"><div class="glass" role="region" aria-label="{{t.bulk}}" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-radius:22px;padding:8px 8px 8px 20px"><b style="flex:1;min-width:140px">{{selText}}</b><button class="btn t sm" onClick="{{bulkClose}}">{{t.closeT}}</button><button class="btn o sm" onClick="{{clearSel}}">{{t.clear}}</button></div></sc-if>
-        <div class="grid2" style="grid-template-columns:repeat(auto-fit,minmax(420px,1fr));align-items:flex-start;gap:24px">
-          <div>
-            <sc-for list="{{tickets}}" as="k" hint-placeholder-count="3">
-              <div class="tkt">
-                <button class="cbw" role="checkbox" aria-checked="{{k.checked}}" aria-label="{{k.selLabel}}" onClick="{{k.toggle}}"><span class="{{k.cbCls}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></button>
-                <div class="grow" style="min-width:180px"><div class="t1">{{k.subject}}</div><div class="t2">{{k.id}} · {{k.when}} · {{k.who}}</div></div>
-                <span class="tag {{k.cls}}">{{k.status}}</span>
-                <button class="info" aria-label="{{t.rowMenu}}" aria-haspopup="menu" aria-expanded="{{k.menuOpen}}" onClick="{{k.more}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg></button>
-                <sc-if value="{{k.menuOpen}}" hint-placeholder-val="{{ false }}"><div class="menu" role="menu" style="right:0;top:52px"><button class="mi" role="menuitem" onClick="{{k.advance}}">{{k.advLabel}}</button><button class="mi" role="menuitem" onClick="{{k.more}}">{{t.copyId}}</button><button class="mi" role="menuitem" onClick="{{k.close}}">{{t.closeT}}</button></div></sc-if>
-              </div>
-            </sc-for>
-            <sc-if value="{{noTickets}}" hint-placeholder-val="{{ false }}"><div class="muted" style="padding:24px 0">{{t.noTickets}}</div></sc-if>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:12px;padding:20px;border-radius:28px;background:var(--surf-low)">
-            <h3 class="h2" style="font-size:19px;margin:0">{{t.newTicket}}</h3>
-            <div><div class="lbl" style="margin-bottom:6px">{{t.reason}}</div><div class="seg" role="group" aria-label="{{t.reason}}" style="flex-wrap:wrap"><sc-for list="{{reasons}}" as="o" hint-placeholder-count="4"><button aria-pressed="{{o.pressed}}" onClick="{{o.pick}}">{{o.label}}</button></sc-for></div></div>
-            <div style="display:flex;flex-direction:column;gap:6px"><label class="lbl" for="tmsg">{{t.message}}</label><textarea id="tmsg" class="field" style="height:96px;padding:12px 16px;resize:vertical" onInput="{{onMsg}}">{{msg}}</textarea></div>
-            <div class="cols"><button class="btn f sm {{submitCls}}" onClick="{{submitTicket}}">{{t.submit}}</button><span class="area-note">{{t.deskNote}}</span></div>
-            <sc-if value="{{justSent}}" hint-placeholder-val="{{ false }}"><span class="tag good" style="align-self:flex-start">{{t.sent}}</span></sc-if>
-          </div>
-        </div>
-      </section>
-
-    </main>
-    <sc-if value="{{dlg}}" hint-placeholder-val="{{ false }}">
-      <div class="scrim" role="presentation"><div class="sheet" role="dialog" aria-modal="true" aria-label="{{t.dlgTitle}}">
-        <div class="cols"><span class="cookie" style="width:56px;height:56px;color:var(--bad-c)" aria-hidden="true"><svg viewBox="0 0 200 200"><path d="M194 100L193.4 104.1L191.8 108L189.2 111.7L186.1 115.2L182.6 118.3L179.2 121.2L176.2 124L173.7 126.8L172.1 129.8L171.1 133.2L170.8 136.9L171 141L171.4 145.5L171.6 150.1L171.4 154.8L170.6 159.2L168.9 163.2L166.5 166.5L163.2 168.9L159.2 170.6L154.8 171.4L150.1 171.6L145.5 171.4L141 171L136.9 170.8L133.2 171.1L129.8 172.1L126.8 173.7L124 176.2L121.2 179.2L118.3 182.6L115.2 186.1L111.7 189.2L108 191.8L104.1 193.4L100 194L95.9 193.4L92 191.8L88.3 189.2L84.8 186.1L81.7 182.6L78.8 179.2L76 176.2L73.2 173.7L70.2 172.1L66.8 171.1L63.1 170.8L59 171L54.5 171.4L49.9 171.6L45.2 171.4L40.8 170.6L36.8 168.9L33.5 166.5L31.1 163.2L29.4 159.2L28.6 154.8L28.4 150.1L28.6 145.5L29 141L29.2 136.9L28.9 133.2L27.9 129.8L26.3 126.8L23.8 124L20.8 121.2L17.4 118.3L13.9 115.2L10.8 111.7L8.2 108L6.6 104.1L6 100L6.6 95.9L8.2 92L10.8 88.3L13.9 84.8L17.4 81.7L20.8 78.8L23.8 76L26.3 73.2L27.9 70.2L28.9 66.8L29.2 63.1L29 59L28.6 54.5L28.4 49.9L28.6 45.2L29.4 40.8L31.1 36.8L33.5 33.5L36.8 31.1L40.8 29.4L45.2 28.6L49.9 28.4L54.5 28.6L59 29L63.1 29.2L66.8 28.9L70.2 27.9L73.2 26.3L76 23.8L78.8 20.8L81.7 17.4L84.8 13.9L88.3 10.8L92 8.2L95.9 6.6L100 6L104.1 6.6L108 8.2L111.7 10.8L115.2 13.9L118.3 17.4L121.2 20.8L124 23.8L126.8 26.3L129.8 27.9L133.2 28.9L136.9 29.2L141 29L145.5 28.6L150.1 28.4L154.8 28.6L159.2 29.4L163.2 31.1L166.5 33.5L168.9 36.8L170.6 40.8L171.4 45.2L171.6 49.9L171.4 54.5L171 59L170.8 63.1L171.1 66.8L172.1 70.2L173.7 73.2L176.2 76L179.2 78.8L182.6 81.7L186.1 84.8L189.2 88.3L191.8 92L193.4 95.9L194 100Z"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="var(--bad)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:26px;height:26px;grid-area:1/1;fill:none"><path d="{{d.warn}}"/></svg></span>
-          <div class="grow"><h2 class="h2">{{t.dlgTitle}}</h2><div class="muted">{{t.dlgSub}}</div></div>
-          <button class="icb" aria-label="{{t.cancel}}" onClick="{{closeDlg}}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-        <div class="keyslot {{k1cls}}"><span class="cookie" style="width:44px;height:44px;color:var(--primary)" aria-hidden="true"><svg viewBox="0 0 200 200"><path d="M194 100L193.4 104.1L191.8 108L189.2 111.7L186.1 115.2L182.6 118.3L179.2 121.2L176.2 124L173.7 126.8L172.1 129.8L171.1 133.2L170.8 136.9L171 141L171.4 145.5L171.6 150.1L171.4 154.8L170.6 159.2L168.9 163.2L166.5 166.5L163.2 168.9L159.2 170.6L154.8 171.4L150.1 171.6L145.5 171.4L141 171L136.9 170.8L133.2 171.1L129.8 172.1L126.8 173.7L124 176.2L121.2 179.2L118.3 182.6L115.2 186.1L111.7 189.2L108 191.8L104.1 193.4L100 194L95.9 193.4L92 191.8L88.3 189.2L84.8 186.1L81.7 182.6L78.8 179.2L76 176.2L73.2 173.7L70.2 172.1L66.8 171.1L63.1 170.8L59 171L54.5 171.4L49.9 171.6L45.2 171.4L40.8 170.6L36.8 168.9L33.5 166.5L31.1 163.2L29.4 159.2L28.6 154.8L28.4 150.1L28.6 145.5L29 141L29.2 136.9L28.9 133.2L27.9 129.8L26.3 126.8L23.8 124L20.8 121.2L17.4 118.3L13.9 115.2L10.8 111.7L8.2 108L6.6 104.1L6 100L6.6 95.9L8.2 92L10.8 88.3L13.9 84.8L17.4 81.7L20.8 78.8L23.8 76L26.3 73.2L27.9 70.2L28.9 66.8L29.2 63.1L29 59L28.6 54.5L28.4 49.9L28.6 45.2L29.4 40.8L31.1 36.8L33.5 33.5L36.8 31.1L40.8 29.4L45.2 28.6L49.9 28.4L54.5 28.6L59 29L63.1 29.2L66.8 28.9L70.2 27.9L73.2 26.3L76 23.8L78.8 20.8L81.7 17.4L84.8 13.9L88.3 10.8L92 8.2L95.9 6.6L100 6L104.1 6.6L108 8.2L111.7 10.8L115.2 13.9L118.3 17.4L121.2 20.8L124 23.8L126.8 26.3L129.8 27.9L133.2 28.9L136.9 29.2L141 29L145.5 28.6L150.1 28.4L154.8 28.6L159.2 29.4L163.2 31.1L166.5 33.5L168.9 36.8L170.6 40.8L171.4 45.2L171.6 49.9L171.4 54.5L171 59L170.8 63.1L171.1 66.8L172.1 70.2L173.7 73.2L176.2 76L179.2 78.8L182.6 81.7L186.1 84.8L189.2 88.3L191.8 92L193.4 95.9L194 100Z"/></svg><svg style="color:#fff" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 8a4 4 0 1 1-3.5 6L4 21v-3l2-2v-2l2-1 3.5-3.5A4 4 0 0 1 15 8z"/></svg></span><div class="grow"><div class="t1">{{t.key1}}</div><div class="t2">{{t.key1Sub}}</div></div><button class="btn t sm" onClick="{{turn1}}">{{k1btn}}</button></div>
-        <div class="keyslot {{k2cls}}"><span class="cookie" style="width:44px;height:44px;color:var(--tertiary)" aria-hidden="true"><svg viewBox="0 0 200 200"><path d="M194 100L193.4 104.1L191.8 108L189.2 111.7L186.1 115.2L182.6 118.3L179.2 121.2L176.2 124L173.7 126.8L172.1 129.8L171.1 133.2L170.8 136.9L171 141L171.4 145.5L171.6 150.1L171.4 154.8L170.6 159.2L168.9 163.2L166.5 166.5L163.2 168.9L159.2 170.6L154.8 171.4L150.1 171.6L145.5 171.4L141 171L136.9 170.8L133.2 171.1L129.8 172.1L126.8 173.7L124 176.2L121.2 179.2L118.3 182.6L115.2 186.1L111.7 189.2L108 191.8L104.1 193.4L100 194L95.9 193.4L92 191.8L88.3 189.2L84.8 186.1L81.7 182.6L78.8 179.2L76 176.2L73.2 173.7L70.2 172.1L66.8 171.1L63.1 170.8L59 171L54.5 171.4L49.9 171.6L45.2 171.4L40.8 170.6L36.8 168.9L33.5 166.5L31.1 163.2L29.4 159.2L28.6 154.8L28.4 150.1L28.6 145.5L29 141L29.2 136.9L28.9 133.2L27.9 129.8L26.3 126.8L23.8 124L20.8 121.2L17.4 118.3L13.9 115.2L10.8 111.7L8.2 108L6.6 104.1L6 100L6.6 95.9L8.2 92L10.8 88.3L13.9 84.8L17.4 81.7L20.8 78.8L23.8 76L26.3 73.2L27.9 70.2L28.9 66.8L29.2 63.1L29 59L28.6 54.5L28.4 49.9L28.6 45.2L29.4 40.8L31.1 36.8L33.5 33.5L36.8 31.1L40.8 29.4L45.2 28.6L49.9 28.4L54.5 28.6L59 29L63.1 29.2L66.8 28.9L70.2 27.9L73.2 26.3L76 23.8L78.8 20.8L81.7 17.4L84.8 13.9L88.3 10.8L92 8.2L95.9 6.6L100 6L104.1 6.6L108 8.2L111.7 10.8L115.2 13.9L118.3 17.4L121.2 20.8L124 23.8L126.8 26.3L129.8 27.9L133.2 28.9L136.9 29.2L141 29L145.5 28.6L150.1 28.4L154.8 28.6L159.2 29.4L163.2 31.1L166.5 33.5L168.9 36.8L170.6 40.8L171.4 45.2L171.6 49.9L171.4 54.5L171 59L170.8 63.1L171.1 66.8L172.1 70.2L173.7 73.2L176.2 76L179.2 78.8L182.6 81.7L186.1 84.8L189.2 88.3L191.8 92L193.4 95.9L194 100Z"/></svg><svg style="color:#fff" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 8a4 4 0 1 1-3.5 6L4 21v-3l2-2v-2l2-1 3.5-3.5A4 4 0 0 1 15 8z"/></svg></span><div class="grow"><div class="t1">{{t.key2}}</div><div class="t2">{{t.key2Sub}}</div></div><button class="btn t sm" onClick="{{turn2}}">{{k2btn}}</button></div>
-        <div class="cols"><label class="lbl" for="ph">{{t.phrase}}</label><input id="ph" class="field mono" style="flex:1;height:48px;min-width:200px" placeholder="REBOOT 198.51.100.1" value="{{phrase}}" onInput="{{onPhrase}}"><span class="tag {{phraseCls}}">{{phraseTag}}</span></div>
-        <div class="prog" role="progressbar" aria-valuemin="0" aria-valuemax="3" aria-valuenow="{{stepsDone}}" aria-label="{{t.dlgProgress}}"><i style="width:{{stepsPct}}%"></i></div>
-        <div class="cols" style="justify-content:flex-end"><button class="btn o" onClick="{{closeDlg}}">{{t.cancel}}</button><button class="btn f {{goDis}}" style="background:var(--bad);color:#fff" onClick="{{go}}">{{t.rebootNow}}</button></div>
-      </div></div>
-    </sc-if>
-  </div>
+<div class="mx shell {{motionCls}} {{rootCls}}" style="position:relative;--accent:{{accent}};--dark:{{darkNum}}">
+<div class="railwrap"><dc-import name="Rail" page="settings" pending="{{pendCount}}" lang="{{lang}}" role="{{role}}" firmware="{{firmware}}" motion="{{motion}}" accent="{{accent}}" dark="{{dark}}" hint-size="272px,900px"></dc-import></div>
+<div class="main"><dc-import name="TopBar" title="{{title}}" tabs="{{tabsStr}}" active="0" lang="{{lang}}" role="{{role}}" firmware="{{firmware}}" motion="{{motion}}" accent="{{accent}}" dark="{{dark}}" hint-size="1168px,150px"></dc-import>
+<main class="content"><sc-if value="{{viewer}}" hint-placeholder-val="{{ false }}"><div class="ro" role="status"><svg class="i" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6"/></svg><span>{{readOnly}}</span></div></sc-if><div class="stagebar"><span>{{t.k58}}</span><div class="seg" role="group" aria-label="{{t.k59}}" style="--cnt:5;--idx:{{stIdx}}"><i class="ind"></i><button aria-pressed="{{stp.loading}}" onClick="{{f.st_loading}}">{{t.k60}}</button><button aria-pressed="{{stp.empty}}" onClick="{{f.st_empty}}">{{t.k61}}</button><button aria-pressed="{{stp.ready}}" onClick="{{f.st_ready}}">{{t.k62}}</button><button aria-pressed="{{stp.success}}" onClick="{{f.st_success}}">{{t.k63}}</button><button aria-pressed="{{stp.failure}}" onClick="{{f.st_failure}}">{{t.k64}}</button></div></div><sc-if value="{{st.loading}}" hint-placeholder-val="{{ false }}"><div class="bento" aria-busy="true" aria-label="{{t.k60}}"><div class="sk w12" style="--h:300px;--i:0;grid-column:span 12"></div><div class="sk w4" style="--h:200px;--i:1;grid-column:span 4"></div><div class="sk w4" style="--h:200px;--i:2;grid-column:span 4"></div><div class="sk w4" style="--h:200px;--i:3;grid-column:span 4"></div><div class="sk w8" style="--h:260px;--i:4;grid-column:span 8"></div><div class="sk w4" style="--h:260px;--i:5;grid-column:span 4"></div></div></sc-if><sc-if value="{{st.empty}}" hint-placeholder-val="{{ false }}"><div class="empty rise"><div class="aurora dr" aria-hidden="true" style="opacity:.25"><i></i><i></i><i></i></div><span class="eshape dr"><svg class="i" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4"/></svg></span><h2>{{t.k65}}</h2><p>{{t.k66}}</p><button class="btn fill hot dr w" onClick="{{f.st_ready}}"><svg class="i" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>{{t.k67}}</span></button></div></sc-if><sc-if value="{{st.main}}" hint-placeholder-val="{{ true }}"><sc-if value="{{st.success}}" hint-placeholder-val="{{ false }}"><div class="banner ok" role="status"><span class="burst dr" aria-hidden="true"><i style="--a:0deg;--r:70px;--c:var(--good)"></i><i style="--a:25.7deg;--r:96px;--c:var(--b1)"></i><i style="--a:51.4deg;--r:122px;--c:var(--b3)"></i><i style="--a:77.1deg;--r:148px;--c:var(--warn)"></i><i style="--a:102.8deg;--r:70px;--c:var(--good)"></i><i style="--a:128.5deg;--r:96px;--c:var(--b1)"></i><i style="--a:154.2deg;--r:122px;--c:var(--b3)"></i><i style="--a:179.9deg;--r:148px;--c:var(--warn)"></i><i style="--a:205.6deg;--r:70px;--c:var(--good)"></i><i style="--a:231.29999999999998deg;--r:96px;--c:var(--b1)"></i><i style="--a:257deg;--r:122px;--c:var(--b3)"></i><i style="--a:282.7deg;--r:148px;--c:var(--warn)"></i><i style="--a:308.4deg;--r:70px;--c:var(--good)"></i><i style="--a:334.09999999999997deg;--r:96px;--c:var(--b1)"></i></span><span class="okmark"><span class="bg dr"></span><svg viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><div class="grow"><h2>{{t.k68}}</h2><div>{{t.k69}}</div></div><a class="btn out sm" href="Changes.dc.html"><svg class="i" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h10a6 6 0 0 1 0 12H8 M8 5L4 9l4 4"/></svg><span>{{t.k70}}</span></a></div></sc-if><sc-if value="{{st.failure}}" hint-placeholder-val="{{ false }}"><div class="banner no" role="alert"><span class="nomark dr"><svg class="i" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l10 18H2z M12 10v5 M12 18h.01"/></svg></span><div class="grow"><h2>{{t.k71}}</h2><div>{{t.k72}}</div></div><button class="btn dng sm" onClick="{{f.st_ready}}"><svg class="i" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.5-5.8 M20 4v5h-5"/></svg><span>{{t.k73}}</span></button><div class="reason"><svg class="i" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18 M12 11v6 M12 7.5h.01"/></svg><span><b>{{t.k74}}:</b> {{t.k75}}</span></div></div></sc-if><section class="hero rise" style="--i:0"><div class="aurora dr" aria-hidden="true"><i></i><i></i><i></i></div><span class="hshape sh-cookie morph dr" aria-hidden="true"></span><div class="hero-l"><span class="kick"><svg class="i" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4"/></svg>{{t.k7}}</span><h2>{{t.k8}}</h2><p class="hsub">{{t.k9}}</p><div class="acts"><button class="btn wh hot dr" onClick="{{f.st_success}}"><svg class="i" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4"/></svg><span>{{t.k0}}</span></button><button class="btn gh w"><svg class="i" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 8a4 4 0 1 1-3.5 6L4 21.5V18h3v-3h3l1.3-1.3A4 4 0 0 1 15 8z M16 9h.01"/></svg><span>{{t.k1}}</span></button></div></div><div class="hero-r"><div class="rowx" style="justify-content:center;gap:24px;color:#fff"><div class="ring" style="--s:210px"><svg viewBox="0 0 100 100" aria-hidden="true"><path class="wv2" d="M98.00 50.00L98.94 51.71L99.28 53.45L98.77 55.13L97.63 56.69L96.38 58.18L95.59 59.69L95.50 61.35L95.95 63.18L96.43 65.09L96.40 66.89L95.58 68.42L94.12 69.64L92.48 70.72L91.18 71.90L90.52 73.39L90.38 75.23L90.34 77.21L89.91 79.00L88.82 80.33L87.14 81.16L85.25 81.74L83.59 82.44L82.44 83.59L81.74 85.25L81.16 87.14L80.33 88.82L79.00 89.91L77.21 90.34L75.23 90.38L73.39 90.52L71.90 91.18L70.72 92.48L69.64 94.12L68.42 95.58L66.89 96.40L65.09 96.43L63.18 95.95L61.35 95.50L59.69 95.59L58.18 96.38L56.69 97.63L55.13 98.77L53.45 99.28L51.71 98.94L50.00 98.00L48.36 97.00L46.75 96.49L45.09 96.70L43.33 97.44L41.51 98.16L39.73 98.31L38.12 97.64L36.72 96.33L35.42 94.87L34.05 93.81L32.45 93.43L30.60 93.58L28.63 93.81L26.83 93.58L25.39 92.62L24.36 91.03L23.53 89.25L22.57 87.76L21.22 86.83L19.45 86.40L17.50 86.09L15.75 85.46L14.54 84.25L13.91 82.50L13.60 80.55L13.17 78.78L12.24 77.43L10.75 76.47L8.97 75.64L7.38 74.61L6.42 73.17L6.19 71.37L6.42 69.40L6.57 67.55L6.19 65.95L5.13 64.58L3.67 63.28L2.36 61.88L1.69 60.27L1.84 58.49L2.56 56.67L3.30 54.91L3.51 53.25L3.00 51.64L2.00 50.00L1.06 48.29L0.72 46.55L1.23 44.87L2.37 43.31L3.62 41.82L4.41 40.31L4.50 38.65L4.05 36.82L3.57 34.91L3.60 33.11L4.42 31.58L5.88 30.36L7.52 29.28L8.82 28.10L9.48 26.61L9.62 24.77L9.66 22.79L10.09 21.00L11.18 19.67L12.86 18.84L14.75 18.26L16.41 17.56L17.56 16.41L18.26 14.75L18.84 12.86L19.67 11.18L21.00 10.09L22.79 9.66L24.77 9.62L26.61 9.48L28.10 8.82L29.28 7.52L30.36 5.88L31.58 4.42L33.11 3.60L34.91 3.57L36.82 4.05L38.65 4.50L40.31 4.41L41.82 3.62L43.31 2.37L44.87 1.23L46.55 0.72L48.29 1.06L50.00 2.00L51.64 3.00L53.25 3.51L54.91 3.30L56.67 2.56L58.49 1.84L60.27 1.69L61.88 2.36L63.28 3.67L64.58 5.13L65.95 6.19L67.55 6.57L69.40 6.42L71.37 6.19L73.17 6.42L74.61 7.38L75.64 8.97L76.47 10.75L77.43 12.24L78.78 13.17L80.55 13.60L82.50 13.91L84.25 14.54L85.46 15.75L86.09 17.50L86.40 19.45L86.83 21.22L87.76 22.57L89.25 23.53L91.03 24.36L92.62 25.39L93.58 26.83L93.81 28.63L93.58 30.60L93.43 32.45L93.81 34.05L94.87 35.42L96.33 36.72L97.64 38.12L98.31 39.73L98.16 41.51L97.44 43.33L96.70 45.09L96.49 46.75L97.00 48.36L98.00 50.00Z"/><path class="wv" d="M93.00 50.00L94.19 51.54L95.12 53.16L95.60 54.79L95.54 56.40L94.91 57.92L93.79 59.31L92.33 60.55L90.73 61.68L89.22 62.74L87.97 63.82L87.10 64.99L86.68 66.33L86.64 67.87L86.89 69.61L87.24 71.50L87.50 73.43L87.50 75.29L87.10 76.95L86.24 78.31L84.93 79.31L83.27 79.95L81.38 80.30L79.44 80.48L77.59 80.64L75.97 80.95L74.64 81.53L73.60 82.48L72.80 83.80L72.14 85.43L71.50 87.24L70.76 89.04L69.83 90.65L68.65 91.89L67.23 92.64L65.60 92.85L63.83 92.57L62.02 91.93L60.25 91.12L58.57 90.34L57.02 89.79L55.57 89.63L54.20 89.93L52.84 90.67L51.46 91.75L50.00 93.00L48.46 94.19L46.84 95.12L45.21 95.60L43.60 95.54L42.08 94.91L40.69 93.79L39.45 92.33L38.32 90.73L37.26 89.22L36.18 87.97L35.01 87.10L33.67 86.68L32.13 86.64L30.39 86.89L28.50 87.24L26.57 87.50L24.71 87.50L23.05 87.10L21.69 86.24L20.69 84.93L20.05 83.27L19.70 81.38L19.52 79.44L19.36 77.59L19.05 75.97L18.47 74.64L17.52 73.60L16.20 72.80L14.57 72.14L12.76 71.50L10.96 70.76L9.35 69.83L8.11 68.65L7.36 67.23L7.15 65.60L7.43 63.83L8.07 62.02L8.88 60.25L9.66 58.57L10.21 57.02L10.37 55.57L10.07 54.20L9.33 52.84L8.25 51.46L7.00 50.00L5.81 48.46L4.88 46.84L4.40 45.21L4.46 43.60L5.09 42.08L6.21 40.69L7.67 39.45L9.27 38.32L10.78 37.26L12.03 36.18L12.90 35.01L13.32 33.67L13.36 32.13L13.11 30.39L12.76 28.50L12.50 26.57L12.50 24.71L12.90 23.05L13.76 21.69L15.07 20.69L16.73 20.05L18.62 19.70L20.56 19.52L22.41 19.36L24.03 19.05L25.36 18.47L26.40 17.52L27.20 16.20L27.86 14.57L28.50 12.76L29.24 10.96L30.17 9.35L31.35 8.11L32.77 7.36L34.40 7.15L36.17 7.43L37.98 8.07L39.75 8.88L41.43 9.66L42.98 10.21L44.43 10.37L45.80 10.07L47.16 9.33L48.54 8.25L50.00 7.00L51.54 5.81L53.16 4.88L54.79 4.40L56.40 4.46L57.92 5.09L59.31 6.21L60.55 7.67L61.68 9.27L62.74 10.78L63.82 12.03L64.99 12.90L66.33 13.32L67.87 13.36L69.61 13.11L71.50 12.76L73.43 12.50L75.29 12.50L76.95 12.90L78.31 13.76L79.31 15.07L79.95 16.73L80.30 18.62L80.48 20.56L80.64 22.41L80.95 24.03L81.53 25.36L82.48 26.40L83.80 27.20L85.43 27.86L87.24 28.50L89.04 29.24L90.65 30.17L91.89 31.35L92.64 32.77L92.85 34.40L92.57 36.17L91.93 37.98L91.12 39.75L90.34 41.43L89.79 42.98L89.63 44.43L89.93 45.80L90.67 47.16L91.75 48.54L93.00 50.00Z"/></svg><div class="gc" style="text-align:center"><span class="disp m"><span class="cdn" style="--to:4;--from:4"></span>:12</span><small>{{t.k76}}</small></div></div><div class="glass" style="flex:1;min-width:260px"><div class="fld"><div class="fl"><div class="t1">{{t.k4}}</div></div><div class="sl w" style="--p:{{pc.idle}}"><input type="range" min="1" max="60" step="1" value="{{n.idle}}" aria-label="{{t.k2}}" onInput="{{f.idle_in}}"><output>{{n.idle}}<small>{{t.k3}}</small></output></div></div><div class="fld"><div class="fl"><div class="t1">{{t.k6}}</div></div><button class="sw w {{c.slp}}" role="switch" aria-checked="{{a.slp}}" aria-label="{{t.k5}}" onClick="{{f.slp}}"><i></i></button></div></div></div></div></section><div class="bento"><section class="tile w12 rise" style="--i:1"><header class="th"><span class="tic"><svg class="i" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h7v7H4z M13 4h7v7h-7z M4 13h7v7H4z M13 13h7v7h-7z"/></svg></span><h3>{{t.k27}}</h3><span class="tag pri">{{t.k28}}</span></header><div class="colx"><div class="rowx"><div class="seg w" role="group" aria-label="{{t.k10}}" style="--cnt:2;--idx:{{gi.br_perm}}"><i class="ind"></i><button aria-pressed="{{g.br_perm_1}}" onClick="{{f.br_perm_1}}">{{t.k11}}</button><button aria-pressed="{{g.br_perm_0}}" onClick="{{f.br_perm_0}}">{{t.k12}}</button></div><button class="chip w" onClick="{{f.perm_p0}}">{{t.k13}}</button><button class="chip w" onClick="{{f.perm_p1}}">{{t.k14}}</button><span class="tag pri">{{n.perm_on}} {{t.k15}}</span></div><div class="pg w" role="group" aria-label="{{t.k16}}" style="--c:12"><div class="pr" aria-hidden="true"><span></span><span class="hr" style="font-size:11.5px">Wi-Fi</span><span class="hr" style="font-size:11.5px">{{t.k18}}</span><span class="hr" style="font-size:11.5px">{{t.k19}}</span><span class="hr" style="font-size:11.5px">LAN</span><span class="hr" style="font-size:11.5px">{{t.k20}}</span><span class="hr" style="font-size:11.5px">VPN</span><span class="hr" style="font-size:11.5px">{{t.k21}}</span><span class="hr" style="font-size:11.5px">{{t.k22}}</span><span class="hr" style="font-size:11.5px">{{t.k23}}</span><span class="hr" style="font-size:11.5px">{{t.k24}}</span><span class="hr" style="font-size:11.5px">{{t.k25}}</span><span class="hr" style="font-size:11.5px">{{t.k26}}</span></div><sc-for list="{{gd.perm}}" as="gr" hint-placeholder-count="3"><div class="pr"><span class="pl">{{gr.l}}</span><sc-for list="{{gr.cells}}" as="q" hint-placeholder-count="12"><button class="{{q.cls}}" aria-pressed="{{q.a}}" aria-label="{{q.lb}}" onClick="{{q.f}}"></button></sc-for></div></sc-for></div><div class="t2">{{t.k17}}</div></div></section><section class="tile w3 pri rise" style="--i:2"><header class="th"><span class="tic"><svg class="i" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10H7z M9 3v4 M15 3v4 M9 17v4 M15 17v4 M3 9h4 M3 15h4 M17 9h4 M17 15h4"/></svg></span><h3>{{t.k29}}</h3><button class="sw w {{c.lk0}}" role="switch" aria-checked="{{a.lk0}}" aria-label="{{t.k29}}" onClick="{{f.lk0}}"><i></i></button></header><div class="sub">{{t.k30}}</div></section><section class="tile w3 ter rise" style="--i:3"><header class="th"><span class="tic"><svg class="i" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6 M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6 M17 8a2.5 2.5 0 1 1 0 5 M17.5 14.2c2.3.4 3.5 2.4 3.5 5.8"/></svg></span><h3>{{t.k31}}</h3><button class="sw w {{c.lk1}}" role="switch" aria-checked="{{a.lk1}}" aria-label="{{t.k31}}" onClick="{{f.lk1}}"><i></i></button></header><div class="sub">{{t.k32}}</div></section><section class="tile w3 sec rise" style="--i:4"><header class="th"><span class="tic"><svg class="i" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6"/></svg></span><h3>{{t.k33}}</h3><button class="sw w {{c.lk2}}" role="switch" aria-checked="{{a.lk2}}" aria-label="{{t.k33}}" onClick="{{f.lk2}}"><i></i></button></header><div class="sub">{{t.k34}}</div></section><section class="tile w3 rise" style="--i:5"><header class="th"><span class="tic"><svg class="i" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z M14 3v5h5"/></svg></span><h3>{{t.k35}}</h3><button class="sw w {{c.lk3}}" role="switch" aria-checked="{{a.lk3}}" aria-label="{{t.k35}}" onClick="{{f.lk3}}"><i></i></button></header><div class="sub">{{t.k36}}</div></section><section class="tile w8 rise" style="--i:6"><header class="th"><span class="tic"><svg class="i" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6 M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6 M17 8a2.5 2.5 0 1 1 0 5 M17.5 14.2c2.3.4 3.5 2.4 3.5 5.8"/></svg></span><h3>{{t.k45}}</h3></header><div class="rows"><div class="row" style="--j:0"><span class="av"><svg class="i" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 5h14v10H5z M2 19h20"/></svg></span><div class="grow"><div class="t1">{{t.k38}}</div><div class="t2">{{t.k39}}</div></div><span class="tag good">{{t.k40}}</span></div><div class="row" style="--j:1"><span class="av t"><svg class="i" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h10v18H7z M11 18h2"/></svg></span><div class="grow"><div class="t1">Pat · Pixel-9</div><div class="t2">{{t.k41}}</div></div><span class="tag">{{t.k42}}</span><button class="btn out sm w"><span>{{t.k37}}</span></button></div><div class="row" style="--j:2"><span class="av s"><svg class="i" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h10v18H7z M11 18h2"/></svg></span><div class="grow"><div class="t1">Alex · Alex-Tablet</div><div class="t2">{{t.k43}}</div></div><span class="tag pri">{{t.k44}}</span><button class="btn out sm w"><span>{{t.k37}}</span></button></div></div></section><section class="tile w4 ink rise" style="--i:7"><header class="th"><span class="tic"><svg class="i" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l10 18H2z M12 10v5 M12 18h.01"/></svg></span><h3>{{t.k52}}</h3></header><div class="fld"><div class="fl"><div class="t1">{{t.k49}}</div></div><div class="stp w"><button aria-label="{{t.k46}}: {{t.k47}}" onClick="{{f.tries_dn}}">&minus;</button><output>{{n.tries}}</output><button aria-label="{{t.k48}}: {{t.k47}}" onClick="{{f.tries_up}}">+</button></div></div><div class="fld"><div class="fl"><div class="t1">{{t.k51}}</div></div><div class="stp w"><button aria-label="{{t.k46}}: {{t.k50}}" onClick="{{f.wait_dn}}">&minus;</button><output>{{n.wait}}<small>{{t.k3}}</small></output><button aria-label="{{t.k48}}: {{t.k50}}" onClick="{{f.wait_up}}">+</button></div></div></section></div><sc-if value="{{hasPend}}" hint-placeholder-val="{{ false }}"><div class="dock" role="region" aria-label="{{t.k53}}"><div class="dn"><b>{{pendN}}</b>{{t.k54}}</div><button class="btn out" onClick="{{f.discard}}">{{t.k55}}</button><a class="btn ton" href="Changes.dc.html"><svg class="i" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6"/></svg><span>{{t.k56}}</span></a><button class="btn fill hot dr" onClick="{{f.apply}}"><svg class="i" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg><span>{{t.k57}}</span></button></div></sc-if></sc-if></main></div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#4f5bd5","options":["#4f5bd5","#00897b","#d81b60","#f4511e","#7c4dff"],"section":"Look"},"dark":{"editor":"boolean","default":false,"section":"Look"},"motion":{"editor":"enum","options":["calm","standard","expressive"],"default":"expressive","section":"Look"},"firmware":{"editor":"enum","options":["merlin","stock"],"default":"merlin","section":"Router"},"role":{"editor":"enum","options":["owner","operator","viewer"],"default":"owner","section":"Router"},"lang":{"editor":"enum","options":["en","yue","both"],"default":"en","section":"Language"},"$preview":{"width":1440,"height":900}}'>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#4f5bd5","options":["#4f5bd5","#00897b","#d81b60","#f4511e","#7c4dff"],"section":"Look"},"dark":{"editor":"boolean","default":false,"section":"Look"},"motion":{"editor":"enum","options":["calm","standard","expressive"],"default":"expressive","section":"Look"},"firmware":{"editor":"enum","options":["merlin","stock"],"default":"merlin","section":"Router"},"role":{"editor":"enum","options":["owner","operator","viewer"],"default":"owner","section":"Router"},"lang":{"editor":"enum","options":["en","yue","both"],"default":"en","section":"Language"},"stage":{"editor":"enum","options":["loading","empty","ready","success","failure"],"default":"ready","section":"Stage"},"$preview":{"width":1440,"height":1560}}'>
 class Component extends DCLogic {
   renderVals() {
-    const p = this.props;
-    const s = this.state || {};
-    const lang = p.lang ?? 'en';
-    const role = p.role ?? 'owner';
-    const firmware = p.firmware ?? 'merlin';
-    const motion = p.motion ?? 'expressive';
+    const D = {"tx":[["Lock now","即刻上鎖"],["Change app password","改應用程式密碼"],["Idle minutes","閒置分鐘"],["min","分鐘"],["Lock after idle","閒置後上鎖"],["Lock on sleep","休眠就上鎖"],["Lock when the computer sleeps","電腦休眠就上鎖"],["App lock on","應用程式鎖開咗"],["Locks itself after 5 minutes","5 分鐘後自己上鎖"],["The router password is stored encrypted and is never shown again. Only an owner can change who may write.","路由器密碼加密儲存，唔會再顯示。只有擁有人改到邊個可以寫入。"],["Brush","畫筆"],["Paint","畫上去"],["Erase","抹走"],["Usual","常用"],["Operator can do networking","操作員可以改網絡"],["areas writable","個範疇寫得"],["Permissions","權限"],["Click one cell, then another: everything between them is painted. In the app you drag.","㩒一格，再㩒另一格：中間嗰啲會一次過畫晒。喺應用程式入面係用拖嘅。"],["Devices","裝置"],["Internet","互聯網"],["Firewall","防火牆"],["Parental","家長"],["Storage","儲存"],["Firmware","韌體"],["Backup","備份"],["System","系統"],["Advanced","進階"],["Who may change what","邊個改得乜"],["Painted = may write","畫咗 = 寫得"],["Firmware and reset","韌體同重設"],["Always two keys, owner only.","永遠要雙重確認，只限擁有人。"],["Parental controls","家長控制"],["Needs the app password again.","要再輸入應用程式密碼。"],["Showing secrets","顯示機密"],["Asks every time, logged.","每次都問，會記低。"],["Exports","匯出"],["Operators cannot export passwords.","操作員唔可以匯出密碼。"],["Sign out","登出"],["Pat · this computer","Pat · 呢部電腦"],["Owner · since 09:02","擁有人 · 09:02 開始"],["This one","呢個"],["Owner · 198.51.100.83 · 20 min ago","擁有人 · 198.51.100.83 · 20 分鐘前"],["Idle","閒置"],["Operator · 198.51.100.52","操作員 · 198.51.100.52"],["Active","使用緊"],["Signed in now","而家登入緊"],["Less","減少"],["Allowed tries","可以錯幾次"],["More","增加"],["Allowed in a row","連續可以錯幾次"],["Wait minutes","等候分鐘"],["Then wait","之後要等"],["Wrong tries","輸入錯誤"],["Pending changes","待套用變更"],["changes waiting. Nothing has reached the router yet.","項變更等緊。暫時乜都未寫入路由器。"],["Discard","唔要"],["Preview","預覽"],["Apply under guard","有守護咁套用"],["Preview a stage","預覽階段"],["Stage","階段"],["Loading","載入中"],["Empty","空"],["Ready","就緒"],["Success","成功"],["Failure","失敗"],["No lock is set","未設定上鎖"],["Anyone who opens this app on this computer can change the router. Add an app lock to prevent that.","喺呢部電腦開到呢個應用程式嘅人都改到路由器。加個應用程式鎖防止咁樣。"],["Set an app lock","設定應用程式鎖"],["Locked","已上鎖"],["The app locks after 5 minutes idle and whenever the computer sleeps.","應用程式閒置 5 分鐘或者電腦休眠就會上鎖。"],["Undo","還原"],["Wrong password, 3 tries left","密碼錯，仲有 3 次機會"],["Nothing was left half-applied. The router is as it was before.","冇嘢係做到一半。路由器同之前一模一樣。"],["Try again","再試"],["Reason","原因"],["After five wrong tries the app waits 15 minutes before accepting another.","錯五次之後，應用程式要等 15 分鐘先再接受輸入。"],["until lock","後上鎖"]],"sw":{"slp":1,"lk0":1,"lk1":1,"lk2":1,"lk3":1},"sg":{},"num":{"idle":[5,1,1,60,[]],"tries":[5,1,3,10,[]],"wait":[15,1,1,60,[]]},"gr":{"perm":{"r":[["Owner","擁有人"],["Operator","操作員"],["Viewer","檢視者"]],"c":12,"d":"111111111111110000110000000000000000","p":["111111111111110000110000000000000000","111111111111111111110000000000000000"]}},"stage0":"ready","pend":2,"tabs":["App lock,Roles,Sessions","應用程式鎖,角色,登入狀態"],"title":["Locks and permissions","上鎖同權限"]};
+    const p = this.props || {}, s = this.state || {};
+    const lang = p.lang ?? 'en', role = p.role ?? 'owner', firmware = p.firmware ?? 'merlin', motion = p.motion ?? 'expressive';
     const accent = p.accent || '#4f5bd5';
     const dark = p.dark === true || p.dark === 'true' || p.dark === 1 || p.dark === '1';
-    const T = (en, yue) => lang === 'en' ? en : lang === 'yue' ? yue : en + ' · ' + yue;
+    const T = (en, yue) => (yue === undefined || en === yue || lang === 'en') ? en : lang === 'yue' ? yue : en + ' · ' + yue;
     const canWrite = role !== 'viewer';
-    const set = (o) => this.setState(o);
-    const tg = (arr, v) => arr.includes(v) ? arr.filter(x => x !== v) : arr.concat([v]);
-    const num = (e, d) => { const v = e && e.target ? parseFloat(e.target.value) : NaN; return isNaN(v) ? d : v; };
-    const txt = (e) => e && e.target ? String(e.target.value) : '';
-    const locks = s.locks || [];
-    const tipOn = s.tip || '';
-    const mk = (defs) => {
-      const lk = {}, tips = {}, cc = {};
-      Object.keys(defs).forEach(id => {
-        const on = locks.includes(id);
-        lk[id] = { d: on ? 'M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4' : 'M5 11h14v10H5z M8 11V7a4 4 0 0 1 7.5-2', pressed: on ? 'true' : 'false',
-          label: (on ? T('Unlock ', '解鎖 ') : T('Lock ', '鎖定 ')) + defs[id][0], toggle: () => set({ locks: tg(locks, id) }) };
-        tips[id] = { label: T('About ', '關於 ') + defs[id][0], text: defs[id][1], on: tipOn === id, toggle: () => set({ tip: tipOn === id ? '' : id }) };
-        cc[id] = on ? 'lockedcard' : '';
-      });
-      return { lk, tips, cc };
+    const V = s.v || {};
+    const stageP = p.stage ?? D.stage0;
+    const stage = (s.stf === stageP && s.st) || stageP;
+    const set = (o) => this.setState({ v: Object.assign({}, V, o) });
+    const put = (k, val) => { if (k[0] === '_' || canWrite) set({ [k]: val }); };
+    const t = {}, c = {}, a = {}, b = {}, nb = {}, f = {}, g = {}, gi = {}, is = {}, n = {}, pc = {}, gd = {}, st = {}, stp = {};
+    D.tx.forEach((r, i) => { t['k' + i] = T(r[0], r[1]); });
+    Object.keys(D.sw).forEach(k => { const on = k in V ? !!V[k] : !!D.sw[k]; c[k] = on ? 'on' : ''; a[k] = on ? 'true' : 'false'; b[k] = on; nb[k] = !on; f[k] = () => put(k, !on); });
+    Object.keys(D.sg).forEach(k => { const cur = k in V ? V[k] : D.sg[k][1]; gi[k] = cur; for (let i = 0; i < D.sg[k][0]; i++) { g[k + '_' + i] = cur === i ? 'true' : 'false'; is[k + '_' + i] = cur === i; f[k + '_' + i] = () => put(k, i); } });
+    Object.keys(D.num).forEach(k => { const q = D.num[k], def = q[0], step = q[1], mn = q[2], mx = q[3], pre = q[4] || [], span = q[5]; const cur = k in V ? V[k] : def; const cl = (z) => Math.max(mn, Math.min(mx, z)); n[k] = cur; pc[k] = (span ? cur / span * 100 : mx > mn ? (cur - mn) / (mx - mn) * 100 : 0).toFixed(1) + '%'; f[k + '_up'] = () => put(k, cl(cur + step)); f[k + '_dn'] = () => put(k, cl(cur - step)); f[k + '_in'] = (e) => { const z = Number(e && e.target ? e.target.value : NaN); if (!isNaN(z)) put(k, cl(z)); }; pre.forEach((pv, i) => { f[k + '_p' + i] = () => put(k, pv); }); });
+    Object.keys(D.gr).forEach(k => { const G = D.gr[k], Cn = G.c; const cur = V[k] ?? G.d; const br = V['_br_' + k] ?? 1; const an = V['_an_' + k] ?? -1;
+      gd[k] = G.r.map((lab, ri) => ({ l: T(lab[0], lab[1]), cells: Array.from({ length: Cn }, (_, ci) => { const idx = ri * Cn + ci, on = cur[idx] === '1'; return { cls: (on ? 'on' : '') + (an === idx ? ' an' : ''), a: on ? 'true' : 'false', lb: T(lab[0], lab[1]) + ' ' + ci + ':00', f: () => { if (!canWrite) return; if (an < 0) { set({ [k]: cur.slice(0, idx) + br + cur.slice(idx + 1), ['_an_' + k]: idx }); return; } const r0 = Math.min(Math.floor(an / Cn), ri), r1 = Math.max(Math.floor(an / Cn), ri), c0 = Math.min(an % Cn, ci), c1 = Math.max(an % Cn, ci); const o = cur.split(''); for (let r = r0; r <= r1; r++) for (let q = c0; q <= c1; q++) o[r * Cn + q] = String(br); set({ [k]: o.join(''), ['_an_' + k]: -1 }); } }; }) }));
+      gi['br_' + k] = br === 1 ? 0 : 1; g['br_' + k + '_1'] = br === 1 ? 'true' : 'false'; g['br_' + k + '_0'] = br === 0 ? 'true' : 'false'; f['br_' + k + '_1'] = () => set({ ['_br_' + k]: 1 }); f['br_' + k + '_0'] = () => set({ ['_br_' + k]: 0 });
+      (G.p || []).forEach((bits, i) => { f[k + '_p' + i] = () => { if (canWrite) set({ [k]: bits, ['_an_' + k]: -1 }); }; });
+      n[k + '_on'] = cur.split('').filter(z => z === '1').length; });
+    const SG = ['loading', 'empty', 'ready', 'success', 'failure'];
+    SG.forEach(k => { st[k] = stage === k; stp[k] = stage === k ? 'true' : 'false'; f['st_' + k] = () => this.setState({ st: k, stf: stageP }); });
+    st.main = stage === 'ready' || stage === 'success' || stage === 'failure';
+    const pendKeys = Object.keys(V).filter(k => k[0] !== '_');
+    const views = {}; Object.keys(V).forEach(k => { if (k[0] === '_') views[k] = V[k]; });
+    f.discard = () => this.setState({ v: views });
+    f.apply = () => this.setState({ v: views, st: 'success', stf: stageP });
+    const h = { D, p, s, V, set, put, T, lang, role, firmware, canWrite, stage, f, self: this, owner: role === 'owner', merlin: firmware === 'merlin' };
+    const LOGIC = null;
+    const x = LOGIC ? LOGIC(h) : {};
+    const extra = (h.extraPend || 0);
+    return {
+      accent, dark, darkNum: dark ? 1 : 0, lang, role, firmware, motion,
+      motionCls: motion === 'calm' ? 'calm' : motion === 'standard' ? 'std' : '',
+      rootCls: 'role-' + role + ' fw-' + firmware + ' lang-' + lang + ' st-' + stage,
+      viewer: role === 'viewer', notOwner: role !== 'owner', stock: firmware !== 'merlin', merlin: firmware === 'merlin',
+      fwName: firmware === 'merlin' ? 'Asuswrt-Merlin 388.8_4' : T('Stock ASUS 388.24198', '原廠 ASUS 388.24198'),
+      readOnly: T('Read-only role: you can look at everything here, but every control that would change the router is switched off.', '唯讀角色：呢度樣樣都睇得，但會改到路由器嘅控制項全部閂咗。'),
+      pendCount: D.pend + pendKeys.length + extra, pendN: pendKeys.length + extra, hasPend: pendKeys.length + extra > 0,
+      stIdx: SG.indexOf(stage),
+      tabsStr: D.tabs[0].split(',').map((e, i) => T(e, D.tabs[1].split(',')[i] || e)).join(','), title: T(D.title[0], D.title[1]),
+      t, c, a, b, nb, f, g, gi, is, n, pc, gd, st, stp, x
     };
-    const base = (tabs) => ({ accent, dark, darkNum: dark ? 1 : 0, lang, role, firmware, motionCls: motion === 'calm' ? 'calm' : motion === 'standard' ? 'std' : '', pendCount: 2, viewer: !canWrite, tabsStr: tabs.map(x => x.replace(/,/g, ' ')).join(',') });
-    const D = { bell: 'M6 9a6 6 0 0 1 12 0c0 6 2 7 2 8H4c0-1 2-2 2-8 M10 20a2 2 0 0 0 4 0', check: 'M5 12.5l4.5 4.5L19 7.5', x: 'M6 6l12 12M18 6L6 18', warn: 'M12 4l9 16H3z M12 10v4 M12 17.5h.01',
-      info: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z M12 11v5 M12 8h.01', shield: 'M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z', wifi: 'M2 9a15 15 0 0 1 20 0 M5 12.5a10 10 0 0 1 14 0 M8.5 16a5 5 0 0 1 7 0 M12 19.5h.01',
-      dl: 'M12 4v11M7 10l5 5 5-5M4 19h16', ul: 'M12 20V9M7 14l5-5 5 5M4 5h16', lock: 'M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4', search: 'M11 19a8 8 0 1 1 0-16 8 8 0 0 1 0 16z M21 21l-4.3-4.3', trash: 'M4 7h16 M9 7V4h6v3 M6 7l1 13h10l1-13',
-      clock: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z M12 7v5l3 2', play: 'M7 5l12 7-12 7z', refresh: 'M20 12a8 8 0 1 1-2.5-5.8 M20 4v5h-5', device: 'M4 5h16v11H4z M8 20h8 M12 16v4', bolt: 'M13 3L5 14h6l-1 7 8-11h-6z',
-      globe: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z M3 12h18 M12 3c3 3 3 15 0 18 M12 3c-3 3-3 15 0 18', palette: 'M12 3a9 9 0 1 0 0 18c1.5 0 2-1 1.5-2-.6-1.2.2-2.5 1.5-2.5H17a4 4 0 0 0 4-4c0-5-4-9.5-9-9.5z', key: 'M15 8a4 4 0 1 1-3.5 6L4 21v-3l2-2v-2l2-1 3.5-3.5A4 4 0 0 1 15 8z',
-      plus: 'M12 5v14M5 12h14', copy: 'M9 9h11v11H9z M5 15V4h11', up: 'M6 15l6-6 6 6', down: 'M6 9l6 6 6-6', eye: 'M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z', mic: 'M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3z M5 11a7 7 0 0 0 14 0 M12 18v3',
-      sound: 'M4 9v6h4l5 4V5L8 9z M16 9a4 4 0 0 1 0 6 M18.5 6.5a8 8 0 0 1 0 11', moon: 'M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5z', box: 'M3 8l9-5 9 5v8l-9 5-9-5z M3 8l9 5 9-5 M12 13v8',
-      gear: 'M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.4-2.4 1a7 7 0 0 0-2-1.2L14 3h-4l-.5 2.7a7 7 0 0 0-2 1.2l-2.4-1-2 3.4 2 1.5A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.5 2 3.4 2.4-1a7 7 0 0 0 2 1.2L10 21h4l.5-2.7a7 7 0 0 0 2-1.2l2.4 1 2-3.4-2-1.5c.1-.4.1-.8.1-1.2z',
-      list: 'M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01', tool: 'M14 6a4 4 0 0 0 5 5l-9 9-4-4 9-9a4 4 0 0 0-1-1z', route: 'M6 19a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M18 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M9 16h5a3 3 0 0 0 0-6h-4a3 3 0 0 1 0-6h4', menu: 'M4 7h16M4 12h16M4 17h16', ticket: 'M3 9a2 2 0 0 0 0 6v3h18v-3a2 2 0 0 1 0-6V6H3z M13 6v12', user: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z M4 21c1-4 4-6 8-6s7 2 8 6' };
-
-
-    const defs = {
-      toys: [T('element locks', '元素鎖'), T('Lock any card to stop accidental edits. A locked card keeps showing its data but its controls are disabled.', '鎖住任何卡片可以避免誤改。上鎖嘅卡片仍然顯示資料，但控制項會停用。')],
-      ladder: [T('unlock ladder', '解鎖階梯'), T('The riskier the change, the more steps are needed to unlock it.', '變更風險越高，解鎖需要嘅步驟越多。')],
-      reboot: [T('router reboot', '路由器重啟'), T('Rebooting drops every connection, so it needs two different people to confirm.', '重啟會中斷所有連線，所以需要兩個唔同嘅人確認。')],
-      auth: [T('built-in authenticator', '內置驗證器'), T('Time-based codes that refresh every 30 seconds. Secrets never leave this device.', '每 30 秒更新一次嘅限時驗證碼，密鑰唔會離開呢部裝置。')],
-      desk: [T('recovery desk', '復原服務台'), T('Locked out? Open a ticket. A second owner must approve before access returns.', '被鎖喺外面？開一張工單，另一位擁有人批准之後先會恢復存取。')]
-    };
-    const { lk, tips, cc } = mk(defs);
-    const hashN = (str) => { let h = 2166136261; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; };
-
-    // ---- toy element locks ----
-    const dl = s.dl || { wifi: false, fw: true, pf: false, dns: true };
-    const hold = s.hold || {};
-    const passOk = s.passOk || {};
-    const passIn = s.passIn || {};
-    const TOY = [
-      ['wifi', 'toy', T('Wi-Fi password', 'Wi-Fi 密碼'), T('Home-5G · WPA3 · last changed 12 days ago', 'Home-5G · WPA3 · 12 日前更改'), T('Toy lock: one click', '輕量鎖：撳一下')],
-      ['fw', 'hold', T('Firewall rules', '防火牆規則'), T('14 rules · 2 block lists · IPv6 on', '14 條規則 · 2 個封鎖清單 · IPv6 已開'), T('Hold to unlock', '長按解鎖')],
-      ['pf', 'pass', T('Port forwards', '端口轉發'), T('32400 to NAS 198.51.100.20 · 8 rules', '32400 轉去 NAS 198.51.100.20 · 8 條規則'), T('Owner password', '擁有人密碼')],
-      ['dns', 'toy', T('DNS servers', 'DNS 伺服器'), T('198.51.100.2 with DNS over TLS', '198.51.100.2，DNS over TLS'), T('Toy lock: one click', '輕量鎖：撳一下')]
-    ];
-    const toys = TOY.map(([id, kind, name, sub, level]) => {
-      const locked = !!dl[id];
-      const hN = hold[id] || 0;
-      const ok = !!passOk[id];
-      const setDl = (v) => canWrite && set({ dl: Object.assign({}, dl, { [id]: v }), hold: Object.assign({}, hold, { [id]: 0 }), passOk: Object.assign({}, passOk, { [id]: false }) });
-      return {
-        name, sub, level, cls: 'toyl' + (locked ? ' locked' : ''), pressed: locked ? 'true' : 'false', d: locked ? 'M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4' : 'M5 11h14v10H5z M8 11V7a4 4 0 0 1 7.5-2',
-        lockLabel: (locked ? T('Unlock ', '解鎖 ') : T('Lock ', '鎖定 ')) + name,
-        toggle: () => { if (!canWrite) return; if (!locked) return setDl(true); if (kind === 'toy') return setDl(false); set({ hold: Object.assign({}, hold, { [id]: 0 }) }); },
-        isHold: locked && kind === 'hold', holdN: hN, holdLabel: T('Hold to unlock ', '長按解鎖 ') + hN + '%',
-        hold: () => { if (!canWrite) return; const n = Math.min(100, hN + 34); if (n >= 100) setDl(false); else set({ hold: Object.assign({}, hold, { [id]: n }) }); },
-        isPass: locked && kind === 'pass', passLabel: T('Owner password', '擁有人密碼'), passBtn: T('Unlock', '解鎖'),
-        onPass: (e) => set({ passIn: Object.assign({}, passIn, { [id]: txt(e) }) }),
-        passGo: () => { if ((passIn[id] || '').length >= 8) setDl(false); },
-        editLabel: T('Edit', '編輯'), editCls: 'btn f sm' + (locked || !canWrite ? ' dis' : ''), edit: () => {},
-        tag: locked ? T('Locked', '已鎖定') : T('Editable', '可編輯'), tagCls: locked ? 'warn' : 'good'
-      };
-    });
-    const nLocked = Object.keys(dl).filter(k => dl[k]).length;
-
-    // ---- ladder ----
-    const rung = s.rung === undefined ? 1 : s.rung;
-    const RUNGS = [
-      [T('Toy lock', '輕量鎖'), T('One click. Stops accidental edits.', '撳一下，防止誤改。'), T('Wi-Fi password, DNS servers, display names', 'Wi-Fi 密碼、DNS 伺服器、顯示名稱')],
-      [T('Hold to unlock', '長按解鎖'), T('Press and hold for two seconds.', '長按兩秒。'), T('Firewall rules, parental schedules, QoS', '防火牆規則、家長監護時間表、QoS')],
-      [T('Owner password', '擁有人密碼'), T('Type the owner password again.', '再輸入一次擁有人密碼。'), T('Port forwards, VPN keys, remote access', '端口轉發、VPN 密鑰、遠端存取')],
-      [T('Two keys', '雙重確認'), T('Two different people confirm.', '兩個唔同嘅人確認。'), T('Reboot, firmware update, factory reset', '重啟、韌體更新、還原出廠設定')],
-      [T('Recovery desk', '復原服務台'), T('Open a ticket and wait for approval.', '開工單等待批准。'), T('Lost owner password or authenticator', '遺失擁有人密碼或者驗證器')]
-    ];
-    const rungs = RUNGS.map((r, i) => ({ n: i, name: r[0], sub: r[1], pressed: rung === i ? 'true' : 'false', pick: () => set({ rung: i }) }));
-
-    // ---- two-key reboot ----
-    const dlg = !!s.dlg, k1 = !!s.k1, k2 = !!s.k2, phrase = s.phrase || '';
-    const phraseOk = phrase.trim().toUpperCase() === 'REBOOT 198.51.100.1';
-    const stepsDone = (k1 ? 1 : 0) + (k2 ? 1 : 0) + (phraseOk ? 1 : 0);
-    const canGo = stepsDone === 3 && canWrite;
-    const rebooted = !!s.rebooted;
-
-    // ---- authenticator ----
-    const step = Math.floor(Date.now() / 30000);
-    const left = 30 - (Math.floor(Date.now() / 1000) % 30);
-    const fmt6 = (n) => { const v = String(n % 1000000).padStart(6, '0'); return v.slice(0, 3) + ' ' + v.slice(3); };
-    const copiedCode = s.cc || '';
-    const accts = [['pat', T('Owner · Pat', '擁有人 · Pat')], ['alex', T('Operator · Alex', '操作員 · Alex')], ['ssh', T('SSH admin key', 'SSH 管理金鑰')]];
-    const codes = accts.map(([id, who]) => ({
-      who, code: fmt6(hashN(id + ':' + step)), left: T('Refreshes in ' + left + ' s', left + ' 秒後更新'),
-      ringStyle: 'animation-delay:-' + (30 - left) + 's', copyText: copiedCode === id ? T('Copied', '已複製') : T('Copy', '複製'), copyLabel: T('Copy code for ', '複製驗證碼：') + who, copy: () => set({ cc: id })
-    }));
-    const pairing = s.pairing !== false;
-    const reveal = !!s.reveal;
-    const SECRET = 'JBSW Y3DP EHPK 3PXP';
-    const pairCode = fmt6(hashN('new:' + step));
-    const vin = s.vin || '';
-    const vstate = s.vstate || '';
-
-    // ---- recovery desk ----
-    const tk = s.tk || [
-      { id: 'T-1042', subject: T('Lost owner authenticator', '遺失擁有人驗證器'), when: T('Today 08:14', '今日 08:14'), who: 'Pat', st: 1 },
-      { id: 'T-1039', subject: T('Locked out after 5 wrong passwords', '輸入 5 次錯誤密碼被鎖'), when: T('Yesterday', '尋日'), who: 'Alex', st: 2 },
-      { id: 'T-1031', subject: T('Suspected intrusion on SSH', '懷疑 SSH 被入侵'), when: T('3 days ago', '3 日前'), who: 'Pat', st: 2 }
-    ];
-    const tsel = s.tsel || [];
-    const tmenu = s.tmenu || '';
-    const reason = s.reason || 0;
-    const msg = s.msg || '';
-    const ST = [[T('Open', '處理中'), 'warn'], [T('Awaiting second key', '等待第二把鑰匙'), 'warn'], [T('Resolved', '已解決'), 'good']];
-    const nextAdv = (st) => st >= 2 ? 2 : st + 1;
-    const tickets = tk.map(k => ({
-      id: k.id, subject: k.subject, when: k.when, who: k.who, status: ST[k.st][0], cls: ST[k.st][1],
-      checked: tsel.includes(k.id) ? 'true' : 'false', cbCls: 'cb2' + (tsel.includes(k.id) ? ' on' : ''), selLabel: T('Select ticket ', '揀選工單 ') + k.id,
-      menuOpen: tmenu === k.id, advLabel: k.st >= 2 ? T('Reopen', '重新開啟') : T('Advance status', '推進狀態'),
-      toggle: () => set({ tsel: tg(tsel, k.id) }), more: () => set({ tmenu: tmenu === k.id ? '' : k.id }),
-      advance: () => set({ tk: tk.map(x => x.id === k.id ? Object.assign({}, x, { st: x.st >= 2 ? 0 : nextAdv(x.st) }) : x), tmenu: '' }),
-      close: () => set({ tk: tk.filter(x => x.id !== k.id), tmenu: '', tsel: tsel.filter(x => x !== k.id) })
-    }));
-    const REAS = [T('Lost password', '遺失密碼'), T('Lost authenticator', '遺失驗證器'), T('Locked out', '被鎖喺外'), T('Intrusion', '懷疑入侵')];
-    const reasons = REAS.map((label, i) => ({ label, pressed: reason === i ? 'true' : 'false', pick: () => set({ reason: i }) }));
-
-    const t = {
-      title: T('Locks and recovery', '鎖同復原'), heroLabel: T('Locks summary', '鎖摘要'),
-      chipLocked: nLocked + T(' cards locked', ' 張卡片已鎖'), chipTwoKey: T('Two-key reboot', '雙重確認重啟'), chipTotp: T('Authenticator built in', '內置驗證器'),
-      headline: T('Lock what matters', '鎖住重要嘅設定'),
-      lede: T('Toy locks stop slips, the unlock ladder asks for more as the risk grows, and risky actions like a reboot need two different people. Locked out? The recovery desk gets you back in.', '輕量鎖防止手滑，風險越高解鎖步驟越多，重啟呢類高風險動作需要兩個唔同嘅人確認。被鎖喺外面？復原服務台幫你返入去。'),
-      toysTitle: T('Element locks', '元素鎖'), toysSub: T('Try the locks: each card needs a different way to unlock.', '試下啲鎖：每張卡片有唔同嘅解鎖方式。'), lockAll: T('Lock all', '全部鎖定'), unlockAll: T('Unlock all', '全部解鎖'),
-      viewerNote: T('Read-only role: locks cannot be changed.', '唯讀角色：唔可以更改鎖。'),
-      ladderTitle: T('Unlock ladder', '解鎖階梯'), ladderSub: T('Pick a rung to see what it protects.', '揀一級睇睇佢保護咩。'), ladderNeeds: T('Protects', '保護範圍'),
-      rebootTitle: T('Reboot the router', '重啟路由器'), rebootSub: T('A two-key action.', '需要雙重確認嘅動作。'), rebootBig: T('2 keys', '2 把鑰匙'), rebootEffects: T('Drops Wi-Fi for about 90 seconds and ends 12 sessions.', 'Wi-Fi 會中斷約 90 秒，並結束 12 個連線。'), rebootBtn: T('Reboot router', '重啟路由器'), lastReboot: T('Last reboot', '上次重啟'), lastRebootSub: T('3 days 5 hours ago, confirmed by Pat and Alex', '3 日 5 個鐘前，由 Pat 同 Alex 確認'), needs: T('Needs', '需要'), needsSub: T('Two keys and the typed phrase', '兩把鑰匙同輸入確認字句'), rebooted: T('Reboot sent. Wi-Fi returns in about 90 seconds.', '已發出重啟，約 90 秒後 Wi-Fi 恢復。'),
-      dlgTitle: T('Reboot RT-AX86U?', '要重啟 RT-AX86U 嗎？'), dlgSub: T('Two different people must turn a key, then type the phrase.', '兩個唔同嘅人要各轉一把鑰匙，再輸入確認字句。'),
-      key1: T('Key 1: Pat (owner)', '鑰匙 1：Pat（擁有人）'), key1Sub: T('Confirm with your authenticator code', '用驗證器代碼確認'), key2: T('Key 2: Alex (operator)', '鑰匙 2：Alex（操作員）'), key2Sub: T('Must be a different person from key 1', '必須同鑰匙 1 唔同人'),
-      phrase: T('Type to confirm', '輸入確認'), dlgProgress: T('Confirmation progress', '確認進度'), cancel: T('Cancel', '取消'), rebootNow: T('Reboot now', '即時重啟'),
-      authTitle: T('Authenticator', '驗證器'), authSub: T('Codes for the owner, the operator and the SSH key.', '擁有人、操作員同 SSH 金鑰嘅驗證碼。'),
-      qrAlt: T('QR code for pairing an authenticator app', '配對驗證器應用程式嘅 QR 碼'), pairTitle: T('Pair a new authenticator', '配對新驗證器'),
-      pair1: T('Open your authenticator app and choose Add account.', '打開驗證器應用程式，揀「加入帳戶」。'), pair2: T('Scan the QR code, or type the key.', '掃描 QR 碼，或者輸入密鑰。'), pair3: T('Enter the 6-digit code it shows to finish.', '輸入佢顯示嘅 6 位數字完成配對。'),
-      verify: T('Check code', '驗證碼'), verifyBtn: T('Verify', '驗證'), verOk: T('Paired. Codes will now match.', '配對成功，驗證碼已經同步。'), verBad: T('That code does not match. Try the next one.', '驗證碼唔符，試下下一個。'),
-      deskTitle: T('Recovery desk', '復原服務台'), deskSub: T('Support tickets for lost passwords, lost authenticators and lockouts.', '遺失密碼、遺失驗證器同被鎖喺外嘅支援工單。'),
-      selectAll: T('Select all', '全選'), bulk: T('Bulk actions', '批量操作'), closeT: T('Close ticket', '關閉工單'), clear: T('Clear', '清除'), rowMenu: T('Ticket actions', '工單操作'), copyId: T('Copy ticket number', '複製工單編號'),
-      noTickets: T('No open tickets. Everything is recovered.', '冇未處理工單，全部已復原。'), newTicket: T('New recovery ticket', '新增復原工單'), reason: T('What happened', '發生咗乜事'), message: T('Details', '詳情'),
-      submit: T('Send to the second owner', '送交第二位擁有人'), deskNote: T('Not in the real app yet: email approval links.', '真實應用程式未有：電郵批准連結。'), sent: T('Ticket sent. Waiting for the second key.', '工單已送出，等待第二把鑰匙。')
-    };
-    const speakStep = Math.max(stepsDone, 0);
-    const submit = () => { if (!canWrite) return; set({ tk: [{ id: 'T-' + (1043 + tk.length), subject: REAS[reason] + (msg ? ': ' + msg.slice(0, 30) : ''), when: T('Just now', '啱啱'), who: 'Pat', st: 1 }].concat(tk), msg: '', justSent: true }); };
-
-    return Object.assign(base([T('Settings', '設定'), T('Locks', '鎖'), T('Recovery', '復原')]), {
-      lk, tips, cc, t, d: D, toys, lockAllDis: canWrite ? '' : 'dis',
-      lockAll: () => canWrite && set({ dl: { wifi: true, fw: true, pf: true, dns: true } }), unlockAll: () => canWrite && set({ dl: { wifi: false, fw: false, pf: false, dns: false }, hold: {}, passOk: {} }),
-      rungs, rungNeeds: RUNGS[rung][2],
-      rebootDis: canWrite ? '' : 'dis', openDlg: () => canWrite && set({ dlg: true, rebooted: false }), closeDlg: () => set({ dlg: false, k1: false, k2: false, phrase: '' }), dlg,
-      k1cls: k1 ? 'turned' : '', k2cls: k2 ? 'turned' : '', k1btn: k1 ? T('Turned', '已轉') : T('Turn key 1', '轉鑰匙 1'), k2btn: k2 ? T('Turned', '已轉') : T('Turn key 2', '轉鑰匙 2'),
-      turn1: () => set({ k1: !k1 }), turn2: () => set({ k2: !k2 }), phrase, onPhrase: (e) => set({ phrase: txt(e) }),
-      phraseCls: phraseOk ? 'good' : '', phraseTag: phraseOk ? T('Matches', '符合') : T('Not yet', '未符合'),
-      stepsDone, stepsPct: Math.round(stepsDone / 3 * 100), goDis: canGo ? '' : 'dis', go: () => { if (canGo) set({ dlg: false, k1: false, k2: false, phrase: '', rebooted: true }); }, rebooted,
-      codes, pairing, togglePair: () => set({ pairing: !pairing }), pairBtn: pairing ? T('Hide pairing', '隱藏配對') : T('Pair a new authenticator', '配對新驗證器'),
-      secretShown: reveal ? SECRET : '•••• •••• •••• ••••', toggleReveal: () => set({ reveal: !reveal }), revealBtn: reveal ? T('Hide key', '隱藏密鑰') : T('Show key', '顯示密鑰'),
-      vin, onVin: (e) => set({ vin: txt(e), vstate: '' }), doVerify: () => set({ vstate: vin.replace(/\s/g, '') === pairCode.replace(' ', '') ? 'ok' : 'bad' }), verOk: vstate === 'ok', verBad: vstate === 'bad',
-      tickets, noTickets: tickets.length === 0, hasSel: tsel.length > 0, selText: tsel.length + T(' selected', ' 項已選'),
-      selectAllT: () => set({ tsel: tk.map(k => k.id) }), clearSel: () => set({ tsel: [] }), bulkClose: () => set({ tk: tk.filter(k => !tsel.includes(k.id)), tsel: [] }),
-      reasons, msg, onMsg: (e) => set({ msg: txt(e), justSent: false }), submitTicket: submit, submitCls: canWrite ? '' : 'dis', justSent: !!s.justSent
-    });
   }
 }
 </script>

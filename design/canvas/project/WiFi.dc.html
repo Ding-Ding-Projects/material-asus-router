@@ -11,441 +11,64 @@
 <helmet>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,100..1000&amp;display=swap" rel="stylesheet">
-<style>
-body{margin:0}
-.card.ov{overflow:visible}
-.cbw{width:44px;height:44px;border:0;background:none;display:grid;place-items:center;flex:none;padding:0}
-.cb2{width:22px;height:22px;border-radius:7px;border:2px solid var(--sub);display:grid;place-items:center;color:var(--on-primary)}
-.cb2 svg{opacity:0}
-.cb2.on{background:var(--primary);border-color:var(--primary)}
-.cb2.on svg{opacity:1}
-.lockedcard{outline:3px solid var(--primary);outline-offset:-3px}
-.tilehead{display:flex;align-items:center;gap:4px}
-.tilehead .k{flex:1}
-.tilehead .h2{flex:1}
-.legend{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub)}
-.legend i{width:12px;height:12px;border-radius:6px;display:inline-block}
-.pos{position:relative}
-.onp{background:color-mix(in srgb,var(--on-primary) 18%,transparent);color:var(--on-primary)}
-.struck{text-decoration:line-through;opacity:.6}
-.dis{opacity:.5;cursor:not-allowed}
-.field:disabled{opacity:.55}
-.rng{width:100%;accent-color:var(--primary);height:44px;margin:0}
-.btn.f.on{box-shadow:0 0 0 3px color-mix(in srgb,var(--primary) 35%,transparent)}
-.hero .btn.t{background:color-mix(in srgb,var(--on-primary) 20%,transparent);color:var(--on-primary)}
-.hero .btn.o{border-color:color-mix(in srgb,var(--on-primary) 50%,transparent);color:var(--on-primary)}
-.hero .info,.hero .lock{background:color-mix(in srgb,var(--on-primary) 16%,transparent);color:var(--on-primary)}
-.hero .sw{border-color:var(--on-primary);background:transparent}
-.hero .sw i{background:var(--on-primary)}
-.hero .sw.on{background:var(--on-primary);border-color:var(--on-primary)}
-.hero .sw.on i{background:var(--primary)}
-.hero .seg{background:color-mix(in srgb,var(--on-primary) 18%,transparent)}
-.hero .seg button{color:color-mix(in srgb,var(--on-primary) 85%,transparent)}
-.hero .seg button[aria-pressed=true]{background:var(--on-primary);color:var(--primary)}
-.hero .field{background:color-mix(in srgb,var(--on-primary) 14%,transparent);border-color:color-mix(in srgb,var(--on-primary) 40%,transparent);color:var(--on-primary)}
-.hero .muted{color:color-mix(in srgb,var(--on-primary) 82%,transparent)}
-.hero .chip{background:color-mix(in srgb,var(--on-primary) 16%,transparent);color:var(--on-primary);border-color:transparent}
-.hero .chip.on{background:var(--on-primary);color:var(--primary)}
-.hero .rng{accent-color:var(--on-primary)}
-.hero .tag{background:color-mix(in srgb,var(--on-primary) 18%,transparent);color:var(--on-primary)}
-.hero .meter{background:color-mix(in srgb,var(--on-primary) 24%,transparent)}
-.hero .meter i{background:var(--on-primary)}
-.hero .icb{color:var(--on-primary)}
-.fld{display:flex;flex-direction:column;gap:6px;min-width:0}
-.fld label{font-size:13px;font-weight:700;opacity:.85}
-.pwrow{display:flex;gap:8px;align-items:stretch}
-.pwrow .field{flex:1}
-.statline{display:flex;flex-wrap:wrap;gap:8px}
-.qrbox{background:#fff;border-radius:24px;padding:14px;width:216px;height:216px;flex:none;box-shadow:var(--e2)}
-.qrbox svg{display:block;width:100%;height:100%}
-.spec{width:100%;height:auto;display:block}
-.spec text{font-family:inherit}
-.chbtn{min-width:46px;height:40px;padding:0 10px;border-radius:12px;border:1px solid var(--line);background:var(--surf);color:var(--text);font:700 13px var(--font)}
-.chbtn[aria-pressed=true]{background:var(--primary);color:var(--on-primary);border-color:transparent}
-.chbtn.quiet{border-style:dashed;border-color:var(--good)}
-.shared{border-radius:16px;padding:10px 14px;font-size:13px;font-weight:650}
-.bandcard.off .fld,.bandcard.off .seg{opacity:.5}
-.ssid{font-size:24px;font-weight:750;height:60px;border-radius:18px}
-.gline{display:flex;flex-wrap:wrap;gap:14px;align-items:center;padding:14px 0;border-top:1px solid var(--line)}
-.gline:first-of-type{border-top:0}
-</style>
+<style>body{margin:0}</style>
 </helmet>
-<div class="mx shell {{motionCls}}" style="position:relative;--accent:{{accent}};--dark:{{darkNum}}">
-  <div class="railwrap">
-    <dc-import name="Rail" page="wifi" lang="{{lang}}" role="{{role}}" firmware="{{firmware}}" pending="{{pendCount}}" accent="{{accent}}" dark="{{dark}}" hint-size="288px,900px"></dc-import>
-  </div>
-  <div class="main">
-    <dc-import name="TopBar" title="{{t.title}}" lang="{{lang}}" role="{{role}}" firmware="{{firmware}}" tabs="{{tabsStr}}" active="0" accent="{{accent}}" dark="{{dark}}" hint-size="1152px,170px"></dc-import>
-    <main class="page">
-
-      <section class="rise" aria-label="{{t.title}}">
-        <div class="cols" style="align-items:flex-end;gap:16px">
-          <div class="grow" style="min-width:260px">
-            <h1 class="disp s">{{t.title}}</h1>
-            <p class="lede">{{t.lede}}</p>
-          </div>
-          <div class="glass" style="border-radius:28px;padding:10px 12px 10px 22px;display:flex;align-items:center;gap:14px;position:relative">
-            <div><div class="t1">{{t.smart}}</div><div class="t2">{{t.smartSub}}</div></div>
-            <button class="{{smartCls}}" role="switch" aria-checked="{{smartChecked}}" aria-label="{{t.smart}}" onClick="{{toggleSmart}}"><i></i></button>
-            <button class="info" aria-label="{{tips.smart.label}}" aria-expanded="{{tips.smart.on}}" onClick="{{tips.smart.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button>
-            <sc-if value="{{tips.smart.on}}" hint-placeholder-val="{{ false }}"><div class="tip" role="status" style="top:70px;right:0px">{{tips.smart.text}}</div></sc-if>
-          </div>
-        </div>
-        <sc-if value="{{viewer}}" hint-placeholder-val="{{ false }}"><div class="tag warn" style="margin-top:12px">{{readOnlyNote}}</div></sc-if>
-      </section>
-
-      <div class="grid2">
-        <sc-for list="{{bands}}" as="b" hint-placeholder-count="2">
-          <section class="{{b.cardCls}}" aria-label="{{b.title}}">
-            <svg class="deco a" viewBox="0 0 200 200" aria-hidden="true" style="right:-70px;top:-70px;width:260px;height:260px"><path d="{{bigD}}"/></svg>
-            <div class="tilehead" style="position:relative">
-              <span class="cookie" style="width:48px;height:48px;{{b.cookieCol}}"><svg viewBox="0 0 200 200" aria-hidden="true"><path d="{{cookieD}}"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px;fill:none;{{b.iconCol}}"><path d="M2 9a15 15 0 0 1 20 0 M5 12.5a10 10 0 0 1 14 0 M8.5 16a5 5 0 0 1 7 0 M12 19.5h.01"/></svg></span>
-              <span class="h2" style="margin-left:12px">{{b.title}}</span>
-              <button class="info" aria-label="{{b.tipLabel}}" aria-expanded="{{b.tipOn}}" onClick="{{b.tipToggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button>
-              <button class="lock" aria-label="{{b.lkLabel}}" aria-pressed="{{b.lkPressed}}" onClick="{{b.lkToggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{b.lkD}}"/></svg></button>
-            </div>
-            <sc-if value="{{b.tipOn}}" hint-placeholder-val="{{ false }}"><div class="tip" role="status" style="top:70px;right:16px">{{b.tipText}}</div></sc-if>
-            <div class="cols" style="position:relative;justify-content:space-between">
-              <div class="statline"><span class="tag">{{b.clients}}</span><span class="tag">{{b.airtime}}</span><span class="tag">{{b.chInfo}}</span></div>
-              <div style="display:flex;align-items:center;gap:10px"><span class="t1">{{t.radio}}</span><button class="{{b.radioCls}}" role="switch" aria-checked="{{b.radioChecked}}" aria-label="{{b.radioLabel}}" onClick="{{b.radioToggle}}"><i></i></button></div>
-            </div>
-            <sc-if value="{{b.shared}}" hint-placeholder-val="{{ false }}"><div class="shared tag good" style="position:relative;height:auto">{{t.sharedNote}}</div></sc-if>
-            <div class="fld" style="position:relative"><label for="{{b.idSsid}}">{{t.ssid}}</label><input id="{{b.idSsid}}" class="field ssid" value="{{b.ssid}}" onInput="{{b.onSsid}}" aria-readonly="{{b.ro}}"></div>
-            <div class="fld" style="position:relative">
-              <label>{{t.security}}</label>
-              <div class="seg" role="group" aria-label="{{t.security}}" style="align-self:flex-start;flex-wrap:wrap">
-                <sc-for list="{{b.secs}}" as="sc" hint-placeholder-count="3"><button aria-pressed="{{sc.pressed}}" onClick="{{sc.pick}}">{{sc.label}}</button></sc-for>
-              </div>
-              <sc-if value="{{b.secWarn}}" hint-placeholder-val="{{ false }}"><div class="tag warn" style="height:auto;padding:6px 12px;align-self:flex-start">{{t.wpa2Warn}}</div></sc-if>
-            </div>
-            <div class="fld" style="position:relative"><label for="{{b.idPw}}">{{t.password}}</label>
-              <div class="pwrow"><input id="{{b.idPw}}" class="field mono" type="{{b.pwType}}" value="{{b.pw}}" onInput="{{b.onPw}}" aria-readonly="{{b.ro}}"><button class="btn t sm" style="height:52px" aria-pressed="{{b.showPw}}" onClick="{{b.toggleShow}}">{{b.revealLabel}}</button></div>
-              <div class="meter" role="img" aria-label="{{b.strAlt}}"><i style="{{b.strStyle}}"></i></div>
-              <div style="font-size:12.5px;opacity:.85"><b>{{b.strLabel}}</b> · {{t.pwHint}}</div>
-            </div>
-          </section>
-        </sc-for>
-      </div>
-
-      <div class="grid2">
-        <sc-for list="{{chans}}" as="c" hint-placeholder-count="2">
-          <section class="{{c.cardCls}}" aria-label="{{c.title}}">
-            <div class="tilehead"><h2 class="h2">{{c.title}}</h2>
-              <button class="info" aria-label="{{c.tipLabel}}" aria-expanded="{{c.tipOn}}" onClick="{{c.tipToggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button>
-              <button class="lock" aria-label="{{c.lkLabel}}" aria-pressed="{{c.lkPressed}}" onClick="{{c.lkToggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{c.lkD}}"/></svg></button>
-            </div>
-            <sc-if value="{{c.tipOn}}" hint-placeholder-val="{{ false }}"><div class="tip" role="status" style="top:54px;right:16px">{{c.tipText}}</div></sc-if>
-            <div class="cols">
-              <div class="seg" role="group" aria-label="{{t.width}}">
-                <sc-for list="{{c.widths}}" as="w" hint-placeholder-count="3"><button aria-pressed="{{w.pressed}}" onClick="{{w.pick}}">{{w.label}}</button></sc-for>
-              </div>
-              <span class="grow"></span>
-              <button class="btn t sm" onClick="{{c.auto}}">{{c.autoLabel}}</button>
-            </div>
-            <svg class="spec" viewBox="0 0 600 190" role="img" aria-label="{{c.alt}}">
-              <defs><linearGradient id="{{c.gid}}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--primary);stop-opacity:.55"/><stop offset="1" style="stop-color:var(--primary);stop-opacity:.05"/></linearGradient></defs>
-              <line class="gridline" x1="0" y1="150" x2="600" y2="150"/><line class="gridline" x1="0" y1="90" x2="600" y2="90"/><line class="gridline" x1="0" y1="30" x2="600" y2="30"/>
-              <sc-for list="{{c.humps}}" as="h" hint-placeholder-count="5">
-                <path d="{{h.d}}" style="{{h.style}}"/>
-                <text x="{{h.lx}}" y="{{h.ly}}" text-anchor="middle" font-size="11.5" font-weight="700" style="{{h.tstyle}}">{{h.label}}</text>
-              </sc-for>
-              <sc-for list="{{c.ticks}}" as="tk" hint-placeholder-count="8"><text x="{{tk.x}}" y="174" text-anchor="middle" font-size="12" style="fill:var(--sub)">{{tk.label}}</text></sc-for>
-            </svg>
-            <div class="legend" style="flex-wrap:wrap;gap:16px"><span class="legend"><i style="background:var(--primary)"></i>{{t.yours}}</span><span class="legend"><i style="background:var(--tertiary)"></i>{{t.neighbours}}</span><span class="legend"><i style="background:var(--good)"></i>{{t.quietest}}</span></div>
-            <div class="bgroup" role="group" aria-label="{{t.chPick}}">
-              <sc-for list="{{c.buttons}}" as="cb" hint-placeholder-count="8"><button class="{{cb.cls}}" aria-pressed="{{cb.pressed}}" onClick="{{cb.pick}}">{{cb.label}}</button></sc-for>
-            </div>
-            <div class="muted">{{c.advice}}</div>
-            <div class="fld"><label for="{{c.idPow}}">{{t.power}}: <b>{{c.powLabel}}</b></label><input id="{{c.idPow}}" class="rng" type="range" min="1" max="5" step="1" value="{{c.pow}}" onInput="{{c.onPow}}"></div>
-          </section>
-        </sc-for>
-      </div>
-
-      <section class="card rise {{cardCls.guest}}" aria-label="{{t.guestTitle}}">
-        <div class="tilehead"><h2 class="h2">{{t.guestTitle}}</h2><button class="info" aria-label="{{tips.guest.label}}" aria-expanded="{{tips.guest.on}}" onClick="{{tips.guest.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.guest.label}}" aria-pressed="{{lk.guest.pressed}}" onClick="{{lk.guest.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.guest.d}}"/></svg></button></div>
-        <sc-if value="{{tips.guest.on}}" hint-placeholder-val="{{ false }}"><div class="tip" role="status" style="top:54px;right:16px">{{tips.guest.text}}</div></sc-if>
-        <p class="muted" style="margin:0">{{t.guestLede}}</p>
-        <div class="cols" style="align-items:flex-start;gap:28px">
-          <div class="grow" style="flex:2 1 420px;min-width:300px">
-            <sc-for list="{{guests}}" as="g" hint-placeholder-count="2">
-              <div class="gline">
-                <button class="{{g.cls}}" role="switch" aria-checked="{{g.checked}}" aria-label="{{g.label}}" onClick="{{g.toggle}}"><i></i></button>
-                <div class="fld" style="flex:1 1 150px"><label for="{{g.idName}}">{{t.ssid}}</label><input id="{{g.idName}}" class="field" value="{{g.name}}" onInput="{{g.onName}}"></div>
-                <div class="fld" style="flex:1 1 150px"><label for="{{g.idPw}}">{{t.password}}</label><input id="{{g.idPw}}" class="field mono" value="{{g.pw}}" onInput="{{g.onPw}}"></div>
-                <div class="seg" role="group" aria-label="{{t.timeLimit}}">
-                  <sc-for list="{{g.limits}}" as="lm" hint-placeholder-count="3"><button aria-pressed="{{lm.pressed}}" onClick="{{lm.pick}}">{{lm.label}}</button></sc-for>
-                </div>
-                <button class="btn t sm" onClick="{{g.showQr}}">{{t.showQr}}</button>
-              </div>
-            </sc-for>
-            <div class="row"><div class="grow"><div class="t1">{{t.isolate}}</div><div class="t2">{{t.isolateSub}}</div></div><button class="{{isoCls}}" role="switch" aria-checked="{{isoChecked}}" aria-label="{{t.isolate}}" onClick="{{toggleIso}}"><i></i></button></div>
-          </div>
-          <div class="card tone" style="flex:1 1 300px;max-width:420px;align-items:center;gap:12px;border-radius:28px">
-            <div class="seg" role="group" aria-label="{{t.qrFor}}" style="flex-wrap:wrap;justify-content:center">
-              <sc-for list="{{qrTargets}}" as="qt" hint-placeholder-count="4"><button aria-pressed="{{qt.pressed}}" onClick="{{qt.pick}}">{{qt.label}}</button></sc-for>
-            </div>
-            <div class="qrbox"><svg viewBox="-2 -2 29 29" role="img" aria-label="{{qr.alt}}" shape-rendering="crispEdges"><rect x="-2" y="-2" width="29" height="29" fill="#ffffff"/><path d="{{qr.d}}" fill="#14161f"/></svg></div>
-            <div style="text-align:center"><div class="t1">{{qr.name}}</div><div class="t2">{{t.scanTo}}</div></div>
-            <div class="cols" style="justify-content:center"><button class="btn t sm" onClick="{{copyPw}}">{{copyLabel}}</button><button class="btn o sm" onClick="{{printCard}}">{{printLabel}}</button></div>
-          </div>
-        </div>
-      </section>
-
-</main>
-    <sc-if value="{{showDock}}" hint-placeholder-val="{{ true }}">
-      <div class="dock" role="region" aria-label="{{t.dockLabel}}" style="margin:0 24px 20px">
-        <b>{{t.dockText}}</b>
-        <span class="mono" style="opacity:.8;font-size:13px">{{dockNames}}</span>
-        <button class="btn t sm" onClick="{{discard}}">{{t.discard}}</button>
-        <a class="btn f" href="Changes.dc.html">{{t.review}}</a>
-      </div>
-    </sc-if>
-  </div>
+<div class="mx shell {{motionCls}} {{rootCls}}" style="position:relative;--accent:{{accent}};--dark:{{darkNum}}">
+<div class="railwrap"><dc-import name="Rail" page="wifi" pending="{{pendCount}}" lang="{{lang}}" role="{{role}}" firmware="{{firmware}}" motion="{{motion}}" accent="{{accent}}" dark="{{dark}}" hint-size="272px,900px"></dc-import></div>
+<div class="main"><dc-import name="TopBar" title="{{title}}" tabs="{{tabsStr}}" active="0" lang="{{lang}}" role="{{role}}" firmware="{{firmware}}" motion="{{motion}}" accent="{{accent}}" dark="{{dark}}" hint-size="1168px,150px"></dc-import>
+<main class="content"><sc-if value="{{viewer}}" hint-placeholder-val="{{ false }}"><div class="ro" role="status"><svg class="i" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6"/></svg><span>{{readOnly}}</span></div></sc-if><div class="stagebar"><span>{{t.k43}}</span><div class="seg" role="group" aria-label="{{t.k44}}" style="--cnt:5;--idx:{{stIdx}}"><i class="ind"></i><button aria-pressed="{{stp.loading}}" onClick="{{f.st_loading}}">{{t.k45}}</button><button aria-pressed="{{stp.empty}}" onClick="{{f.st_empty}}">{{t.k46}}</button><button aria-pressed="{{stp.ready}}" onClick="{{f.st_ready}}">{{t.k47}}</button><button aria-pressed="{{stp.success}}" onClick="{{f.st_success}}">{{t.k48}}</button><button aria-pressed="{{stp.failure}}" onClick="{{f.st_failure}}">{{t.k49}}</button></div></div><sc-if value="{{st.loading}}" hint-placeholder-val="{{ false }}"><div class="bento" aria-busy="true" aria-label="{{t.k45}}"><div class="sk w12" style="--h:300px;--i:0;grid-column:span 12"></div><div class="sk w4" style="--h:200px;--i:1;grid-column:span 4"></div><div class="sk w4" style="--h:200px;--i:2;grid-column:span 4"></div><div class="sk w4" style="--h:200px;--i:3;grid-column:span 4"></div><div class="sk w8" style="--h:260px;--i:4;grid-column:span 8"></div><div class="sk w4" style="--h:260px;--i:5;grid-column:span 4"></div></div></sc-if><sc-if value="{{st.empty}}" hint-placeholder-val="{{ false }}"><div class="empty rise"><div class="aurora dr" aria-hidden="true" style="opacity:.25"><i></i><i></i><i></i></div><span class="eshape dr"><svg class="i" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9a15 15 0 0 1 20 0 M5 12.5a10 10 0 0 1 14 0 M8.5 16a5 5 0 0 1 7 0 M12 19.5h.01"/></svg></span><h2>{{t.k50}}</h2><p>{{t.k51}}</p><button class="btn fill hot dr w" onClick="{{f.st_ready}}"><svg class="i" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>{{t.k52}}</span></button></div></sc-if><sc-if value="{{st.main}}" hint-placeholder-val="{{ true }}"><sc-if value="{{st.success}}" hint-placeholder-val="{{ false }}"><div class="banner ok" role="status"><span class="burst dr" aria-hidden="true"><i style="--a:0deg;--r:70px;--c:var(--good)"></i><i style="--a:25.7deg;--r:96px;--c:var(--b1)"></i><i style="--a:51.4deg;--r:122px;--c:var(--b3)"></i><i style="--a:77.1deg;--r:148px;--c:var(--warn)"></i><i style="--a:102.8deg;--r:70px;--c:var(--good)"></i><i style="--a:128.5deg;--r:96px;--c:var(--b1)"></i><i style="--a:154.2deg;--r:122px;--c:var(--b3)"></i><i style="--a:179.9deg;--r:148px;--c:var(--warn)"></i><i style="--a:205.6deg;--r:70px;--c:var(--good)"></i><i style="--a:231.29999999999998deg;--r:96px;--c:var(--b1)"></i><i style="--a:257deg;--r:122px;--c:var(--b3)"></i><i style="--a:282.7deg;--r:148px;--c:var(--warn)"></i><i style="--a:308.4deg;--r:70px;--c:var(--good)"></i><i style="--a:334.09999999999997deg;--r:96px;--c:var(--b1)"></i></span><span class="okmark"><span class="bg dr"></span><svg viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><div class="grow"><h2>{{t.k53}}</h2><div>{{t.k54}}</div></div><a class="btn out sm" href="Changes.dc.html"><svg class="i" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h10a6 6 0 0 1 0 12H8 M8 5L4 9l4 4"/></svg><span>{{t.k55}}</span></a></div></sc-if><sc-if value="{{st.failure}}" hint-placeholder-val="{{ false }}"><div class="banner no" role="alert"><span class="nomark dr"><svg class="i" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l10 18H2z M12 10v5 M12 18h.01"/></svg></span><div class="grow"><h2>{{t.k56}}</h2><div>{{t.k57}}</div></div><button class="btn dng sm" onClick="{{f.st_ready}}"><svg class="i" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.5-5.8 M20 4v5h-5"/></svg><span>{{t.k58}}</span></button><div class="reason"><svg class="i" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18 M12 11v6 M12 7.5h.01"/></svg><span><b>{{t.k59}}:</b> {{t.k60}}</span></div></div></sc-if><section class="hero rise" style="--i:0"><div class="aurora dr" aria-hidden="true"><i></i><i></i><i></i></div><span class="hshape sh-cookie morph dr" aria-hidden="true"></span><div class="hero-l"><span class="kick"><svg class="i" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9a15 15 0 0 1 20 0 M5 12.5a10 10 0 0 1 14 0 M8.5 16a5 5 0 0 1 7 0 M12 19.5h.01"/></svg>{{t.k4}}</span><div class="hnum"><span class="disp " aria-label="24"><span class="cnt" style="--to:24"></span></span><span class="unit">{{t.k5}}</span></div><h2>Maple-Home</h2><p class="hsub">{{t.k6}}</p><div class="chips"><span class="tag good">{{t.k7}}</span><span class="tag">{{t.k8}}</span></div><div class="acts"><a class="btn wh hot dr w" href="Spectrum.dc.html"><svg class="i" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12h4l3-8 4 16 3-8h6"/></svg><span>{{t.k0}}</span></a></div></div><div class="hero-r"><div class="rowx" style="gap:22px;justify-content:center"><div class="radar dr" style="--s:220px" role="img" aria-label="{{t.k1}}"><b style="--x:30%;--y:28%;--d:0s"></b><b style="--x:66%;--y:40%;--d:0.5s"></b><b style="--x:48%;--y:70%;--d:1.1s"></b><b style="--x:74%;--y:68%;--d:1.6s"></b><b style="--x:24%;--y:58%;--d:2s"></b></div><div class="glass" style="flex:1;min-width:190px"><div class="kick">{{t.k2}}</div><div class="hnum"><span class="disp m" aria-label="14"><span class="cnt" style="--to:14"></span></span></div><div class="sub">{{t.k3}}</div></div></div></div></section><div class="bento"><section class="tile w4 ter rise" style="--i:1"><header class="th"><span class="tic"><svg class="i" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9a15 15 0 0 1 20 0 M5 12.5a10 10 0 0 1 14 0 M8.5 16a5 5 0 0 1 7 0 M12 19.5h.01"/></svg></span><h3>2.4 GHz</h3><button class="sw w {{c.rad0}}" role="switch" aria-checked="{{a.rad0}}" aria-label="2.4 GHz radio" onClick="{{f.rad0}}"><i></i></button></header><div class="rowx" style="justify-content:space-between"><div class="gauge" style="--s:150px;--p:38" role="img" aria-label="{{t.k9}} 6"><svg viewBox="0 0 100 100"><circle class="trk" cx="50" cy="50" r="42" pathLength="100"/><circle class="val" cx="50" cy="50" r="42" pathLength="100" stroke="currentColor"/></svg><div class="gc"><span class="disp s" aria-label="6"><span class="cnt" style="--to:6"></span></span><small>{{t.k9}}</small></div></div><div><div class="hnum"><span class="disp m" aria-label="9"><span class="cnt" style="--to:9"></span></span></div><div class="sub">{{t.k10}}</div></div></div><div class="fld"><div class="fl"><div class="t1">{{t.k12}}</div></div><div class="seg w " role="group" aria-label="{{t.k11}}" style="--cnt:2;--idx:{{gi.w24}}"><i class="ind"></i><button aria-pressed="{{g.w24_0}}" onClick="{{f.w24_0}}">20 MHz</button><button aria-pressed="{{g.w24_1}}" onClick="{{f.w24_1}}">40 MHz</button></div></div><div class="fld"><div class="fl"><div class="t1">{{t.k14}}</div></div><div class="sl w" style="--p:{{pc.pw0}}"><input type="range" min="20" max="100" step="10" value="{{n.pw0}}" aria-label="{{t.k13}}" onInput="{{f.pw0_in}}"><output>{{n.pw0}}<small>%</small></output></div></div></section><section class="tile w4 pri rise" style="--i:2"><header class="th"><span class="tic"><svg class="i" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9a15 15 0 0 1 20 0 M5 12.5a10 10 0 0 1 14 0 M8.5 16a5 5 0 0 1 7 0 M12 19.5h.01"/></svg></span><h3>5 GHz</h3><button class="sw w {{c.rad1}}" role="switch" aria-checked="{{a.rad1}}" aria-label="5 GHz radio" onClick="{{f.rad1}}"><i></i></button></header><div class="rowx" style="justify-content:space-between"><div class="gauge" style="--s:150px;--p:72" role="img" aria-label="{{t.k9}} 36"><svg viewBox="0 0 100 100"><circle class="trk" cx="50" cy="50" r="42" pathLength="100"/><circle class="val" cx="50" cy="50" r="42" pathLength="100" stroke="currentColor"/></svg><div class="gc"><span class="disp s" aria-label="36"><span class="cnt" style="--to:36"></span></span><small>{{t.k9}}</small></div></div><div><div class="hnum"><span class="disp m" aria-label="17"><span class="cnt" style="--to:17"></span></span></div><div class="sub">{{t.k10}}</div></div></div><div class="fld"><div class="fl"><div class="t1">{{t.k12}}</div></div><div class="seg w " role="group" aria-label="{{t.k11}}" style="--cnt:4;--idx:{{gi.w5}}"><i class="ind"></i><button aria-pressed="{{g.w5_0}}" onClick="{{f.w5_0}}">20 MHz</button><button aria-pressed="{{g.w5_1}}" onClick="{{f.w5_1}}">40 MHz</button><button aria-pressed="{{g.w5_2}}" onClick="{{f.w5_2}}">80 MHz</button><button aria-pressed="{{g.w5_3}}" onClick="{{f.w5_3}}">160 MHz</button></div></div><div class="fld"><div class="fl"><div class="t1">{{t.k14}}</div></div><div class="sl w" style="--p:{{pc.pw1}}"><input type="range" min="20" max="100" step="10" value="{{n.pw1}}" aria-label="{{t.k13}}" onInput="{{f.pw1_in}}"><output>{{n.pw1}}<small>%</small></output></div></div></section><section class="tile w4 sec rise" style="--i:3"><header class="th"><span class="tic"><svg class="i" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9a15 15 0 0 1 20 0 M5 12.5a10 10 0 0 1 14 0 M8.5 16a5 5 0 0 1 7 0 M12 19.5h.01"/></svg></span><h3>6 GHz</h3><button class="sw w {{c.rad2}}" role="switch" aria-checked="{{a.rad2}}" aria-label="6 GHz radio" onClick="{{f.rad2}}"><i></i></button></header><div class="rowx" style="justify-content:space-between"><div class="gauge" style="--s:150px;--p:21" role="img" aria-label="{{t.k9}} 37"><svg viewBox="0 0 100 100"><circle class="trk" cx="50" cy="50" r="42" pathLength="100"/><circle class="val" cx="50" cy="50" r="42" pathLength="100" stroke="currentColor"/></svg><div class="gc"><span class="disp s" aria-label="37"><span class="cnt" style="--to:37"></span></span><small>{{t.k9}}</small></div></div><div><div class="hnum"><span class="disp m" aria-label="5"><span class="cnt" style="--to:5"></span></span></div><div class="sub">{{t.k10}}</div></div></div><div class="fld"><div class="fl"><div class="t1">{{t.k12}}</div></div><div class="seg w " role="group" aria-label="{{t.k11}}" style="--cnt:2;--idx:{{gi.w6}}"><i class="ind"></i><button aria-pressed="{{g.w6_0}}" onClick="{{f.w6_0}}">80 MHz</button><button aria-pressed="{{g.w6_1}}" onClick="{{f.w6_1}}">160 MHz</button></div></div><div class="fld"><div class="fl"><div class="t1">{{t.k14}}</div></div><div class="sl w" style="--p:{{pc.pw2}}"><input type="range" min="20" max="100" step="10" value="{{n.pw2}}" aria-label="{{t.k13}}" onInput="{{f.pw2_in}}"><output>{{n.pw2}}<small>%</small></output></div></div></section><section class="tile w7 rise" style="--i:4"><header class="th"><span class="tic"><svg class="i" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4"/></svg></span><h3>{{t.k25}}</h3></header><div class="fld"><div class="fl"><div class="t1">{{t.k15}}</div></div><label class="nm w"><input type="text" value="Maple-Home" maxlength="32" aria-label="{{t.k15}}"><span class="cn">10 / 32</span></label><div class="hint"><svg class="i" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>{{t.k16}}</div></div><div class="fld"><div class="fl"><div class="t1">{{t.k17}}</div></div><div class="seg w " role="group" aria-label="{{t.k17}}" style="--cnt:3;--idx:{{gi.sec}}"><i class="ind"></i><button aria-pressed="{{g.sec_0}}" onClick="{{f.sec_0}}">WPA2</button><button aria-pressed="{{g.sec_1}}" onClick="{{f.sec_1}}">WPA2 + WPA3</button><button aria-pressed="{{g.sec_2}}" onClick="{{f.sec_2}}">WPA3</button></div></div><div class="fld"><div class="fl"><div class="t1">{{t.k18}}</div></div><div class="pw w" role="group" aria-label="{{t.k18}}"><div class="pv"><sc-if value="{{b._rvwf}}" hint-placeholder-val="{{ false }}">maple-river-4207</sc-if><sc-if value="{{nb._rvwf}}" hint-placeholder-val="{{ true }}">&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;</sc-if></div><button class="icb" aria-label="{{t.k19}}" aria-pressed="{{a._rvwf}}" onClick="{{f._rvwf}}"><svg class="i" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6"/></svg></button><button class="btn ton sm w"><svg class="i" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/></svg><span>{{t.k20}}</span></button><div class="str" style="--p:91%"><span><i></i></span>{{t.k21}}</div></div></div><div class="fld"><div class="fl"><div class="t1">{{t.k22}}</div><div class="t2">{{t.k23}}</div></div><button class="sw w {{c.hid}}" role="switch" aria-checked="{{a.hid}}" aria-label="{{t.k22}}" onClick="{{f.hid}}"><i></i></button></div><div class="fld"><div class="fl"><div class="t1">{{t.k24}}</div></div><button class="sw w {{c.smart}}" role="switch" aria-checked="{{a.smart}}" aria-label="Smart Connect" onClick="{{f.smart}}"><i></i></button></div></section><section class="tile w5 ink rise" style="--i:5"><header class="th"><span class="tic"><svg class="i" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6 M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6 M17 8a2.5 2.5 0 1 1 0 5 M17.5 14.2c2.3.4 3.5 2.4 3.5 5.8"/></svg></span><h3>{{t.k26}}</h3><button class="sw w {{c.gst}}" role="switch" aria-checked="{{a.gst}}" aria-label="{{t.k26}}" onClick="{{f.gst}}"><i></i></button></header><div class="rowx" style="gap:18px"><div class="qr" style="--s:150px" role="img" aria-label="{{t.k27}}"><i class="" style="--k:0"></i><i class="" style="--k:1"></i><i class="" style="--k:2"></i><i class="" style="--k:3"></i><i class="" style="--k:4"></i><i class="" style="--k:5"></i><i class="" style="--k:6"></i><i class="" style="--k:7"></i><i class="" style="--k:8"></i><i class="" style="--k:9"></i><i class="" style="--k:10"></i><i class="" style="--k:11"></i><i class="" style="--k:12"></i><i class="" style="--k:13"></i><i class="o" style="--k:14"></i><i class="o" style="--k:15"></i><i class="" style="--k:16"></i><i class="" style="--k:17"></i><i class="" style="--k:18"></i><i class="" style="--k:19"></i><i class="o" style="--k:20"></i><i class="" style="--k:21"></i><i class="" style="--k:22"></i><i class="" style="--k:23"></i><i class="" style="--k:24"></i><i class="o" style="--k:25"></i><i class="o" style="--k:26"></i><i class="o" style="--k:27"></i><i class="o" style="--k:28"></i><i class="o" style="--k:29"></i><i class="" style="--k:30"></i><i class="" style="--k:31"></i><i class="" style="--k:32"></i><i class="" style="--k:33"></i><i class="" style="--k:34"></i><i class="" style="--k:35"></i><i class="" style="--k:36"></i><i class="" style="--k:37"></i><i class="o" style="--k:38"></i><i class="o" style="--k:39"></i><i class="o" style="--k:40"></i><i class="o" style="--k:41"></i><i class="o" style="--k:42"></i><i class="o" style="--k:43"></i><i class="o" style="--k:44"></i><i class="o" style="--k:45"></i><i class="o" style="--k:46"></i><i class="o" style="--k:47"></i><i class="o" style="--k:48"></i><i class="o" style="--k:49"></i><i class="o" style="--k:50"></i><i class="o" style="--k:51"></i><i class="o" style="--k:52"></i><i class="o" style="--k:53"></i><i class="o" style="--k:54"></i><i class="o" style="--k:55"></i><i class="o" style="--k:56"></i><i class="o" style="--k:57"></i><i class="o" style="--k:58"></i><i class="o" style="--k:59"></i><i class="o" style="--k:60"></i><i class="" style="--k:61"></i><i class="" style="--k:62"></i><i class="" style="--k:63"></i><i class="" style="--k:64"></i><i class="" style="--k:65"></i><i class="" style="--k:66"></i><i class="" style="--k:67"></i><i class="" style="--k:68"></i><i class="o" style="--k:69"></i><i class="o" style="--k:70"></i><i class="o" style="--k:71"></i><i class="o" style="--k:72"></i><i class="o" style="--k:73"></i><i class="o" style="--k:74"></i><i class="o" style="--k:75"></i><i class="" style="--k:76"></i><i class="" style="--k:77"></i><i class="" style="--k:78"></i><i class="" style="--k:79"></i><i class="" style="--k:80"></i><i class="" style="--k:81"></i><i class="" style="--k:82"></i><i class="" style="--k:83"></i><i class="" style="--k:84"></i><i class="o" style="--k:85"></i><i class="o" style="--k:86"></i><i class="o" style="--k:87"></i><i class="" style="--k:88"></i><i class="" style="--k:89"></i><i class="" style="--k:90"></i><i class="" style="--k:91"></i><i class="" style="--k:92"></i><i class="" style="--k:93"></i><i class="" style="--k:94"></i><i class="" style="--k:95"></i><i class="" style="--k:96"></i><i class="" style="--k:97"></i><i class="o" style="--k:98"></i><i class="" style="--k:99"></i><i class="o" style="--k:100"></i><i class="" style="--k:101"></i><i class="o" style="--k:102"></i><i class="o" style="--k:103"></i><i class="" style="--k:104"></i><i class="o" style="--k:105"></i><i class="" style="--k:106"></i><i class="" style="--k:107"></i><i class="" style="--k:108"></i><i class="" style="--k:109"></i><i class="" style="--k:110"></i><i class="" style="--k:111"></i><i class="" style="--k:112"></i><i class="o" style="--k:113"></i><i class="o" style="--k:114"></i><i class="o" style="--k:115"></i><i class="o" style="--k:116"></i><i class="o" style="--k:117"></i><i class="o" style="--k:118"></i><i class="o" style="--k:119"></i><i class="o" style="--k:120"></i></div><div class="colx grow"><div class="t1" style="font-size:20px">Maple-Guest</div><div class="sub">{{t.k28}}</div><span class="tag">{{t.k29}}</span></div></div><div class="fld"><div class="fl"><div class="t1">{{t.k34}}</div></div><div class="stp w"><button aria-label="{{t.k30}}: {{t.k31}}" onClick="{{f.gh_dn}}">&minus;</button><output>{{n.gh}}<small>{{t.k32}}</small></output><button aria-label="{{t.k33}}: {{t.k31}}" onClick="{{f.gh_up}}">+</button></div></div><div class="fld"><div class="fl"><div class="t1">{{t.k37}}</div></div><div class="seg w " role="group" aria-label="{{t.k35}}" style="--cnt:3;--idx:{{gi.gb}}"><i class="ind"></i><button aria-pressed="{{g.gb_0}}" onClick="{{f.gb_0}}">2.4</button><button aria-pressed="{{g.gb_1}}" onClick="{{f.gb_1}}">5</button><button aria-pressed="{{g.gb_2}}" onClick="{{f.gb_2}}">{{t.k36}}</button></div></div></section></div><sc-if value="{{hasPend}}" hint-placeholder-val="{{ false }}"><div class="dock" role="region" aria-label="{{t.k38}}"><div class="dn"><b>{{pendN}}</b>{{t.k39}}</div><button class="btn out" onClick="{{f.discard}}">{{t.k40}}</button><a class="btn ton" href="Changes.dc.html"><svg class="i" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6"/></svg><span>{{t.k41}}</span></a><button class="btn fill hot dr" onClick="{{f.apply}}"><svg class="i" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg><span>{{t.k42}}</span></button></div></sc-if></sc-if></main></div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#4f5bd5","options":["#4f5bd5","#00897b","#d81b60","#f4511e","#7c4dff"],"section":"Look"},"dark":{"editor":"boolean","default":false,"section":"Look"},"motion":{"editor":"enum","options":["calm","standard","expressive"],"default":"expressive","section":"Look"},"firmware":{"editor":"enum","options":["merlin","stock"],"default":"merlin","section":"Router"},"role":{"editor":"enum","options":["owner","operator","viewer"],"default":"owner","section":"Router"},"lang":{"editor":"enum","options":["en","yue","both"],"default":"en","section":"Language"},"$preview":{"width":1440,"height":2150}}'>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#4f5bd5","options":["#4f5bd5","#00897b","#d81b60","#f4511e","#7c4dff"],"section":"Look"},"dark":{"editor":"boolean","default":false,"section":"Look"},"motion":{"editor":"enum","options":["calm","standard","expressive"],"default":"expressive","section":"Look"},"firmware":{"editor":"enum","options":["merlin","stock"],"default":"merlin","section":"Router"},"role":{"editor":"enum","options":["owner","operator","viewer"],"default":"owner","section":"Router"},"lang":{"editor":"enum","options":["en","yue","both"],"default":"en","section":"Language"},"stage":{"editor":"enum","options":["loading","empty","ready","success","failure"],"default":"ready","section":"Stage"},"$preview":{"width":1440,"height":1680}}'>
 class Component extends DCLogic {
   renderVals() {
-    const p = this.props;
-    const s = this.state || {};
-    const lang = s.langOv || p.lang || 'en';
-    const role = p.role || 'owner';
-    const firmware = p.firmware || 'merlin';
-    const motion = p.motion || 'expressive';
-    const accent = s.accentOv || p.accent || '#4f5bd5';
-    const pd = p.dark === true || p.dark === 'true' || p.dark === 1 || p.dark === '1';
-    const dark = s.darkOv !== undefined ? s.darkOv : pd;
-    const T = (en, yue) => lang === 'en' ? en : lang === 'yue' ? yue : en + ' · ' + yue;
-    const TF = (en, yue, ...a) => T(en.replace(/%([0-9])/g, (m, i) => a[i - 1]), yue.replace(/%([0-9])/g, (m, i) => a[i - 1]));
+    const D = {"tx":[["Find a quieter channel","搵個靜啲嘅頻道"],["Scanning nearby networks","掃描緊附近嘅網絡"],["Neighbours heard","聽到嘅鄰居"],["9 on 2.4 GHz · 5 on 5 GHz","2.4 GHz 有 9 個 · 5 GHz 有 5 個"],["Wi-Fi 6E · three bands","Wi-Fi 6E · 三個頻段"],["devices on Wi-Fi","部裝置用緊 Wi-Fi"],["One name for all bands. Devices are steered to the best one.","三個頻段用同一個名，裝置會自動去最好嗰個。"],["WPA2 and WPA3","WPA2 加 WPA3"],["Smart Connect on","Smart Connect 開咗"],["channel","頻道"],["devices","部裝置"],["Channel width","頻道闊度"],["Width","頻寬"],["Transmit power","發射功率"],["Power","發射功率"],["Network name","網絡名稱"],["Fits every device: letters, digits and a hyphen.","所有裝置都啱用：字母、數字同連字號。"],["Security","保安"],["Password","密碼"],["Show or hide","顯示或者隱藏"],["Generate","產生"],["Strong","夠強"],["Hide the name","隱藏名稱"],["Hidden names do not add security and some devices struggle to join.","隱藏名稱唔會安全啲，有啲裝置仲會連唔到。"],["Smart Connect","Smart Connect"],["Name and security","名稱同保安"],["Guest network","訪客網絡"],["Sample QR code","示範 QR 碼"],["Scan to join. Guests cannot see your devices.","掃一掃就連到。訪客睇唔到你啲裝置。"],["3 guests now","而家 3 位訪客"],["Less","減少"],["Hours","小時"],["h","個鐘"],["More","增加"],["Closes after","幾耐後閂"],["Guest band","訪客頻段"],["Both","兩樣"],["Band","頻段"],["Pending changes","待套用變更"],["changes waiting. Nothing has reached the router yet.","項變更等緊。暫時乜都未寫入路由器。"],["Discard","唔要"],["Preview","預覽"],["Apply under guard","有守護咁套用"],["Preview a stage","預覽階段"],["Stage","階段"],["Loading","載入中"],["Empty","空"],["Ready","就緒"],["Success","成功"],["Failure","失敗"],["All radios are off","所有無線電都閂咗"],["Nothing is broadcasting. Wired devices still work. Turn one band back on to bring Wi-Fi back.","而家冇發射訊號。有線裝置照用。開返一個頻段就有返 Wi-Fi。"],["Turn 5 GHz on","開返 5 GHz"],["Wi-Fi change kept","Wi-Fi 變更已保留"],["This computer reconnected in 9 seconds, so the guard kept channel 36 at 80 MHz.","呢部電腦 9 秒內連返上，守護功能保留咗頻道 36、80 MHz。"],["Undo","還原"],["Wi-Fi change rolled back","Wi-Fi 變更已回復"],["Nothing was left half-applied. The router is as it was before.","冇嘢係做到一半。路由器同之前一模一樣。"],["Try again","再試"],["Reason","原因"],["Nothing reconnected within 60 seconds on the new channel, so the old channel 149 is back.","新頻道 60 秒內冇裝置連返，所以用返舊頻道 149。"]],"sw":{"rad0":1,"rad1":1,"rad2":1,"_rvwf":0,"hid":0,"smart":1,"gst":1},"sg":{"w24":[2,0],"w5":[4,2],"w6":[2,1],"sec":[3,1],"gb":[3,1]},"num":{"pw0":[100,10,20,100,[]],"pw1":[80,10,20,100,[]],"pw2":[60,10,20,100,[]],"gh":[4,1,1,24,[]]},"gr":{},"stage0":"ready","pend":2,"tabs":["Bands,Guest,Schedule","頻段,訪客,時間表"],"title":["Wi-Fi","Wi-Fi"]};
+    const p = this.props || {}, s = this.state || {};
+    const lang = p.lang ?? 'en', role = p.role ?? 'owner', firmware = p.firmware ?? 'merlin', motion = p.motion ?? 'expressive';
+    const accent = p.accent || '#4f5bd5';
+    const dark = p.dark === true || p.dark === 'true' || p.dark === 1 || p.dark === '1';
+    const T = (en, yue) => (yue === undefined || en === yue || lang === 'en') ? en : lang === 'yue' ? yue : en + ' · ' + yue;
     const canWrite = role !== 'viewer';
-    const set = (o) => this.setState(o);
-    const toggleIn = (a, v) => a.includes(v) ? a.filter(x => x !== v) : a.concat([v]);
-    const locks = s.locks || [];
-    const tip = s.tip || '';
-    const f1 = (n) => Math.round(n * 10) / 10;
-    const can = (id) => canWrite && !locks.includes(id);
-    const mkCards = (defs) => {
-      const lk = {}, tips = {}, cardCls = {};
-      Object.keys(defs).forEach(id => {
-        const d = defs[id];
-        const on = locks.includes(id);
-        lk[id] = {
-          d: on ? 'M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4' : 'M5 11h14v10H5z M8 11V7a4 4 0 0 1 7.5-2',
-          pressed: on ? 'true' : 'false',
-          label: (on ? T('Unlock ', '解鎖 ') : T('Lock ', '鎖定 ')) + d[0] + T(' card', ' 卡片'),
-          toggle: () => set({ locks: toggleIn(locks, id) })
-        };
-        cardCls[id] = on ? 'lockedcard' : '';
-        tips[id] = { on: tip === id, text: d[1], label: T('About this card: ', '關於呢張卡片：') + d[0], toggle: () => set({ tip: tip === id ? '' : id }) };
-      });
-      return { lk, tips, cardCls };
-    };
-    const dockT = (n) => ({
-      dockLabel: T('Pending changes', '待套用變更'),
-      dockText: n + (n === 1 ? T(' change waiting', ' 項變更等緊') : T(' changes waiting', ' 項變更等緊')),
-      discard: T('Discard queue', '放棄排隊'),
-      review: T('Review ' + n + (n === 1 ? ' change' : ' changes'), '檢視 ' + n + ' 項變更')
-    });
-    const baseOut = (n) => ({
-      accent, dark, darkNum: dark ? 1 : 0, lang, role, firmware,
+    const V = s.v || {};
+    const stageP = p.stage ?? D.stage0;
+    const stage = (s.stf === stageP && s.st) || stageP;
+    const set = (o) => this.setState({ v: Object.assign({}, V, o) });
+    const put = (k, val) => { if (k[0] === '_' || canWrite) set({ [k]: val }); };
+    const t = {}, c = {}, a = {}, b = {}, nb = {}, f = {}, g = {}, gi = {}, is = {}, n = {}, pc = {}, gd = {}, st = {}, stp = {};
+    D.tx.forEach((r, i) => { t['k' + i] = T(r[0], r[1]); });
+    Object.keys(D.sw).forEach(k => { const on = k in V ? !!V[k] : !!D.sw[k]; c[k] = on ? 'on' : ''; a[k] = on ? 'true' : 'false'; b[k] = on; nb[k] = !on; f[k] = () => put(k, !on); });
+    Object.keys(D.sg).forEach(k => { const cur = k in V ? V[k] : D.sg[k][1]; gi[k] = cur; for (let i = 0; i < D.sg[k][0]; i++) { g[k + '_' + i] = cur === i ? 'true' : 'false'; is[k + '_' + i] = cur === i; f[k + '_' + i] = () => put(k, i); } });
+    Object.keys(D.num).forEach(k => { const q = D.num[k], def = q[0], step = q[1], mn = q[2], mx = q[3], pre = q[4] || [], span = q[5]; const cur = k in V ? V[k] : def; const cl = (z) => Math.max(mn, Math.min(mx, z)); n[k] = cur; pc[k] = (span ? cur / span * 100 : mx > mn ? (cur - mn) / (mx - mn) * 100 : 0).toFixed(1) + '%'; f[k + '_up'] = () => put(k, cl(cur + step)); f[k + '_dn'] = () => put(k, cl(cur - step)); f[k + '_in'] = (e) => { const z = Number(e && e.target ? e.target.value : NaN); if (!isNaN(z)) put(k, cl(z)); }; pre.forEach((pv, i) => { f[k + '_p' + i] = () => put(k, pv); }); });
+    Object.keys(D.gr).forEach(k => { const G = D.gr[k], Cn = G.c; const cur = V[k] ?? G.d; const br = V['_br_' + k] ?? 1; const an = V['_an_' + k] ?? -1;
+      gd[k] = G.r.map((lab, ri) => ({ l: T(lab[0], lab[1]), cells: Array.from({ length: Cn }, (_, ci) => { const idx = ri * Cn + ci, on = cur[idx] === '1'; return { cls: (on ? 'on' : '') + (an === idx ? ' an' : ''), a: on ? 'true' : 'false', lb: T(lab[0], lab[1]) + ' ' + ci + ':00', f: () => { if (!canWrite) return; if (an < 0) { set({ [k]: cur.slice(0, idx) + br + cur.slice(idx + 1), ['_an_' + k]: idx }); return; } const r0 = Math.min(Math.floor(an / Cn), ri), r1 = Math.max(Math.floor(an / Cn), ri), c0 = Math.min(an % Cn, ci), c1 = Math.max(an % Cn, ci); const o = cur.split(''); for (let r = r0; r <= r1; r++) for (let q = c0; q <= c1; q++) o[r * Cn + q] = String(br); set({ [k]: o.join(''), ['_an_' + k]: -1 }); } }; }) }));
+      gi['br_' + k] = br === 1 ? 0 : 1; g['br_' + k + '_1'] = br === 1 ? 'true' : 'false'; g['br_' + k + '_0'] = br === 0 ? 'true' : 'false'; f['br_' + k + '_1'] = () => set({ ['_br_' + k]: 1 }); f['br_' + k + '_0'] = () => set({ ['_br_' + k]: 0 });
+      (G.p || []).forEach((bits, i) => { f[k + '_p' + i] = () => { if (canWrite) set({ [k]: bits, ['_an_' + k]: -1 }); }; });
+      n[k + '_on'] = cur.split('').filter(z => z === '1').length; });
+    const SG = ['loading', 'empty', 'ready', 'success', 'failure'];
+    SG.forEach(k => { st[k] = stage === k; stp[k] = stage === k ? 'true' : 'false'; f['st_' + k] = () => this.setState({ st: k, stf: stageP }); });
+    st.main = stage === 'ready' || stage === 'success' || stage === 'failure';
+    const pendKeys = Object.keys(V).filter(k => k[0] !== '_');
+    const views = {}; Object.keys(V).forEach(k => { if (k[0] === '_') views[k] = V[k]; });
+    f.discard = () => this.setState({ v: views });
+    f.apply = () => this.setState({ v: views, st: 'success', stf: stageP });
+    const h = { D, p, s, V, set, put, T, lang, role, firmware, canWrite, stage, f, self: this, owner: role === 'owner', merlin: firmware === 'merlin' };
+    const LOGIC = null;
+    const x = LOGIC ? LOGIC(h) : {};
+    const extra = (h.extraPend || 0);
+    return {
+      accent, dark, darkNum: dark ? 1 : 0, lang, role, firmware, motion,
       motionCls: motion === 'calm' ? 'calm' : motion === 'standard' ? 'std' : '',
-      viewer: !canWrite, pendCount: n, showDock: canWrite && n > 0,
-      readOnlyNote: T('Read-only role: you can look but not change anything.', '唯讀角色：只可以睇，唔可以改動。')
-    });
-    const qrPath = (seed, size) => {
-      let h = 2166136261;
-      for (let i = 0; i < seed.length; i++) { h ^= seed.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
-      const rnd = () => { h = (Math.imul(h, 1664525) + 1013904223) >>> 0; return h / 4294967296; };
-      let d = '';
-      const finder = (x, y) => x < 8 && y < 8 || x >= size - 8 && y < 8 || x < 8 && y >= size - 8;
-      const fcell = (x, y) => {
-        const ox = x >= size - 8 ? x - (size - 7) : x, oy = y >= size - 8 ? y - (size - 7) : y;
-        if (ox < 0 || oy < 0 || ox > 6 || oy > 6) return false;
-        const e = Math.max(Math.abs(ox - 3), Math.abs(oy - 3));
-        return e === 3 || e <= 1;
-      };
-      for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
-        const on = finder(x, y) ? fcell(x, y) : rnd() > 0.52;
-        if (on) d += 'M' + x + ' ' + y + 'h1v1h-1z';
-      }
-      return d;
+      rootCls: 'role-' + role + ' fw-' + firmware + ' lang-' + lang + ' st-' + stage,
+      viewer: role === 'viewer', notOwner: role !== 'owner', stock: firmware !== 'merlin', merlin: firmware === 'merlin',
+      fwName: firmware === 'merlin' ? 'Asuswrt-Merlin 388.8_4' : T('Stock ASUS 388.24198', '原廠 ASUS 388.24198'),
+      readOnly: T('Read-only role: you can look at everything here, but every control that would change the router is switched off.', '唯讀角色：呢度樣樣都睇得，但會改到路由器嘅控制項全部閂咗。'),
+      pendCount: D.pend + pendKeys.length + extra, pendN: pendKeys.length + extra, hasPend: pendKeys.length + extra > 0,
+      stIdx: SG.indexOf(stage),
+      tabsStr: D.tabs[0].split(',').map((e, i) => T(e, D.tabs[1].split(',')[i] || e)).join(','), title: T(D.title[0], D.title[1]),
+      t, c, a, b, nb, f, g, gi, is, n, pc, gd, st, stp, x
     };
-    const COOKIE = 'M194 100L193.4 104.1L191.8 108L189.2 111.7L186.1 115.2L182.6 118.3L179.2 121.2L176.2 124L173.7 126.8L172.1 129.8L171.1 133.2L170.8 136.9L171 141L171.4 145.5L171.6 150.1L171.4 154.8L170.6 159.2L168.9 163.2L166.5 166.5L163.2 168.9L159.2 170.6L154.8 171.4L150.1 171.6L145.5 171.4L141 171L136.9 170.8L133.2 171.1L129.8 172.1L126.8 173.7L124 176.2L121.2 179.2L118.3 182.6L115.2 186.1L111.7 189.2L108 191.8L104.1 193.4L100 194L95.9 193.4L92 191.8L88.3 189.2L84.8 186.1L81.7 182.6L78.8 179.2L76 176.2L73.2 173.7L70.2 172.1L66.8 171.1L63.1 170.8L59 171L54.5 171.4L49.9 171.6L45.2 171.4L40.8 170.6L36.8 168.9L33.5 166.5L31.1 163.2L29.4 159.2L28.6 154.8L28.4 150.1L28.6 145.5L29 141L29.2 136.9L28.9 133.2L27.9 129.8L26.3 126.8L23.8 124L20.8 121.2L17.4 118.3L13.9 115.2L10.8 111.7L8.2 108L6.6 104.1L6 100L6.6 95.9L8.2 92L10.8 88.3L13.9 84.8L17.4 81.7L20.8 78.8L23.8 76L26.3 73.2L27.9 70.2L28.9 66.8L29.2 63.1L29 59L28.6 54.5L28.4 49.9L28.6 45.2L29.4 40.8L31.1 36.8L33.5 33.5L36.8 31.1L40.8 29.4L45.2 28.6L49.9 28.4L54.5 28.6L59 29L63.1 29.2L66.8 28.9L70.2 27.9L73.2 26.3L76 23.8L78.8 20.8L81.7 17.4L84.8 13.9L88.3 10.8L92 8.2L95.9 6.6L100 6L104.1 6.6L108 8.2L111.7 10.8L115.2 13.9L118.3 17.4L121.2 20.8L124 23.8L126.8 26.3L129.8 27.9L133.2 28.9L136.9 29.2L141 29L145.5 28.6L150.1 28.4L154.8 28.6L159.2 29.4L163.2 31.1L166.5 33.5L168.9 36.8L170.6 40.8L171.4 45.2L171.6 49.9L171.4 54.5L171 59L170.8 63.1L171.1 66.8L172.1 70.2L173.7 73.2L176.2 76L179.2 78.8L182.6 81.7L186.1 84.8L189.2 88.3L191.8 92L193.4 95.9L194 100Z';
-    const BIG = 'M195 100L194.1 104.1L191.4 108L187.6 111.5L183.2 114.7L178.9 117.5L175.5 120.2L173.5 123.2L172.9 126.5L173.6 130.5L175.2 135L177 140.1L178.4 145.3L178.7 150.2L177.7 154.4L175.1 157.6L171.2 159.7L166.2 160.7L160.8 160.8L155.5 160.6L150.8 160.6L147.1 161.3L144.2 163.2L142.2 166.3L140.8 170.6L139.3 175.6L137.6 180.7L135.3 185.3L132.3 188.8L128.6 190.6L124.3 190.6L119.7 189L115.2 186.2L110.9 183L107 179.9L103.4 177.8L100 177L96.6 177.8L93 179.9L89.1 183L84.8 186.2L80.3 189L75.7 190.6L71.4 190.6L67.7 188.8L64.7 185.3L62.4 180.7L60.7 175.6L59.3 170.6L57.8 166.3L55.8 163.2L52.9 161.3L49.2 160.6L44.5 160.6L39.2 160.8L33.8 160.7L28.8 159.7L24.9 157.6L22.3 154.4L21.3 150.2L21.6 145.3L23 140.1L24.8 135L26.4 130.5L27.1 126.5L26.5 123.2L24.5 120.2L21.1 117.5L16.8 114.7L12.4 111.5L8.6 108L5.9 104.1L5 100L5.9 95.9L8.6 92L12.4 88.5L16.8 85.3L21.1 82.5L24.5 79.8L26.5 76.8L27.1 73.5L26.4 69.5L24.8 65L23 59.9L21.6 54.7L21.3 49.8L22.3 45.6L24.9 42.4L28.8 40.3L33.8 39.3L39.2 39.2L44.5 39.4L49.2 39.4L52.9 38.7L55.8 36.8L57.8 33.7L59.2 29.4L60.7 24.4L62.4 19.3L64.7 14.7L67.7 11.2L71.4 9.4L75.7 9.4L80.3 11L84.8 13.8L89.1 17L93 20.1L96.6 22.2L100 23L103.4 22.2L107 20.1L110.9 17L115.2 13.8L119.7 11L124.3 9.4L128.6 9.4L132.3 11.2L135.3 14.7L137.6 19.3L139.3 24.4L140.8 29.4L142.2 33.7L144.2 36.8L147.1 38.7L150.8 39.4L155.5 39.4L160.8 39.2L166.2 39.3L171.2 40.3L175.1 42.4L177.7 45.6L178.7 49.8L178.4 54.7L177 59.9L175.2 65L173.6 69.5L172.9 73.5L173.5 76.8L175.5 79.8L178.9 82.5L183.2 85.3L187.6 88.5L191.4 92L194.1 95.9L195 100Z';
-    // baseline and initial edits
-    const B = { smart: false, on5: true, s5: 'Home-5G', sec5: 'wpa3', pw5: 'harbor-lantern-42', ch5: 36, w5: 80, pow5: 4,
-      on2: true, s2: 'Home-2G', sec2: 'wpa2', pw2: 'harbor-lantern-42', ch2: 6, w2: 20, pow2: 3,
-      g1on: true, g1name: 'Guest-Home', g1pw: 'welcome-home', g1lim: 'none', g2on: false, g2name: 'Guest-Visitors', g2pw: 'summer-picnic', g2lim: '24h', iso: true };
-    const INIT = { ch5: 44 };
-    const v = (k) => s[k] !== undefined ? s[k] : (INIT[k] !== undefined ? INIT[k] : B[k]);
-    const show = s.show || [];
-    const qrSel = s.qrSel || 'g1';
-    const lockOf = { 5: 'b5', 2: 'b2' };
-    const setv = (k, val, lk) => { if (can(lk)) set({ [k]: val }); };
-    const strengthOf = (pw) => {
-      let sc = 0;
-      if (pw.length >= 10) sc++;
-      if (pw.length >= 16) sc++;
-      if (/[a-z]/.test(pw) && /[A-Z0-9]/.test(pw)) sc++;
-      if (/[^A-Za-z0-9]/.test(pw)) sc++;
-      sc = Math.min(sc, 4);
-      const lab = [T('Too short', '太短'), T('Weak', '偏弱'), T('Fair', '一般'), T('Good', '良好'), T('Strong', '好強')][pw.length === 0 ? 0 : sc];
-      return { lab, style: 'width:' + (pw.length === 0 ? 4 : 20 + sc * 20) + '%;background:' + (sc >= 3 ? 'var(--good)' : sc === 2 ? 'var(--warn)' : 'var(--bad)') };
-    };
-    const smart = v('smart');
-    const secLabels = { wpa3: 'WPA3', wpa2wpa3: 'WPA2/WPA3', wpa2: 'WPA2' };
-    const powNames = [T('Minimum', '最低'), T('Low', '低'), T('Medium', '中'), T('High', '高'), T('Maximum', '最高')];
-    const cards = mkCards({
-      b5: [T('5 GHz radio', '5 GHz 無線'), T('Fast and short range. Best for phones, laptops and TVs close to the router.', '速度快、範圍較短，適合近路由器嘅手機、手提電腦同電視。')],
-      b2: [T('2.4 GHz radio', '2.4 GHz 無線'), T('Slower but reaches further through walls. Best for smart plugs and speakers.', '速度較慢但穿牆較遠，適合智能插座同喇叭。')],
-      c5: [T('5 GHz channel', '5 GHz 頻道'), T('Pick a channel with fewer neighbours. Wider channels are faster but overlap more.', '揀鄰居較少嘅頻道。頻寬愈闊速度愈快，但重疊愈多。')],
-      c2: [T('2.4 GHz channel', '2.4 GHz 頻道'), T('Only channels 1, 6 and 11 do not overlap each other.', '只有頻道 1、6、11 彼此唔會重疊。')],
-      smart: [T('Smart Connect', '智能連線'), T('One name and password for both bands. The router moves each device to the best band.', '兩個頻段用同一個名稱同密碼，路由器會將每部裝置轉去最適合嘅頻段。')],
-      guest: [T('guest networks', '訪客網絡'), T('Guests get internet only and cannot see your devices. Share the QR code instead of the password.', '訪客只可以上網，睇唔到你嘅裝置。分享 QR 碼而唔係密碼。')]
-    });
-    const bandDefs = [
-      { k: '5', lk: 'b5', cardCls: 'card hero rise bandcard', title: '5 GHz', cookie: 'color:var(--tertiary-c)', icon: 'color:var(--on-tertiary-c)', clients: T('6 clients', '6 部裝置'), air: '23%', info: TF('Channel %1 · %2 MHz', '頻道 %1 · %2 MHz', v('ch5'), v('w5')) },
-      { k: '2', lk: 'b2', cardCls: 'card ter rise bandcard', title: '2.4 GHz', cookie: 'color:var(--tertiary)', icon: 'color:#fff', clients: T('4 clients', '4 部裝置'), air: '41%', info: TF('Channel %1 · %2 MHz', '頻道 %1 · %2 MHz', v('ch2'), v('w2')) }
-    ];
-    const bands = bandDefs.map(bd => {
-      const k = bd.k, lk = bd.lk;
-      const isShared = smart && k === '2';
-      const on = v('on' + k);
-      const ssid = isShared ? v('s5') : v('s' + k);
-      const pw = isShared ? v('pw5') : v('pw' + k);
-      const sec = isShared ? v('sec5') : v('sec' + k);
-      const st = strengthOf(pw);
-      const reveal = show.includes(k);
-      const lkOn = locks.includes(lk);
-      const editable = can(lk) && !isShared;
-      const secs = ['wpa3', 'wpa2wpa3', 'wpa2'].map(id => ({ label: secLabels[id], pressed: sec === id ? 'true' : 'false', pick: () => { if (editable) set({ ['sec' + k]: id }); } }));
-      return {
-        cardCls: bd.cardCls + (on ? '' : ' off') + (lkOn ? ' lockedcard' : ''), title: bd.title, cookieCol: bd.cookie, iconCol: bd.icon,
-        tipLabel: T('About ', '關於 ') + bd.title, tipOn: tip === 'b' + k, tipText: cards.tips['b' + k].text, tipToggle: () => set({ tip: tip === 'b' + k ? '' : 'b' + k }),
-        lkLabel: (lkOn ? T('Unlock ', '解鎖 ') : T('Lock ', '鎖定 ')) + bd.title, lkPressed: lkOn ? 'true' : 'false', lkD: lkOn ? 'M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4' : 'M5 11h14v10H5z M8 11V7a4 4 0 0 1 7.5-2', lkToggle: () => set({ locks: toggleIn(locks, lk) }),
-        clients: bd.clients, airtime: T('Airtime ', '佔用 ') + bd.air, chInfo: bd.info,
-        radioCls: 'sw' + (on ? ' on' : ''), radioChecked: on ? 'true' : 'false', radioLabel: bd.title + T(' radio', ' 無線'), radioToggle: () => setv('on' + k, !on, lk),
-        shared: isShared, ro: editable ? 'false' : 'true',
-        idSsid: 'ssid-' + k, idPw: 'pw-' + k,
-        ssid, onSsid: (e) => { if (editable) set({ ['s' + k]: e.target.value }); },
-        secs, secWarn: sec === 'wpa2',
-        pw, pwType: reveal ? 'text' : 'password', showPw: reveal ? 'true' : 'false', revealLabel: reveal ? T('Hide', '隱藏') : T('Show', '顯示'),
-        toggleShow: () => set({ show: toggleIn(show, k) }), onPw: (e) => { if (editable) set({ ['pw' + k]: e.target.value }); },
-        strLabel: st.lab, strStyle: st.style, strAlt: T('Password strength: ', '密碼強度：') + st.lab
-      };
-    });
-
-    // spectrum
-    const mkChan = (k) => {
-      const is5 = k === '5';
-      const chs = is5 ? [36, 40, 44, 48, 52, 56, 60, 64] : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
-      const N = chs.length, slot = 600 / N;
-      const ownCh = v('ch' + k), ownW = v('w' + k);
-      const ownIdx = chs.indexOf(ownCh);
-      const ownSpan = is5 ? ownW / 20 : (ownW === 20 ? 4 : 8);
-      const nb = is5
-        ? [{ c: 0, w: 1, s: 0.5, n: 'Cafe-5G' }, { c: 1.5, w: 2, s: 0.38, n: 'NET-4F21' }, { c: 5, w: 1, s: 0.72, n: 'Fiber-8832' }, { c: 6.5, w: 2, s: 0.34, n: 'AX_Flat' }]
-        : [{ c: 0, w: 4, s: 0.55, n: 'Cafe-2G' }, { c: 5, w: 4, s: 0.78, n: 'NET-4F21' }, { c: 10, w: 4, s: 0.5, n: 'Fiber-8832' }, { c: 7, w: 4, s: 0.3, n: 'TV-Direct' }];
-      const hump = (c, w, h) => {
-        const x0 = (c - w / 2 + 0.5) * slot, x1 = (c + w / 2 + 0.5) * slot;
-        const xa = Math.max(0, x0), xb = Math.min(600, x1);
-        const dx = xb - xa;
-        return 'M' + f1(xa) + ' 150 C' + f1(xa + dx * 0.26) + ' ' + f1(150 - h) + ' ' + f1(xb - dx * 0.26) + ' ' + f1(150 - h) + ' ' + f1(xb) + ' 150Z';
-      };
-      const humps = nb.map(x => ({ d: hump(x.c, x.w, x.s * 120), style: 'fill:var(--tertiary);fill-opacity:.2;stroke:var(--tertiary);stroke-width:1.5', lx: f1((x.c + 0.5) * slot), ly: f1(150 - x.s * 120 - 6), label: x.n, tstyle: 'fill:var(--sub)' }));
-      const ownC = ownIdx < 0 ? 0 : ownIdx;
-      humps.push({ d: hump(ownC, ownSpan, 108), style: 'fill:url(#' + 'gr' + k + ');stroke:var(--primary);stroke-width:2.5', lx: f1((ownC + 0.5) * slot), ly: 22, label: v('s' + k) + ' · ' + ownCh, tstyle: 'fill:var(--primary);font-weight:800' });
-      const score = (idx) => nb.reduce((a, x) => { const ov = (x.w + ownSpan) / 2 - Math.abs(x.c - idx); return a + (ov > 0 ? Math.min(ov, 2) * x.s : 0); }, 0);
-      const scores = chs.map((ch, i) => score(i));
-      let best = 0; scores.forEach((sv, i) => { if (sv < scores[best]) best = i; });
-      const lkId = 'c' + k, lkId2 = 'b' + k;
-      const edit = can(lkId2) ? true : false;
-      const buttons = chs.map((ch, i) => ({
-        label: ch + (i === best ? ' ★' : ''), cls: 'chbtn' + (i === best ? ' quiet' : ''), pressed: ch === ownCh ? 'true' : 'false',
-        pick: () => { if (can(lkId)) set({ ['ch' + k]: ch }); }
-      }));
-      const nOver = nb.filter(x => Math.abs(x.c - ownC) < (x.w + ownSpan) / 2).length;
-      const widthOpts = is5 ? [20, 40, 80, 160] : [20, 40];
-      const lkOn = locks.includes(lkId);
-      return {
-        cardCls: 'card rise' + (lkOn ? ' lockedcard' : ''), title: is5 ? T('5 GHz channel and power', '5 GHz 頻道同功率') : T('2.4 GHz channel and power', '2.4 GHz 頻道同功率'),
-        tipLabel: T('About the channel chart', '關於頻道圖'), tipOn: tip === lkId, tipText: cards.tips[lkId].text, tipToggle: () => set({ tip: tip === lkId ? '' : lkId }),
-        lkLabel: (lkOn ? T('Unlock ', '解鎖 ') : T('Lock ', '鎖定 ')) + (is5 ? '5 GHz' : '2.4 GHz') + T(' channel card', ' 頻道卡片'), lkPressed: lkOn ? 'true' : 'false',
-        lkD: lkOn ? 'M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4' : 'M5 11h14v10H5z M8 11V7a4 4 0 0 1 7.5-2', lkToggle: () => set({ locks: toggleIn(locks, lkId) }),
-        widths: widthOpts.map(w => ({ label: w + ' MHz', pressed: ownW === w ? 'true' : 'false', pick: () => { if (can(lkId)) set({ ['w' + k]: w }); } })),
-        auto: () => { if (can(lkId)) set({ ['ch' + k]: chs[best] }); }, autoLabel: T('Pick the quietest', '揀最清靜嘅'),
-        gid: 'gr' + k, alt: TF('Channel spectrum: your network on channel %1 with %2 overlapping neighbours', '頻道頻譜：你嘅網絡喺頻道 %1，有 %2 個重疊鄰居', ownCh, nOver),
-        humps, ticks: chs.map((ch, i) => ({ x: f1((i + 0.5) * slot), label: String(ch) })),
-        buttons, advice: TF('Channel %1 is the quietest, with %2 congestion points. Yours has %3 overlapping neighbours.', '頻道 %1 最清靜，只有 %2 個擁擠分數。你而家用嘅有 %3 個重疊鄰居。', chs[best], Math.round(scores[best] * 10) / 10, nOver),
-        idPow: 'pow-' + k, pow: v('pow' + k), powLabel: powNames[v('pow' + k) - 1] + ' · ' + (v('pow' + k) * 20) + '%',
-        onPow: (e) => { if (can(lkId)) set({ ['pow' + k]: Math.max(1, Math.min(5, Number(e.target.value) || 1)) }); }
-      };
-    };
-    const chans = [mkChan('5'), mkChan('2')];
-
-    // guests
-    const lims = [['none', T('No limit', '冇限制')], ['2h', '2 h'], ['24h', '24 h']];
-    const canG = can('guest');
-    const guests = ['1', '2'].map(n => {
-      const on = v('g' + n + 'on');
-      return {
-        cls: 'sw' + (on ? ' on' : ''), checked: on ? 'true' : 'false', label: v('g' + n + 'name'), toggle: () => { if (canG) set({ ['g' + n + 'on']: !on }); },
-        idName: 'gname-' + n, idPw: 'gpw-' + n, name: v('g' + n + 'name'), pw: v('g' + n + 'pw'),
-        onName: (e) => { if (canG) set({ ['g' + n + 'name']: e.target.value }); }, onPw: (e) => { if (canG) set({ ['g' + n + 'pw']: e.target.value }); },
-        limits: lims.map(([id, label]) => ({ label, pressed: v('g' + n + 'lim') === id ? 'true' : 'false', pick: () => { if (canG) set({ ['g' + n + 'lim']: id }); } })),
-        showQr: () => set({ qrSel: 'g' + n })
-      };
-    });
-    const qrDefs = [['m5', v('s5'), v('pw5'), 'WPA'], ['m2', smart ? v('s5') : v('s2'), smart ? v('pw5') : v('pw2'), 'WPA'], ['g1', v('g1name'), v('g1pw'), 'WPA'], ['g2', v('g2name'), v('g2pw'), 'WPA']];
-    const qrCur = qrDefs.find(x => x[0] === qrSel) || qrDefs[2];
-    const qrTargets = qrDefs.map(x => ({ label: x[1], pressed: qrSel === x[0] ? 'true' : 'false', pick: () => set({ qrSel: x[0] }) }));
-    const qr = { d: qrPath('WIFI:T:' + qrCur[3] + ';S:' + qrCur[1] + ';P:' + qrCur[2] + ';;', 25), name: qrCur[1], alt: T('QR code to join ', '加入嘅 QR 碼：') + qrCur[1] };
-
-    // pending changes
-    const CH = [
-      ['smart', () => smart ? T('Smart Connect on', '開啟智能連線') : T('Smart Connect off', '關閉智能連線')],
-      ['on5', () => v('on5') ? T('5 GHz radio on', '開啟 5 GHz 無線') : T('5 GHz radio off', '關閉 5 GHz 無線')],
-      ['s5', () => TF('5 GHz name to %1', '5 GHz 名稱改為 %1', v('s5'))], ['sec5', () => TF('5 GHz security %1', '5 GHz 保安改為 %1', secLabels[v('sec5')])], ['pw5', () => T('5 GHz password changed', '5 GHz 密碼已更改')],
-      ['ch5', () => TF('5 GHz channel %1 to %2', '5 GHz 頻道 %1 改做 %2', B.ch5, v('ch5'))], ['w5', () => TF('5 GHz width %1 MHz', '5 GHz 頻寬 %1 MHz', v('w5'))], ['pow5', () => TF('5 GHz power %1%', '5 GHz 功率 %1%', v('pow5') * 20)],
-      ['on2', () => v('on2') ? T('2.4 GHz radio on', '開啟 2.4 GHz 無線') : T('2.4 GHz radio off', '關閉 2.4 GHz 無線')],
-      ['s2', () => TF('2.4 GHz name to %1', '2.4 GHz 名稱改為 %1', v('s2'))], ['sec2', () => TF('2.4 GHz security %1', '2.4 GHz 保安改為 %1', secLabels[v('sec2')])], ['pw2', () => T('2.4 GHz password changed', '2.4 GHz 密碼已更改')],
-      ['ch2', () => TF('2.4 GHz channel %1 to %2', '2.4 GHz 頻道 %1 改做 %2', B.ch2, v('ch2'))], ['w2', () => TF('2.4 GHz width %1 MHz', '2.4 GHz 頻寬 %1 MHz', v('w2'))], ['pow2', () => TF('2.4 GHz power %1%', '2.4 GHz 功率 %1%', v('pow2') * 20)],
-      ['g1on', () => v('g1on') ? T('Guest network 1 on', '開啟訪客網絡 1') : T('Guest network 1 off', '關閉訪客網絡 1')], ['g1name', () => TF('Guest 1 name to %1', '訪客 1 名稱改為 %1', v('g1name'))], ['g1pw', () => T('Guest 1 password changed', '訪客 1 密碼已更改')], ['g1lim', () => T('Guest 1 time limit', '訪客 1 時間限制')],
-      ['g2on', () => v('g2on') ? T('Guest network 2 on', '開啟訪客網絡 2') : T('Guest network 2 off', '關閉訪客網絡 2')], ['g2name', () => TF('Guest 2 name to %1', '訪客 2 名稱改為 %1', v('g2name'))], ['g2pw', () => T('Guest 2 password changed', '訪客 2 密碼已更改')], ['g2lim', () => T('Guest 2 time limit', '訪客 2 時間限制')],
-      ['iso', () => T('Guest isolation changed', '訪客隔離已更改')]
-    ];
-    const changed = CH.filter(c => v(c[0]) !== B[c[0]]);
-    const dockNames = changed.slice(0, 2).map(c => c[1]()).join(', ') + (changed.length > 2 ? ' +' + (changed.length - 2) : '');
-    const discardAll = () => { const o = {}; Object.keys(B).forEach(k => { o[k] = B[k]; }); set(o); };
-    const iso = v('iso');
-    return Object.assign(baseOut(changed.length), {
-      cookieD: COOKIE, bigD: BIG,
-      tabsStr: ['Wi-Fi', T('Overview', '概覽'), T('Devices', '裝置')].join(','),
-      lk: cards.lk, tips: cards.tips, cardCls: cards.cardCls,
-      bands, chans, guests, qrTargets, qr,
-      smartCls: 'sw' + (smart ? ' on' : ''), smartChecked: smart ? 'true' : 'false', toggleSmart: () => setv('smart', !smart, 'b5'),
-      isoCls: 'sw' + (iso ? ' on' : ''), isoChecked: iso ? 'true' : 'false', toggleIso: () => { if (canG) set({ iso: !iso }); },
-      copyPw: () => set({ copied: true }), copyLabel: s.copied ? T('Password copied', '已複製密碼') : T('Copy password', '複製密碼'),
-      printCard: () => set({ printed: true }), printLabel: s.printed ? T('Sent to printer', '已傳送去打印機') : T('Print card', '列印卡片'),
-      dockNames, discard: discardAll,
-      t: Object.assign(dockT(changed.length), {
-        title: 'Wi-Fi',
-        lede: T('Tune both radios, pick a quiet channel from the live spectrum and share access with a QR code. Edits are queued until you review them.', '調整兩個無線頻段，喺即時頻譜揀清靜頻道，用 QR 碼分享上網，所有修改會先排隊，等你檢視。'),
-        smart: T('Smart Connect', '智能連線'), smartSub: T('One name for both bands', '兩個頻段共用一個名稱'),
-        radio: T('Radio', '無線'), ssid: T('Network name (SSID)', '網絡名稱（SSID）'), security: T('Security', '保安'), password: T('Password', '密碼'),
-        pwHint: T('16 characters or more is best.', '最好 16 個字元或以上。'), wpa2Warn: T('WPA2 only is older. Choose WPA2/WPA3 if some devices fail to join.', '單用 WPA2 較舊。如有裝置連唔到，可揀 WPA2/WPA3。'),
-        sharedNote: T('Shared with the 5 GHz name and password while Smart Connect is on.', '智能連線開啟時，使用 5 GHz 嘅名稱同密碼。'),
-        width: T('Channel width', '頻道頻寬'), yours: T('Your network', '你嘅網絡'), neighbours: T('Neighbours', '鄰近網絡'), quietest: T('Quietest channel', '最清靜頻道'),
-        chPick: T('Choose a channel', '揀頻道'), power: T('Transmit power', '發射功率'),
-        guestTitle: T('Guest networks', '訪客網絡'), guestLede: T('Guests get internet only. Pick a network to show its QR code.', '訪客只可以上網。揀一個網絡就會顯示佢嘅 QR 碼。'),
-        timeLimit: T('Time limit', '時間限制'), showQr: T('Show QR', '顯示 QR'),
-        isolate: T('Isolate guests from each other', '訪客之間互相隔離'), isolateSub: T('Guests cannot see your devices or one another.', '訪客睇唔到你嘅裝置，亦睇唔到對方。'),
-        qrFor: T('Network for the QR code', 'QR 碼對應嘅網絡'), scanTo: T('Scan with a phone camera to join', '用手機相機掃描即可加入')
-      })
-    });
   }
 }
 </script>
 </body>
 </html>
-

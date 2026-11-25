@@ -19,6 +19,10 @@
       "name": "Overview and notifications"
     },
     {
+      "id": "modes",
+      "name": "One-click modes"
+    },
+    {
       "id": "devices",
       "name": "Devices"
     },
@@ -33,6 +37,10 @@
     {
       "id": "security",
       "name": "Firewall, parental controls, VPN"
+    },
+    {
+      "id": "editors",
+      "name": "Visual editors"
     },
     {
       "id": "storage",
@@ -80,411 +88,511 @@
       "x": 0,
       "y": 0,
       "w": 1440,
-      "h": 920,
-      "title": "First run: owner, router, host key, firmware, language",
+      "h": 1890,
+      "title": "First run",
       "page": "setup",
-      "expand": "fill",
-      "is_interactive": true
+      "is_interactive": true,
+      "expand": "fill"
     },
     "Main.dc.html": {
       "x": 0,
       "y": 0,
       "w": 1440,
-      "h": 2460,
+      "h": 1980,
       "title": "Overview",
       "page": "overview",
-      "expand": "fill",
-      "is_interactive": true
+      "is_interactive": true,
+      "expand": "fill"
     },
     "Notifications.dc.html": {
-      "x": 1520,
+      "x": 2080,
       "y": 0,
       "w": 1440,
-      "h": 2040,
-      "title": "Notifications centre and toasts",
+      "h": 1760,
+      "title": "Notifications",
       "page": "overview",
-      "expand": "fill",
-      "is_interactive": true
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "Modes.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 1450,
+      "title": "One-click modes",
+      "page": "modes",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "ModeBuilder.dc.html": {
+      "x": 2080,
+      "y": 0,
+      "w": 1440,
+      "h": 1740,
+      "title": "Mode builder",
+      "page": "modes",
+      "is_interactive": true,
+      "expand": "fill"
     },
     "Devices.dc.html": {
       "x": 0,
       "y": 0,
       "w": 1440,
-      "h": 1880,
+      "h": 1580,
       "title": "Devices",
       "page": "devices",
-      "expand": "fill",
-      "is_interactive": true
+      "is_interactive": true,
+      "expand": "fill"
     },
     "WiFi.dc.html": {
       "x": 0,
       "y": 0,
       "w": 1440,
-      "h": 2000,
+      "h": 1830,
       "title": "Wi-Fi",
       "page": "wifi",
-      "expand": "fill",
-      "is_interactive": true
+      "is_interactive": true,
+      "expand": "fill"
     },
     "Mesh.dc.html": {
-      "x": 1520,
+      "x": 2080,
       "y": 0,
       "w": 1440,
-      "h": 1900,
+      "h": 1660,
       "title": "AiMesh",
       "page": "wifi",
-      "expand": "fill",
-      "is_interactive": true
+      "is_interactive": true,
+      "expand": "fill"
     },
     "Network.dc.html": {
       "x": 0,
       "y": 0,
       "w": 1440,
-      "h": 2610,
-      "title": "Internet, local network, port forwarding",
+      "h": 1970,
+      "title": "Internet",
       "page": "network",
-      "expand": "fill",
-      "is_interactive": true
+      "is_interactive": true,
+      "expand": "fill"
     },
     "Lan.dc.html": {
-      "x": 1520,
+      "x": 2080,
       "y": 0,
       "w": 1440,
-      "h": 3150,
-      "title": "Addresses and ports",
+      "h": 1890,
+      "title": "Local network",
       "page": "network",
-      "expand": "fill",
-      "is_interactive": true
+      "is_interactive": true,
+      "expand": "fill"
     },
     "Qos.dc.html": {
-      "x": 3040,
+      "x": 4160,
       "y": 0,
       "w": 1440,
-      "h": 2860,
+      "h": 1580,
       "title": "Traffic priority",
       "page": "network",
-      "expand": "fill",
-      "is_interactive": true
+      "is_interactive": true,
+      "expand": "fill"
     },
     "Security.dc.html": {
       "x": 0,
       "y": 0,
       "w": 1440,
-      "h": 2550,
-      "title": "Firewall, parental controls, VPN: overview",
+      "h": 2010,
+      "title": "Security overview",
       "page": "security",
-      "expand": "fill",
-      "is_interactive": true
+      "is_interactive": true,
+      "expand": "fill"
     },
     "Firewall.dc.html": {
-      "x": 1520,
+      "x": 2080,
       "y": 0,
       "w": 1440,
-      "h": 2530,
+      "h": 1410,
       "title": "Firewall",
       "page": "security",
-      "expand": "fill",
-      "is_interactive": true
+      "is_interactive": true,
+      "expand": "fill"
     },
     "Parental.dc.html": {
-      "x": 3040,
+      "x": 4160,
       "y": 0,
       "w": 1440,
-      "h": 2630,
+      "h": 1850,
       "title": "Parental controls",
       "page": "security",
-      "expand": "fill",
-      "is_interactive": true
+      "is_interactive": true,
+      "expand": "fill"
     },
     "Vpn.dc.html": {
-      "x": 4560,
-      "y": 0,
+      "x": 0,
+      "y": 2210,
       "w": 1440,
-      "h": 2350,
+      "h": 1800,
       "title": "VPN",
       "page": "security",
-      "expand": "fill",
-      "is_interactive": true
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "MapEditor.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 1840,
+      "title": "Editor: drag-and-drop network map",
+      "page": "editors",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "RuleCanvas.dc.html": {
+      "x": 2080,
+      "y": 0,
+      "w": 1440,
+      "h": 1770,
+      "title": "Editor: firewall and port-forward rule canvas",
+      "page": "editors",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "SchedulePaint.dc.html": {
+      "x": 4160,
+      "y": 0,
+      "w": 1440,
+      "h": 1620,
+      "title": "Editor: paint-to-schedule grids",
+      "page": "editors",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "PriorityBoard.dc.html": {
+      "x": 0,
+      "y": 2040,
+      "w": 1440,
+      "h": 1820,
+      "title": "Editor: drag-to-order traffic priority board",
+      "page": "editors",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "Spectrum.dc.html": {
+      "x": 2080,
+      "y": 2040,
+      "w": 1440,
+      "h": 1500,
+      "title": "Editor: Wi-Fi channel spectrum",
+      "page": "editors",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "PortCanvas.dc.html": {
+      "x": 4160,
+      "y": 2040,
+      "w": 1440,
+      "h": 1550,
+      "title": "Editor: VLAN and IPTV port canvas",
+      "page": "editors",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "VpnDirector.dc.html": {
+      "x": 0,
+      "y": 4060,
+      "w": 1440,
+      "h": 1710,
+      "title": "Editor: VPN Director routing canvas",
+      "page": "editors",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "DhcpMap.dc.html": {
+      "x": 2080,
+      "y": 4060,
+      "w": 1440,
+      "h": 1490,
+      "title": "Editor: DHCP address-space map",
+      "page": "editors",
+      "is_interactive": true,
+      "expand": "fill"
     },
     "Storage.dc.html": {
       "x": 0,
       "y": 0,
       "w": 1440,
-      "h": 2150,
+      "h": 1500,
       "title": "USB and storage",
       "page": "storage",
-      "expand": "fill",
-      "is_interactive": true
+      "is_interactive": true,
+      "expand": "fill"
     },
     "Tools.dc.html": {
       "x": 0,
       "y": 0,
       "w": 1440,
-      "h": 2670,
-      "title": "Network tools and live log",
+      "h": 1520,
+      "title": "Logs and tools",
       "page": "tools",
-      "expand": "fill",
-      "is_interactive": true
+      "is_interactive": true,
+      "expand": "fill"
     },
     "SpeedLab.dc.html": {
-      "x": 1520,
+      "x": 2080,
       "y": 0,
       "w": 1440,
-      "h": 2340,
+      "h": 1820,
       "title": "Speed lab",
       "page": "tools",
-      "expand": "fill",
-      "is_interactive": true
+      "is_interactive": true,
+      "expand": "fill"
     },
     "Utilities.dc.html": {
-      "x": 3040,
+      "x": 4160,
       "y": 0,
       "w": 1440,
-      "h": 2610,
+      "h": 1460,
       "title": "Router utilities",
       "page": "tools",
-      "expand": "fill",
-      "is_interactive": true
+      "is_interactive": true,
+      "expand": "fill"
     },
     "Jobs.dc.html": {
-      "x": 4560,
-      "y": 0,
+      "x": 0,
+      "y": 2020,
       "w": 1440,
-      "h": 1790,
+      "h": 1870,
       "title": "Scheduled jobs",
       "page": "tools",
-      "expand": "fill",
-      "is_interactive": true
+      "is_interactive": true,
+      "expand": "fill"
     },
     "Firmware.dc.html": {
       "x": 0,
       "y": 0,
       "w": 1440,
-      "h": 2140,
+      "h": 1590,
       "title": "Firmware",
       "page": "router",
-      "expand": "fill",
-      "is_interactive": true
+      "is_interactive": true,
+      "expand": "fill"
     },
     "System.dc.html": {
-      "x": 1520,
+      "x": 2080,
       "y": 0,
       "w": 1440,
-      "h": 2640,
-      "title": "System and maintenance",
+      "h": 1670,
+      "title": "System",
       "page": "router",
-      "expand": "fill",
-      "is_interactive": true
+      "is_interactive": true,
+      "expand": "fill"
     },
     "Backup.dc.html": {
-      "x": 3040,
+      "x": 4160,
       "y": 0,
       "w": 1440,
-      "h": 1810,
+      "h": 1640,
       "title": "Backup and restore",
       "page": "router",
-      "expand": "fill",
-      "is_interactive": true
+      "is_interactive": true,
+      "expand": "fill"
     },
     "Advanced.dc.html": {
-      "x": 4560,
-      "y": 0,
+      "x": 0,
+      "y": 1870,
       "w": 1440,
-      "h": 2040,
-      "title": "Advanced table and Merlin extras",
+      "h": 1620,
+      "title": "Advanced",
       "page": "router",
-      "expand": "fill",
-      "is_interactive": true
+      "is_interactive": true,
+      "expand": "fill"
     },
     "Changes.dc.html": {
       "x": 0,
       "y": 0,
       "w": 1440,
-      "h": 2330,
-      "title": "Change history, preview, guard, applied, reverted, failed",
+      "h": 1520,
+      "title": "Change history",
       "page": "changes",
-      "expand": "fill",
-      "is_interactive": true
+      "is_interactive": true,
+      "expand": "fill"
     },
     "Takeover.dc.html": {
-      "x": 1520,
+      "x": 2080,
       "y": 0,
       "w": 1440,
-      "h": 1200,
-      "title": "Install and update takeovers",
+      "h": 1620,
+      "title": "Takeovers: connection-loss guard and two-key confirmation",
       "page": "changes",
-      "expand": "fill",
-      "is_interactive": true
+      "is_interactive": true,
+      "expand": "fill"
     },
     "Records.dc.html": {
-      "x": 3040,
+      "x": 4160,
       "y": 0,
       "w": 1440,
-      "h": 2570,
-      "title": "Exports, bulk actions, history replay",
+      "h": 1730,
+      "title": "Records and exports",
       "page": "changes",
-      "expand": "fill",
-      "is_interactive": true
+      "is_interactive": true,
+      "expand": "fill"
     },
     "Settings.dc.html": {
       "x": 0,
       "y": 0,
       "w": 1440,
-      "h": 1140,
-      "title": "Settings and command palette",
+      "h": 1460,
+      "title": "Settings",
       "page": "app",
-      "expand": "fill",
-      "is_interactive": true
+      "is_interactive": true,
+      "expand": "fill"
     },
     "Tabs.dc.html": {
-      "x": 1520,
+      "x": 2080,
       "y": 0,
       "w": 1440,
-      "h": 1710,
-      "title": "New tab catalog and workspace tabs",
+      "h": 1860,
+      "title": "Tabs and new tab",
       "page": "app",
-      "expand": "fill",
-      "is_interactive": true
+      "is_interactive": true,
+      "expand": "fill"
     },
     "Appearance.dc.html": {
-      "x": 3040,
+      "x": 4160,
       "y": 0,
       "w": 1440,
-      "h": 4080,
-      "title": "Appearance editor, infinite colour picker, animation editor",
+      "h": 2030,
+      "title": "Appearance",
       "page": "app",
-      "expand": "fill",
-      "is_interactive": true
+      "is_interactive": true,
+      "expand": "fill"
     },
     "Language.dc.html": {
-      "x": 4560,
-      "y": 0,
+      "x": 0,
+      "y": 2230,
       "w": 1440,
-      "h": 2630,
-      "title": "Language modes, funny levels, personal vocabulary, narrator, sounds",
+      "h": 1730,
+      "title": "Language and wording",
       "page": "app",
-      "expand": "fill",
-      "is_interactive": true
+      "is_interactive": true,
+      "expand": "fill"
     },
     "Focus.dc.html": {
-      "x": 0,
-      "y": 4860,
+      "x": 2080,
+      "y": 2230,
       "w": 1440,
-      "h": 2340,
-      "title": "School and ADHD modes",
+      "h": 1340,
+      "title": "App modes",
       "page": "app",
-      "expand": "fill",
-      "is_interactive": true
+      "is_interactive": true,
+      "expand": "fill"
     },
     "Locks.dc.html": {
-      "x": 1520,
-      "y": 4860,
+      "x": 4160,
+      "y": 2230,
       "w": 1440,
-      "h": 2130,
-      "title": "Locks, unlock ladder, support tickets, authenticator with QR pairing",
+      "h": 1620,
+      "title": "Locks and permissions",
       "page": "app",
-      "expand": "fill",
-      "is_interactive": true
+      "is_interactive": true,
+      "expand": "fill"
     },
     "Regex.dc.html": {
-      "x": 3040,
-      "y": 4860,
+      "x": 0,
+      "y": 4160,
       "w": 1440,
-      "h": 2000,
+      "h": 1460,
       "title": "Regex builder",
       "page": "app",
-      "expand": "fill",
-      "is_interactive": true
+      "is_interactive": true,
+      "expand": "fill"
     },
     "Updates.dc.html": {
-      "x": 4560,
-      "y": 4860,
+      "x": 2080,
+      "y": 4160,
       "w": 1440,
-      "h": 1900,
-      "title": "Changelog and update coming soon",
+      "h": 1500,
+      "title": "App updates",
       "page": "app",
-      "expand": "fill",
-      "is_interactive": true
+      "is_interactive": true,
+      "expand": "fill"
     },
     "Toolbox.dc.html": {
       "x": 0,
       "y": 0,
       "w": 1440,
-      "h": 1480,
-      "title": "Toolbox: converter, Base64, quicktype, Ollama, virtual disks, editor, drawing",
+      "h": 1450,
+      "title": "Toolbox",
       "page": "toolbox",
-      "expand": "fill",
-      "is_interactive": true
+      "is_interactive": true,
+      "expand": "fill"
     },
     "ServerManager.dc.html": {
-      "x": 1520,
+      "x": 2080,
       "y": 0,
       "w": 1440,
-      "h": 2500,
-      "title": "Minecraft server manager and world generator",
+      "h": 1700,
+      "title": "Minecraft server manager",
       "page": "toolbox",
-      "expand": "fill",
-      "is_interactive": true
+      "is_interactive": true,
+      "expand": "fill"
     },
     "Deploy.dc.html": {
       "x": 0,
       "y": 0,
       "w": 1440,
-      "h": 2120,
-      "title": "Deploy assistant and instance manager",
+      "h": 1840,
+      "title": "Deploy assistant",
       "page": "deploy",
-      "expand": "fill",
-      "is_interactive": true
+      "is_interactive": true,
+      "expand": "fill"
     },
     "Docs.dc.html": {
       "x": 0,
       "y": 0,
       "w": 1440,
-      "h": 4360,
-      "title": "Documentation website landing",
+      "h": 1800,
+      "title": "Documentation website",
       "page": "docs",
-      "expand": "fill",
-      "is_interactive": true
+      "is_interactive": true,
+      "expand": "fill"
     },
     "Help.dc.html": {
-      "x": 1520,
+      "x": 2080,
       "y": 0,
       "w": 1440,
-      "h": 1780,
-      "title": "Offline docs",
+      "h": 1560,
+      "title": "Help and offline docs",
       "page": "docs",
-      "expand": "fill",
-      "is_interactive": true
+      "is_interactive": true,
+      "expand": "fill"
     },
     "Phone.dc.html": {
       "x": 0,
       "y": 0,
       "w": 390,
       "h": 844,
-      "title": "Phone: overview",
+      "title": "Phone: home",
       "page": "phone",
       "is_interactive": true
     },
     "PhoneWifi.dc.html": {
-      "x": 470,
+      "x": 1030,
       "y": 0,
       "w": 390,
       "h": 844,
-      "title": "Phone: Wi-Fi and change sheet",
+      "title": "Phone: Wi-Fi with pending sheet",
       "page": "phone",
       "is_interactive": true
     },
     "PhoneNav.dc.html": {
-      "x": 940,
+      "x": 2060,
       "y": 0,
       "w": 390,
       "h": 844,
-      "title": "Phone: where everything lands",
+      "title": "Phone: navigation and search",
       "page": "phone",
       "is_interactive": true
     },
     "PhoneDevices.dc.html": {
-      "x": 1410,
+      "x": 3090,
       "y": 0,
       "w": 390,
       "h": 844,
@@ -494,25 +602,25 @@
     },
     "PhoneGuard.dc.html": {
       "x": 0,
-      "y": 1624,
+      "y": 1300,
       "w": 390,
       "h": 844,
-      "title": "Phone: preview, guard and result",
+      "title": "Phone: connection guard",
       "page": "phone",
       "is_interactive": true
     },
     "PhoneTools.dc.html": {
-      "x": 470,
-      "y": 1624,
+      "x": 1030,
+      "y": 1300,
       "w": 390,
       "h": 844,
-      "title": "Phone: tools and toolbox",
+      "title": "Phone: tools",
       "page": "phone",
       "is_interactive": true
     },
     "PhoneSetup.dc.html": {
-      "x": 940,
-      "y": 1624,
+      "x": 2060,
+      "y": 1300,
       "w": 390,
       "h": 844,
       "title": "Phone: first run",
@@ -520,28 +628,28 @@
       "is_interactive": true
     },
     "PhoneSettings.dc.html": {
-      "x": 1410,
-      "y": 1624,
+      "x": 3090,
+      "y": 1300,
       "w": 390,
       "h": 844,
-      "title": "Phone: settings, look, language, locks",
+      "title": "Phone: settings and notifications",
       "page": "phone",
       "is_interactive": true
     },
     "Rail.dc.html": {
       "x": 0,
       "y": 0,
-      "w": 288,
-      "h": 900,
+      "w": 272,
+      "h": 970,
       "title": "Navigation rail (shared component)",
       "page": "components",
       "is_interactive": true
     },
     "TopBar.dc.html": {
-      "x": 368,
+      "x": 912,
       "y": 0,
-      "w": 1152,
-      "h": 170,
+      "w": 1168,
+      "h": 150,
       "title": "Top bar (shared component)",
       "page": "components",
       "is_interactive": true
@@ -551,6 +659,8 @@
     "Setup.dc.html",
     "Main.dc.html",
     "Notifications.dc.html",
+    "Modes.dc.html",
+    "ModeBuilder.dc.html",
     "Devices.dc.html",
     "WiFi.dc.html",
     "Mesh.dc.html",
@@ -561,6 +671,14 @@
     "Firewall.dc.html",
     "Parental.dc.html",
     "Vpn.dc.html",
+    "MapEditor.dc.html",
+    "RuleCanvas.dc.html",
+    "SchedulePaint.dc.html",
+    "PriorityBoard.dc.html",
+    "Spectrum.dc.html",
+    "PortCanvas.dc.html",
+    "VpnDirector.dc.html",
+    "DhcpMap.dc.html",
     "Storage.dc.html",
     "Tools.dc.html",
     "SpeedLab.dc.html",
@@ -599,530 +717,628 @@
   ],
   "notes": {
     "s_setup": {
-      "x": 1520,
+      "x": 1500,
       "y": 0,
-      "w": 420,
+      "w": 440,
       "page": "setup",
       "fill": "blue",
-      "text": "Setup and onboarding wizard. Step 1 creates the owner (the first account becomes the owner, no setup code). Step 2 connects with a generated app key (default) or the router password, typed only here and stored encrypted. Step 3 shows the host key fingerprint to approve once. Later steps detect stock or Merlin firmware and pick language and theme. Try: Next and Back, App key or Password, the reveal button, Tweaks > lang and firmware. Stands for the app's first-run screens. Unbuilt in the app: firmware detection summary and the language and theme step."
+      "text": "First-run wizard as one stage, not a form: a five-step pipeline, a radar that sweeps the network for the router, the found router as a glass card, sign-in method as segmented buttons with an app key (default) or the router password, the host key as a fingerprint grid to approve, firmware detection and the look step. Try: the step buttons (Back and Next move the pipeline), App key or Password, the reveal eye, Approve host key, Tweaks > stage success (burst and tick) and failure (shake and reason), firmware, lang. Stands for: the app first-run screens: owner account, connect, host key approval. Unbuilt in the app: Network scan radar, firmware detection summary and the look step are design only."
     },
     "t_setup": {
       "kind": "title1",
       "x": 0,
       "y": -300,
-      "w": 1440,
-      "maxW": 1440,
+      "w": 1900,
+      "maxW": 1940,
       "page": "setup",
       "text": "Setup and onboarding"
     },
     "s_main": {
-      "x": 0,
-      "y": 2500,
-      "w": 420,
+      "x": 1500,
+      "y": 0,
+      "w": 440,
       "page": "overview",
       "fill": "blue",
-      "text": "Overview: router health at a glance. Model, firmware (stock or Merlin, detected), uptime, latency, a wavy health bar, quick actions that queue into pending changes, a live traffic chart with range buttons, band and mesh tiles and a recent-changes timeline with undo and bulk select. Try: the quick action buttons (they join the pending count in the rail), the range buttons, Undo on a change, Tweaks > firmware, lang, dark, role. Unbuilt in the app: the live chart data source and quick actions."
+      "text": "The dashboard as a bento: a hero with the live download rate counting up over an aurora, a glass live-traffic chart that draws in, four tonal number tiles with sparklines, the home network map with packets moving along every link, band gauges, quick switches that queue into pending changes, busiest devices, an hourly heat map and recent changes with undo. Try: the quick switches (the dock rises with a count and Apply under guard), the chart range buttons, Tweaks > stage loading (skeleton shimmer) and empty, motion calm (everything stills on the designed frame), accent, dark, lang, role viewer. Stands for: the app overview screen: model, firmware, uptime, clients. Unbuilt in the app: Live traffic chart source, network map, heat map and quick switches are design only."
     },
     "s_notifications": {
-      "x": 3040,
+      "x": 3580,
       "y": 0,
-      "w": 420,
+      "w": 440,
       "page": "overview",
       "fill": "blue",
-      "text": "Notifications centre and toasts. Toasts slide in without stealing focus, then settle into the centre where they can be filtered, searched, snoozed and followed to the page that raised them. Try: the toast preview stage buttons, the toast setting switches, the filter chips, the search box with its regex button. Unbuilt in the app: the centre; the app has simple toasts."
+      "text": "Notification centre: a hero with the unread count and a week of activity as bars, a live stack of toasts sliding in, the feed as rows with kind avatars, status chips and inline actions, per-kind switches, quiet hours as a paintable day strip and a slider for how long toasts stay. Try: the kind filter chips, the per-kind switches, quiet hours cells (click one, then another), the toast seconds slider, Tweaks > stage empty and failure. Stands for: the simple toasts the app shows after an action. Unbuilt in the app: The centre, snooze, per-kind switches and quiet hours are design only."
     },
     "t_overview": {
       "kind": "title1",
       "x": 0,
       "y": -300,
-      "w": 2960,
-      "maxW": 2960,
+      "w": 1900,
+      "maxW": 4020,
       "page": "overview",
       "text": "Overview and notifications"
     },
-    "s_devices": {
-      "x": 1520,
+    "s_modes": {
+      "x": 1500,
       "y": 0,
-      "w": 420,
+      "w": 440,
+      "page": "modes",
+      "fill": "pink",
+      "text": "Seven large mode cards (Gaming, Bedtime, Guest party, Work from home, Privacy DNS, Lock it down, Away). Each one is a real bundle of router changes. Tapping a card opens a preview sheet listing every change with its old and new value; Apply runs the bundle through preview, guard and undo; an active card shows On now and a one-tap Undo. Try: tap any card (the sheet rises from the right with the exact changes), Apply under guard, then Undo on the card; open Guest party to see the QR card; Tweaks > role viewer (cards open, apply is off), stage success and failure, lang. Stands for: the write path that already exists (preview, connection-loss guard, change history with undo), applied to several settings at once. Unbuilt in the app: Modes do not exist in the app; the bundles, the access limit timer and the QR card are design only."
+    },
+    "s_modebuilder": {
+      "x": 3580,
+      "y": 0,
+      "w": 440,
+      "page": "modes",
+      "fill": "pink",
+      "text": "A builder canvas for your own mode: a palette of real router settings grouped by area on the left, a dotted canvas on the right that holds the settings in the mode as cards, each with a real switch for the value the mode will set and a remove button, plus the mode name (with a counter), icon, colour and when it turns itself off. Try: click a palette card (it lifts and the canvas shows a dashed drop outline), then click the canvas to drop it; flip the switch on a card; remove a card; the icon and colour buttons; Tweaks > stage failure for the conflict message. Stands for: the settings catalogue (each palette card is one catalogue entry). Unbuilt in the app: The builder does not exist in the app. On the canvas a drag is two clicks (pick, then drop); the app would use pointer drag with the same keyboard route."
+    },
+    "t_modes": {
+      "kind": "title1",
+      "x": 0,
+      "y": -300,
+      "w": 1900,
+      "maxW": 4020,
+      "page": "modes",
+      "text": "One-click modes"
+    },
+    "s_devices": {
+      "x": 1500,
+      "y": 0,
+      "w": 440,
       "page": "devices",
       "fill": "teal",
-      "text": "Devices: who is connected, by name, with signal and band. Row actions: rename, reserve address, block internet, wake. Bulk select runs block and reserve on many at once. Viewers see the list without the actions. Try: row menus, the select boxes and the bulk bar, the filter chips, role viewer. Stands for the app's devices screen. Unbuilt in the app: bulk actions and the signal history."
+      "text": "Everyone on the network as cards in a bento, not a table: a hero with the device count and a band split, each device with an icon tile, signal bars, live rate sparkline, status chip and inline switches for block and reserve; a focused device panel with priority, owner and address pickers. Try: the filter chips, block and reserve switches on any row (the dock counts them), the focused device picker, priority buttons and the last-octet address stepper, Tweaks > role viewer, stage empty and failure. Stands for: the app devices screen (name, address, MAC, band). Unbuilt in the app: Signal history, per-device live rate, owner assignment and bulk actions are design only."
     },
     "t_devices": {
       "kind": "title1",
       "x": 0,
       "y": -300,
-      "w": 1440,
-      "maxW": 1440,
+      "w": 1900,
+      "maxW": 1940,
       "page": "devices",
       "text": "Devices"
     },
     "s_wifi": {
-      "x": 0,
-      "y": 2040,
-      "w": 420,
+      "x": 1500,
+      "y": 0,
+      "w": 440,
       "page": "wifi",
       "fill": "teal",
-      "text": "Wi-Fi: one card per band plus guest networks. Every edit joins the pending bar at the bottom; nothing reaches the router until Preview and Apply. Try: flip a radio or the guest switch and watch the pending count, the transmit power slider, the QR share on the guest card. Stands for the band settings in the catalogue (radio, name, hidden, security, password, channel, width, power, guest). Unbuilt in the app: the QR share."
+      "text": "Three band tiles in strong tonal colours, each with a radio switch, a channel gauge, width as segmented buttons, power as a slider and the client count; a radar that sweeps for neighbouring networks; the network name with a counter; security as segmented buttons; the password with strength; and the guest network with its QR card. Try: flip a radio, change width or power (the dock rises), security buttons, the reveal eye, guest switch, Tweaks > stage success and failure (both are guard outcomes), firmware, role viewer. Stands for: the Wi-Fi band settings in the catalogue: radio, name, hidden, security, password, channel, width, power, guest. Unbuilt in the app: The neighbour radar and the guest QR card are design only; the channel spectrum editor is its own board."
     },
     "s_mesh": {
-      "x": 3040,
+      "x": 3580,
       "y": 0,
-      "w": 420,
+      "w": 440,
       "page": "wifi",
       "fill": "teal",
-      "text": "AiMesh: how every node connects, how strong each backhaul is and which devices sit on which node, with a topology map and clients per node. A summary of USB storage sits at the bottom; the full storage board is on the Storage page. Try: Tweaks > firmware and role, node cards. Unbuilt in the app: topology map and node actions."
+      "text": "The mesh as a live map: router and two nodes with backhaul links, packets flowing along healthy links and a dashed amber link for the weak one; a tile per node with a backhaul quality gauge, uplink type as segmented buttons and its clients; roaming assistant threshold as a slider. Try: the uplink buttons and switches on a node tile, the roaming slider, Restart node, Tweaks > stage empty and failure, firmware, role viewer. Stands for: the AiMesh domain in the catalogue (node list is read from the router). Unbuilt in the app: Topology map, backhaul quality, per-node clients and node actions are design only."
     },
     "t_wifi": {
       "kind": "title1",
       "x": 0,
       "y": -300,
-      "w": 2960,
-      "maxW": 2960,
+      "w": 1900,
+      "maxW": 4020,
       "page": "wifi",
       "text": "Wi-Fi and AiMesh"
     },
     "s_network": {
-      "x": 0,
-      "y": 3190,
-      "w": 420,
+      "x": 1500,
+      "y": 0,
+      "w": 440,
       "page": "network",
       "fill": "green",
-      "text": "Internet (connection type, DNS, dynamic DNS), local network (router address, DHCP range, reservations) and port forwarding as a readable table, switched with the view buttons at the top. Changing the router address is a network-affecting change and runs under the connection-loss guard. Try: the view buttons, connection type buttons, Run speed test. The newer Addresses and ports board on this page replaces the typed address boxes here with pickers."
+      "text": "The internet side: a hero with the public address and a live latency line, connection type as large segmented buttons, DNS as resolver cards with a privacy switch, a world path from router to provider to the internet with moving packets, dynamic DNS and the WAN details as real controls. Try: the connection type buttons, the DNS privacy switch and resolver picker, MTU slider, dynamic DNS switch (the dock counts the changes and Apply runs under the guard), Tweaks > stage success and failure. Stands for: the internet domain in the catalogue: connection type, DNS servers, DNS privacy, MTU, dynamic DNS. Unbuilt in the app: Latency history, the path picture and resolver speed comparison are design only."
     },
     "s_lan": {
-      "x": 1520,
-      "y": 3190,
-      "w": 420,
+      "x": 3580,
+      "y": 0,
+      "w": 440,
       "page": "network",
       "fill": "green",
-      "text": "Local network, DHCP and port forwarding rebuilt with real pickers instead of typed boxes. Try: the four-part router address (last part is editable), the prefix stepper (the network and host bar resizes), both handles on the address-range bar, the lease slider, port presets (they fill the port box), the device pickers, protocol buttons. Stands for lan.ip, lan.mask, lan.domain, dhcp.* and the forwarding list. Changing the router address runs under the connection-loss guard. Unbuilt in the app: the range bar, subnet visual and presets; the app has typed IPv4 fields today."
+      "text": "The local network without a single typed address: the router address as a four-part picker with a stepper, the prefix as a stepper beside a network-and-host bar, the DHCP pool as a miniature address map, reservations as device rows with address steppers, and port forwards as rows with port chips and switches. Try: the last-octet stepper and prefix stepper (the bar moves), lease slider, reservation switches, port presets, forward switches, Tweaks > stage success and failure (changing the router address runs under the guard). Stands for: the local network and port forwarding domains: router address, mask, DHCP start and end, lease time, reservations, forwards. Unbuilt in the app: The pickers and mini map are design; the app has a plain IPv4 field. The full editors are the Address map and Rule canvas boards."
     },
     "s_qos": {
-      "x": 4560,
+      "x": 5660,
       "y": 0,
-      "w": 420,
+      "w": 440,
       "page": "network",
       "fill": "green",
-      "text": "Traffic priority (QoS) with per-device traffic. The hero chart splits live download by app type; the ladder ranks app types with real up and down buttons; each device row carries a speed-limit stepper and a priority chip. Try: the QoS switch, the method select (its description changes), both speed sliders, the ladder arrows, firmware (the Merlin-only fair-queue card locks on stock), role viewer. Stands for the qos.enabled, qos.type, qos.up and qos.down catalogue settings. Unbuilt in the app: the ladder, per-device limits and the live split chart."
+      "text": "Who is using the line right now as a stacked live picture: a hero with total throughput, a stream per kind of traffic, a gauge for how full the line is, the mode as segmented buttons, the line speeds as sliders, and the busiest devices with a priority control on every row. Try: the mode buttons, line sliders, the High/Normal/Low buttons on each device, the game boost switch, then Apply in the dock; Open the priority board for the ordered editor. Stands for: traffic priority (QoS) in the catalogue: mode, upload and download bandwidth. Unbuilt in the app: Live per-kind streams and waiting-time measurements are design only."
     },
     "t_network": {
       "kind": "title1",
       "x": 0,
       "y": -300,
-      "w": 4480,
-      "maxW": 4480,
+      "w": 1900,
+      "maxW": 6100,
       "page": "network",
       "text": "Internet, local network, ports, traffic priority"
     },
     "s_security": {
-      "x": 0,
-      "y": 2670,
-      "w": 420,
+      "x": 1500,
+      "y": 0,
+      "w": 440,
       "page": "security",
       "fill": "red",
-      "text": "One-board overview of firewall switches, parental controls and the VPN servers (OpenVPN and WireGuard). Models without WireGuard show the control disabled with the reason, never hidden. Each area now has its own deeper board on this page: Firewall, Parental controls and VPN. Try: the switches and Tweaks > firmware and role."
+      "text": "One security picture: a score ring in the hero, the three open findings as large cards with a one-switch fix each, blocked knocks on a world-hours heat map, and summaries of firewall, parental controls and VPN that link to their own boards. Try: flip the fix switches on the finding cards (each joins the dock), Fix all three, Tweaks > stage success and failure, firmware, role viewer. Stands for: firewall, WPS, remote access and VPN server switches in the catalogue, read together. Unbuilt in the app: The score, findings and blocked-knock heat map are design only."
     },
     "s_firewall": {
-      "x": 1520,
-      "y": 2670,
-      "w": 420,
+      "x": 3580,
+      "y": 0,
+      "w": 440,
       "page": "security",
       "fill": "red",
-      "text": "Firewall with DMZ, UPnP, address and keyword filters. The hero shield counts blocked attempts over 24 hours. Try: each switch, the DMZ device picker, the UPnP lease table switches, filter chips, the protection level buttons. Stands for fw.enabled, fw.ping, fw.dos and fw.ipv6 in the catalogue. Unbuilt in the app: blocked-attempt chart, DMZ, UPnP table and filters."
+      "text": "The firewall as a shield, not a settings list: a hero with knocks blocked today and a live strike chart, big switch tiles for the four protections, the open doors as port chips with switches, and a blocked-address list with a block-range picker. Try: the protection switches, the door switches, the block length buttons and prefix stepper, Tweaks > stage empty (firewall off) and failure. Stands for: the firewall domain: firewall on/off, DoS protection, respond to ping, logged packets. Unbuilt in the app: Live blocked chart, the address block list with ranges and the outside port test are design only. The lane editor is the Rule canvas board."
     },
     "s_parental": {
-      "x": 3040,
-      "y": 2670,
-      "w": 420,
+      "x": 5660,
+      "y": 0,
+      "w": 440,
       "page": "security",
       "fill": "red",
-      "text": "Parental controls with a paintable weekly schedule. Every hour cell is a real toggle (168 of them); day chips fill a whole day. Try: paint hours on the grid, the daily limit slider, bedtime steppers, the Pause internet button state, content chips, the profile buttons. Stands for parental.enabled (MULTIFILTER_ALL) and the per-device schedule lists. Unbuilt in the app: profiles, daily limits, usage chart, bonus time."
+      "text": "Family time as people, not rules: a hero with today's remaining time as a big number and ring, one tonal card per person with their devices, a pause switch and a daily limit slider, the week painted on a grid, and content filters as chips. Try: Pause on a person card, the daily limit slider, paint the week (click one cell then another), the filter chips, Add 30 minutes, Tweaks > stage failure, role viewer. Stands for: parental controls in the catalogue: time scheduling per device (MULTIFILTER keys). Unbuilt in the app: People grouping, daily limits, bonus time and content filter chips are design only; the full paint editor is the Paint schedules board."
     },
     "s_vpn": {
-      "x": 6080,
-      "y": 0,
-      "w": 420,
+      "x": 1500,
+      "y": 2210,
+      "w": 440,
       "page": "security",
       "fill": "red",
-      "text": "VPN servers: OpenVPN and WireGuard side by side, peers with pairing QR, and the Merlin VPN client routing card (locked with a reason on stock). Try: both server switches, port presets, UDP or TCP, the peer switches, the tunnel segmented view, firmware stock, role operator. Stands for vpn.openvpn, vpn.openvpn.port, vpn.openvpn.proto, vpn.wireguard and vpn.wireguard.port; models without WireGuard show it disabled with the reason. Unbuilt in the app: peer list, QR pairing, traffic chart, VPN client routing."
+      "text": "VPN both ways: a hero with connected peers and a tunnel throughput line inside a rotating ring, the WireGuard and OpenVPN servers as tiles with switches and port pickers, peers as rows with a QR card, and client tunnels with health gauges. Try: server switches, the port presets and stepper, peer switches, the kill switch; on stock firmware WireGuard shows the reason it is unavailable on this model instead of disappearing. Stands for: the VPN domain: OpenVPN and WireGuard server switches and ports. Unbuilt in the app: Peer management with QR, client tunnel health and throughput are design only. Per-device routing is the VPN Director board."
     },
     "t_security": {
       "kind": "title1",
       "x": 0,
       "y": -300,
-      "w": 6000,
-      "maxW": 6000,
+      "w": 1900,
+      "maxW": 6100,
       "page": "security",
       "text": "Firewall, parental controls, VPN"
     },
-    "s_storage": {
-      "x": 1520,
+    "s_mapeditor": {
+      "x": 1500,
       "y": 0,
-      "w": 420,
+      "w": 440,
+      "page": "editors",
+      "fill": "purple",
+      "text": "A drag-and-drop map of the real network: the router and two AiMesh nodes with backhaul quality on the links, every device as a round tile hanging from the node it uses, packets moving along live links, and a side panel for the picked device (rename, reserve, block, bind to a node). Try: click a device (it lifts), then click another node: the device glides across, its link redraws and a pending change appears; flip Block (its link goes dashed and packets stop) and Reserve; Tweaks > role viewer, stage, motion calm. Stands for: the devices list, DHCP reservations, MAC filter and the AiMesh node list, shown as one picture. Unbuilt in the app: The map editor is design only. Drag is pick-then-place on the canvas."
+    },
+    "s_rulecanvas": {
+      "x": 3580,
+      "y": 0,
+      "w": 440,
+      "page": "editors",
+      "fill": "purple",
+      "text": "A rule canvas with a lane per destination (the router itself and each device). Every rule is a card with its port as a chip, a protocol tag and a real on/off switch. Two rules that claim the same outside port are outlined in red, shake once and are counted in the hero. Try: two rules clash on TCP 443 when the board opens: switch one off and the red outline and the count clear; click a card to pick it, then click another lane to move the rule to that device; build a new rule with the port picker, protocol and device picker, then Add rule; remove a card. Stands for: the port forwarding list and firewall switches in the catalogue. Unbuilt in the app: The lane canvas, conflict detection and outside port test are design only."
+    },
+    "s_schedulepaint": {
+      "x": 5660,
+      "y": 0,
+      "w": 440,
+      "page": "editors",
+      "fill": "purple",
+      "text": "Two week grids you paint instead of filling in: internet hours for a child's device and the hours the Wi-Fi radios stay on. Each has a paint or erase brush, presets, a live count of painted hours and a device or band picker. Try: click one cell, then another: the whole block between them is painted; switch the brush to Erase and do it again; the presets (School nights, Weekends, Always); pick another device; the dock shows the pending change. Stands for: the parental time schedule and the wireless schedule in the catalogue. Unbuilt in the app: The paint grids are design only; the app shows these as plain values. Drag-painting becomes click-then-click on the canvas."
+    },
+    "s_priorityboard": {
+      "x": 1500,
+      "y": 2040,
+      "w": 440,
+      "page": "editors",
+      "fill": "purple",
+      "text": "A drag-to-order board: seven kinds of traffic as ranked cards, each showing the share of the line it is guaranteed, with up and down buttons; below it, four priority lanes that hold the devices; and line speed limits as sliders. Try: the up and down arrows on a card (cards trade places, shares re-flow); click a card grip then another card to move it there; click a device, then a lane, to change its level; the upload and download sliders. Stands for: traffic priority (QoS) settings in the catalogue: mode, order, bandwidth. Unbuilt in the app: The ordered board and per-device lanes are design only; the app shows these as selects."
+    },
+    "s_spectrum": {
+      "x": 3580,
+      "y": 2040,
+      "w": 440,
+      "page": "editors",
+      "fill": "purple",
+      "text": "The air around the house as a spectrum: every neighbouring network is a grey bell curve at its channel, yours is a bright curve you move by picking a channel and a width. A live score says how crowded your position is and one button jumps to the quietest channel. Try: click the channel buttons: your curve slides and the score recomputes; change the width (the curve widens and swallows more neighbours); switch band; Move to the quietest channel; Tweaks > stage failure for the radar message. Stands for: channel and channel width for each band in the catalogue. Unbuilt in the app: The neighbour scan and the spectrum view are design only. Dragging the curve becomes picking a channel on the canvas."
+    },
+    "s_portcanvas": {
+      "x": 5660,
+      "y": 2040,
+      "w": 440,
+      "page": "editors",
+      "fill": "purple",
+      "text": "The back of the router drawn as a panel of real jacks. Each port glows in the colour of the network it carries. Pick a network card, then click a port to carry it there. A row per port has a real switch for tagged or untagged, and a provider profile fills the panel in one go. Try: pick the IPTV card, click LAN 3 (its jack changes colour and the pending dock rises); flip Tagged on a port row; the provider profile buttons; Tweaks > stage failure (the guard refuses to cut this computer off). Stands for: the IPTV, LAN port and VLAN settings (switch_wantag, switch_stb_x and related keys). Unbuilt in the app: The back-panel canvas and profile presets are design only."
+    },
+    "s_vpndirector": {
+      "x": 1500,
+      "y": 4060,
+      "w": 440,
+      "page": "editors",
+      "fill": "purple",
+      "text": "Devices on the left, three ways out on the right (the plain internet and two VPN tunnels). A coloured stream with moving packets runs from every device to the way out it uses. Pick a device, then click a destination: its stream bends over to the new one. Try: click a device card, then a destination: the stream re-routes and recolours; the kill switch and tunnel switches; Tweaks > firmware stock (the whole canvas shows locked with the reason, because VPN Director is Merlin only), stage failure. Stands for: VPN Director policy rules on Asuswrt-Merlin (vpndirector_rulelist) and the VPN client switches. Unbuilt in the app: The routing canvas and leak test are design only."
+    },
+    "s_dhcpmap": {
+      "x": 3580,
+      "y": 4060,
+      "w": 440,
+      "page": "editors",
+      "fill": "purple",
+      "text": "The whole 198.51.100.0/24 subnet as a grid of 256 cells, coloured by what each address is: the router, reserved, leased now, free inside the pool, free outside it. The pool is the tinted band; its two ends are the ringed cells. Try: click any cell: the nearer end of the pool jumps there, the band, the free count and the fill gauge follow; the start and end steppers; the three presets; shrink the pool until a reservation falls outside and the warning chip appears. Stands for: DHCP start, DHCP end, lease time and the reservation list (dhcp_start, dhcp_end, dhcp_staticlist). Unbuilt in the app: The address map is design only. Dragging a pool edge becomes clicking a cell."
+    },
+    "t_editors": {
+      "kind": "title1",
+      "x": 0,
+      "y": -300,
+      "w": 1900,
+      "maxW": 6100,
+      "page": "editors",
+      "text": "Visual editors"
+    },
+    "s_storage": {
+      "x": 1500,
+      "y": 0,
+      "w": 440,
       "page": "storage",
       "fill": "orange",
-      "text": "USB and storage with stages. Try Tweaks > stage: loading (drive being read), empty (nothing plugged in), ready (the full page), success (safely removed) and failure (drive not readable). On ready: sharing switches, permission buttons per folder, the media server select, Time Machine quota slider, the safe-remove button. Stands for usb.samba and usb.ftp, which need a USB drive (the requires flag); with no drive the controls show disabled with the reason. Unbuilt in the app: folder permissions, drive health, media server and Time Machine."
+      "text": "Storage as a picture of the drive: a hero ring with how full it is, the kinds of files as a stacked bar and tiles, sharing services as switch tiles, people with access as rows with read or write buttons, and drive health with a temperature line. Try: Eject (success) and try again with Tweaks > stage failure (busy), the sharing switches, the per-person access buttons, the sleep slider, Tweaks > stage empty. Stands for: the USB domain: file sharing (Samba), FTP, media server switches. Unbuilt in the app: Usage breakdown by kind, per-person access, health and eject are design only."
     },
     "t_storage": {
       "kind": "title1",
       "x": 0,
       "y": -300,
-      "w": 1440,
-      "maxW": 1440,
+      "w": 1900,
+      "maxW": 1940,
       "page": "storage",
       "text": "USB and storage"
     },
     "s_tools": {
-      "x": 0,
-      "y": 2710,
-      "w": 420,
+      "x": 1500,
+      "y": 0,
+      "w": 440,
       "page": "tools",
       "fill": "purple",
-      "text": "Ping, traceroute and name lookup run on the router itself. The live log has plain search plus the adjacent regex builder button. Scheduled jobs and USB summaries sit below. Try: the tool buttons and the log filter. Stands for the app's tools and logs screens. Unbuilt in the app: live log streaming and the full regex builder (see the Regex builder board)."
+      "text": "The router's own tools as an instrument panel: a target picker with presets, a ping panel with a live latency line and a big average, a hop-by-hop trace drawn as a path with packets, and the live log as a terminal with level chips and a regex-builder button. Try: the tool buttons, target device picker, count stepper, the level chips on the log, Tweaks > stage success and failure, role viewer (tools still run, they do not change the router). Stands for: the app tools screen (ping, traceroute and name lookup run on the router) and the logs screen. Unbuilt in the app: Live latency line, the drawn trace path and live log streaming are design only."
     },
     "s_speedlab": {
-      "x": 1520,
-      "y": 2710,
-      "w": 420,
+      "x": 3580,
+      "y": 0,
+      "w": 440,
       "page": "tools",
       "fill": "purple",
-      "text": "Router tools, part one: speed test, latency monitor, DNS benchmark, port checker and Wi-Fi channel analyser. Tweaks > stage drives the speed test: loading (test running, needle sweeping), empty (never run), ready (last result), success (new record) and failure (no route). Try: the band buttons on the analyser (bars swap), port presets, the target chips, the interval stepper. Runs on the router itself, like the app's ping, traceroute and name lookup. Unbuilt in the app: all five tools on this board."
+      "text": "A speed test that feels like an instrument: a huge dial with a counting number in the hero, phases as a pipeline (latency, download, upload), the run drawn live, history as bars against the plan you pay for, and a schedule with a painted strip for when tests may run. Try: Start (success), the server picker, the plan slider (the \"of plan\" figure is against it), the schedule cells, Tweaks > stage loading, success and failure. Stands for: nothing yet in the app; the router has a built-in speed test command this would call. Unbuilt in the app: The whole board is design only."
     },
     "s_utilities": {
-      "x": 3040,
-      "y": 2710,
-      "w": 420,
+      "x": 5660,
+      "y": 0,
+      "w": 440,
       "page": "tools",
       "fill": "purple",
-      "text": "Router tools, part two: settings snapshots with a side-by-side diff, Wi-Fi QR share, Wake-on-LAN schedules, subnet calculator and per-device traffic. Try: the two snapshot selects (their descriptions change), the network select and Hide password on the QR card, the wake schedule day chips and hour stepper, the address parts and prefix stepper in the calculator (the network bar resizes), the traffic range buttons. Stands for the app's backups, the Wake action on devices and the read-only device list. Unbuilt in the app: snapshot diff, QR share, wake schedules, calculator, per-device history."
+      "text": "Everyday router jobs as big tappable tiles rather than a menu: restart Wi-Fi, wake a sleeping device, share the Wi-Fi as a QR card, find a device by blinking the router lights, night mode for the lights on a painted strip, and a password generator with strength. Try: the device picker and Wake, the QR band buttons, lights switch and brightness slider, night-mode cells, password length slider and character chips, Tweaks > stage success and failure. Stands for: wake-on-LAN and the LED switch exist as router commands and catalogue entries; the rest are composed from existing settings. Unbuilt in the app: QR sharing, the generator and night mode strip are design only."
     },
     "s_jobs": {
-      "x": 6080,
-      "y": 0,
-      "w": 420,
+      "x": 1500,
+      "y": 2020,
+      "w": 440,
       "page": "tools",
       "fill": "purple",
-      "text": "Scheduled jobs. The app lists the router's cron table as raw text; this board turns it into a timeline of the next 24 hours, a switch per job and a builder that never asks for cron syntax. Try: frequency buttons (the day chips and time steppers react to state), the action select, job switches, firmware stock (custom script jobs lock), role viewer. The plain-words sentence and the cron line under the builder show what will be written. Unbuilt in the app: the builder, the timeline, pause and run-now."
+      "text": "Scheduled jobs on a 24-hour ring and a week grid instead of a table of timer expressions: a hero with the next job counting down, each job as a row with a real switch and a run-now button, the week as a painted grid, and the last runs as a bar strip. Try: job switches, Run now, paint the weekly restart window, the hour stepper, Tweaks > firmware stock (custom scripts lock with the reason), stage failure for a collision. Stands for: the read-only scheduled jobs table the app shows from the router. Unbuilt in the app: Creating and editing jobs, the ring and run history are design only."
     },
     "t_tools": {
       "kind": "title1",
       "x": 0,
       "y": -300,
-      "w": 6000,
-      "maxW": 6000,
+      "w": 1900,
+      "maxW": 6100,
       "page": "tools",
       "text": "Logs, network tools, router tools, scheduled jobs"
     },
     "s_firmware": {
-      "x": 0,
-      "y": 2680,
-      "w": 420,
+      "x": 1500,
+      "y": 0,
+      "w": 440,
       "page": "router",
       "fill": "orange",
-      "text": "Firmware with every stage. Tweaks > stage: loading (flashing, pipeline at Write with wavy progress), empty (already up to date), ready (update available with what changed), success (new version running) and failure (file did not verify, nothing written). Try: Install now walks to the flashing stage, release track buttons, the automatic-install switch and hour stepper, firmware stock (versions and track names change). The safety checklist mirrors the app's rule that a backup is taken first and the two-key confirmation is required. Unbuilt in the app: update check, download, verify and flash."
+      "text": "A firmware update you can watch: a hero with the installed and the offered build, the update as a six-step pipeline with a progress bar and a countdown ring, what changes as chips, the safety net (automatic backup, checksum, what happens if power fails) and build history as a timeline. Try: Update now (success burst) and Tweaks > stage failure (checksum refusal), the update channel buttons, the automatic backup switch, firmware stock (the offered build and channel names change). Stands for: the firmware domain: installed version and the check-for-update command. Unbuilt in the app: In-app flashing, checksum verification, the pipeline and release notes are design only."
     },
     "s_system": {
-      "x": 1520,
-      "y": 2680,
-      "w": 420,
+      "x": 3580,
+      "y": 0,
+      "w": 440,
       "page": "router",
       "fill": "orange",
-      "text": "System settings and the Maintenance area with the two-key super confirmation. Try: the key switches on the factory reset card (first key is your authenticator, second key is the hold phrase; both must be on before the red button wakes), the restart schedule day chips, SSH access buttons and port presets, the time zone select, LED and sleep switches, role operator (destructive actions lock with the reason). Stands for the catalogue risk level destructive, which the app guards with a two-key confirmation. Unbuilt in the app: scheduled restart, LED and sleep controls, SSH hardening choices."
+      "text": "The router as a machine: a hero with uptime and three live gauges (processor, memory, temperature), a 24-hour load chart, the clock and time zone as pickers, how the router can be reached (SSH, web page, from outside) as switch tiles with port pickers, and maintenance actions that open the takeover. Try: the access switches (turning SSH off is refused: Tweaks > stage failure), port presets, time zone buttons, the restart action (goes to the takeover board), role operator and viewer. Stands for: the system and maintenance domains: time zone, NTP server, SSH, web access, restart and factory reset actions. Unbuilt in the app: Live gauges and load history are design only."
     },
     "s_backup": {
-      "x": 3040,
-      "y": 2680,
-      "w": 420,
+      "x": 5660,
+      "y": 0,
+      "w": 440,
       "page": "router",
       "fill": "orange",
-      "text": "Backup and restore with stages. Tweaks > stage: loading (restore running through its pipeline), empty (no backups yet), ready (list, drop zone, schedule), success (restored and verified) and failure (wrong password, nothing changed). Try: the drop zone hover, the keep-count stepper, where-to-keep buttons, the encryption switch and password reveal, what-to-include chips. Restore is a destructive action: it shows the diff first and needs the two-key confirmation. Stands for the app's backup domain. Unbuilt in the app: scheduled backups, encryption, partial restore."
+      "text": "Backups as a timeline of snapshots: a hero with how fresh the newest one is, each backup as a card with size, setting count and a restore button, a compare view listing exactly which settings differ from now, the nightly schedule, where copies go and the password that encrypts them. Try: Back up now (success), Restore on an older snapshot (opens the diff), the destination switches, the keep-count slider, Tweaks > stage failure (wrong model refused), role operator (restore is owner only). Stands for: the backup domain: save and restore the router settings file. Unbuilt in the app: Encrypted archive, snapshots timeline, compare view and off-router destinations are design only."
     },
     "s_advanced": {
-      "x": 6080,
-      "y": 0,
-      "w": 420,
+      "x": 1500,
+      "y": 1870,
+      "w": 440,
       "page": "router",
       "fill": "orange",
-      "text": "Advanced: every remaining router value in a searchable table, catalogue label first and raw key second, secrets masked, each edit through a preview. Merlin extras (custom scripts, add-ons, Entware) show locked with the reason on stock firmware: flip Tweaks > firmware. Try: the search, a row edit sheet, bulk select. Stands for the app's advanced screen and the Merlin domain."
+      "text": "Every remaining router value without looking like a spreadsheet: a hero with how many values exist and how many you changed, areas as a heat map of where the changes are, values as rows with the readable label first and the raw key second, each with the right control for its type, and Merlin extras as lockable tiles. Try: the area chips, the controls on each row (switch, stepper, segmented), Show secrets (owner only), Tweaks > firmware stock (Merlin extras lock with the reason), role operator and viewer, stage failure. Stands for: the app advanced table (every nvram value, catalogue label first, secrets masked). Unbuilt in the app: Typed controls per row, the change heat map and Merlin add-on management are design only."
     },
     "t_router": {
       "kind": "title1",
       "x": 0,
       "y": -300,
-      "w": 6000,
-      "maxW": 6000,
+      "w": 1900,
+      "maxW": 6100,
       "page": "router",
       "text": "Firmware, system, maintenance, backup, advanced, Merlin"
     },
     "s_changes": {
-      "x": 0,
-      "y": 2610,
-      "w": 420,
+      "x": 1500,
+      "y": 0,
+      "w": 440,
       "page": "changes",
       "fill": "pink",
-      "text": "The write path. Preview lists every change in plain words with the old and new value. Network changes arm a guard on the router that puts the old values back unless the app can still reach it. History keeps every change with Undo. Try the stage buttons: preview, guard countdown, applied, reverted, failed; the guard length buttons; Undo on a history row. Stands for the app's preview, guard and history."
+      "text": "The write path in one place: a hero with the pending count, each pending change as a before-and-after card with its risk level, the four-step write pipeline (preview, write, guard, keep), history as a timeline with undo on every entry, and who changed what as bars. Try: Apply under guard (success burst), Discard, Undo on a history row, the risk filter chips, Tweaks > stage failure (guard rollback), role viewer (can read, cannot apply). Stands for: the app change history with undo and the write path (preview, connection-loss guard for network changes, two-key confirmation for destructive ones). Unbuilt in the app: Batching several pending changes into one guarded apply and the activity bars are design only."
     },
     "s_takeover": {
-      "x": 1520,
-      "y": 2610,
-      "w": 420,
+      "x": 3580,
+      "y": 0,
+      "w": 440,
       "page": "changes",
       "fill": "pink",
-      "text": "The full-screen takeovers that play on every install, update, setup or deployment, whoever started it. Tweaks > stage: success (celebration: what was installed, where, exit code, time taken; leaves on click, Escape or after eight seconds), failure (alarm: exact command with secrets masked, exit code, last real output lines, recovery actions; stays until dismissed), loading (install running), ready (the quiet notification used when takeovers are switched off) and empty (nothing recent). Try the motion Tweak: calm keeps the same facts with no movement. Unbuilt in the app: both takeovers; the app has toasts only."
+      "text": "The moment a risky change is live: a full-width guard with a real countdown inside a rotating wavy ring, one large \"I am still connected\" action, what will be restored if time runs out, the live reconnect signal, and below it the two-key confirmation used for destructive actions (factory reset, firmware), where both keys must be turned. Try: I am still connected (success burst), Roll back now, Tweaks > stage failure (time ran out), the two key switches (the destructive button only arms when both are on), role operator (the second key is owner only). Stands for: the connection-loss guard for network changes and the two-key super confirmation for destructive actions; both exist in the app. Unbuilt in the app: The reconnect signal line and the wavy ring are design; the logic exists."
     },
     "s_records": {
-      "x": 4560,
+      "x": 5660,
       "y": 0,
-      "w": 420,
+      "w": 440,
       "page": "changes",
       "fill": "pink",
-      "text": "Records and exports: export settings, devices and logs in six formats, export options as switches, history replay, a changelog summary, an update-coming-soon summary and the offline manual entry. The deeper boards are Updates (changelog and update coming soon) and Help and docs. Try: the format chips and option switches. Unbuilt in the app: exports and replay."
+      "text": "Exports as something you assemble: pick what goes in (toggle chips), the format (large segmented tiles), the date range on a painted month strip, see a live page preview with the size, and below it the audit trail of who exported what. Try: the content chips and format buttons, paint the day range, Include secrets (owner only, off by default), Build export (success), Tweaks > stage failure. Stands for: change history and the device list, which the app can already show; export formats are the app-wide requirement. Unbuilt in the app: All exports (PDF, CSV, JSON, Markdown), the preview and the audit trail are design only."
     },
     "t_changes": {
       "kind": "title1",
       "x": 0,
       "y": -300,
-      "w": 4480,
-      "maxW": 4480,
+      "w": 1900,
+      "maxW": 6100,
       "page": "changes",
       "text": "Change history, write stages, takeovers, exports"
     },
     "s_settings": {
-      "x": 0,
-      "y": 4120,
-      "w": 420,
+      "x": 1500,
+      "y": 0,
+      "w": 440,
       "page": "app",
       "fill": "purple",
-      "text": "App settings with a search that finds a setting wherever it lives; every control has its own info button and reset. The command palette reaches every page and action. Try: the search field, a reset button, Tweaks > lang and role. Unbuilt in the app: most of the settings catalogue for the app itself."
+      "text": "App settings as tiles of real controls grouped by task: a hero that searches settings through a button, quick links to the deeper boards (appearance, language, locks, tabs), people and their roles as rows with role buttons, sounds with a switch and volume, start-up behaviour and data. Try: role buttons per person, the sound switch and volume slider, start-up chips, Reset this group, Tweaks > role operator and viewer (accounts lock), lang, dark. Stands for: the owner account and the language and theme choices the app stores today. Unbuilt in the app: Roles for more people, action sounds, start-up options and settings search are design only."
     },
     "s_tabs": {
-      "x": 1520,
-      "y": 4120,
-      "w": 420,
+      "x": 3580,
+      "y": 0,
+      "w": 440,
       "page": "app",
       "fill": "purple",
-      "text": "Workspace tabs and the New tab catalog: every page, setting, tool and action is listed with its icon, searchable by plain text or with the adjacent regex builder. Open every tab, close what you do not need, bring it back in one click; router workspaces keep one tab per router. Try: the tab strip close buttons, the plus button, the catalog search. Unbuilt in the app: the catalog; the app has simple tabs."
+      "text": "How tabs work: one workspace tab per router, a row of open page tabs with a travelling indicator, and the New tab catalogue as a bento of every destination with its icon, grouped by area, with a search button beside the regex builder button and an Open every tab action. Try: the tab strip (the indicator springs across), the area chips, pin switches, tab position buttons, Open every tab, Tweaks > lang, dark, firmware stock (Merlin tabs show their lock). Stands for: the app navigation between screens. Unbuilt in the app: Tabs, the catalogue, pinning and tab layout are design only."
     },
     "s_appearance": {
-      "x": 3040,
-      "y": 4120,
-      "w": 420,
+      "x": 5660,
+      "y": 0,
+      "w": 440,
       "page": "app",
       "fill": "purple",
-      "text": "Appearance editor: restyle any element (corner radius, size, spacing), mix any colour in the infinite colour picker, redraw the logo and tune every animation in the animation and transition editor (per element kind: on or off, duration, delay, stagger, easing, distance), with a live preview and JSON import and export. Reduced motion always wins and the editor says so. Try: every slider; they drive the live preview."
+      "text": "The look, edited live: accent as large swatches, light or dark, corner shape and density as segmented buttons, type size as a slider, a preview that uses the same components as the app, and the motion editor with a profile, a global speed and a duration, delay and distance slider per kind of motion. Try: accent swatches here mirror Tweaks > accent (change the Tweak to re-tone the whole board), the profile buttons, the per-kind switches and sliders, the speed slider; set Tweaks > motion to calm to see the editor say that reduced motion wins. Stands for: the light and dark theme choice in the app. Unbuilt in the app: Accent choice, shape, density, type size and the whole motion editor are design only."
     },
     "s_language": {
-      "x": 6080,
-      "y": 0,
-      "w": 420,
+      "x": 1500,
+      "y": 2230,
+      "w": 440,
       "page": "app",
       "fill": "purple",
-      "text": "Language modes (English, Cantonese, both), per-language funny-level sliders, the personal vocabulary drop zone with its applied, refused and too-large results, school mode dialogs, attention modes, narrator and sounds. Try: the sliders, the mode buttons, the drop zone result buttons. The deeper School and focus modes board covers school and ADHD modes. Unbuilt in the app: funny levels, vocabulary file, narrator and sounds."
+      "text": "Language as a live comparison: three large cards (English, Cantonese, both side by side) with the same sample screen in each, a tone slider from plain to playful with a live sample sentence, number and time formats as segmented buttons, and a drop zone for a personal wording file that stays on this computer. Try: the three language cards (they mirror Tweaks > lang: change the Tweak to translate the whole board), the tone slider, format buttons, the wording file switches, Tweaks > stage success and failure. Stands for: the English and Cantonese labels every catalogue entry already carries. Unbuilt in the app: Both-at-once mode, tone levels and the personal wording file are design only."
     },
     "s_focus": {
-      "x": 0,
-      "y": 7240,
-      "w": 420,
+      "x": 3580,
+      "y": 2230,
+      "w": 440,
       "page": "app",
       "fill": "purple",
-      "text": "School mode and ADHD mode. Try: the two master switches (the preview on the right of each card changes state), the focus-length slider, one-thing-at-a-time and low-stimulation switches, the break reminder stepper, the school timetable grid (paint the hours when school mode switches itself on), the allowed-areas chips. School mode suspends the personal vocabulary file and funny wording, hides risky actions and locks the toolbox. ADHD mode shows one task at a time, keeps the next step pinned and replaces takeovers with quiet notifications when low stimulation is on. Unbuilt in the app: both modes."
+      "text": "Ways to run the app itself (not the router): Simple, Expert, Low stimulation, School and Presentation as large mode cards with what each one hides or shows, a before-and-after strip of the same screen in two modes, and switches for what a mode does. Try: pick a mode card, the detail switches per mode, the timer stepper for School mode, Tweaks > motion calm (Low stimulation implies it), role viewer. Stands for: nothing yet; the app has one layout. Unbuilt in the app: All five app modes are design only. Router bundles are the separate One-click modes board."
     },
     "s_locks": {
-      "x": 1520,
-      "y": 7240,
-      "w": 420,
+      "x": 5660,
+      "y": 2230,
+      "w": 440,
       "page": "app",
       "fill": "purple",
-      "text": "Element locks that stop slips, the unlock ladder that asks for more as risk grows, a reboot that needs two different people, the authenticator with QR pairing and the recovery desk with support tickets. Try: lock buttons, the ladder steps, the reboot dialog, the pairing card. The two-key factory reset is on the System and maintenance board."
+      "text": "Who can do what, as a picture: a hero with the lock state and idle timer in a ring, the three roles against every area as a paintable permission grid, per-area locks as switch tiles, signed-in sessions as rows with a sign-out button, and what always needs two keys. Try: paint the permission grid (click a cell, then another), the idle slider, area lock switches, Sign out on a session, Lock now (success), Tweaks > role operator and viewer, stage failure. Stands for: the owner account, encrypted secrets and two-key confirmation that exist today. Unbuilt in the app: App lock, operator and viewer roles, the permission grid, per-area locks and sessions are design only."
     },
     "s_regex": {
-      "x": 3040,
-      "y": 7240,
-      "w": 420,
+      "x": 1500,
+      "y": 4160,
+      "w": 440,
       "page": "app",
       "fill": "purple",
-      "text": "The full regex builder that sits beside every search box. Try: the mode buttons (Build, Explain, Replace, Library, Convert, Debug swap the middle panel), flag chips, the engine select (its description names the exact engine and version), the timeout slider, token buttons, the Use in search split button. Matches are highlighted in the sample log with capture groups in a second colour, and the match table lists groups. Each search owns its own pattern, flags and mode. Honest gaps are listed in the last card: the builder is not at full parity yet. Unbuilt in the app: all of it beyond a plain search box."
+      "text": "A pattern you build from pieces: the pattern is a row of coloured token chips, each explained in words underneath; a library of ready patterns as segmented buttons; flags as toggle chips; and a live test against real router log lines with every match highlighted and counted. Try: the pattern buttons (tokens, explanation and highlighted matches all change, computed live), the Ignore case flag, Tweaks > lang, dark. The search bars on other boards open this builder. Stands for: plain search on the app logs screen. Unbuilt in the app: The builder is design only and is far from full parity with a dedicated regex tool: no token editing by hand, no replace, no flavours other than JavaScript, no debugger, no library saving."
     },
     "s_updates": {
-      "x": 6080,
-      "y": 4860,
-      "w": 420,
+      "x": 3580,
+      "y": 4160,
+      "w": 440,
       "page": "app",
       "fill": "purple",
-      "text": "Update coming soon plus the changelog. Tweaks > stage: loading (a newer build is being made: build number, every stage with its own state, 24 hour start, elapsed time, a labelled estimate, what it will contain; nothing can be installed yet), ready (published: the ordinary update offer), empty (you are on the newest build), success (updated, new version on the front screen) and failure (the build broke at a named stage; nothing to install). Try: the channel buttons, the notify switch, the changelog filter chips. Nothing here installs anything or invents progress. Unbuilt in the app: all of it; the top bar pill is a placeholder."
+      "text": "App updates you can see coming: a hero for a build that is being made right now (Update coming soon) with its number, a pipeline of build stages each with its own state, start time and elapsed time, a labelled estimate, what the build will contain, and when it becomes an ordinary offer. Try: Tweaks > stage (loading, empty = up to date, success = updated, failure = checksum), the channel buttons, the install-when buttons, role viewer. Stands for: the app version shown in settings. Unbuilt in the app: Self-update, Update coming soon with live build stages and update history are design only."
     },
     "t_app": {
       "kind": "title1",
       "x": 0,
       "y": -300,
-      "w": 6000,
-      "maxW": 6000,
+      "w": 1900,
+      "maxW": 6100,
       "page": "app",
       "text": "Settings, tabs, appearance, language, modes, locks, regex, updates"
     },
     "s_toolbox": {
-      "x": 0,
-      "y": 2540,
-      "w": 420,
+      "x": 1500,
+      "y": 0,
+      "w": 440,
       "page": "toolbox",
       "fill": "green",
-      "text": "Eight tools that run locally with no uploads: file converter, Base64, quicktype studio, notes, drawing and capture markup, external editor hand-off, the Ollama suite and the virtual disk manager. Try: the tool tabs and each tool's controls. Unbuilt in the app: all of the toolbox."
+      "text": "Network helpers that need no router: a subnet calculator driven by a prefix stepper with a network-and-host bar and counts, a QR maker, a MAC vendor lookup with a device picker, a port reference as chips, a unit converter with sliders and a signal-strength guide as a gauge. Try: the prefix stepper (bar and counts follow), the last-octet stepper, the port preset chips, the converter slider, the signal slider, Tweaks > lang, dark. Stands for: nothing yet; these are app-side tools that do not talk to the router. Unbuilt in the app: The whole toolbox is design only."
     },
     "s_servermanager": {
-      "x": 3040,
+      "x": 3580,
       "y": 0,
-      "w": 420,
+      "w": 440,
       "page": "toolbox",
       "fill": "green",
-      "text": "Create a Java or Bedrock server on this PC, in Docker, or on a NAS over SSH; pick any version, add plugins, watch the console and players, and pre-generate a world in the world generator. Try: the target and version controls, console buttons. Unbuilt in the app: all of it."
+      "text": "A Minecraft server creator and manager that sits naturally in a router app, because a server needs a reserved address and a port forward: server cards with players and memory gauges, a create flow as pickers (edition, version, flavour, target), the four run targets as large cards, a live console and the router wiring it needs. Try: the edition and flavour buttons, version stepper, target cards, memory slider, Start (success), Tweaks > stage failure (out of memory), role operator. Stands for: nothing yet. The router side (reserve an address, forward a port) already exists in the write path. Unbuilt in the app: The whole server manager is design only: version discovery, plugin install and the four targets (local process, local Docker, SSH process, SSH Docker)."
     },
     "t_toolbox": {
       "kind": "title1",
       "x": 0,
       "y": -300,
-      "w": 2960,
-      "maxW": 2960,
+      "w": 1900,
+      "maxW": 4020,
       "page": "toolbox",
       "text": "Toolbox and server manager"
     },
     "s_deploy": {
-      "x": 1520,
+      "x": 1500,
       "y": 0,
-      "w": 420,
+      "w": 440,
       "page": "deploy",
       "fill": "gray",
-      "text": "Deploy assistant (desktop companion): one-click Docker hosting here or over SSH, VirtualBox, VMware, USB and Raspberry Pi flashing, with pre-flight checks, what gets deployed, the removable drive list (never preselected, system disks never offered) and the instance manager (start, stop, open, copy link, logs, update, duplicate, remove). Try: target cards and instance actions. Design only for now; the companion is not built."
+      "text": "One-click deployment of the web app form of this app: five targets as large cards (Docker, VirtualBox, VMware, USB stick for a spare PC, Raspberry Pi card), a deployment pipeline with live progress, the instance manager with health and actions per instance, and the working link as a QR after each deploy. Try: pick a target card, the port presets, Deploy (success with the link), Tweaks > stage failure (port clash), instance switches and actions, role operator (flashing a disk is owner only). Stands for: the app already runs as a self-hosted web app and as a Windows desktop app. Unbuilt in the app: The deploy assistant, appliance images, virtual machine import, disk flashing and the instance manager are design only."
     },
     "t_deploy": {
       "kind": "title1",
       "x": 0,
       "y": -300,
-      "w": 1440,
-      "maxW": 1440,
+      "w": 1900,
+      "maxW": 1940,
       "page": "deploy",
       "text": "Deploy assistant and instances"
     },
     "s_docs": {
-      "x": 0,
-      "y": 4400,
-      "w": 420,
+      "x": 1500,
+      "y": 0,
+      "w": 440,
       "page": "docs",
       "fill": "gray",
-      "text": "The documentation website landing: what the app is, install in one command, task-led entry points and capture placeholders that are replaced by real captures after each release build. The in-app offline reader is the Help and docs board beside it. Try: the system buttons on the install card."
+      "text": "The public documentation website: a hero that leads with tasks instead of a file list, task cards with icons and reading time, an interactive \"what happens when you apply a change\" walkthrough with step buttons, an article reader preview with contents, and the delivery forms (website, offline app, phone PDF). Try: the walkthrough step buttons (the pipeline and the explanation move), the task filter chips, the reading-size slider, the edition buttons, Tweaks > lang, dark. Stands for: the documentation website published with the project (99 articles, a wiki and a phone PDF edition). Unbuilt in the app: This board is the design the website should move toward; screenshots in it are placeholders until captures of a built release exist."
     },
     "s_help": {
-      "x": 3040,
+      "x": 3580,
       "y": 0,
-      "w": 420,
+      "w": 440,
       "page": "docs",
       "fill": "gray",
-      "text": "The in-app offline documentation reader. It leads with tasks, not file names. Try: the task tiles, the reading-size slider, the interactive guard explainer (the three step buttons change the diagram and the explanation), article progress chips, the regex button beside the search. Every article and the wiki are bundled, so this works with no internet; the documentation website and the phone-size PDF are generated from the same source. Unbuilt in the app: the reader; the documentation website exists as generated pages."
+      "text": "Help inside the app: a hero offering a guided tour of the current page, tours as cards with progress rings that remember where you stopped, keyboard shortcuts as key caps, the offline documentation with its freshness, and a what-changed strip for the installed version. Try: Start a tour, the tour progress cards, the shortcut scheme buttons, Read aloud switch, Tweaks > lang, dark, motion calm. Stands for: the help text every catalogue entry carries (shown beside each control). Unbuilt in the app: Guided tours, shortcuts sheet and bundled offline docs are design only."
     },
     "t_docs": {
       "kind": "title1",
       "x": 0,
       "y": -300,
-      "w": 2960,
-      "maxW": 2960,
+      "w": 1900,
+      "maxW": 4020,
       "page": "docs",
       "text": "Documentation website and offline docs"
     },
     "s_phone": {
-      "x": 0,
-      "y": 884,
-      "w": 420,
+      "x": 450,
+      "y": 0,
+      "w": 440,
       "page": "phone",
       "fill": "pink",
-      "text": "Phone width (390 by 844, fixed root). The rail becomes a bottom bar and an All areas sheet, cards stack, quick actions stay one thumb away. Nothing reachable on desktop is removed. Try: the bottom bar and the All areas button."
+      "text": "Phone home: the same dashboard folded to one column. A hero with the live rate and a traffic line, two half-width number tiles, quick switches as large rows, and the bottom navigation with a sliding pill. Try: the quick switches, Tweaks > stage (loading skeleton, empty, failure), lang, dark, role viewer. Stands for: the overview screen at phone width. Unbuilt in the app: Live rate, quick switches and the bottom navigation are design only."
     },
     "s_phonewifi": {
-      "x": 470,
-      "y": 884,
-      "w": 420,
+      "x": 1480,
+      "y": 0,
+      "w": 440,
       "page": "phone",
       "fill": "pink",
-      "text": "Wi-Fi on a phone: band cards stack and pending changes become a bottom sheet with the preview of the write and the guard countdown. Try: a radio switch, then the pending sheet."
+      "text": "Phone Wi-Fi: the band tiles become a swipe-free stack, each with its radio switch and a gauge; width and power are thumb-size controls; pending changes collect in a bottom sheet that rises over the page with Preview and Apply. Try: flip a radio or change the width: the bottom sheet rises with the count; Discard; Tweaks > stage success and failure, role viewer. Stands for: the Wi-Fi band settings at phone width. Unbuilt in the app: The bottom sheet and gauges are design only."
     },
     "s_phonenav": {
-      "x": 940,
-      "y": 884,
-      "w": 420,
+      "x": 2510,
+      "y": 0,
+      "w": 440,
       "page": "phone",
       "fill": "pink",
-      "text": "Phone map of the whole app. The desktop rail has 30 destinations; on a phone the five busiest sit in the bottom bar and every other one is a tile here, grouped the same way. Nothing is removed: each tile names where the desktop feature lands. Try: the group chips filter the tiles (state), firmware stock (Merlin extras tile shows its lock), role viewer. The search field opens the same command palette as desktop. Unbuilt in the app: the tile catalog; the app's phone layout uses the rail as a drawer."
+      "text": "Where every desktop destination lands on a phone: a search button with the regex button beside it, area chips, and all areas as a two-column grid of shaped icon tiles, so nothing from the desktop rail is lost. Try: the area chips, Tweaks > firmware stock (VPN Director shows its lock), lang, dark, stage empty. Stands for: the app navigation list. Unbuilt in the app: Search, pinning and the grid are design only."
     },
     "s_phonedevices": {
-      "x": 1880,
+      "x": 3540,
       "y": 0,
-      "w": 420,
+      "w": 440,
       "page": "phone",
       "fill": "pink",
-      "text": "Devices on a phone. The desktop table becomes cards; row actions move into a bottom sheet (open by default here for Pat-Laptop). Bulk select becomes a long-press mode shown by the chip row. Try: the filter buttons, the sheet switches (Block internet, Reserve address), the priority buttons, the sheet close button, role viewer (write controls dim). An arriving device ripples at the top of the list. Stands for the app's devices screen and its rename, reserve, block and wake actions."
+      "text": "Phone devices: device rows with icon tiles and status chips, and the device sheet that rises from the bottom with the same actions as the desktop panel (block, reserve, priority) as thumb-size controls. Try: the sheet switch in the app bar area (Device sheet), block and reserve switches, priority buttons, Tweaks > role viewer, stage. Stands for: the devices screen at phone width. Unbuilt in the app: The device sheet is design only."
     },
     "s_phoneguard": {
-      "x": 0,
-      "y": 2508,
-      "w": 420,
+      "x": 450,
+      "y": 1300,
+      "w": 440,
       "page": "phone",
       "fill": "pink",
-      "text": "The write path on a phone, one stage per screen. Tweaks > stage: ready (preview of pending changes with old and new values), loading (guard countdown: a 90 second ring that empties while the app tries to reach the router at its new address), success (kept), failure (the router refused the write; nothing changed) and empty (the guard ran out and the router put the old values back by itself; no pending changes). Try: Apply walks to the countdown, Keep and Revert end it, the guard length buttons. Same rules as desktop: network changes always run under the guard. Unbuilt in the app: the phone layout of this flow."
+      "text": "The guard takeover on a phone: the whole screen is the question. A real countdown inside a rotating wavy ring, one full-width confirm action in the thumb zone, a quieter roll-back action and what will be restored. Try: I am still connected (success), Roll back now (failure), Tweaks > stage, motion calm (the ring stills, the number stays), lang. Stands for: the connection-loss guard, at phone width. Unbuilt in the app: The wavy ring; the guard logic exists."
     },
     "s_phonetools": {
-      "x": 470,
-      "y": 2508,
-      "w": 420,
+      "x": 1480,
+      "y": 1300,
+      "w": 440,
       "page": "phone",
       "fill": "pink",
-      "text": "Where the desktop tool boards land on a phone: the speed gauge leads, router tools are one scrolling row of large tiles each, and the toolbox (file converter, Base64, quicktype studio, Ollama, virtual disks, Minecraft server manager and world generator, external editor, drawing) is a tile grid. Try: the tool group buttons, the Run speed test button, the target chips. Tools that need a big screen say so on the tile instead of disappearing."
+      "text": "Phone tools: the tool picker as a segmented control, a result hero with the average and a latency line, target chips, and the live log as a short terminal. Try: the tool buttons, target chips, Run (success), Tweaks > stage failure. Stands for: ping, traceroute and lookup run on the router. Unbuilt in the app: The latency line and live log are design only."
     },
     "s_phonesetup": {
-      "x": 940,
-      "y": 2508,
-      "w": 420,
+      "x": 2510,
+      "y": 1300,
+      "w": 440,
       "page": "phone",
       "fill": "pink",
-      "text": "First run on a phone, step by step with Back and Next (real state). Steps: owner account (the first account becomes the owner), connect with an app key or the router password, approve the host key fingerprint, firmware detection, language and theme. Tweaks > stage: ready (the wizard), loading (detecting firmware), success (all set), failure (wrong password or unreachable router) and empty (no router found on this network). Try: the step buttons, App key or Password, the reveal button, language buttons. Same steps and rules as the desktop Setup board."
+      "text": "First run on a phone: a radar finds the router, the five steps are a compact pipeline, the sign-in method is two thumb-size buttons, and the single Next action sits in the thumb zone. Try: the sign-in buttons, the reveal eye, Next (success), Tweaks > stage loading, empty and failure. Stands for: the first-run screens at phone width. Unbuilt in the app: The scan radar is design only."
     },
     "s_phonesettings": {
-      "x": 1880,
-      "y": 1624,
-      "w": 420,
+      "x": 3540,
+      "y": 1300,
+      "w": 440,
       "page": "phone",
       "fill": "pink",
-      "text": "Where the settings family lands on a phone: notifications centre at the top (the bell opens this), then appearance (accent swatches, theme, motion), language modes with the funny-level slider and the vocabulary file drop, narrator and sounds, focus modes, locks with the authenticator, workspace tabs as a count chip, exports. Each desktop editor (infinite colour picker, animation editor, regex builder, New tab catalog) is reached through its row; none is removed. Try: every switch, slider and button here works with state."
+      "text": "Phone settings: the four notifications that need you as a stack, then look, language and motion as thumb-size segmented controls, and the app lock switch. Try: the language, theme and motion buttons (they mirror the Tweaks), the lock switch, Tweaks > lang, dark, motion. Stands for: the language and theme choices the app stores. Unbuilt in the app: The notification stack and motion choice are design only."
     },
     "t_phone": {
       "kind": "title1",
       "x": 0,
       "y": -300,
-      "w": 1800,
-      "maxW": 1800,
+      "w": 1900,
+      "maxW": 3980,
       "page": "phone",
       "text": "Phone boards: where every desktop feature lands"
     },
     "s_rail": {
-      "x": 0,
-      "y": 940,
-      "w": 420,
+      "x": 332,
+      "y": 0,
+      "w": 440,
       "page": "components",
       "fill": "gray",
-      "text": "The navigation rail imported by every desktop board. Props: page (which destination is current), pending (count on the Review changes button) and the six shared Tweaks. Merlin extras disappears on stock firmware; the Review changes button turns read-only for viewers. Links point at the board for each destination."
+      "text": "The frosted navigation rail every desktop board imports: brand mark in a cookie shape, the Review changes action with its pending count, and every area grouped as Network, Visual editors, Router and App. Try: Tweaks > page (any id such as wifi, edmap, history) to move the active pill, pending (0 hides the badge and stops the rotating border), firmware stock (VPN Director shows Merlin only), lang, dark, accent, motion. Stands for: the app navigation list in the left column. Unbuilt in the app: The Visual editors group and One-click modes entries do not exist in the app yet."
     },
     "s_topbar": {
-      "x": 1600,
+      "x": 2140,
       "y": 0,
-      "w": 420,
+      "w": 440,
       "page": "components",
       "fill": "gray",
-      "text": "The top bar imported by every desktop board: workspace tabs with close and New tab, router and firmware pills, the update-coming-soon pill, search with the adjacent regex button, language buttons, notifications, the surprise button, the page lock, the export menu and the account button, plus the version line (version, updated-at, source, signed-in role). Try: close a tab, add one, the regex button, the export menu, the lock."
+      "text": "The top bar every desktop board imports: a large condensed page title, the search-everything button (a button that opens the palette, not a text box), firmware chip, language, notifications with an unread badge, the signed-in person, and the page tabs. Try: click the tabs (the indicator springs across), Tweaks > title, tabs (comma separated), active, role, firmware, lang, dark. Stands for: the app header. Unbuilt in the app: The search palette and per-page tabs are design only."
     },
     "t_components": {
       "kind": "title1",
       "x": 0,
       "y": -300,
-      "w": 1520,
-      "maxW": 1520,
+      "w": 1900,
+      "maxW": 2580,
       "page": "components",
       "text": "Shared shell components"
     }
