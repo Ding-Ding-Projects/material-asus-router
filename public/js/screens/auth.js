@@ -67,7 +67,7 @@ export function signInScreen(root, done) {
 }
 
 export function connectScreen(root, done, { owner = true, warning = null, setup = false } = {}) {
-  const v = { host: "", port: "22", username: "admin", authType: "password", password: "" };
+  const v = { host: "", port: "22", username: "", authType: "password", password: "" };
   const err = errorBox();
   let pending = null;
   let publicKey = null;
@@ -103,6 +103,10 @@ export function connectScreen(root, done, { owner = true, warning = null, setup 
             ? t("This router showed a different key than the one you approved before. That can mean it was reset, or that something else is pretending to be it. Only approve if you reset the router yourself.", "呢部路由器出示嘅金鑰同你之前核准嘅唔同。可能係重設過，亦可能有其他裝置扮緊佢。除非你自己重設過路由器，否則唔好核准。")
             : t("The first time, the router introduces itself with a key. Compare this fingerprint with the one on the router if you can, then approve. After that, any other key is refused, so a look-alike cannot get your password.", "第一次連線，路由器會用一條金鑰自我介紹。可以嘅話，對比路由器上面嘅指紋，然後核准。之後任何其他金鑰都會被拒絕，所以假冒嘅裝置攞唔到你嘅密碼。")),
           h("div", { class: "fp" }, pending.fingerprint),
+          h("p", { class: "lede" }, t("Check how the app signs in before approving. The user name is the exact SSH user name from the router's Administration, System page, and it is case-sensitive.", "核准之前，睇清楚程式點樣登入。用戶名稱要同路由器「系統管理 > 系統」頁面嘅 SSH 用戶名稱一模一樣，大小寫都要啱。")),
+          h("label", { class: "lbl" }, t("Router user name", "路由器用戶名稱"), h("input", { class: "field", autocomplete: "off", autocapitalize: "off", spellcheck: "false", required: true, value: v.username, onInput: (e) => (v.username = e.target.value.trim()) })),
+          authSeg,
+          v.authType === "password" ? h("label", { class: "lbl" }, t("Router password", "路由器密碼"), h("input", { class: "field", type: "password", autocomplete: "current-password", value: v.password, onInput: (e) => (v.password = e.target.value) })) : null,
           err,
           h("div", { class: "actions" }, h("button", { class: "btn o", onClick: () => { pending = null; draw(); } }, t("Cancel", "取消")), h("button", { class: "btn f", onClick: approve }, icon("verified_user", "sm"), t("Approve and connect", "核准並連接"))))
       : form;
@@ -128,7 +132,7 @@ export function connectScreen(root, done, { owner = true, warning = null, setup 
   async function approve() {
     err.textContent = "";
     try {
-      await api.post("/api/router/approve-host-key", { fingerprint: pending.fingerprint, authType: v.authType, password: v.authType === "password" ? v.password : undefined });
+      await api.post("/api/router/approve-host-key", { fingerprint: pending.fingerprint, username: v.username, authType: v.authType, password: v.authType === "password" ? v.password : undefined });
       toast(t("Router connected.", "已連接路由器。"));
       done();
     } catch (error) {
@@ -138,4 +142,12 @@ export function connectScreen(root, done, { owner = true, warning = null, setup 
   }
 
   draw();
+  // Start from the host's suggested router address and user name, when the app was given them.
+  api.get("/api/router").then((info) => {
+    const hint = info?.suggested;
+    if (!hint) return;
+    if (!v.host && hint.host) v.host = hint.host;
+    if (!v.username && hint.username) v.username = hint.username;
+    draw();
+  }).catch(() => {});
 }

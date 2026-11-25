@@ -10,6 +10,7 @@ import { ACTIONS, generateKey, installKeyChange, publicKey, runAction, runFeatur
 import { ChangeEngine, validateRaw } from "./changes/engine.mjs";
 import { DOMAINS, findByKey, validate } from "./router/catalog.mjs";
 import { describeEntry, readDomain } from "./router/domains.mjs";
+import { suggestedRouter } from "./features/onboarding-wizard/index.mjs";
 import { features, featureAction, featureDomainMeta, mountFeatureRoutes } from "./features/registry.mjs";
 import { MASK, isSecret } from "./router/secrets.mjs";
 import { RouterSession, VAULT_PASSWORD, VAULT_PUBLIC_KEY } from "./router/session.mjs";
@@ -227,6 +228,7 @@ function routerView(app) {
     hostKey: config?.hostKey ?? null,
     hasKey: app.vault.has(VAULT_PUBLIC_KEY),
     publicKey: publicKey(app.vault),
+    suggested: config?.host ? null : suggestedRouter(),
     demo: Boolean(app.demoRouter),
   };
 }
@@ -344,7 +346,7 @@ function defineRoutes(app, route) {
       await connection.connect();
     } catch (error) {
       if (error instanceof HostKeyError) app.pendingHostKey = { ...config, fingerprint: error.fingerprint, at: Date.now(), changed: error.code === "HOST_KEY_CHANGED" };
-      throw error instanceof HostKeyError ? Object.assign(error, { status: 409 }) : explainRefusal(error, authType);
+      throw error instanceof HostKeyError ? Object.assign(error, { status: 409 }) : explainRefusal(error, authType, username);
     }
     connection.close();
     await saveRouter(app, { ...config, hostKey });
@@ -361,16 +363,18 @@ function defineRoutes(app, route) {
     const authType = body.authType === "key" || body.authType === "password" ? body.authType : pending.authType;
     const password = authType === "password" ? (body.password ? String(body.password) : pending.password) : undefined;
     if (authType === "password" && !password) throw bad("Enter the router's SSH password.");
+    const username = body.username === undefined || body.username === "" ? pending.username : String(body.username).trim();
+    if (!USERNAME_ROUTER.test(username)) throw bad("Enter the router's SSH user name.");
     const privateKey = authType === "key" ? vault.get("router.privateKey") : undefined;
     if (authType === "key" && !privateKey) throw bad("Make this app's key first, then allow it on the router.", 409, { code: "NO_KEY" });
-    const connection = new RouterConnection({ host: pending.host, port: pending.port, username: pending.username, password, privateKey, hostKey: pending.fingerprint, readyTimeoutMs: 10000 });
+    const connection = new RouterConnection({ host: pending.host, port: pending.port, username, password, privateKey, hostKey: pending.fingerprint, readyTimeoutMs: 10000 });
     try {
       await connection.connect();
     } catch (error) {
-      throw explainRefusal(error, authType);
+      throw explainRefusal(error, authType, username);
     }
     connection.close();
-    await saveRouter(app, { ...pending, authType, password, hostKey: pending.fingerprint });
+    await saveRouter(app, { ...pending, username, authType, password, hostKey: pending.fingerprint });
     app.pendingHostKey = null;
     await session.ensure();
     return routerView(app);
@@ -550,10 +554,12 @@ async function serveStatic(req, res, pathname) {
 }
 
 // Turns the router's refusal into a message that says what to do next.
-function explainRefusal(error, authType) {
+function explainRefusal(error, authType, username = "") {
   if (error?.code !== "AUTH_FAILED") return error;
+  const who = username ? `"${username}"` : "this user name";
+  const check = `Check the user name first: the router only accepts the exact SSH user name set under Administration, System (it is case-sensitive), and ${who} was refused.`;
   error.message = authType === "key"
-    ? "The router did not accept this app's key. Add the key shown under \"This app's key\" to the router's Authorized Keys (Administration, System), press Apply there, then try again."
-    : "The router refused the password. If password login for SSH is turned off on the router (Administration, System), choose \"This app's key\" instead.";
+    ? `${check} If the user name is right, add the key shown under "This app's key" to the router's Authorized Keys on the same page, press Apply there, then try again.`
+    : `${check} If the user name is right, the password was refused, or password login for SSH is turned off on the router; then choose "This app's key" instead.`;
   return error;
 }

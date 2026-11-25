@@ -204,3 +204,32 @@ test("approving the host key uses the sign-in method chosen now, and refusals sa
     await t.stop();
   }
 });
+
+test("the user name can be corrected while approving the host key", async () => {
+  const t = await startApp({ configure: false });
+  try {
+    const body = { host: "127.0.0.1", port: t.router.port, username: "Admin", authType: "password", password: t.router.password };
+    const first = await t.owner.post("/api/router/connect", body);
+    assert.equal(first.data.code, "HOST_KEY_UNKNOWN");
+    const wrong = await t.owner.post("/api/router/approve-host-key", { fingerprint: first.data.fingerprint });
+    assert.notEqual(wrong.status, 200);
+    assert.match(wrong.data.error ?? wrong.text, /"Admin" was refused/, "the refusal names the user name it tried");
+    assert.equal((await t.owner.post("/api/router/approve-host-key", { fingerprint: first.data.fingerprint, username: "a b" })).status, 400);
+    const fixed = await t.owner.post("/api/router/approve-host-key", { fingerprint: first.data.fingerprint, username: "admin", password: t.router.password });
+    assert.equal(fixed.status, 200, fixed.text);
+    assert.equal(fixed.data.username, "admin");
+  } finally {
+    await t.stop();
+  }
+});
+
+test("the router view offers the host's suggested address and user name until a router is saved", async () => {
+  process.env.ROUTER_SUGGESTED_USER = "iRobot";
+  const t = await startApp({ configure: false });
+  try {
+    assert.equal((await t.owner.get("/api/router")).data.suggested.username, "iRobot");
+  } finally {
+    delete process.env.ROUTER_SUGGESTED_USER;
+    await t.stop();
+  }
+});
