@@ -1,0 +1,22 @@
+/* Top talkers. Motion follows the app's global reduced-motion rule. */
+.tt-tabs{display:flex;gap:6px;flex-wrap:wrap;padding:4px;border-radius:28px;background:var(--surf-high);width:fit-content;max-width:100%}
+.tt-tab{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 18px;border-radius:22px;border:0;background:transparent;color:var(--sub);font-weight:650;font-size:14px;transition:background .25s,color .25s,transform .3s cubic-bezier(.3,1.6,.5,1)}
+.tt-tab[aria-selected=true]{background:var(--primary);color:var(--on-primary);box-shadow:var(--e1);transform:scale(1.04)}
+.tt-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.tt-row{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:6px 14px;align-items:center;padding:12px 14px;border-radius:22px;background:var(--surf-low);animation:ttIn .5s cubic-bezier(.3,1.4,.5,1) both;animation-delay:calc(var(--i,0) * 45ms)}
+@keyframes ttIn{from{opacity:0;transform:translateX(-18px)}}
+.tt-rank{width:40px;height:40px;border-radius:14px 20px 14px 20px;display:grid;place-items:center;font-weight:800;background:var(--surf-high);transition:border-radius .5s cubic-bezier(.3,1.5,.5,1)}
+.tt-row:first-child .tt-rank{background:var(--primary);color:var(--on-primary);border-radius:50%}
+.tt-value{font-weight:800;font-size:18px;font-variant-numeric:tabular-nums;text-align:right}
+.tt-bar{grid-column:2 / 4;height:10px;border-radius:5px;background:var(--surf-high);overflow:hidden}
+.tt-bar i{display:block;height:100%;width:calc(var(--w,0) * 1%);border-radius:5px;background:var(--primary);transition:width .7s cubic-bezier(.3,1.2,.5,1)}
+.tt-row:nth-child(n+2) .tt-bar i{background:var(--tertiary)}
+.tt-live{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--sub)}
+.tt-live i{width:10px;height:10px;border-radius:50%;background:var(--good);animation:live 1.4s ease-in-out infinite}
+.tt-live.paused i{background:var(--sub);animation:none}
+@media (max-width:480px){
+  .tt-row{grid-template-columns:34px minmax(0,1fr);}
+  .tt-value{grid-column:2;text-align:left}
+  .tt-bar{grid-column:1 / 3}
+  .tt-tab{padding:0 12px;flex:1 1 40%}
+}
