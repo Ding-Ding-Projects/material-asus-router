@@ -1,0 +1,94 @@
+/* Voice and comfort. Uses the app's own colour roles, so light, dark and any accent just work. */
+
+/* ---- panels ---- */
+.vx-panel{display:contents}
+.vx-card{scroll-margin-top:16px}
+.vx-inline{display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-width:0}
+.vx-inline .field{width:min(100%,260px)}
+.vx-actions{justify-content:flex-start}
+.vx-toc{margin-top:4px}
+.vx-toc .chip{text-decoration:none;min-height:40px}
+.vx-literal{unicode-bidi:plaintext}
+.vx-code{font-family:ui-monospace,'Cascadia Code',Consolas,monospace;font-size:13px;white-space:pre;overflow-x:auto;padding:12px 14px;border-radius:14px;background:var(--surf-low);margin:8px 0}
+.vx-details summary{cursor:pointer;font-weight:650;min-height:44px;display:flex;align-items:center}
+.vx-preview{display:grid;gap:8px}
+.vx-pv{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;padding:8px 12px;border-radius:12px;background:var(--surf-low)}
+.vx-pv .k{min-width:120px}
+.vx-table{display:grid;gap:6px}
+.vx-trow{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:6px 0;border-top:1px solid var(--line)}
+.vx-trow .vx-literal{min-width:72px}
+.vx-rule{gap:8px}
+.vx-colour{width:56px;height:44px;padding:2px;border-radius:12px;border:1.5px solid var(--line);background:var(--surf)}
+.vx-form{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr))}
+.vx-time-input{width:130px}
+.vx-name-preview{overflow-wrap:anywhere}
+.vx-dish{width:160px;height:160px;border-radius:24px;object-fit:cover;box-shadow:var(--e1)}
+.vx-code-name{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.vx-apply{gap:12px}
+.vx-row .slider{width:min(100%,260px)}
+.vx-in-settings .vx-card{box-shadow:none;padding:0;background:none;border-radius:0;gap:6px}
+.vx-in-settings .vx-card>.h2{display:none}
+.vx-sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* ---- funny-level asides and dialog emoji ---- */
+.vx-tone{display:block;margin-top:4px;font-weight:500;opacity:.92;font-size:.93em}
+.toast{flex-wrap:wrap}
+.toast .vx-tone{flex:1 1 100%;margin:0;font-weight:500}
+.vx-emoji{margin-right:2px}
+
+/* ---- appearance classes set on the page root ---- */
+html.vx-compact .card{padding:16px;border-radius:24px;gap:6px}
+html.vx-compact .setting{padding:8px 0}
+html.vx-compact .row{padding:8px 0}
+html.vx-compact .page{gap:12px}
+html.vx-compact .sheet{padding:20px;gap:10px}
+html.vx-font-large body{zoom:1.15}
+html.vx-font-system{--font:system-ui,-apple-system,'Segoe UI','Noto Sans HK','PingFang HK','Microsoft JhengHei',sans-serif}
+html.vx-motion-reduced *,html.vx-motion-reduced *::before,html.vx-motion-reduced *::after{animation-duration:.001ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+
+/* ---- ADHD modes ---- */
+html.vx-adhd-focus .rail,html.vx-adhd-focus .tabs,html.vx-adhd-focus .bar>*:not(.search){display:none}
+html.vx-adhd-focus .dock{left:24px}
+.vx-focus-exit{position:fixed;top:12px;right:12px;z-index:60}
+html.vx-adhd-low .card.hero{background:var(--primary-c);color:var(--on-primary-c);box-shadow:none}
+html.vx-adhd-low .dotb{animation:none}
+html.vx-adhd-low dialog::backdrop{backdrop-filter:none}
+.vx-time,.vx-momentum{position:fixed;z-index:40;padding:8px 14px;border-radius:16px;background:var(--surf-high);color:var(--text);box-shadow:var(--e1);font-size:13px;font-weight:650;max-width:calc(100vw - 24px)}
+.vx-time{left:12px;top:12px}
+.vx-momentum{left:12px;bottom:12px}
+html.vx-adhd-time .shell .main .tabs{margin-top:44px}
+.vx-onebar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 0}
+
+/* ---- the drop target and the celebration ---- */
+body.vx-dropping::after{content:"";position:fixed;inset:8px;border:4px dashed var(--primary);border-radius:32px;z-index:90;pointer-events:none;background:color-mix(in srgb,var(--primary) 8%,transparent)}
+.vx-celebrate{position:fixed;inset:0;z-index:95;display:grid;place-items:center;pointer-events:none;opacity:0;background:radial-gradient(circle at 50% 40%,color-mix(in srgb,var(--primary) 28%,transparent),transparent 70%);transition:opacity .45s ease}
+.vx-celebrate.in{opacity:1}
+.vx-celebrate.out{opacity:0}
+.vx-celebrate-card{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;padding:32px 40px;border-radius:40px;background:var(--surf);box-shadow:var(--e3);max-width:min(560px,calc(100vw - 32px));transform:scale(.8);transition:transform .5s cubic-bezier(.2,.9,.25,1.2)}
+.vx-celebrate.in .vx-celebrate-card{transform:scale(1)}
+.vx-celebrate.out .vx-celebrate-card{transform:scale(.9)}
+.vx-celebrate .disp{font-size:clamp(28px,6vw,44px);overflow-wrap:anywhere}
+.vx-celebrate .ms{color:var(--primary);font-size:56px;animation:vx-wiggle 1.2s ease-in-out infinite}
+@keyframes vx-wiggle{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg) scale(1.1)}}
+.vx-celebrate.calm,.vx-celebrate.calm .vx-celebrate-card{transition:opacity .3s linear;transform:none}
+.vx-celebrate.calm .ms{animation:none}
+@media (prefers-reduced-motion:reduce){
+  .vx-celebrate,.vx-celebrate-card{transition:opacity .3s linear;transform:none}
+  .vx-celebrate .ms{animation:none}
+  .vx-dimsum{animation:none}
+}
+
+/* ---- the dim sum card ---- */
+.vx-dimsum{position:fixed;right:16px;bottom:96px;z-index:70;margin:0;display:flex;gap:14px;align-items:center;padding:12px 44px 12px 12px;border-radius:28px;background:var(--surf);box-shadow:var(--e3);max-width:min(380px,calc(100vw - 32px));animation:rise .5s cubic-bezier(.2,.9,.25,1.1)}
+.vx-dimsum.calm{animation:none}
+.vx-dimsum img{width:96px;height:96px;border-radius:20px;object-fit:cover;flex:none}
+.vx-dimsum figcaption{min-width:0;overflow-wrap:anywhere}
+.vx-dimsum .btn.icon{position:absolute;top:6px;right:6px}
+
+@media (max-width:760px){
+  .vx-pv .k{min-width:0}
+  .vx-time-input{width:112px}
+  .vx-dimsum{right:8px;left:8px;max-width:none;bottom:84px}
+  .vx-rule .btn{flex:1 1 auto}
+  .vx-time{top:auto;bottom:56px}
+}
