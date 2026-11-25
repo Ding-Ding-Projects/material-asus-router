@@ -31,3 +31,23 @@ The loader, the checks and the settings control are not built.
 
 - Technical text such as commands, addresses and file names is never replaced.
 - School mode suspends a loaded file.
+
+## A planned walkthrough (demonstration)
+
+Your family calls the router "the box". You load a small word list that maps the app's word "router" to "the box".
+
+1. Open the setting and choose your file. The app reads it on your device only.
+2. It checks the whole file before using any of it, and shows what it will change. An invalid file is refused with the reason.
+3. Labels such as "Router address" now read "The box address".
+
+Clearing the file puts the original wording back at once.
+
+## What stays literal
+
+Commands, setting keys, addresses and anything copied or exported keep their real spelling. Only everyday words are mapped.
+
+## Questions people ask
+
+**Is the file sent anywhere?** No. It stays on your device and is never added to logs, exports or the change history.
+
+**Can it break the app?** It cannot. It changes labels, not behaviour. School mode pauses it.

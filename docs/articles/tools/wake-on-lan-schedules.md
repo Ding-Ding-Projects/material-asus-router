@@ -31,3 +31,33 @@ Scheduling is not built. Running it on the router needs Asuswrt-Merlin scheduled
 
 - The device must have Wake-on-LAN enabled in its own settings.
 - Wake-on-LAN works inside the local network only.
+
+## What already works
+
+Waking one device on demand is built (see [Network tools](network-tools.md)). The schedule adds the time dimension.
+
+## How a schedule will work
+
+1. Pick a device. The app needs its hardware address, which it knows if the device has been seen.
+2. Choose the days and the time, for example weekdays at 07:30.
+3. The router sends the wake packet at that time. A schedule stored on the router keeps working even if the app is closed.
+
+## Before it can work
+
+| Requirement | Why |
+| --- | --- |
+| Wake-on-LAN enabled in the device's firmware settings and its network card | Otherwise it ignores the packet |
+| A wired connection, mostly | Many laptops cannot wake over Wi-Fi |
+| The device is on the same local network | The packet does not cross the internet |
+| The router's clock is right | The schedule follows it. See [System](../router/system.md) |
+
+## A good use
+
+Wake a media server at 17:00 so it is ready for the evening, and let it sleep by itself overnight.
+
+## Questions people ask
+
+**Why did nothing happen?** Check the device setting first. It is the cause nine times in ten. A test from the on-demand tool tells you whether the device wakes at all.
+
+**Is it safe?** The packet only wakes a device that already trusts the local network. It carries no password.
+

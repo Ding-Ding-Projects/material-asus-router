@@ -31,3 +31,21 @@ The wizard screens are not built. The one-command setup script and the first-acc
 
 - The first account created becomes the owner.
 - You can try the pretend router instead of connecting a real one.
+
+## A planned walkthrough (demonstration)
+
+The first start, as a short path:
+
+1. **Create the owner.** A name and a long password. See [First owner account](../setup/first-owner-account.md).
+2. **Connect the router.** Enter its address, approve its host key once and choose a key or password. See [Connect your router](../setup/connect-router.md).
+3. **Detect the firmware.** The app reads whether it is stock or Merlin. See [Firmware detection](../setup/firmware-detection.md).
+4. **Try a safe change.** The app suggests renaming a device, so you see preview, apply and undo once with no risk.
+5. **Finish** on the Overview screen.
+
+Each step saves progress, so closing the app does not lose your place.
+
+## Questions people ask
+
+**Can I skip a step?** Optional steps, such as a tour, can be skipped. Creating the owner and connecting the router cannot.
+
+**Can I do it again?** The wizard can be reopened from Settings.

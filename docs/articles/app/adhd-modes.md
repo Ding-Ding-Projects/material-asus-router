@@ -31,3 +31,17 @@ No focus layout, reminders or timer exist yet. The design is not final.
 
 - Modes are options, not diagnoses. Anyone can turn them on.
 - Reduced motion is always honoured.
+
+## A planned walkthrough (demonstration)
+
+Changing the guest network normally means several fields on one screen. In a calmer mode:
+
+1. The screen shows one step at a time: name, then password, then which devices it can reach.
+2. A short, optional reminder says what is left, such as "Two steps to go".
+3. Nothing times out while you think, except the router's own safety timer, which only starts after you confirm.
+
+## Questions people ask
+
+**Is this a medical feature?** No. It is a layout and pacing preference. Use it if it helps.
+
+**Does it change what the router does?** No. It changes how the screens are laid out, not what is applied.

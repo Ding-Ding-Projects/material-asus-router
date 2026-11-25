@@ -54,3 +54,15 @@ summary: 改防火牆開關之前先睇明每個係咩，令路由器難以被�
 | 開關定義同說明 | 已完成 |
 | 防火牆畫面 | 開發中 |
 | 自訂規則 | 計劃中，未開發 |
+
+## 實際睇吓
+
+::sim[firewall]
+
+*上面嘅面板係示範，數值都係虛構，唔會讀或者改你嘅路由器。*
+
+## 再深入啲
+
+- [防火牆規則實戰](../security/firewall-rules.md)
+- [路由器加固清單](../security/hardening-checklist.md)
+- [IPv6](../internet/ipv6.md)

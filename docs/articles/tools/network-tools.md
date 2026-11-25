@@ -61,3 +61,8 @@ These are not built yet. Each page says what is missing.
 - [Wake-on-LAN schedules](wake-on-lan-schedules.md)
 - [Subnet calculator](subnet-calculator.md)
 - [Latency monitor](latency-monitor.md)
+
+## Go deeper
+
+- [Router tools](../workflows/router-tools.md)
+- [The SSH action catalogue](../workflows/ssh-action-catalogue.md)

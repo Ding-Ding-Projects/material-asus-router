@@ -66,3 +66,7 @@ The router's own log is kept in memory and disappears when it restarts. Where th
 | Read and parse the log | Built |
 | Search and filter screen | In progress |
 | Export | In progress |
+
+## Go deeper
+
+- [Logging: reading and keeping logs](../merlin/logging.md)

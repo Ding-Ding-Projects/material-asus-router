@@ -56,3 +56,14 @@ The app refuses an address that is already reserved for another device, is the r
 | --- | --- |
 | Validation rules (duplicates, range, own address) | Built |
 | Reservation list and form | In progress |
+
+## See it in action
+
+::sim[dhcp-pool]
+
+*The panel above is a demonstration with made-up values. It does not read or change your router.*
+
+## Go deeper
+
+- [Plan the address pool](../lan/dhcp-pool-planning.md)
+- [Subnet calculator](../tools/subnet-calculator.md)

@@ -103,6 +103,82 @@ The documentation site has a Cantonese twin of each guide. Where a guide has no 
 
 Nothing leaves your network. It stores accounts, your router connection and the change history in your own volume. See [Data and security model](security-model.md).
 
+## Wi-Fi and internet
+
+### Why does my phone cling to a weak signal?
+
+Phones decide when to move, and many wait too long. A roaming assistant can nudge them, but only a second access point fixes a dead spot. See [Roaming](../wireless/roaming.md) and [Manage an AiMesh network](../connect/aimesh-management.md).
+
+### Should I use one Wi-Fi name for every band?
+
+For phones and laptops, yes, with [Smart Connect](../wireless/smart-connect.md). Keep a separate 2.4 GHz name for smart plugs and other gadgets that fail to join otherwise.
+
+### Is it safe to use the DFS channels?
+
+Yes, and often the quietest. The router must listen for radar for a minute before it uses one, and may move away if it hears any. If Wi-Fi drops at the same hour each day, switch to a fixed channel. See [DFS channels](../wireless/dfs-channels.md).
+
+### Which connection type do I choose?
+
+Start with Automatic IP. Use PPPoE only if the provider gave you a user name and password. See [Choosing a connection type](../internet/wan-types.md).
+
+### Is DNS over TLS worth it?
+
+It hides your lookups from the line, and moves trust to the resolver you pick. It is worth it if you choose a resolver you trust more than your provider. See [DNS over TLS](../internet/dns-over-tls.md).
+
+### Why does a port forward work inside my home but not outside?
+
+Tests from inside often succeed whatever the router does. Test from mobile data. Double NAT is the usual outside failure. See [Troubleshooting by symptom](troubleshooting-by-symptom.md).
+
+## Security
+
+### Is a MAC filter real security?
+
+No. Addresses can be copied, and phones may use a random address per network. It keeps out a casual guest only. See [Wireless MAC filter](../wireless/mac-filter.md).
+
+### Should I turn UPnP off?
+
+If you have cameras, a home server or shared computers, yes, and forward only what you need. If you have a console and nothing unusual, it is a reasonable convenience. See [UPnP](../lan/upnp.md).
+
+### Is a DMZ host ever a good idea?
+
+Rarely. It exposes one device on every port. Try [port forwarding](../security/port-forward-safely.md) or [triggering](../lan/port-triggering.md) first.
+
+### What are the ten most useful security settings?
+
+The [hardening checklist](../security/hardening-checklist.md) lists them in order.
+
+## VPN, USB and mesh
+
+### Which VPN server should I run?
+
+WireGuard if your router has it, otherwise OpenVPN. Avoid PPTP. See [Pick a VPN server type](../connect/vpn-servers.md).
+
+### Can I send only some devices through a VPN?
+
+On Asuswrt-Merlin, yes, with [VPN Director](../connect/vpn-director.md).
+
+### Can I use a USB drive as a file server?
+
+Yes, for light jobs. See [USB apps](../connect/usb-apps.md).
+
+## Merlin and the app's tools
+
+### Do I need Asuswrt-Merlin?
+
+No. The app works with both. Merlin adds scripts, cron and DNS or VPN routing. See [Stock or Merlin](stock-vs-merlin.md).
+
+### Can I run my own commands from the app?
+
+Not through the normal screens. The app sends only a fixed [catalogue of actions](../workflows/ssh-action-catalogue.md). An owner-only [terminal](../workflows/owner-terminal.md) is planned.
+
+### What are one-click modes?
+
+Named bundles of settings, such as Bedtime or Guests, applied as one previewed change with one undo. They are planned. See [One-click modes](../workflows/one-click-modes.md).
+
+### Why do some demonstrations on the site have made-up numbers?
+
+They teach an idea and are always labelled as demonstrations. They never read or change your router.
+
 ## Reference
 
 - [API overview](api.md)

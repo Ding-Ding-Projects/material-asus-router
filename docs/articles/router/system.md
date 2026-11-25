@@ -62,3 +62,9 @@ This app manages the router over SSH. Turning SSH off, changing its port, or res
 | Setting definitions | Built |
 | System screen | In progress |
 | Strength meter | In progress |
+
+## Go deeper
+
+- [LEDs and the night mode](../merlin/leds.md)
+- [Scheduled reboot](../merlin/scheduled-reboot.md)
+- [SSH keys](../merlin/ssh-keys.md)

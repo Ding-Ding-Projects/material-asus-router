@@ -31,3 +31,24 @@ The editor screen and the settings that store the choices are not built.
 
 - All colour choices are checked for readable contrast.
 - Settings are stored per person.
+
+## A planned walkthrough (demonstration)
+
+You find the text too small and the screen too bright in the evening.
+
+1. Open the appearance editor and choose **Dark** or **Follow the system**.
+2. Raise the text size one step. The preview updates at once.
+3. Try a colour. The contrast check tells you if text on it would be hard to read, and will not let you save a combination that fails.
+
+| Setting | Choices |
+| --- | --- |
+| Theme | Light, dark, follow the system |
+| Colour | A set of accessible palettes, or your own with a contrast check |
+| Density | Comfortable or compact |
+| Text size | Several steps |
+
+## Questions people ask
+
+**Is it per person?** Yes. Each account keeps its own look.
+
+**Can I reset it?** One button puts everything back to the default.

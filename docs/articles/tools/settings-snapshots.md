@@ -31,3 +31,34 @@ No snapshot store, comparison view or restore path yet. How it relates to the ro
 
 - A snapshot is not a full backup of the router. Use the backup guide for that.
 - Snapshots live on the app's data volume.
+
+## How it will work
+
+A **snapshot** is a named copy of the settings the app can read, taken at a moment you choose. Unlike the [full backup](../router/backup-restore.md), a snapshot is a light record for comparing. You can take one before a project, such as "Before new Wi-Fi names", and another after.
+
+## Comparing two snapshots
+
+The app lines up the two and lists only what differs, in plain words:
+
+| Setting | Before | After |
+| --- | --- | --- |
+| Wi-Fi 5 GHz name | Home-5 | Pat-5G |
+| Guest network | Off | On |
+| Port forward "camera" | Present | Removed |
+
+Secrets such as passwords are never shown. They are compared as "changed" or "unchanged" only.
+
+## How it differs from change history and backup
+
+| Tool | Best for |
+| --- | --- |
+| [Change history](../safety/change-history.md) | A detailed log of each change the app made, with undo |
+| Snapshot | A named point to compare against, including changes made outside the app |
+| [Backup and restore](../router/backup-restore.md) | Getting a router back to a known state |
+
+## Questions people ask
+
+**Can I restore from a snapshot?** It is for comparing. Use a backup to restore.
+
+**Does it find changes made on the router's own page?** Yes. A snapshot reads the live settings, so it shows changes from any source.
+

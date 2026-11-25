@@ -57,3 +57,8 @@ summary: 由路由器執行 ping、traceroute 同域名查詢，亦可以喚醒�
 - [網絡喚醒排程](wake-on-lan-schedules.md)
 - [子網絡計算機](subnet-calculator.md)
 - [延遲監察](latency-monitor.md)
+
+## 再深入啲
+
+- [路由器工具](../workflows/router-tools.md)
+- [SSH 動作目錄](../workflows/ssh-action-catalogue.md)

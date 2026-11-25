@@ -52,3 +52,15 @@ VPN 會建立加密通道。常見有兩種角色，分清楚會有幫助：
 | OpenVPN 畫面 | 開發中；見 [OpenVPN](vpn-openvpn.md) |
 | WireGuard 畫面 | 開發中；見 [WireGuard](vpn-wireguard.md) |
 | 真路由器測試 | 未有 |
+
+## 實際睇吓
+
+::sim[vpn-director]
+
+*上面嘅面板係示範，數值都係虛構，唔會讀或者改你嘅路由器。*
+
+## 再深入啲
+
+- [揀 VPN 伺服器類型](../connect/vpn-servers.md)
+- [用路由器做 VPN 客戶端](../connect/vpn-client.md)
+- [WireGuard 對等端同金鑰](../connect/wireguard-peers.md)

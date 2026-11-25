@@ -54,3 +54,11 @@ Merlin 更新之後，檢查額外功能仲有冇效。儲存喺持久區嘅腳�
 | 偵測 Merlin 同列出支援嘅額外功能 | 已完成 |
 | 排程工作清單 | 已完成 |
 | 其他額外功能 | 計劃中，按表內次序 |
+
+## 再深入啲
+
+- [Merlin 自訂腳本](../merlin/merlin-scripts.md)
+- [Cron 工作](../merlin/cron-jobs.md)
+- [Entware](../merlin/entware.md)
+- [Merlin 附加元件](../merlin/addons.md)
+- [原廠定 Merlin](../reference/stock-vs-merlin.md)

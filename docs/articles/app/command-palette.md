@@ -31,3 +31,19 @@ The palette and its index of actions are not built.
 
 - The palette starts an action; it never applies a change without the usual preview.
 - It works with a screen reader.
+
+## A planned walkthrough (demonstration)
+
+You want to rename a device. Without the palette you would open **Devices**, find the row and open its menu. With it:
+
+1. Press the shortcut. The built-in version of the palette is opened with Ctrl+K (Cmd+K on a Mac). See [Keyboard shortcuts](../reference/keyboard-shortcuts.md).
+2. Type `rename`. Matching actions and screens appear, in English and Cantonese.
+3. Use the arrow keys, then Enter. You land on the device list with the rename field ready.
+
+The palette only **starts** something. A change still goes through the preview and confirmation.
+
+## Questions people ask
+
+**Does it list things my role cannot do?** No. A viewer sees only what a viewer may open.
+
+**Can I use it with a screen reader?** Yes. Results are announced as you move, and Esc closes it and returns focus.

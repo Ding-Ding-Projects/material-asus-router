@@ -58,3 +58,9 @@ summary: 路由器嘅時區、時鐘、管理同登入設定，高風險嘅設�
 | 設定定義 | 已完成 |
 | 系統畫面 | 開發中 |
 | 強度顯示 | 開發中 |
+
+## 再深入啲
+
+- [燈號同夜間模式](../merlin/leds.md)
+- [排程重新啟動](../merlin/scheduled-reboot.md)
+- [SSH 金鑰](../merlin/ssh-keys.md)

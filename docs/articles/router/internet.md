@@ -62,3 +62,12 @@ Changing the type can disconnect the whole house for a minute while the router s
 | Connection type and DNS control definitions | Built |
 | Internet screen and status readout | In progress |
 | Real-router test of a connection change | Not yet |
+
+## Go deeper
+
+- [Choosing a connection type](../internet/wan-types.md)
+- [Dual WAN](../internet/dual-wan.md)
+- [IPv6](../internet/ipv6.md)
+- [IPTV and VLAN tagging](../internet/iptv-vlan.md)
+- [DNS over TLS](../internet/dns-over-tls.md)
+- [DNS Director](../internet/dns-director.md)

@@ -70,3 +70,8 @@ Switching between stock and Merlin is a firmware change with extra risks, such a
 | --- | --- |
 | Read version and family | Built |
 | Update check and apply from the app | Planned |
+
+## Go deeper
+
+- [Firmware update walkthrough](../merlin/firmware-update-walkthrough.md)
+- [Stock or Merlin](../reference/stock-vs-merlin.md)

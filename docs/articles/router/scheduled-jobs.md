@@ -67,3 +67,8 @@ On Merlin, user jobs are saved in a way that survives a restart. The app checks 
 | Add, edit and remove | In progress |
 | Next-run preview | In progress |
 | Real-router test | Not yet |
+
+## Go deeper
+
+- [Cron jobs on Merlin](../merlin/cron-jobs.md)
+- [Scheduled reboot](../merlin/scheduled-reboot.md)

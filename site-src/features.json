@@ -1,69 +1,1433 @@
 {
-  "defaultMissing": { "en": "Interface screens and verification are still being built.", "zh": "介面畫面同驗證仲喺開發中。" },
+  "defaultMissing": {
+    "en": "Interface screens and verification are still being built.",
+    "zh": "介面畫面同驗證仲喺開發中。"
+  },
   "groups": [
     {
       "id": "everyday",
-      "title": { "en": "Everyday", "zh": "日常使用" },
+      "title": {
+        "en": "Everyday",
+        "zh": "日常使用"
+      },
       "items": [
-        { "id": "overview", "article": "router/overview", "status": "in-progress", "title": { "en": "Overview", "zh": "總覽" }, "summary": { "en": "Model, firmware, uptime, load and connection state at a glance.", "zh": "型號、韌體、運作時間、負載同連線狀態一眼睇晒。" } },
-        { "id": "devices", "article": "router/devices", "status": "in-progress", "title": { "en": "Devices", "zh": "裝置" }, "summary": { "en": "See every connected device, rename it, block it or reserve its address.", "zh": "睇到每部已連線嘅裝置，可以改名、封鎖或者保留位址。" } },
-        { "id": "wifi", "article": "router/wifi", "status": "in-progress", "title": { "en": "Wi-Fi", "zh": "Wi-Fi" }, "summary": { "en": "Name, password, security and channel per band, plus the guest network.", "zh": "每個頻段嘅名稱、密碼、加密同頻道，另加訪客網絡。" } },
-        { "id": "internet", "article": "router/internet", "status": "in-progress", "title": { "en": "Internet", "zh": "互聯網" }, "summary": { "en": "Connection type, DNS servers and dynamic DNS.", "zh": "連線類型、DNS 伺服器同動態 DNS。" } },
-        { "id": "local-network", "article": "router/local-network", "status": "in-progress", "title": { "en": "Local network", "zh": "區域網絡" }, "summary": { "en": "Router address, DHCP range and address reservations.", "zh": "路由器位址、DHCP 範圍同位址保留。" } }
+        {
+          "id": "overview",
+          "article": "router/overview",
+          "status": "in-progress",
+          "title": {
+            "en": "Overview",
+            "zh": "總覽"
+          },
+          "summary": {
+            "en": "Model, firmware, uptime, load and connection state at a glance.",
+            "zh": "型號、韌體、運作時間、負載同連線狀態一眼睇晒。"
+          }
+        },
+        {
+          "id": "devices",
+          "article": "router/devices",
+          "status": "in-progress",
+          "title": {
+            "en": "Devices",
+            "zh": "裝置"
+          },
+          "summary": {
+            "en": "See every connected device, rename it, block it or reserve its address.",
+            "zh": "睇到每部已連線嘅裝置，可以改名、封鎖或者保留位址。"
+          }
+        },
+        {
+          "id": "wifi",
+          "article": "router/wifi",
+          "status": "in-progress",
+          "title": {
+            "en": "Wi-Fi",
+            "zh": "Wi-Fi"
+          },
+          "summary": {
+            "en": "Name, password, security and channel per band, plus the guest network.",
+            "zh": "每個頻段嘅名稱、密碼、加密同頻道，另加訪客網絡。"
+          }
+        },
+        {
+          "id": "internet",
+          "article": "router/internet",
+          "status": "in-progress",
+          "title": {
+            "en": "Internet",
+            "zh": "互聯網"
+          },
+          "summary": {
+            "en": "Connection type, DNS servers and dynamic DNS.",
+            "zh": "連線類型、DNS 伺服器同動態 DNS。"
+          }
+        },
+        {
+          "id": "local-network",
+          "article": "router/local-network",
+          "status": "in-progress",
+          "title": {
+            "en": "Local network",
+            "zh": "區域網絡"
+          },
+          "summary": {
+            "en": "Router address, DHCP range and address reservations.",
+            "zh": "路由器位址、DHCP 範圍同位址保留。"
+          }
+        }
       ]
     },
     {
       "id": "protect",
-      "title": { "en": "Protect and control", "zh": "保護同管控" },
+      "title": {
+        "en": "Protect and control",
+        "zh": "保護同管控"
+      },
       "items": [
-        { "id": "port-forwarding", "article": "router/port-forwarding", "status": "in-progress", "title": { "en": "Port forwarding", "zh": "連接埠轉發" }, "summary": { "en": "Send outside traffic on a port to a device at home.", "zh": "將外面經某個連接埠嚟嘅流量轉去屋企部裝置。" } },
-        { "id": "firewall", "article": "router/firewall", "status": "in-progress", "title": { "en": "Firewall", "zh": "防火牆" }, "summary": { "en": "Firewall switches and rules, explained before you apply them.", "zh": "防火牆開關同規則，套用之前會先解釋清楚。" } },
-        { "id": "parental-controls", "article": "router/parental-controls", "status": "in-progress", "title": { "en": "Parental controls", "zh": "家長控制" }, "summary": { "en": "Time limits and filters for the devices you choose.", "zh": "為你揀嘅裝置設定時間限制同過濾。" } },
-        { "id": "vpn", "article": "router/vpn", "status": "in-progress", "title": { "en": "VPN", "zh": "VPN" }, "summary": { "en": "OpenVPN and WireGuard, on firmware that supports them.", "zh": "喺支援嘅韌體上使用 OpenVPN 同 WireGuard。" } }
+        {
+          "id": "port-forwarding",
+          "article": "router/port-forwarding",
+          "status": "in-progress",
+          "title": {
+            "en": "Port forwarding",
+            "zh": "連接埠轉發"
+          },
+          "summary": {
+            "en": "Send outside traffic on a port to a device at home.",
+            "zh": "將外面經某個連接埠嚟嘅流量轉去屋企部裝置。"
+          }
+        },
+        {
+          "id": "firewall",
+          "article": "router/firewall",
+          "status": "in-progress",
+          "title": {
+            "en": "Firewall",
+            "zh": "防火牆"
+          },
+          "summary": {
+            "en": "Firewall switches and rules, explained before you apply them.",
+            "zh": "防火牆開關同規則，套用之前會先解釋清楚。"
+          }
+        },
+        {
+          "id": "parental-controls",
+          "article": "router/parental-controls",
+          "status": "in-progress",
+          "title": {
+            "en": "Parental controls",
+            "zh": "家長控制"
+          },
+          "summary": {
+            "en": "Time limits and filters for the devices you choose.",
+            "zh": "為你揀嘅裝置設定時間限制同過濾。"
+          }
+        },
+        {
+          "id": "vpn",
+          "article": "router/vpn",
+          "status": "in-progress",
+          "title": {
+            "en": "VPN",
+            "zh": "VPN"
+          },
+          "summary": {
+            "en": "OpenVPN and WireGuard, on firmware that supports them.",
+            "zh": "喺支援嘅韌體上使用 OpenVPN 同 WireGuard。"
+          }
+        }
       ]
     },
     {
       "id": "performance",
-      "title": { "en": "Performance and mesh", "zh": "效能同 Mesh" },
+      "title": {
+        "en": "Performance and mesh",
+        "zh": "效能同 Mesh"
+      },
       "items": [
-        { "id": "traffic-priority", "article": "router/traffic-priority", "status": "in-progress", "title": { "en": "Traffic priority (QoS)", "zh": "流量優先次序 (QoS)" }, "summary": { "en": "Decide which traffic gets bandwidth first.", "zh": "決定邊類流量優先使用頻寬。" } },
-        { "id": "aimesh", "article": "router/aimesh", "status": "in-progress", "title": { "en": "AiMesh", "zh": "AiMesh" }, "summary": { "en": "See mesh nodes and their state.", "zh": "睇到 Mesh 節點同佢哋嘅狀態。" } }
+        {
+          "id": "traffic-priority",
+          "article": "router/traffic-priority",
+          "status": "in-progress",
+          "title": {
+            "en": "Traffic priority (QoS)",
+            "zh": "流量優先次序 (QoS)"
+          },
+          "summary": {
+            "en": "Decide which traffic gets bandwidth first.",
+            "zh": "決定邊類流量優先使用頻寬。"
+          }
+        },
+        {
+          "id": "aimesh",
+          "article": "router/aimesh",
+          "status": "in-progress",
+          "title": {
+            "en": "AiMesh",
+            "zh": "AiMesh"
+          },
+          "summary": {
+            "en": "See mesh nodes and their state.",
+            "zh": "睇到 Mesh 節點同佢哋嘅狀態。"
+          }
+        }
       ]
     },
     {
       "id": "storage-tools",
-      "title": { "en": "Storage and tools", "zh": "儲存同工具" },
+      "title": {
+        "en": "Storage and tools",
+        "zh": "儲存同工具"
+      },
       "items": [
-        { "id": "usb-storage", "article": "router/usb-storage", "status": "in-progress", "title": { "en": "USB and storage", "zh": "USB 同儲存" }, "summary": { "en": "Attached drives and sharing settings.", "zh": "已接駁嘅硬碟同分享設定。" } },
-        { "id": "logs", "article": "router/logs", "status": "in-progress", "title": { "en": "Logs", "zh": "記錄" }, "summary": { "en": "Read the router log with search and filters.", "zh": "用搜尋同過濾睇路由器記錄。" } },
-        { "id": "network-tools", "article": "tools/network-tools", "status": "in-progress", "title": { "en": "Network tools", "zh": "網絡工具" }, "summary": { "en": "Ping, traceroute and name lookup from the router.", "zh": "由路由器執行 Ping、Traceroute 同域名查詢。" } },
-        { "id": "scheduled-jobs", "article": "router/scheduled-jobs", "status": "in-progress", "merlin": true, "title": { "en": "Scheduled jobs", "zh": "排程工作" }, "summary": { "en": "Run jobs on a schedule on Asuswrt-Merlin.", "zh": "喺 Asuswrt-Merlin 上按時間表執行工作。" } }
+        {
+          "id": "usb-storage",
+          "article": "router/usb-storage",
+          "status": "in-progress",
+          "title": {
+            "en": "USB and storage",
+            "zh": "USB 同儲存"
+          },
+          "summary": {
+            "en": "Attached drives and sharing settings.",
+            "zh": "已接駁嘅硬碟同分享設定。"
+          }
+        },
+        {
+          "id": "logs",
+          "article": "router/logs",
+          "status": "in-progress",
+          "title": {
+            "en": "Logs",
+            "zh": "記錄"
+          },
+          "summary": {
+            "en": "Read the router log with search and filters.",
+            "zh": "用搜尋同過濾睇路由器記錄。"
+          }
+        },
+        {
+          "id": "network-tools",
+          "article": "tools/network-tools",
+          "status": "in-progress",
+          "title": {
+            "en": "Network tools",
+            "zh": "網絡工具"
+          },
+          "summary": {
+            "en": "Ping, traceroute and name lookup from the router.",
+            "zh": "由路由器執行 Ping、Traceroute 同域名查詢。"
+          }
+        },
+        {
+          "id": "scheduled-jobs",
+          "article": "router/scheduled-jobs",
+          "status": "in-progress",
+          "merlin": true,
+          "title": {
+            "en": "Scheduled jobs",
+            "zh": "排程工作"
+          },
+          "summary": {
+            "en": "Run jobs on a schedule on Asuswrt-Merlin.",
+            "zh": "喺 Asuswrt-Merlin 上按時間表執行工作。"
+          }
+        }
       ]
     },
     {
       "id": "maintain",
-      "title": { "en": "Maintenance", "zh": "維護" },
+      "title": {
+        "en": "Maintenance",
+        "zh": "維護"
+      },
       "items": [
-        { "id": "backup-restore", "article": "router/backup-restore", "status": "in-progress", "title": { "en": "Backup and restore", "zh": "備份同還原" }, "summary": { "en": "Save the router settings and restore them later.", "zh": "儲存路由器設定，之後可以還原。" } },
-        { "id": "firmware", "article": "router/firmware", "status": "in-progress", "title": { "en": "Firmware", "zh": "韌體" }, "summary": { "en": "Check the version and update with care.", "zh": "檢查版本，小心更新。" } },
-        { "id": "system", "article": "router/system", "status": "in-progress", "title": { "en": "System", "zh": "系統" }, "summary": { "en": "Time zone, administration and sign-in settings of the router.", "zh": "路由器嘅時區、管理同登入設定。" } },
-        { "id": "maintenance", "article": "router/maintenance", "status": "in-progress", "title": { "en": "Maintenance", "zh": "維護工作" }, "summary": { "en": "Reboot with a two-key confirmation, and other upkeep.", "zh": "需要兩個步驟確認嘅重新啟動，同其他保養工作。" } },
-        { "id": "merlin-extras", "article": "router/merlin-extras", "status": "in-progress", "merlin": true, "title": { "en": "Merlin extras", "zh": "Merlin 額外功能" }, "summary": { "en": "Controls that exist only on Asuswrt-Merlin.", "zh": "只有 Asuswrt-Merlin 先有嘅控制項。" } },
-        { "id": "advanced", "article": "router/advanced", "status": "in-progress", "title": { "en": "Advanced", "zh": "進階" }, "summary": { "en": "Every router value, with a friendly label first.", "zh": "路由器每個數值，先顯示易明嘅名稱。" } },
-        { "id": "change-history", "article": "safety/change-history", "status": "in-progress", "title": { "en": "Change history", "zh": "改動歷史" }, "summary": { "en": "Every change with its old and new values.", "zh": "每次改動連同舊值同新值。" } }
+        {
+          "id": "backup-restore",
+          "article": "router/backup-restore",
+          "status": "in-progress",
+          "title": {
+            "en": "Backup and restore",
+            "zh": "備份同還原"
+          },
+          "summary": {
+            "en": "Save the router settings and restore them later.",
+            "zh": "儲存路由器設定，之後可以還原。"
+          }
+        },
+        {
+          "id": "firmware",
+          "article": "router/firmware",
+          "status": "in-progress",
+          "title": {
+            "en": "Firmware",
+            "zh": "韌體"
+          },
+          "summary": {
+            "en": "Check the version and update with care.",
+            "zh": "檢查版本，小心更新。"
+          }
+        },
+        {
+          "id": "system",
+          "article": "router/system",
+          "status": "in-progress",
+          "title": {
+            "en": "System",
+            "zh": "系統"
+          },
+          "summary": {
+            "en": "Time zone, administration and sign-in settings of the router.",
+            "zh": "路由器嘅時區、管理同登入設定。"
+          }
+        },
+        {
+          "id": "maintenance",
+          "article": "router/maintenance",
+          "status": "in-progress",
+          "title": {
+            "en": "Maintenance",
+            "zh": "維護工作"
+          },
+          "summary": {
+            "en": "Reboot with a two-key confirmation, and other upkeep.",
+            "zh": "需要兩個步驟確認嘅重新啟動，同其他保養工作。"
+          }
+        },
+        {
+          "id": "merlin-extras",
+          "article": "router/merlin-extras",
+          "status": "in-progress",
+          "merlin": true,
+          "title": {
+            "en": "Merlin extras",
+            "zh": "Merlin 額外功能"
+          },
+          "summary": {
+            "en": "Controls that exist only on Asuswrt-Merlin.",
+            "zh": "只有 Asuswrt-Merlin 先有嘅控制項。"
+          }
+        },
+        {
+          "id": "advanced",
+          "article": "router/advanced",
+          "status": "in-progress",
+          "title": {
+            "en": "Advanced",
+            "zh": "進階"
+          },
+          "summary": {
+            "en": "Every router value, with a friendly label first.",
+            "zh": "路由器每個數值，先顯示易明嘅名稱。"
+          }
+        },
+        {
+          "id": "change-history",
+          "article": "safety/change-history",
+          "status": "in-progress",
+          "title": {
+            "en": "Change history",
+            "zh": "改動歷史"
+          },
+          "summary": {
+            "en": "Every change with its old and new values.",
+            "zh": "每次改動連同舊值同新值。"
+          }
+        }
       ]
     },
     {
       "id": "app",
-      "title": { "en": "The app itself", "zh": "程式本身" },
+      "title": {
+        "en": "The app itself",
+        "zh": "程式本身"
+      },
       "items": [
-        { "id": "safe-change", "article": "safety/safe-changes", "status": "in-progress", "title": { "en": "Preview, confirm, apply", "zh": "預覽、確認、套用" }, "summary": { "en": "Old and new values side by side; previous values saved first.", "zh": "舊值同新值並排顯示，先儲存舊值。" } },
-        { "id": "guard", "article": "safety/connection-guard", "status": "in-progress", "title": { "en": "Connection-loss guard", "zh": "斷線保護" }, "summary": { "en": "A router-side timed revert, 90 seconds by default.", "zh": "喺路由器上面運作嘅定時還原，預設 90 秒。" } },
-        { "id": "undo", "article": "safety/undo-changes", "status": "in-progress", "title": { "en": "One-click undo", "zh": "一鍵還原" }, "summary": { "en": "Put back the values a change replaced.", "zh": "還原改動所取代嘅數值。" } },
-        { "id": "roles", "article": "app/accounts-and-roles", "status": "in-progress", "title": { "en": "Owner, operators, viewers", "zh": "擁有者、操作員、檢視者" }, "summary": { "en": "The first account is the owner; add people with the access they need.", "zh": "第一個帳戶係擁有者，之後按需要加入其他人。" } },
-        { "id": "firmware-detect", "article": "setup/firmware-detection", "status": "in-progress", "title": { "en": "Firmware detection", "zh": "韌體偵測" }, "summary": { "en": "Merlin-only controls show as disabled, with the reason, on stock firmware.", "zh": "原廠韌體上，只限 Merlin 嘅控制項會顯示為停用並註明原因。" } },
-        { "id": "demo-mode", "article": "start/demo-router", "status": "in-progress", "title": { "en": "Demo router", "zh": "模擬路由器" }, "summary": { "en": "Try everything against a built-in pretend router.", "zh": "用內置嘅模擬路由器試晒所有功能。" } },
-        { "id": "desktop", "article": "delivery/desktop-app", "status": "in-progress", "title": { "en": "Windows desktop app", "zh": "Windows 桌面版" }, "missing": { "en": "Planned in the same release. Nothing to download yet.", "zh": "計劃喺同一個版本推出，暫時未有下載。" }, "summary": { "en": "The same app as a Windows program.", "zh": "同一個程式，以 Windows 程式形式提供。" } }
+        {
+          "id": "safe-change",
+          "article": "safety/safe-changes",
+          "status": "in-progress",
+          "title": {
+            "en": "Preview, confirm, apply",
+            "zh": "預覽、確認、套用"
+          },
+          "summary": {
+            "en": "Old and new values side by side; previous values saved first.",
+            "zh": "舊值同新值並排顯示，先儲存舊值。"
+          }
+        },
+        {
+          "id": "guard",
+          "article": "safety/connection-guard",
+          "status": "in-progress",
+          "title": {
+            "en": "Connection-loss guard",
+            "zh": "斷線保護"
+          },
+          "summary": {
+            "en": "A router-side timed revert, 90 seconds by default.",
+            "zh": "喺路由器上面運作嘅定時還原，預設 90 秒。"
+          }
+        },
+        {
+          "id": "undo",
+          "article": "safety/undo-changes",
+          "status": "in-progress",
+          "title": {
+            "en": "One-click undo",
+            "zh": "一鍵還原"
+          },
+          "summary": {
+            "en": "Put back the values a change replaced.",
+            "zh": "還原改動所取代嘅數值。"
+          }
+        },
+        {
+          "id": "roles",
+          "article": "app/accounts-and-roles",
+          "status": "in-progress",
+          "title": {
+            "en": "Owner, operators, viewers",
+            "zh": "擁有者、操作員、檢視者"
+          },
+          "summary": {
+            "en": "The first account is the owner; add people with the access they need.",
+            "zh": "第一個帳戶係擁有者，之後按需要加入其他人。"
+          }
+        },
+        {
+          "id": "firmware-detect",
+          "article": "setup/firmware-detection",
+          "status": "in-progress",
+          "title": {
+            "en": "Firmware detection",
+            "zh": "韌體偵測"
+          },
+          "summary": {
+            "en": "Merlin-only controls show as disabled, with the reason, on stock firmware.",
+            "zh": "原廠韌體上，只限 Merlin 嘅控制項會顯示為停用並註明原因。"
+          }
+        },
+        {
+          "id": "demo-mode",
+          "article": "start/demo-router",
+          "status": "in-progress",
+          "title": {
+            "en": "Demo router",
+            "zh": "模擬路由器"
+          },
+          "summary": {
+            "en": "Try everything against a built-in pretend router.",
+            "zh": "用內置嘅模擬路由器試晒所有功能。"
+          }
+        },
+        {
+          "id": "desktop",
+          "article": "delivery/desktop-app",
+          "status": "in-progress",
+          "title": {
+            "en": "Windows desktop app",
+            "zh": "Windows 桌面版"
+          },
+          "missing": {
+            "en": "Planned in the same release. Nothing to download yet.",
+            "zh": "計劃喺同一個版本推出，暫時未有下載。"
+          },
+          "summary": {
+            "en": "The same app as a Windows program.",
+            "zh": "同一個程式，以 Windows 程式形式提供。"
+          }
+        }
+      ]
+    },
+    {
+      "id": "wifi-advanced",
+      "title": {
+        "en": "Advanced Wi-Fi",
+        "zh": "Wi-Fi 進階"
+      },
+      "items": [
+        {
+          "id": "wireless-roaming",
+          "article": "wireless/roaming",
+          "status": "in-progress",
+          "title": {
+            "en": "Roaming and band steering",
+            "zh": "漫遊同頻段引導"
+          },
+          "summary": {
+            "en": "Why phones cling to a weak signal, what roaming assistants and fast roaming do, and how to tune them without breaking old devices.",
+            "zh": "點解手機死死地黐住弱訊號、漫遊助手同快速漫遊做啲乜，以及點樣調較而唔搞壞舊裝置。"
+          },
+          "missing": {
+            "en": "The screen is in progress and has not been tried on a real router.",
+            "zh": "畫面開發中，仲未喺真路由器試過。"
+          }
+        },
+        {
+          "id": "wireless-beamforming",
+          "article": "wireless/beamforming",
+          "status": "in-progress",
+          "title": {
+            "en": "Beamforming",
+            "zh": "波束成形"
+          },
+          "summary": {
+            "en": "How the router aims its signal at a device, the difference between explicit and universal beamforming, and when to switch it off.",
+            "zh": "路由器點樣將訊號射向裝置、顯式同通用波束成形有咩分別，以及幾時應該關。"
+          },
+          "missing": {
+            "en": "The screen is in progress and has not been tried on a real router.",
+            "zh": "畫面開發中，仲未喺真路由器試過。"
+          }
+        },
+        {
+          "id": "wireless-ofdma",
+          "article": "wireless/ofdma",
+          "status": "in-progress",
+          "title": {
+            "en": "OFDMA and MU-MIMO",
+            "zh": "OFDMA 同 MU-MIMO"
+          },
+          "summary": {
+            "en": "What Wi-Fi 6 does when many devices talk at once, what each OFDMA and MU-MIMO option means and why a few older devices dislike them.",
+            "zh": "Wi-Fi 6 點樣處理好多裝置同時傾偈、OFDMA 同 MU-MIMO 各個選項嘅意思，以及點解有啲舊裝置唔鍾意。"
+          },
+          "missing": {
+            "en": "The screen is in progress and has not been tried on a real router.",
+            "zh": "畫面開發中，仲未喺真路由器試過。"
+          }
+        },
+        {
+          "id": "wireless-target-wake-time",
+          "article": "wireless/target-wake-time",
+          "status": "in-progress",
+          "title": {
+            "en": "Target Wake Time",
+            "zh": "目標喚醒時間（TWT）"
+          },
+          "summary": {
+            "en": "How Wi-Fi 6 lets battery devices sleep between agreed wake-up times, and why switching it off can fix a sulky sensor.",
+            "zh": "Wi-Fi 6 點樣令電池裝置喺約定喚醒時間之間休眠，以及點解關咗佢可能醫好鬧情緒嘅感應器。"
+          },
+          "missing": {
+            "en": "The screen is in progress and has not been tried on a real router.",
+            "zh": "畫面開發中，仲未喺真路由器試過。"
+          }
+        },
+        {
+          "id": "wireless-dfs-channels",
+          "article": "wireless/dfs-channels",
+          "status": "in-progress",
+          "title": {
+            "en": "DFS channels and radar",
+            "zh": "DFS 頻道同雷達"
+          },
+          "summary": {
+            "en": "Why some 5 GHz channels are shared with weather radar, what the one-minute wait means, and when to avoid DFS channels.",
+            "zh": "點解部分 5 GHz 頻道同氣象雷達共用、一分鐘等候係咩意思，以及幾時應該避開 DFS 頻道。"
+          },
+          "missing": {
+            "en": "The app control is planned. The guide is written.",
+            "zh": "程式控制項屬計劃中，指南已寫好。"
+          }
+        },
+        {
+          "id": "wireless-smart-connect",
+          "article": "wireless/smart-connect",
+          "status": "in-progress",
+          "title": {
+            "en": "Smart Connect",
+            "zh": "Smart Connect"
+          },
+          "summary": {
+            "en": "One Wi-Fi name for every band, how the router chooses a band for each device, and when separate names work better.",
+            "zh": "所有頻段用同一個 Wi-Fi 名、路由器點樣幫每部裝置揀頻段，以及幾時分開名稱更好。"
+          },
+          "missing": {
+            "en": "The app control is planned. The guide is written.",
+            "zh": "程式控制項屬計劃中，指南已寫好。"
+          }
+        },
+        {
+          "id": "wireless-wifi-schedule",
+          "article": "wireless/wifi-schedule",
+          "status": "in-progress",
+          "title": {
+            "en": "Wi-Fi schedule",
+            "zh": "Wi-Fi 排程"
+          },
+          "summary": {
+            "en": "Switch a Wi-Fi band off at set hours, what a schedule really saves, and why the router clock must be right first.",
+            "zh": "喺指定時間關閉 Wi-Fi 頻段、排程真正慳到啲乜，以及點解要先確保路由器時鐘正確。"
+          },
+          "missing": {
+            "en": "The app control is planned. The guide is written.",
+            "zh": "程式控制項屬計劃中，指南已寫好。"
+          }
+        },
+        {
+          "id": "wireless-mac-filter",
+          "article": "wireless/mac-filter",
+          "status": "in-progress",
+          "title": {
+            "en": "Wireless MAC filter",
+            "zh": "無線 MAC 過濾"
+          },
+          "summary": {
+            "en": "Allow or block specific devices on Wi-Fi by hardware address, and why this is a convenience rather than real security.",
+            "zh": "按硬件位址容許或者封鎖特定 Wi-Fi 裝置，以及點解呢個係方便功能而唔係真正保安。"
+          },
+          "missing": {
+            "en": "The app control is planned. The guide is written.",
+            "zh": "程式控制項屬計劃中，指南已寫好。"
+          }
+        },
+        {
+          "id": "wireless-wps",
+          "article": "wireless/wps",
+          "status": "in-progress",
+          "title": {
+            "en": "WPS push-button setup",
+            "zh": "WPS 一鍵連線"
+          },
+          "summary": {
+            "en": "What WPS is for, why the PIN method is unsafe, and the short checklist for turning it off.",
+            "zh": "WPS 係做乜用、點解 PIN 方式唔安全，以及關閉佢嘅簡短清單。"
+          },
+          "missing": {
+            "en": "The app control is planned. The guide is written.",
+            "zh": "程式控制項屬計劃中，指南已寫好。"
+          }
+        }
+      ]
+    },
+    {
+      "id": "internet-dns",
+      "title": {
+        "en": "Internet and DNS",
+        "zh": "互聯網同 DNS"
+      },
+      "items": [
+        {
+          "id": "internet-wan-types",
+          "article": "internet/wan-types",
+          "status": "in-progress",
+          "title": {
+            "en": "Choosing a connection type",
+            "zh": "揀連線類型"
+          },
+          "summary": {
+            "en": "Automatic IP, PPPoE, static IP, PPTP and L2TP explained in plain words, with how to tell which one your provider uses.",
+            "zh": "用白話解釋自動 IP、PPPoE、固定 IP、PPTP 同 L2TP，以及點樣知道供應商用邊種。"
+          },
+          "missing": {
+            "en": "The screen is in progress and has not been tried on a real router.",
+            "zh": "畫面開發中，仲未喺真路由器試過。"
+          }
+        },
+        {
+          "id": "internet-dual-wan",
+          "article": "internet/dual-wan",
+          "status": "in-progress",
+          "title": {
+            "en": "Dual WAN: failover and load balancing",
+            "zh": "雙 WAN：故障轉移同負載平衡"
+          },
+          "summary": {
+            "en": "Use a second connection, such as a phone modem on USB, as a backup or to share traffic, and how the router decides the first has failed.",
+            "zh": "用第二條線（例如 USB 手機數據機）做後備或者分擔流量，以及路由器點樣判斷第一條線壞咗。"
+          },
+          "missing": {
+            "en": "The app control is planned. The guide is written.",
+            "zh": "程式控制項屬計劃中，指南已寫好。"
+          }
+        },
+        {
+          "id": "internet-ipv6",
+          "article": "internet/ipv6",
+          "status": "in-progress",
+          "title": {
+            "en": "IPv6",
+            "zh": "IPv6"
+          },
+          "summary": {
+            "en": "What IPv6 changes at home, the connection modes the router offers, and why the IPv6 firewall matters more than it does for IPv4.",
+            "zh": "IPv6 喺屋企改變咗啲乜、路由器提供嘅連線模式，以及點解 IPv6 防火牆比 IPv4 更加重要。"
+          },
+          "missing": {
+            "en": "The screen is in progress and has not been tried on a real router.",
+            "zh": "畫面開發中，仲未喺真路由器試過。"
+          }
+        },
+        {
+          "id": "internet-iptv-vlan",
+          "article": "internet/iptv-vlan",
+          "status": "in-progress",
+          "title": {
+            "en": "IPTV and VLAN tagging",
+            "zh": "IPTV 同 VLAN 標籤"
+          },
+          "summary": {
+            "en": "Why some providers send TV and internet on separate tagged networks, and how to match your provider's profile without breaking either.",
+            "zh": "點解部分供應商將電視同互聯網放喺分開嘅標籤網絡，以及點樣配合供應商設定而唔搞壞兩邊。"
+          },
+          "missing": {
+            "en": "The app control is planned. The guide is written.",
+            "zh": "程式控制項屬計劃中，指南已寫好。"
+          }
+        },
+        {
+          "id": "internet-dns-over-tls",
+          "article": "internet/dns-over-tls",
+          "status": "in-progress",
+          "title": {
+            "en": "DNS over TLS",
+            "zh": "DNS over TLS"
+          },
+          "summary": {
+            "en": "Encrypt the name lookups that leave your home, what it protects, what it does not, and how to pick a resolver.",
+            "zh": "加密離開屋企嘅域名查詢、保護啲乜、保護唔到啲乜，以及點樣揀解析器。"
+          },
+          "missing": {
+            "en": "The app control is planned. The guide is written.",
+            "zh": "程式控制項屬計劃中，指南已寫好。"
+          }
+        },
+        {
+          "id": "internet-dns-director",
+          "article": "internet/dns-director",
+          "status": "in-progress",
+          "title": {
+            "en": "DNS Director",
+            "zh": "DNS Director"
+          },
+          "summary": {
+            "en": "Force chosen devices to use chosen DNS servers, even devices that ignore the router, with family filters as the common example. Merlin only.",
+            "zh": "強制指定裝置用指定 DNS 伺服器，就算裝置唔理路由器都得，常見例子係家庭過濾。只限 Merlin。"
+          },
+          "merlin": true,
+          "missing": {
+            "en": "The app control is planned. The guide is written.",
+            "zh": "程式控制項屬計劃中，指南已寫好。"
+          }
+        }
+      ]
+    },
+    {
+      "id": "lan-extras",
+      "title": {
+        "en": "Local network extras",
+        "zh": "本地網絡進階"
+      },
+      "items": [
+        {
+          "id": "lan-dhcp-pool-planning",
+          "article": "lan/dhcp-pool-planning",
+          "status": "in-progress",
+          "title": {
+            "en": "Plan the address pool",
+            "zh": "規劃位址池"
+          },
+          "summary": {
+            "en": "Size the range the router hands out, leave room for fixed addresses, and avoid the conflicts that cause half the home network mysteries.",
+            "zh": "決定路由器派出嘅範圍大小，預留固定位址，避免令屋企網絡出現怪事嘅衝突。"
+          },
+          "missing": {
+            "en": "The screen is in progress and has not been tried on a real router.",
+            "zh": "畫面開發中，仲未喺真路由器試過。"
+          }
+        },
+        {
+          "id": "lan-static-routes",
+          "article": "lan/static-routes",
+          "status": "in-progress",
+          "title": {
+            "en": "Static routes",
+            "zh": "靜態路由"
+          },
+          "summary": {
+            "en": "Tell the router how to reach another network behind a second router, with a worked example and the mistakes that cause one-way traffic.",
+            "zh": "教路由器點樣去到第二部路由器後面嘅網絡，附實例同造成單向流量嘅常見錯誤。"
+          },
+          "missing": {
+            "en": "The app control is planned. The guide is written.",
+            "zh": "程式控制項屬計劃中，指南已寫好。"
+          }
+        },
+        {
+          "id": "lan-port-triggering",
+          "article": "lan/port-triggering",
+          "status": "in-progress",
+          "title": {
+            "en": "Port triggering",
+            "zh": "端口觸發"
+          },
+          "summary": {
+            "en": "Open a port only while a device is using another one, how it differs from port forwarding, and why it works for one device at a time.",
+            "zh": "只喺裝置用緊另一個端口嘅時候先開一個端口、同端口轉發有咩分別，以及點解一次淨係得一部裝置用。"
+          },
+          "missing": {
+            "en": "The app control is planned. The guide is written.",
+            "zh": "程式控制項屬計劃中，指南已寫好。"
+          }
+        },
+        {
+          "id": "lan-dmz",
+          "article": "lan/dmz",
+          "status": "in-progress",
+          "title": {
+            "en": "DMZ host",
+            "zh": "DMZ 主機"
+          },
+          "summary": {
+            "en": "Send all unsolicited internet traffic to one device, why that is the riskiest way to let traffic in, and safer alternatives.",
+            "zh": "將所有未被要求嘅互聯網流量送去一部裝置、點解係最危險嘅開放方法，以及更安全嘅替代方案。"
+          },
+          "missing": {
+            "en": "The app control is planned. The guide is written.",
+            "zh": "程式控制項屬計劃中，指南已寫好。"
+          }
+        },
+        {
+          "id": "lan-upnp",
+          "article": "lan/upnp",
+          "status": "in-progress",
+          "title": {
+            "en": "UPnP",
+            "zh": "UPnP"
+          },
+          "summary": {
+            "en": "How devices ask the router to open ports for themselves, why that is both handy and risky, and how to review what is open.",
+            "zh": "裝置點樣請路由器自己開端口、點解又方便又有風險，以及點樣檢查開咗啲乜。"
+          },
+          "missing": {
+            "en": "The app control is planned. The guide is written.",
+            "zh": "程式控制項屬計劃中，指南已寫好。"
+          }
+        },
+        {
+          "id": "lan-nat-passthrough",
+          "article": "lan/nat-passthrough",
+          "status": "in-progress",
+          "title": {
+            "en": "NAT passthrough and helpers",
+            "zh": "NAT 穿透同輔助功能"
+          },
+          "summary": {
+            "en": "PPTP, L2TP, IPsec, SIP and similar helpers that let special protocols cross the router, and when switching one off fixes a call or a VPN.",
+            "zh": "PPTP、L2TP、IPsec、SIP 等輔助功能點樣令特殊協定穿過路由器，以及幾時關咗佢可以醫好通話或者 VPN。"
+          },
+          "missing": {
+            "en": "The app control is planned. The guide is written.",
+            "zh": "程式控制項屬計劃中，指南已寫好。"
+          }
+        }
+      ]
+    },
+    {
+      "id": "security",
+      "title": {
+        "en": "Security and filtering",
+        "zh": "保安同過濾"
+      },
+      "items": [
+        {
+          "id": "security-hardening-checklist",
+          "article": "security/hardening-checklist",
+          "status": "ready",
+          "title": {
+            "en": "Router hardening checklist",
+            "zh": "路由器加固清單"
+          },
+          "summary": {
+            "en": "The short list of settings that makes the biggest difference to router security, in the order to do them.",
+            "zh": "對路由器保安影響最大嘅設定短清單，按建議次序排列。"
+          }
+        },
+        {
+          "id": "security-firewall-rules",
+          "article": "security/firewall-rules",
+          "status": "in-progress",
+          "title": {
+            "en": "Firewall rules in practice",
+            "zh": "防火牆規則實戰"
+          },
+          "summary": {
+            "en": "How the router decides what to allow, a worked set of rules, and how to write a rule without cutting yourself off.",
+            "zh": "路由器點樣決定容許乜、一套實例規則，以及點樣寫規則而唔將自己鎖喺門外。"
+          },
+          "missing": {
+            "en": "The app control is planned. The guide is written.",
+            "zh": "程式控制項屬計劃中，指南已寫好。"
+          }
+        },
+        {
+          "id": "security-port-forward-safely",
+          "article": "security/port-forward-safely",
+          "status": "in-progress",
+          "title": {
+            "en": "Forward a port safely",
+            "zh": "安全地轉發端口"
+          },
+          "summary": {
+            "en": "A step-by-step way to open one port to one device, test it, and keep the risk small.",
+            "zh": "一步一步將一個端口開俾一部裝置、測試，並將風險減到最細。"
+          },
+          "missing": {
+            "en": "The screen is in progress and has not been tried on a real router.",
+            "zh": "畫面開發中，仲未喺真路由器試過。"
+          }
+        },
+        {
+          "id": "security-url-keyword-filters",
+          "article": "security/url-keyword-filters",
+          "status": "in-progress",
+          "title": {
+            "en": "URL and keyword filters",
+            "zh": "網址同關鍵字過濾"
+          },
+          "summary": {
+            "en": "Block sites by address or by a word in the address, what these filters can and cannot see on today's encrypted web, and better alternatives.",
+            "zh": "按網址或者網址入面嘅字封鎖網站、呢啲過濾喺加密網絡上睇到同睇唔到啲乜，以及更好嘅替代方法。"
+          },
+          "missing": {
+            "en": "The app control is planned. The guide is written.",
+            "zh": "程式控制項屬計劃中，指南已寫好。"
+          }
+        },
+        {
+          "id": "security-aiprotection",
+          "article": "security/aiprotection",
+          "status": "in-progress",
+          "title": {
+            "en": "AiProtection",
+            "zh": "AiProtection"
+          },
+          "summary": {
+            "en": "What ASUS's built-in protection suite blocks, what data it shares with a third party, and where it fits next to a firewall.",
+            "zh": "ASUS 內置保護套件擋啲乜、會同第三方分享啲乜資料，以及同防火牆嘅關係。"
+          },
+          "missing": {
+            "en": "The app control is planned. The guide is written.",
+            "zh": "程式控制項屬計劃中，指南已寫好。"
+          }
+        },
+        {
+          "id": "security-parental-schedules",
+          "article": "security/parental-schedules",
+          "status": "in-progress",
+          "title": {
+            "en": "Parental schedules",
+            "zh": "家長排程"
+          },
+          "summary": {
+            "en": "Give each child's devices their own weekly online hours, handle random device addresses, and avoid the most common ways schedules fail.",
+            "zh": "俾每個細路嘅裝置自己一星期嘅上網時間、處理隨機裝置位址，以及避開排程最常失效嘅原因。"
+          },
+          "missing": {
+            "en": "The app control is planned. The guide is written.",
+            "zh": "程式控制項屬計劃中，指南已寫好。"
+          }
+        },
+        {
+          "id": "security-threat-model",
+          "article": "security/threat-model",
+          "status": "ready",
+          "title": {
+            "en": "Security deep dive: who could attack what",
+            "zh": "保安深入篇：邊個可以攻擊邊樣嘢"
+          },
+          "summary": {
+            "en": "A plain walk through the realistic ways a home router and this app can be attacked, what stops each one, and what still depends on you.",
+            "zh": "用簡單方式講解家用路由器同呢個程式實際可能受到嘅攻擊、每種點樣被擋，以及仲要靠你自己嘅部分。"
+          }
+        }
+      ]
+    },
+    {
+      "id": "vpn-mesh",
+      "title": {
+        "en": "VPN, mesh and storage",
+        "zh": "VPN、Mesh 同儲存"
+      },
+      "items": [
+        {
+          "id": "connect-qos-modes",
+          "article": "connect/qos-modes",
+          "status": "in-progress",
+          "title": {
+            "en": "Traffic priority modes",
+            "zh": "流量優先模式"
+          },
+          "summary": {
+            "en": "Choose between adaptive, traditional and per-device limit modes, enter honest line speeds, and test whether it helped.",
+            "zh": "喺自適應、傳統同每部裝置限速模式之間揀，填入真實線路速度，同測試有冇幫助。"
+          },
+          "missing": {
+            "en": "The app control is planned. The guide is written.",
+            "zh": "程式控制項屬計劃中，指南已寫好。"
+          }
+        },
+        {
+          "id": "connect-vpn-servers",
+          "article": "connect/vpn-servers",
+          "status": "in-progress",
+          "title": {
+            "en": "Pick a VPN server type",
+            "zh": "揀 VPN 伺服器類型"
+          },
+          "summary": {
+            "en": "Compare OpenVPN, WireGuard, IPsec and PPTP servers so you can reach your home network safely from outside.",
+            "zh": "比較 OpenVPN、WireGuard、IPsec 同 PPTP 伺服器，等你喺外面安全咁連返屋企網絡。"
+          },
+          "missing": {
+            "en": "The screen is in progress and has not been tried on a real router.",
+            "zh": "畫面開發中，仲未喺真路由器試過。"
+          }
+        },
+        {
+          "id": "connect-vpn-client",
+          "article": "connect/vpn-client",
+          "status": "in-progress",
+          "title": {
+            "en": "Use the router as a VPN client",
+            "zh": "用路由器做 VPN 客戶端"
+          },
+          "summary": {
+            "en": "Connect the whole router to a VPN provider, which devices are covered, and what to do about speed, leaks and a dropped tunnel.",
+            "zh": "將成部路由器連去 VPN 供應商、邊啲裝置被覆蓋，以及速度、洩漏同隧道斷線點算。"
+          },
+          "missing": {
+            "en": "The app control is planned. The guide is written.",
+            "zh": "程式控制項屬計劃中，指南已寫好。"
+          }
+        },
+        {
+          "id": "connect-wireguard-peers",
+          "article": "connect/wireguard-peers",
+          "status": "in-progress",
+          "title": {
+            "en": "WireGuard peers and keys",
+            "zh": "WireGuard 對等端同金鑰"
+          },
+          "summary": {
+            "en": "Add, label and remove the devices allowed to join your WireGuard server, with how the keys and addresses fit together.",
+            "zh": "新增、標籤同移除獲准加入 WireGuard 伺服器嘅裝置，以及金鑰同位址點樣配合。"
+          },
+          "missing": {
+            "en": "The app control is planned. The guide is written.",
+            "zh": "程式控制項屬計劃中，指南已寫好。"
+          }
+        },
+        {
+          "id": "connect-vpn-director",
+          "article": "connect/vpn-director",
+          "status": "in-progress",
+          "title": {
+            "en": "VPN Director",
+            "zh": "VPN Director"
+          },
+          "summary": {
+            "en": "Decide which devices and destinations use the VPN tunnel and which go straight out, with a worked policy and a safe kill-switch rule.",
+            "zh": "決定邊啲裝置同目的地行 VPN 隧道、邊啲直接出，附一套實例政策同安全嘅斷網規則。"
+          },
+          "merlin": true,
+          "missing": {
+            "en": "The app control is planned. The guide is written.",
+            "zh": "程式控制項屬計劃中，指南已寫好。"
+          }
+        },
+        {
+          "id": "connect-usb-apps",
+          "article": "connect/usb-apps",
+          "status": "in-progress",
+          "title": {
+            "en": "USB apps: sharing, media and backups",
+            "zh": "USB 應用：分享、媒體同備份"
+          },
+          "summary": {
+            "en": "Plug a drive into the router and share files, stream media and back up a Mac, with the speed limits and safety rules that matter.",
+            "zh": "將硬碟插入路由器分享檔案、串流媒體同備份 Mac，以及要注意嘅速度限制同安全規則。"
+          },
+          "missing": {
+            "en": "The app control is planned. The guide is written.",
+            "zh": "程式控制項屬計劃中，指南已寫好。"
+          }
+        },
+        {
+          "id": "connect-aimesh-management",
+          "article": "connect/aimesh-management",
+          "status": "in-progress",
+          "title": {
+            "en": "Manage an AiMesh network",
+            "zh": "管理 AiMesh 網絡"
+          },
+          "summary": {
+            "en": "Add and remove nodes, choose wired or wireless backhaul, keep firmware matched and find a weak link.",
+            "zh": "新增同移除節點、揀有線或者無線回程、保持韌體一致，同搵出弱環節。"
+          },
+          "missing": {
+            "en": "The app control is planned. The guide is written.",
+            "zh": "程式控制項屬計劃中，指南已寫好。"
+          }
+        }
+      ]
+    },
+    {
+      "id": "merlin-system",
+      "title": {
+        "en": "System, firmware and Merlin",
+        "zh": "系統、韌體同 Merlin"
+      },
+      "items": [
+        {
+          "id": "merlin-logging",
+          "article": "merlin/logging",
+          "status": "in-progress",
+          "title": {
+            "en": "Logging: reading and keeping router logs",
+            "zh": "記錄：讀取同保存路由器記錄"
+          },
+          "summary": {
+            "en": "What the router records, how to read the common entries, and how to keep logs longer than the router's small memory allows.",
+            "zh": "路由器記錄啲乜、點樣睇常見項目，以及點樣將記錄保存得比路由器細細嘅記憶體更耐。"
+          },
+          "missing": {
+            "en": "The app control is planned. The guide is written.",
+            "zh": "程式控制項屬計劃中，指南已寫好。"
+          }
+        },
+        {
+          "id": "merlin-leds",
+          "article": "merlin/leds",
+          "status": "in-progress",
+          "title": {
+            "en": "LEDs and the night mode",
+            "zh": "燈號同夜間模式"
+          },
+          "summary": {
+            "en": "Turn the router's lights off for a dark bedroom, and the one caution about not being able to see a fault.",
+            "zh": "為咗暗房間熄咗路由器嘅燈，同埋睇唔到故障燈號嘅一點注意。"
+          },
+          "missing": {
+            "en": "The app control is planned. The guide is written.",
+            "zh": "程式控制項屬計劃中，指南已寫好。"
+          }
+        },
+        {
+          "id": "merlin-scheduled-reboot",
+          "article": "merlin/scheduled-reboot",
+          "status": "in-progress",
+          "title": {
+            "en": "Scheduled reboot",
+            "zh": "排程重新啟動"
+          },
+          "summary": {
+            "en": "Restart the router at a quiet hour, whether it helps, and the difference between the stock scheduler and a Merlin cron job.",
+            "zh": "喺安靜時間重新啟動路由器、有冇用，以及原廠排程同 Merlin cron 工作嘅分別。"
+          },
+          "missing": {
+            "en": "The app control is planned. The guide is written.",
+            "zh": "程式控制項屬計劃中，指南已寫好。"
+          }
+        },
+        {
+          "id": "merlin-ssh-keys",
+          "article": "merlin/ssh-keys",
+          "status": "in-progress",
+          "title": {
+            "en": "SSH keys",
+            "zh": "SSH 金鑰"
+          },
+          "summary": {
+            "en": "How the app logs in to the router with a key instead of a password, how to install and remove keys, and how to keep them safe.",
+            "zh": "程式點樣用金鑰而唔係密碼登入路由器、點樣安裝同移除金鑰，以及點樣保管。"
+          },
+          "missing": {
+            "en": "The screen is in progress and has not been tried on a real router.",
+            "zh": "畫面開發中，仲未喺真路由器試過。"
+          }
+        },
+        {
+          "id": "merlin-firmware-update-walkthrough",
+          "article": "merlin/firmware-update-walkthrough",
+          "status": "in-progress",
+          "title": {
+            "en": "Firmware update walkthrough",
+            "zh": "韌體更新逐步指引"
+          },
+          "summary": {
+            "en": "A calm, ordered checklist for updating router firmware: what to prepare, what to expect, how to know it worked and how to go back.",
+            "zh": "一份冷靜有次序嘅路由器韌體更新清單：要準備啲乜、會發生乜、點知成功，以及點樣還原。"
+          },
+          "missing": {
+            "en": "The app control is planned. The guide is written.",
+            "zh": "程式控制項屬計劃中，指南已寫好。"
+          }
+        },
+        {
+          "id": "merlin-merlin-scripts",
+          "article": "merlin/merlin-scripts",
+          "status": "in-progress",
+          "title": {
+            "en": "Merlin custom scripts",
+            "zh": "Merlin 自訂腳本"
+          },
+          "summary": {
+            "en": "Run your own small scripts at router events such as startup or a firewall restart, and the rules that keep them from breaking the router.",
+            "zh": "喺啟動或者防火牆重建等路由器事件發生時行你自己嘅細腳本，同避免搞壞路由器嘅規則。"
+          },
+          "merlin": true,
+          "missing": {
+            "en": "The app control is planned. The guide is written.",
+            "zh": "程式控制項屬計劃中，指南已寫好。"
+          }
+        },
+        {
+          "id": "merlin-cron-jobs",
+          "article": "merlin/cron-jobs",
+          "status": "in-progress",
+          "title": {
+            "en": "Cron jobs on Merlin",
+            "zh": "Merlin 上嘅 Cron 工作"
+          },
+          "summary": {
+            "en": "Schedule commands to run at set times, the five-field time format, how to make them survive a reboot, and a worked example.",
+            "zh": "排程喺指定時間行指令、五個欄位嘅時間格式、點樣令佢重啟後仍然有效，以及一個實例。"
+          },
+          "merlin": true,
+          "missing": {
+            "en": "The app control is planned. The guide is written.",
+            "zh": "程式控制項屬計劃中，指南已寫好。"
+          }
+        },
+        {
+          "id": "merlin-entware",
+          "article": "merlin/entware",
+          "status": "in-progress",
+          "title": {
+            "en": "Entware",
+            "zh": "Entware"
+          },
+          "summary": {
+            "en": "Add a package manager and thousands of extra programs to Merlin using a USB drive, and what it costs in memory and risk.",
+            "zh": "用 USB 硬碟為 Merlin 加套件管理員同幾千個額外程式，以及佢嘅記憶體同風險代價。"
+          },
+          "merlin": true,
+          "missing": {
+            "en": "The app control is planned. The guide is written.",
+            "zh": "程式控制項屬計劃中，指南已寫好。"
+          }
+        },
+        {
+          "id": "merlin-addons",
+          "article": "merlin/addons",
+          "status": "in-progress",
+          "title": {
+            "en": "Merlin add-ons",
+            "zh": "Merlin 附加元件"
+          },
+          "summary": {
+            "en": "A tour of the popular community add-ons for Merlin, what each one is for, and how to choose without overloading a small router.",
+            "zh": "介紹 Merlin 常用嘅社群附加元件、各自用途，以及點樣揀而唔令細路由器過載。"
+          },
+          "merlin": true,
+          "missing": {
+            "en": "The app control is planned. The guide is written.",
+            "zh": "程式控制項屬計劃中，指南已寫好。"
+          }
+        }
+      ]
+    },
+    {
+      "id": "workflows",
+      "title": {
+        "en": "Tools, modes and terminal",
+        "zh": "工具、模式同終端機"
+      },
+      "items": [
+        {
+          "id": "workflows-router-tools",
+          "article": "workflows/router-tools",
+          "status": "in-progress",
+          "title": {
+            "en": "Router tools",
+            "zh": "路由器工具"
+          },
+          "summary": {
+            "en": "Ping, traceroute, name lookup and wake-on-LAN run from the router itself. What each shows, how to read it and what the app protects you from.",
+            "zh": "Ping、Traceroute、域名查詢同網絡喚醒由路由器本身執行。每個顯示乜、點睇結果，以及程式點樣保護你。"
+          },
+          "missing": {
+            "en": "The screen is in progress and has not been tried on a real router.",
+            "zh": "畫面開發中，仲未喺真路由器試過。"
+          }
+        },
+        {
+          "id": "workflows-one-click-modes",
+          "article": "workflows/one-click-modes",
+          "status": "in-progress",
+          "title": {
+            "en": "One-click modes",
+            "zh": "一鍵模式"
+          },
+          "summary": {
+            "en": "Bundles of settings you switch with one click, such as Away, Bedtime or Guests, each shown as a preview first and fully undoable.",
+            "zh": "一撳就切換嘅設定組合，例如外出、睡覺或者訪客，每個都先預覽，而且完全可以還原。"
+          },
+          "missing": {
+            "en": "The app control is planned. The guide is written.",
+            "zh": "程式控制項屬計劃中，指南已寫好。"
+          }
+        },
+        {
+          "id": "workflows-visual-editors",
+          "article": "workflows/visual-editors",
+          "status": "in-progress",
+          "title": {
+            "en": "Visual editors for list settings",
+            "zh": "清單類設定嘅視覺化編輯器"
+          },
+          "summary": {
+            "en": "How the app edits settings that are really lists, such as device names, address reservations and port forwards, without you typing a raw string.",
+            "zh": "程式點樣編輯其實係清單嘅設定，例如裝置名、位址保留同端口轉發，而你唔使打原始字串。"
+          },
+          "missing": {
+            "en": "The screen is in progress and has not been tried on a real router.",
+            "zh": "畫面開發中，仲未喺真路由器試過。"
+          }
+        },
+        {
+          "id": "workflows-ssh-action-catalogue",
+          "article": "workflows/ssh-action-catalogue",
+          "status": "ready",
+          "title": {
+            "en": "The SSH action catalogue",
+            "zh": "SSH 動作目錄"
+          },
+          "summary": {
+            "en": "The complete list of things the app may ask the router to do, how each command is built from validated pieces, and why nothing you type reaches a shell.",
+            "zh": "程式可以請路由器做嘅所有事完整清單、每個指令點樣由已驗證部分組成，以及點解你打嘅嘢永遠唔會去到 shell。"
+          }
+        },
+        {
+          "id": "workflows-owner-terminal",
+          "article": "workflows/owner-terminal",
+          "status": "in-progress",
+          "title": {
+            "en": "The owner terminal",
+            "zh": "擁有者終端機"
+          },
+          "summary": {
+            "en": "A planned, owner-only terminal for tasks outside the action catalogue, with the guard rails it needs to be safe.",
+            "zh": "計劃中嘅擁有者專用終端機，處理動作目錄以外嘅工作，以及佢要安全需要嘅護欄。"
+          },
+          "missing": {
+            "en": "The app control is planned. The guide is written.",
+            "zh": "程式控制項屬計劃中，指南已寫好。"
+          }
+        },
+        {
+          "id": "workflows-network-map",
+          "article": "workflows/network-map",
+          "status": "in-progress",
+          "title": {
+            "en": "Read the network map",
+            "zh": "睇網絡地圖"
+          },
+          "summary": {
+            "en": "What the devices map shows, how to spot an unknown device, and how to name things so the map stays useful.",
+            "zh": "裝置地圖顯示乜、點樣發現陌生裝置，以及點樣改名令地圖保持有用。"
+          },
+          "missing": {
+            "en": "The app control is planned. The guide is written.",
+            "zh": "程式控制項屬計劃中，指南已寫好。"
+          }
+        },
+        {
+          "id": "workflows-guard-timeline",
+          "article": "workflows/guard-timeline",
+          "status": "in-progress",
+          "title": {
+            "en": "The guard timeline, step by step",
+            "zh": "保護計時器逐步睇"
+          },
+          "summary": {
+            "en": "Follow one risky change from preview to safe finish, and see exactly what happens if the connection drops partway.",
+            "zh": "跟住一個高風險改動由預覽到安全完成，睇清楚中途斷線會發生乜事。"
+          },
+          "missing": {
+            "en": "The screen is in progress and has not been tried on a real router.",
+            "zh": "畫面開發中，仲未喺真路由器試過。"
+          }
+        }
+      ]
+    },
+    {
+      "id": "reference-guides",
+      "title": {
+        "en": "Help and reference",
+        "zh": "說明同參考"
+      },
+      "items": [
+        {
+          "id": "reference-troubleshooting-by-symptom",
+          "article": "reference/troubleshooting-by-symptom",
+          "status": "ready",
+          "title": {
+            "en": "Troubleshooting by symptom",
+            "zh": "按症狀疑難排解"
+          },
+          "summary": {
+            "en": "Start from what you see, such as \"no internet\", \"slow Wi-Fi\" or \"a port forward does not work\", and follow a short path to the likely cause.",
+            "zh": "由你見到嘅現象開始，例如「冇網絡」、「Wi-Fi 慢」或者「端口轉發唔work」，跟一條短路徑搵出可能原因。"
+          }
+        },
+        {
+          "id": "reference-stock-vs-merlin",
+          "article": "reference/stock-vs-merlin",
+          "status": "ready",
+          "title": {
+            "en": "Stock ASUS firmware or Asuswrt-Merlin",
+            "zh": "原廠 ASUS 韌體定 Asuswrt-Merlin"
+          },
+          "summary": {
+            "en": "A side-by-side comparison of the two firmwares the app supports, what each adds, and how to decide whether to switch.",
+            "zh": "並排比較程式支援嘅兩種韌體、各自多咗啲乜，以及點樣決定要唔要轉。"
+          }
+        },
+        {
+          "id": "reference-keyboard-shortcuts",
+          "article": "reference/keyboard-shortcuts",
+          "status": "in-progress",
+          "title": {
+            "en": "Keyboard shortcuts",
+            "zh": "鍵盤快速鍵"
+          },
+          "summary": {
+            "en": "Every shortcut the app has today, the planned ones, and how to move around without a mouse.",
+            "zh": "程式而家有嘅所有快速鍵、計劃中嘅快速鍵，以及唔用滑鼠點樣行走。"
+          },
+          "missing": {
+            "en": "A configurable shortcut list and cheat sheet are planned.",
+            "zh": "可自訂嘅快速鍵清單同速查表屬計劃中。"
+          }
+        },
+        {
+          "id": "reference-faq",
+          "article": "reference/faq",
+          "status": "ready",
+          "title": {
+            "en": "Frequently asked questions",
+            "zh": "常見問題"
+          },
+          "summary": {
+            "en": "Short answers about what the app does, what it stores, what is still being built, and what to do when something goes wrong.",
+            "zh": "簡短回答 app 做啲咩、儲存啲咩、邊啲仲喺開發中，以及出事點算。"
+          }
+        }
       ]
     }
   ]

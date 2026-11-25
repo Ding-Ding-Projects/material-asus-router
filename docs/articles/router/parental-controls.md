@@ -62,3 +62,14 @@ To stop a device at once, open it in [Devices](devices.md) and choose **Block**.
 | Master switch and device list | Built |
 | Schedule editor and plain-word preview | In progress |
 | Content filtering | Not planned for the first release |
+
+## See it in action
+
+::sim[parental-schedule]
+
+*The panel above is a demonstration with made-up values. It does not read or change your router.*
+
+## Go deeper
+
+- [Parental schedules](../security/parental-schedules.md)
+- [URL and keyword filters](../security/url-keyword-filters.md)

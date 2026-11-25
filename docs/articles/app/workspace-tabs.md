@@ -31,3 +31,17 @@ Tabs and the catalog are not built. Today each area is a single screen.
 
 - Tabs are keyboard reachable.
 - A change preview in one tab never applies by itself because another tab changed.
+
+## A planned walkthrough (demonstration)
+
+You are comparing two Wi-Fi bands while checking the log for radar events.
+
+1. Open **Wi-Fi** in a tab and **Logs** in another. Each keeps its own scroll position and any unsaved edit.
+2. Use the new-tab catalog to open **Devices** without leaving either.
+3. Close a tab with unsaved changes and the app asks before it discards anything.
+
+## Questions people ask
+
+**Will opening a menu create more tabs?** No. A tab opens only when you ask for one.
+
+**What if I close a tab by mistake?** Reopen it from the catalog. Tabs hold your place and drafts, not router settings, so closing one never changes the router.

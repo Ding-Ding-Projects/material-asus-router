@@ -31,3 +31,21 @@ Only the documentation site switches language today. The app interface has no la
 
 - Cantonese text is written for Hong Kong readers, not machine translated.
 - Screen readers get the language of each piece of text.
+
+## A planned walkthrough (demonstration)
+
+The label for one control, shown three ways:
+
+| Mode | What you see |
+| --- | --- |
+| English | Network name |
+| Cantonese | 網絡名稱 |
+| Both | Network name · 網絡名稱 |
+
+**Both** helps a household where some people read one language and some the other. A parent can read English labels while a child reads Cantonese, on the same screen.
+
+## Questions people ask
+
+**Does the choice change the router?** No. It changes only the app's words, and is remembered per person.
+
+**Are all words translated?** Interface text and these guides have twins. A raw router value, such as a setting key, stays as it is, because it is a real name.

@@ -12,6 +12,19 @@ Wiki 收錄簡短頁面：為使用、開發或者維護 Material Asus Router �
 - 想知點解有啲嘢未有或者有限制？睇[已知限制](known-limitations.md)。
 - 想知改動點樣保持安全？睇[預覽、確認同套用](../articles/safety/safe-changes.md)同[斷線保護](../articles/safety/connection-guard.md)。
 
+## 按任務搵指南
+
+| 我想 | 由呢度開始 |
+| --- | --- |
+| 解決見到嘅問題 | [按症狀疑難排解](../articles/reference/troubleshooting-by-symptom.md) |
+| 令 Wi-Fi 更快更穩 | [漫遊](../articles/wireless/roaming.md)、[DFS 頻道](../articles/wireless/dfs-channels.md)、[Smart Connect](../articles/wireless/smart-connect.md) |
+| 了解互聯網連線 | [揀連線類型](../articles/internet/wan-types.md)、[IPv6](../articles/internet/ipv6.md)、[DNS over TLS](../articles/internet/dns-over-tls.md) |
+| 安全開端口 | [安全地轉發端口](../articles/security/port-forward-safely.md) |
+| 加固路由器 | [加固清單](../articles/security/hardening-checklist.md)、[保安深入篇](../articles/security/threat-model.md) |
+| 喺外面連返屋企 | [揀 VPN 伺服器類型](../articles/connect/vpn-servers.md)、[WireGuard 對等端同金鑰](../articles/connect/wireguard-peers.md) |
+| 行腳本或者附加元件 | [Merlin 自訂腳本](../articles/merlin/merlin-scripts.md)、[原廠定 Merlin](../articles/reference/stock-vs-merlin.md) |
+| 睇程式點樣保持安全 | [保護計時器逐步睇](../articles/workflows/guard-timeline.md)、[SSH 動作目錄](../articles/workflows/ssh-action-catalogue.md) |
+
 ## 俾貢獻者
 
 - 程式點解咁運作：[設計決定](design-decisions.md)。

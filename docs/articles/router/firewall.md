@@ -58,3 +58,15 @@ Custom allow and block rules by address, port and direction are planned. On Asus
 | Switch definitions and help text | Built |
 | Firewall screen | In progress |
 | Custom rules | Planned, not built |
+
+## See it in action
+
+::sim[firewall]
+
+*The panel above is a demonstration with made-up values. It does not read or change your router.*
+
+## Go deeper
+
+- [Firewall rules in practice](../security/firewall-rules.md)
+- [Router hardening checklist](../security/hardening-checklist.md)
+- [IPv6](../internet/ipv6.md)

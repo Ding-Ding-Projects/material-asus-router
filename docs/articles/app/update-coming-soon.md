@@ -31,3 +31,24 @@ Nothing is built. It depends on a release process that publishes build progress.
 
 - It never installs anything on its own.
 - It never invents progress that did not happen.
+
+## A planned walkthrough (demonstration)
+
+While a new version is being built, the app shows an **Update coming soon** card:
+
+| Stage | State |
+| --- | --- |
+| Build the app | Done |
+| Package the Docker image | In progress, started 14:05, 6 minutes so far |
+| Publish the release | Waiting |
+| Verify the download | Waiting |
+
+The card lists what the version will contain and a labelled estimate. It never shows a made-up percentage, and it changes to the ordinary update offer only when the release is published and verified.
+
+## What it never does
+
+It never installs anything by itself, and it never says an update exists before it does.
+
+## Questions people ask
+
+**Why show it at all?** So you know a fix is coming and can wait instead of working around a known problem.

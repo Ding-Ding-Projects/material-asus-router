@@ -13,6 +13,19 @@ The wiki holds short pages: definitions, decisions and notes for people who use,
 - Wondering why something is missing or limited? See [known limitations](known-limitations.md).
 - Want to know how changes stay safe? Read [preview, confirm and apply](../articles/safety/safe-changes.md) and the [connection-loss guard](../articles/safety/connection-guard.md).
 
+## Find a guide by task
+
+| I want to | Start with |
+| --- | --- |
+| Fix a problem I can see | [Troubleshooting by symptom](../articles/reference/troubleshooting-by-symptom.md) |
+| Make Wi-Fi faster or steadier | [Roaming](../articles/wireless/roaming.md), [DFS channels](../articles/wireless/dfs-channels.md), [Smart Connect](../articles/wireless/smart-connect.md) |
+| Understand my internet connection | [Choosing a connection type](../articles/internet/wan-types.md), [IPv6](../articles/internet/ipv6.md), [DNS over TLS](../articles/internet/dns-over-tls.md) |
+| Open a port safely | [Forward a port safely](../articles/security/port-forward-safely.md) |
+| Harden the router | [Hardening checklist](../articles/security/hardening-checklist.md), [Security deep dive](../articles/security/threat-model.md) |
+| Reach home from outside | [Pick a VPN server type](../articles/connect/vpn-servers.md), [WireGuard peers and keys](../articles/connect/wireguard-peers.md) |
+| Run scripts or add-ons | [Merlin custom scripts](../articles/merlin/merlin-scripts.md), [Stock or Merlin](../articles/reference/stock-vs-merlin.md) |
+| See how the app stays safe | [The guard timeline](../articles/workflows/guard-timeline.md), [The SSH action catalogue](../articles/workflows/ssh-action-catalogue.md) |
+
 ## For contributors
 
 - Why the app works the way it does: [design decisions](design-decisions.md).

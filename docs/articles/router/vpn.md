@@ -56,3 +56,15 @@ If both are available, WireGuard is usually the better choice. If you need a pro
 | OpenVPN screens | In progress; see [OpenVPN](vpn-openvpn.md) |
 | WireGuard screens | In progress; see [WireGuard](vpn-wireguard.md) |
 | Real-router test | Not yet |
+
+## See it in action
+
+::sim[vpn-director]
+
+*The panel above is a demonstration with made-up values. It does not read or change your router.*
+
+## Go deeper
+
+- [Pick a VPN server type](../connect/vpn-servers.md)
+- [Use the router as a VPN client](../connect/vpn-client.md)
+- [WireGuard peers and keys](../connect/wireguard-peers.md)

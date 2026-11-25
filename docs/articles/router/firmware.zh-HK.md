@@ -66,3 +66,8 @@ summary: 檢查韌體版本，小心更新：先備份，並預備出事嗰陣�
 | --- | --- |
 | 讀取版本同系列 | 已完成 |
 | 由程式檢查同套用更新 | 計劃中 |
+
+## 再深入啲
+
+- [韌體更新逐步指引](../merlin/firmware-update-walkthrough.md)
+- [原廠定 Merlin](../reference/stock-vs-merlin.md)

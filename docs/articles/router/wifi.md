@@ -72,3 +72,17 @@ The visitors' network has its own guide: [Guest network](guest-network.md).
 | Per-band control definitions and help text | Built |
 | Wi-Fi screen and preview | In progress |
 | Timed revert on Wi-Fi changes | Engine built; end-to-end test on a real router not yet done |
+
+## See it in action
+
+::sim[wifi-spectrum]
+
+*The panel above is a demonstration with made-up values. It does not read or change your router.*
+
+## Go deeper
+
+- [Roaming and band steering](../wireless/roaming.md)
+- [DFS channels and radar](../wireless/dfs-channels.md)
+- [Smart Connect](../wireless/smart-connect.md)
+- [Wi-Fi schedule](../wireless/wifi-schedule.md)
+- [WPS push-button setup](../wireless/wps.md)
