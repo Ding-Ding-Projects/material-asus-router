@@ -138,18 +138,18 @@ export const PRESETS = [
     about: L("The chosen devices lose the internet at night and get it back in the morning.", "揀咗嘅裝置夜晚斷網，朝早先返嚟。"),
     params: [
       { id: "devices", kind: "devices", label: L("Devices", "裝置"), help: L("Choose at least one.", "最少揀一部。") },
-      { id: "from", kind: "time", default: "21:30", label: L("Internet off from", "幾點斷網") },
-      { id: "to", kind: "time", default: "07:00", label: L("Internet back at", "幾點返嚟") },
+      { id: "begin", kind: "time", default: "21:30", label: L("Internet goes off at", "幾點斷網") },
+      { id: "finish", kind: "time", default: "07:00", label: L("Internet back at", "幾點返嚟") },
     ],
     items: (info, nvram, p, bad) => {
       if (!p.devices.length) return [];
-      if (p.from === p.to) throw bad("Choose different start and end times.");
-      const slot = `W07F${hhmm(p.from)}${hhmm(p.to)}`;
+      if (p.begin === p.finish) throw bad("Choose different start and end times.");
+      const slot = `W07F${hhmm(p.begin)}${hhmm(p.finish)}`;
       const lists = blockedWindow(nvram, p.devices, slot, bad);
       const names = p.devices.map((d) => d.name).join(", ");
       return [
         { id: "parental.enabled", key: "MULTIFILTER_ALL", value: "1" },
-        { id: "parental-pro.macs", key: "MULTIFILTER_MAC", value: lists.macs, shown: L(`${names}, off ${p.from} to ${p.to}`, `${names}，${p.from} 至 ${p.to} 斷網`) },
+        { id: "parental-pro.macs", key: "MULTIFILTER_MAC", value: lists.macs, shown: L(`${names}, off ${p.begin} to ${p.finish}`, `${names}，${p.begin} 至 ${p.finish} 斷網`) },
         { id: "parental-pro.modes", key: "MULTIFILTER_ENABLE", value: lists.modes, hidden: true },
         { id: "parental-pro.names", key: "MULTIFILTER_DEVICENAME", value: lists.names, hidden: true },
         { id: "parental-pro.daytime", key: "MULTIFILTER_MACFILTER_DAYTIME", value: lists.times, hidden: true },
@@ -218,13 +218,13 @@ export const PRESETS = [
     name: L("Away", "出門"),
     about: L("Wi-Fi is on only for a short window each day, and wake-on-LAN is off.", "Wi-Fi 每日只開一小段時間，網絡喚醒關閉。"),
     params: [
-      { id: "from", kind: "time", default: "08:00", label: L("Wi-Fi on from", "幾點開 Wi-Fi") },
+      { id: "begin", kind: "time", default: "08:00", label: L("Wi-Fi comes on at", "幾點開 Wi-Fi") },
       { id: "minutes", kind: "choice", default: "60", options: [["30", L("30 minutes", "30 分鐘")], ["60", L("1 hour", "1 個鐘")], ["120", L("2 hours", "2 個鐘")]], label: L("For how long", "開幾耐") },
     ],
     items: (info, nvram, p, bad) => {
-      const end = minutesOf(p.from) + Number(p.minutes);
+      const end = minutesOf(p.begin) + Number(p.minutes);
       if (end > 23 * 60 + 59) throw bad("Choose an earlier start so the Wi-Fi window ends before midnight.");
-      const window = `0123456@${p.from}-${clock(end)}`;
+      const window = `0123456@${p.begin}-${clock(end)}`;
       return [
         ...bandIndexes(info).flatMap((i) => [
           { id: `wifi-pro.wl${i}.sched-on`, key: `wl${i}_timesched`, value: "1", essential: true },

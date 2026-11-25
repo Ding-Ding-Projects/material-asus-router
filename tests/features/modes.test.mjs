@@ -111,7 +111,7 @@ test("modes: Bedtime schedules the chosen devices and keeps the ones already lis
     t.router.nvram.MULTIFILTER_DEVICENAME = "Old Tablet";
     t.router.nvram.MULTIFILTER_MACFILTER_DAYTIME = "";
     const devices = [{ mac: "02:00:00:00:00:01", name: "Old Tablet" }, { mac: "02:00:00:00:00:02", name: "Alex Phone" }];
-    const { confirmed } = await run(t, "bedtime", "apply", { devices, from: "21:30", to: "07:00" });
+    const { confirmed } = await run(t, "bedtime", "apply", { devices, begin: "21:30", finish: "07:00" });
     assert.equal(confirmed.active, true);
     assert.equal(t.router.nvram.MULTIFILTER_ALL, "1");
     assert.equal(t.router.nvram.MULTIFILTER_MAC, "02:00:00:00:00:01>02:00:00:00:00:02");
@@ -160,11 +160,11 @@ test("modes: Guest party, Work from home, Lock it down, Privacy DNS and Away eac
     assert.equal(t.router.nvram.dnspriv_profile, "1");
     assert.equal(t.router.nvram.dnspriv_rulelist, "<1.1.1.1>853>cloudflare-dns.com>");
 
-    await run(t, "away", "apply", { from: "08:00", minutes: "30" });
+    await run(t, "away", "apply", { begin: "08:00", minutes: "30" });
     assert.equal(t.router.nvram.wl0_timesched, "1");
     assert.equal(t.router.nvram.wl0_sched, "0123456@08:00-08:30");
     assert.equal(t.router.nvram.mar_wol_enabled, "0");
-    assert.equal((await t.owner.post("/api/x/modes/preview", { id: "away", action: "apply", params: { from: "23:30", minutes: "120" } })).status, 400, "a window may not run past midnight");
+    assert.equal((await t.owner.post("/api/x/modes/preview", { id: "away", action: "apply", params: { begin: "23:30", minutes: "120" } })).status, 400, "a window may not run past midnight");
 
     // Gaming without a console and Work from home ask for the same priority settings, so both read as on.
     assert.deepEqual((await list(t)).modes.filter((m) => m.active).map((m) => m.id), ["gaming", "guest", "wfh", "privacy", "lockdown", "away"]);
@@ -242,7 +242,7 @@ test("modes: choices are remembered, and the helpers behave", async () => {
   }
 
   assert.throws(() => cleanParams(PRESETS.find((p) => p.id === "privacy").params, { resolver: "nope" }, bad), /choose one/);
-  assert.deepEqual(cleanParams(PRESETS.find((p) => p.id === "away").params, {}, bad), { from: "08:00", minutes: "60" });
+  assert.deepEqual(cleanParams(PRESETS.find((p) => p.id === "away").params, {}, bad), { begin: "08:00", minutes: "60" });
   const entry = { id: "a", key: "k", control: "switch", values: { on: "1", off: "0" }, label: { en: "A", yue: "A" } };
   const items = resolveItems([{ id: "a", value: "1" }, { id: "gone", key: "x_y", value: "1" }], { catalog: [entry], nvram: new Map([["k", "1"]]) });
   assert.equal(isActive(items), true, "unavailable items do not count against a mode");
@@ -264,3 +264,35 @@ test("modes: the manifest lists the browser module and it is well formed", async
   }
   assert.equal(checkFeatureModule(feature, "modes"), null);
 });
+
+// Every ready-made mode, on both firmwares, is proved against the pretend router: each setting it writes is a real
+// control the engine accepts, the router reads the values back, and undo puts every old value back.
+for (const firmware of ["merlin", "stock"]) {
+  test(`modes: every ready-made mode applies, reads back and undoes on a ${firmware} router`, async () => {
+    const t = await startApp({ firmware });
+    try {
+      const choices = { gaming: { console: "198.51.100.77" }, bedtime: { devices: [{ mac: "02:00:00:00:00:21", name: "Kid Tablet" }] }, wfh: { laptop: "02:00:00:00:00:22" } };
+      let applied = 0;
+      for (const preset of PRESETS) {
+        const before = { ...t.router.nvram };
+        if (choices[preset.id]) assert.equal((await t.owner.post(`/api/x/modes/params/${preset.id}`, { params: choices[preset.id] })).status, 200);
+        const status = modeOf(await list(t), preset.id);
+        if (status.usable === 0) {
+          assert.equal((await t.owner.post("/api/x/modes/preview", { id: preset.id, action: "apply", params: choices[preset.id] })).status, 409, `${preset.id} must refuse where the router cannot take it`);
+          assert.equal(firmware, "stock", `${preset.id} is only unavailable on stock firmware`);
+          assert.equal(preset.id, "privacy");
+          continue;
+        }
+        const { previewed, confirmed } = await run(t, preset.id, "apply", choices[preset.id]);
+        assert.equal(confirmed.active, true, `${preset.id} reads back as on`);
+        for (const item of previewed.preview.items) assert.equal(t.router.committed[item.key], item.new, `${preset.id}: ${item.key} was committed`);
+        await run(t, preset.id, "undo");
+        for (const item of previewed.preview.items) assert.equal(t.router.nvram[item.key], before[item.key], `${preset.id}: ${item.key} is back`);
+        applied += 1;
+      }
+      assert.equal(applied, firmware === "merlin" ? 7 : 6);
+    } finally {
+      await t.stop();
+    }
+  });
+}
