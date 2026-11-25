@@ -38,7 +38,9 @@ export class Client {
   }
 }
 
-export async function startApp({ firmware = "merlin", configure = true, guardScale = 0.1, guardSeconds = 30, ...options } = {}) {
+// The four keys and the reboot launch are enforced by default in the real app. Most tests are about something
+// else, so they start with both off; the change-safety tests pass safety: { fourKey: true, launch: true }.
+export async function startApp({ firmware = "merlin", configure = true, guardScale = 0.1, guardSeconds = 30, safety = {}, ...options } = {}) {
   const dir = await mkdtemp(path.join(os.tmpdir(), "mar-test-"));
   const router = await new FakeRouter({ firmware, guardScale }).listen(0, "127.0.0.1");
   const app = await createApp({
@@ -48,6 +50,7 @@ export async function startApp({ firmware = "merlin", configure = true, guardSca
     verifyTimeoutMs: 2000,
     cacheTtlMs: 0,
     log: Boolean(process.env.MAR_TEST_LOG),
+    safety: { fourKey: false, launch: false, quietPollMs: 0, ...safety },
     ...(configure ? { preconfigure: { host: "127.0.0.1", port: router.port, username: router.username, authType: "password", password: router.password, hostKey: router.hostKeyFingerprint } } : {}),
     ...options,
   });
