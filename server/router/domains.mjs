@@ -15,7 +15,7 @@ const get = (nvram, key) => nvram.get(key) ?? "";
 const bandLabel = (nband) => ({ "2": "2.4 GHz", "1": "5 GHz", "4": "6 GHz" })[String(nband)] ?? "Wi-Fi";
 
 // Entry fields a control may need in the browser, beyond the ones above.
-const PASSED_FIELDS = ["options", "values", "min", "max", "step", "unit", "minLength", "maxLength", "presets", "pattern", "delimiter", "maxItems", "network", "allowRange", "within", "accept", "encoding", "minPrefix", "maxPrefix", "freeText", "freeTextReason", "readOnly", "feature", "columns", "hint", "counter", "meta"];
+const PASSED_FIELDS = ["options", "values", "min", "max", "step", "unit", "minLength", "maxLength", "presets", "pattern", "delimiter", "maxItems", "network", "allowRange", "within", "accept", "encoding", "minPrefix", "maxPrefix", "freeText", "freeTextReason", "readOnly", "feature", "columns", "item", "hint", "counter", "meta"];
 
 // A catalogue entry plus its current value, safe to send to the browser.
 export function describeEntry(entry, nvram) {

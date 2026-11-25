@@ -20,7 +20,9 @@ async function featureScreens() {
 test("workflow-navigation: every destination a person can reach has an icon, a bilingual label and a screen", async () => {
   const catl = (await catalogs()).merlin;
   const screens = await featureScreens();
-  const destinations = [...catl.domains, ...screens];
+  // The shell lists a feature screen once even when the router catalogue names the same id; the screen wins.
+  const screenOwned = new Set(screens.map((s) => s.id));
+  const destinations = [...catl.domains.filter((d) => !screenOwned.has(d.id)), ...screens];
   const screenIds = new Set([...catl.domains.map((d) => d.id), ...screens.map((s) => s.id)]);
   assert.deepEqual(auditDestinations(destinations, screenIds), []);
   for (const id of ["notifications", "shortcuts", "all-settings", "extensions", "setup", "map"]) assert.ok(screens.some((s) => s.id === id), `${id} is a screen`);
