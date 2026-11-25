@@ -1,0 +1,3 @@
+.se-more{display:inline-flex;align-items:center;gap:4px;margin-top:4px;border:0;background:none;color:var(--primary);font-size:13px;font-weight:650;padding:4px 0;min-height:32px}
+.se-panel{padding:12px 14px;border-radius:14px;background:var(--surf-low);font-size:13.5px;line-height:1.45;white-space:normal}
+.se-panel ul{margin:6px 0;padding-left:20px}
