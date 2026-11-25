@@ -110,7 +110,7 @@ figure.sim.is-playing .ring { animation: simpulse 1.4s ease-out infinite; }
 
 /* gallery page */
 .sims-hero { position: relative; overflow: hidden; isolation: isolate; border-radius: var(--r-xl); padding: clamp(28px, 6vw, 64px) clamp(18px, 4vw, 48px); margin: 0 0 28px; background: var(--primary-container); color: var(--on-primary-container); }
-.sims-hero .aurora { position: absolute; inset: -20%; z-index: -1; filter: blur(34px); opacity: 0.85; }
+.sims-hero .aurora { position: absolute; inset: -20%; z-index: -1; filter: blur(34px); opacity: 0.5; }
 .sims-hero .aurora i { position: absolute; width: 46%; aspect-ratio: 1; border-radius: 42% 58% 63% 37% / 41% 44% 56% 59%; }
 .aurora i:nth-child(1) { left: 2%; top: 8%; background: color-mix(in oklab, var(--primary) 55%, transparent); }
 .aurora i:nth-child(2) { right: 4%; top: -6%; background: color-mix(in oklab, var(--tertiary) 55%, transparent); }
@@ -145,3 +145,4 @@ html:not([data-motion="full"]) .pkt-drop { opacity: 0.35; }
   .sim-field input[type="range"] { flex: 1; width: auto; }
   .sim-btn { flex: 1 1 auto; justify-content: center; }
 }
+.sim-block { scroll-margin-top: 150px; }

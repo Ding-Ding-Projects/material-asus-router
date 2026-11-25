@@ -81,7 +81,7 @@ p { margin: 0 0 1em; }
 button { font: inherit; color: inherit; }
 :focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; border-radius: 6px; }
 main { display: block; outline: none; }
-.skip { position: absolute; left: 8px; top: -60px; background: var(--primary); color: var(--on-primary); padding: 10px 16px; border-radius: 999px; z-index: 100; transition: top 0.15s; }
+.skip { position: absolute; left: 8px; top: -200px; background: var(--primary); color: var(--on-primary); padding: 10px 16px; border-radius: 999px; z-index: 100; transition: top 0.15s; }
 .skip:focus { top: 8px; }
 
 /* language: spans are rendered for every language and filtered here */

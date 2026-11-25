@@ -54,7 +54,7 @@ async function draw() {
   if (!strip) return; const all = await destinations(); const cur = currentKey(); const vertical = get('tabs.dock') === 'left' || get('tabs.dock') === 'right';
   strip.setAttribute('aria-orientation', vertical ? 'vertical' : 'horizontal'); strip.textContent = '';
   const head = h('div', { class: 'mf-tabhead' }, h('button', { type: 'button', class: 'mf-icon', 'aria-label': pick('New tab: open the catalog', '新分頁：開啟目錄'), title: pick('New tab', '新分頁'), onclick: () => openCatalog() }, '+'),
-    h('input', { type: 'search', class: 'mf-input small', placeholder: pick('Filter tabs', '篩選分頁'), 'aria-label': pick('Filter open tabs', '篩選已開分頁'), value: tabFilter, oninput: (e) => { tabFilter = e.target.value; drawList(); } }),
+    h('input', { type: 'search', class: 'mf-input small', placeholder: pick('Filter', '篩選'), 'aria-label': pick('Filter open tabs', '篩選已開分頁'), value: tabFilter, oninput: (e) => { tabFilter = e.target.value; drawList(); } }),
     h('button', { type: 'button', class: 'mf-icon', 'aria-label': pick('Tab menu', '分頁選單'), onclick: (e) => tabMenuAt(e.currentTarget.getBoundingClientRect(), null) }, '⋯'),
     h('button', { type: 'button', class: 'mf-icon mf-collapse', 'aria-label': pick('Collapse or expand the strip', '收埋或展開分頁列'), onclick: () => set('tabs.collapsed', !get('tabs.collapsed')) }, '↔'));
   const list = h('div', { class: 'mf-tablist', role: 'tablist', 'aria-orientation': vertical ? 'vertical' : 'horizontal' }); strip.append(head, list);
