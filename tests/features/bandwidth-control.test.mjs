@@ -155,5 +155,8 @@ test("bandwidth-control: the screen module, the Unkick page and their wording", 
   assert.doesNotMatch(page, /<script>|\son[a-z]+="/i, "no inline script, so the page works under the app's security policy");
   const js = await readFile(new URL("../../public/js/unkick.js", import.meta.url), "utf8");
   assert.match(js, /"x-unkick": "1"/);
+  const screenSource = await readFile(new URL("../../public/js/features/bandwidth-control/index.js", import.meta.url), "utf8");
+  assert.match(screenSource, /api\.del\(`\/api\/x\/bandwidth-control\/hold\//, "Unkick in the app uses the API helper's delete");
+  assert.doesNotMatch(screenSource, /api\.delete\(/, "the API helper has no api.delete");
   assert.match(js, /never shows anyone else's devices/);
 });

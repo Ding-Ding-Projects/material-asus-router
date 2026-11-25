@@ -90,7 +90,7 @@ async function screen(ctx) {
 
   async function lift(hold) {
     try {
-      await api.delete(`/api/x/bandwidth-control/hold/${encodeURIComponent(hold.id)}`);
+      await api.del(`/api/x/bandwidth-control/hold/${encodeURIComponent(hold.id)}`);
       ctx.toast(hold.ban ? t("Unbanned.", "已解除封鎖。") : t("Unkicked.", "已解除暫停。"));
       await load();
     } catch (error) {
