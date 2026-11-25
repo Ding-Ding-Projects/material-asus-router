@@ -1,1 +1,4 @@
-.ob-body{display:flex;flex-direction:column;gap:16px}
+.ob{display:flex;flex-direction:column;gap:16px}
+.ob .lbl{display:flex;flex-direction:column;gap:6px;font-weight:650;font-size:14px}
+.ob-key{white-space:pre-wrap;word-break:break-all;padding:12px 16px;border-radius:14px;background:var(--surf-high);font-size:12px}
+.ob .step{border:0;text-align:left;min-height:48px}

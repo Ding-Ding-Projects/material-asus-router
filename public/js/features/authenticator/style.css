@@ -1,0 +1,17 @@
+.au{display:flex;flex-direction:column;gap:16px}
+.au-pane{display:flex;flex-direction:column;gap:16px}
+.au-tools{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.au-tools .field{flex:1 1 220px}
+.au-rx{display:flex;gap:6px;align-items:center;font-weight:650}
+.au-bulk{display:flex;gap:8px;flex-wrap:wrap}
+.au-head{display:flex;align-items:center;gap:10px}
+.au-head input[type=checkbox]{width:22px;height:22px;accent-color:var(--primary)}
+.au-card.sel{outline:2px solid var(--primary)}
+.au-code{font-size:38px;font-weight:800;letter-spacing:4px;font-variant-numeric:tabular-nums;word-break:break-all}
+.au-meta{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;font-weight:650;align-items:center}
+.au-left{font-variant-numeric:tabular-nums;min-width:3ch}
+.au-text{height:140px;padding:12px 16px;resize:vertical;font-family:ui-monospace,Consolas,monospace}
+.au-pager{display:flex;gap:12px;align-items:center;justify-content:center}
+.au-qrwrap{display:flex;justify-content:center}
+.au-qr{width:min(100%,260px);height:auto;border-radius:12px}
+.au-pane label{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:650}

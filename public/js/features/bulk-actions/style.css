@@ -1,0 +1,6 @@
+.ba-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.ba-pager{display:inline-flex;gap:6px;align-items:center}
+.ba-row.sel{background:var(--primary-c)}
+.ba-row input[type=checkbox]{width:22px;height:22px;accent-color:var(--primary)}
+.ba-row{cursor:default}
+.ba-progress{margin:4px 0}

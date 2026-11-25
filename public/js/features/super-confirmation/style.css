@@ -1,0 +1,10 @@
+.sc-keys{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.sc-key.hold{overflow:hidden}
+.sc-key.hold i{position:absolute;inset:0 auto 0 0;width:0;background:rgba(127,127,127,.35);pointer-events:none}
+.sc-key.hold i.filling{width:100%;transition:width .7s linear}
+.sc-slide{padding:8px 4px}
+.sc-slider{width:100%;height:44px;accent-color:var(--primary)}
+.sc-list{margin:6px 0 0;padding-left:20px}
+.sc-done{align-self:center;color:var(--good);animation:sc-pop .5s cubic-bezier(.3,1.5,.5,1)}
+@keyframes sc-pop{from{transform:scale(.2);opacity:0}to{transform:scale(1);opacity:1}}
+.sc-status{min-height:1.4em}

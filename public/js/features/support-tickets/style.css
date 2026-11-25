@@ -1,0 +1,11 @@
+.tk{display:flex;flex-direction:column;gap:16px}
+.tk-plain{font:inherit;color:inherit;margin:0}
+.tk-body{height:96px;padding:12px 16px;resize:vertical}
+.tk-tools{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.tk-tools .field{flex:1 1 220px}
+.tk-rx{display:flex;gap:6px;align-items:center;font-weight:650}
+.tk-bulk{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.tk-pager{display:inline-flex;gap:6px;align-items:center}
+.tk-row.sel{background:var(--primary-c)}
+.tk-row input[type=checkbox]{width:22px;height:22px;accent-color:var(--primary)}
+.tk-path{padding:12px 16px;border-radius:14px;background:var(--surf-high);word-break:break-all}
