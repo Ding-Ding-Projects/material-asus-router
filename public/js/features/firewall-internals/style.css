@@ -1,0 +1,35 @@
+/* Firewall internals. Colours come from the app's theme variables, so light and dark both work. */
+.fi-body{display:flex;flex-direction:column;gap:14px;margin-top:14px}
+.fi-note{margin-top:14px}
+.fi-bar{width:100%;height:10px;display:block;margin:8px 0}
+.fi-bar .track{fill:var(--surf-high)}
+.fi-bar .fill{fill:var(--primary);transition:width .6s cubic-bezier(.2,.9,.25,1.1)}
+.fi-bar.bad .fill{fill:var(--bad)}
+.fi-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.fi-chain summary{display:flex;align-items:center;gap:12px;flex-wrap:wrap;cursor:pointer;min-height:44px}
+.fi-chain[open] summary{margin-bottom:8px}
+.fi-chain summary::marker{color:var(--sub)}
+.fi-rules{display:flex;flex-direction:column}
+.fi-rule{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:8px 0;border-top:1px solid var(--line);font-size:12.5px;line-height:1.5;word-break:break-word}
+.fi-target{flex:none;min-height:24px;font-size:11.5px}
+.fi-target.fi-bad{background:var(--bad-c);border-color:transparent}
+.fi-target.fi-good{background:var(--good-c);border-color:transparent}
+.fi-members{margin-top:10px}
+.fi-row{display:grid;grid-template-columns:72px 1fr 44px;align-items:center;gap:10px}
+.fi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:12px}
+.fi-stat{padding:12px;border-radius:14px;background:var(--surf-low)}
+.fi-table td{font-size:13px}
+.fi-drop td{background:var(--warn-c)}
+.fi-hard{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.fi-hard.ok .icon{color:var(--good)}
+.fi-hard.warn{background:var(--warn-c)}
+.fi-hard-text{flex:1 1 220px;min-width:0}
+.fi-hard-val{text-align:right}
+.fi-timeouts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,140px),1fr));gap:10px}
+.fi-cell{display:flex;flex-direction:column;gap:4px}
+.fi-cellrow{display:flex;align-items:center;gap:6px}
+.fi-cell .field.num{width:100%;min-width:64px;height:44px}
+.fi-chain.rise:nth-of-type(n+2){animation-delay:.05s}
+.fi-chain.rise:nth-of-type(n+4){animation-delay:.1s}
+@media (max-width:480px){.fi-row{grid-template-columns:56px 1fr 36px}.fi-hard-val{text-align:left}}
+@media (prefers-reduced-motion:reduce){.fi-bar .fill{transition:none}}

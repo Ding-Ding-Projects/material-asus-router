@@ -200,6 +200,8 @@ export function buildCatalog(info) {
     let disabled = null;
     if (entry.firmware === "merlin" && !info.merlin)
       disabled = L("Needs Asuswrt-Merlin firmware. This router runs the stock ASUS firmware.", "要用 Asuswrt-Merlin 韌體先有。呢部路由器用緊原廠 ASUS 韌體。");
+    else if (entry.needsKey && info.keys && !info.keys.has(entry.key))
+      disabled = L(`This router does not have the setting ${entry.key}`, `呢部路由器冇 ${entry.key} 呢個設定`);
     else if (entry.requires && !info.capabilities.includes(entry.requires))
       disabled = L(`This router model does not support this (${entry.requires} is missing).`, `呢個型號唔支援（缺少 ${entry.requires}）。`);
     return { ...entry, disabled };
