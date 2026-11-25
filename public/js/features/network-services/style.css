@@ -1,0 +1,10 @@
+.ns-out{min-height:0}
+.ns-result{display:flex;flex-direction:column;gap:10px;padding:16px;border-radius:24px;background:var(--surf-low);margin-top:8px;white-space:pre-wrap;overflow-wrap:anywhere}
+.ns-health{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.ns-facts{display:flex;gap:24px;flex-wrap:wrap}
+.ns-result .mono{font-family:ui-monospace,Consolas,monospace;font-size:12px}
+/* The health tag settles in with a small spring; reduced motion shows it at once. */
+@keyframes ns-settle{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.08);opacity:1}100%{transform:scale(1)}}
+.ns-health .tag{animation:ns-settle .5s cubic-bezier(.2,.9,.25,1.2) both}
+@media (prefers-reduced-motion:reduce){.ns-health .tag{animation:none}}
+@media (max-width:420px){.ns-facts{gap:16px}}
