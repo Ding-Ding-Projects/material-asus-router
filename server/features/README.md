@@ -58,7 +58,9 @@ An entry has the fields of `server/router/catalog.mjs`: `id`, `key` (the nvram s
 `label`, `help`, `risk` (`low`, `network` or `destructive`, default `low`), `restart` (a service to
 restart, default none), `group`/`groupLabel`, `domain` (default: the feature id), and the control's
 own fields. Other fields: `optional`, `requires` (a capability from `rc_support`), `firmware: "merlin"`,
-`readOnly: true` (shown, never written), `secret: true` (masked everywhere). `info` is what detection
+`readOnly: true` (shown, never written), `secret: true` (masked everywhere), `verifyKey: true` (use when you are
+not sure the setting name exists on every firmware: the control is shown disabled with the reason "This router
+does not have the setting <key>" unless the router's own settings list has the key). `info` is what detection
 found: `model`, `merlin`, `bands`, `capabilities`, `lan`. An entry whose `id` or `key` is already used
 is reported and skipped; the stock entries always win.
 

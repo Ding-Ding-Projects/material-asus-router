@@ -85,7 +85,7 @@ export async function detect(values, exec) {
     }));
   const buildno = get("buildno");
   const extendno = get("extendno");
-  return {
+  const info = {
     model: get("productid") || get("odmpid") || "Unknown model",
     firmware: [get("firmver"), buildno && `.${buildno}`, extendno && `_${extendno}`].filter(Boolean).join("") || "unknown",
     merlin,
@@ -93,4 +93,8 @@ export async function detect(values, exec) {
     capabilities: get("rc_support").split(/\s+/).filter(Boolean),
     lan: { ip: get("lan_ipaddr"), mask: get("lan_netmask") },
   };
+  // Every setting name the router listed, for entries marked verifyKey. Not enumerable,
+  // so it is never sent to the browser or compared with the plain facts above.
+  Object.defineProperty(info, "nvramKeys", { value: new Set(values.keys()), enumerable: false });
+  return info;
 }

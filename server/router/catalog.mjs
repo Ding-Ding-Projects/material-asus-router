@@ -202,6 +202,10 @@ export function buildCatalog(info) {
       disabled = L("Needs Asuswrt-Merlin firmware. This router runs the stock ASUS firmware.", "要用 Asuswrt-Merlin 韌體先有。呢部路由器用緊原廠 ASUS 韌體。");
     else if (entry.requires && !info.capabilities.includes(entry.requires))
       disabled = L(`This router model does not support this (${entry.requires} is missing).`, `呢個型號唔支援（缺少 ${entry.requires}）。`);
+    // verifyKey: the setting name is not known to exist on every firmware, so the control is
+    // offered only when the router's own settings list has it. Never write a key the router lacks.
+    else if (entry.verifyKey && info.nvramKeys && !info.nvramKeys.has(entry.key))
+      disabled = L(`This router does not have the setting ${entry.key}`, `呢部路由器冇「${entry.key}」呢個設定`);
     return { ...entry, disabled };
   });
 }
