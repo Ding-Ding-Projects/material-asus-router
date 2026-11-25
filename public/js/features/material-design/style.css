@@ -1,0 +1,111 @@
+/* Appearance hooks for the whole app. Loaded after the main stylesheet. The
+   values come from material-design/apply.js (shape, density, text size,
+   contrast, focus, targets, motion) and motion-engine.js (--mo-* variables). */
+
+/* ---- shape: every corner radius scales with --shape (1 = the stock look) ---- */
+.card{border-radius:calc(32px * var(--shape,1))}
+.sheet{border-radius:calc(36px * var(--shape,1))}
+.btn,.navi,.results,.tbl{border-radius:calc(24px * var(--shape,1))}
+.search{border-radius:calc(28px * var(--shape,1))}
+.seg{border-radius:calc(24px * var(--shape,1))}
+.seg button{border-radius:calc(18px * var(--shape,1))}
+.field,.ipv4{border-radius:calc(14px * var(--shape,1))}
+.swatch{border-radius:calc(12px * var(--shape,1))}
+.note{border-radius:calc(16px * var(--shape,1))}
+.chip{border-radius:calc(10px * var(--shape,1))}
+.pill{border-radius:calc(18px * var(--shape,1))}
+.tag{border-radius:calc(13px * var(--shape,1))}
+.toast{border-radius:calc(20px * var(--shape,1))}
+@media (max-width:720px){.card{border-radius:calc(26px * var(--shape,1))}.sheet{border-radius:calc(28px * var(--shape,1))}}
+.logo{border-radius:calc(14px * var(--shape,1))}
+
+/* ---- text size: the whole page scales ---- */
+body{zoom:var(--ts,1)}
+.dock{max-width:100%}
+
+/* ---- density ---- */
+:root[data-density=compact] .setting{padding:8px 0}
+:root[data-density=compact] .row{padding:6px 0}
+:root[data-density=compact] .card{padding:16px;gap:6px}
+:root[data-density=compact] .navi{min-height:40px}
+:root[data-density=compact] .page{gap:12px}
+:root[data-density=spacious] .setting{padding:20px 0}
+:root[data-density=spacious] .row{padding:16px 0}
+:root[data-density=spacious] .card{padding:32px;gap:14px}
+:root[data-density=spacious] .page{gap:28px}
+
+/* ---- contrast and focus ---- */
+:root[data-contrast=high]{--sub:var(--text);--line:var(--text)}
+:root[data-contrast=high] .card,:root[data-contrast=high] .sheet,:root[data-contrast=high] .field,:root[data-contrast=high] .seg,:root[data-contrast=high] .chip,:root[data-contrast=high] .note{box-shadow:inset 0 0 0 2px var(--text)}
+:root[data-contrast=high] .btn.o{border-color:var(--text);border-width:2px}
+:root[data-contrast=high] .navi.on{outline:2px solid var(--text);outline-offset:-2px}
+:root[data-focus=thick] :focus-visible,:root[data-contrast=high] :focus-visible{outline:4px solid var(--primary);outline-offset:3px}
+
+/* ---- larger targets ---- */
+:root[data-targets=large] .navi,:root[data-targets=large] .btn,:root[data-targets=large] .icb,:root[data-targets=large] .seg button,:root[data-targets=large] .chip,:root[data-targets=large] .tab,:root[data-targets=large] .info{min-height:48px;min-width:48px}
+:root[data-targets=large] .sw{min-height:40px}
+
+/* ---- no clipping on narrow screens: wrap, never cut ---- */
+.page,.card,.setting .help{overflow-wrap:anywhere}
+.btn{max-width:100%;text-align:center}
+@media (max-width:480px){
+  .setting .ctl{flex-wrap:wrap;width:100%}
+  .setting .ctl .field,.setting .ctl .slider{width:100%}
+  .seg{max-width:100%}
+  .disp{font-size:28px;letter-spacing:-.8px}
+  .actions .btn{flex:1 1 100%}
+}
+
+/* ---- expressive motion: every duration, delay, distance and curve is editable ---- */
+@keyframes mo-rise{from{opacity:0;transform:translateY(var(--mo-page-entry-dist,14px)) scale(var(--mo-page-entry-scale,.98))}}
+@keyframes mo-list{from{opacity:0;transform:translateY(var(--mo-list-stagger-dist,12px)) scale(var(--mo-list-stagger-scale,.98))}}
+@keyframes mo-pop{from{opacity:0;transform:translateY(var(--mo-dialog-dist,20px)) scale(var(--mo-dialog-scale,.97))}}
+@keyframes mo-sheet{from{opacity:0;transform:translateY(var(--mo-sheet-dist,24px)) scale(var(--mo-sheet-scale,.98))}}
+@keyframes mo-menu{from{opacity:0;transform:translateY(var(--mo-menu-dist,8px)) scale(var(--mo-menu-scale,.98))}}
+@keyframes mo-toast{from{opacity:0;transform:translateY(var(--mo-toast-dist,16px)) scale(var(--mo-toast-scale,.96))}}
+@keyframes mo-pulse{50%{opacity:.4;transform:scale(var(--mo-live-pulse-scale,.85))}}
+@keyframes mo-draw{from{stroke-dashoffset:var(--len,1000)}to{stroke-dashoffset:0}}
+.rise{animation:mo-rise var(--mo-page-entry-d,500ms) var(--mo-page-entry-ease,ease) var(--mo-page-entry-delay,0ms) both}
+.rise:nth-child(n+2){animation-name:mo-list;animation-duration:var(--mo-list-stagger-d,450ms);animation-timing-function:var(--mo-list-stagger-ease,ease)}
+.rise:nth-child(2){animation-delay:calc(var(--mo-page-entry-delay,0ms) + var(--mo-list-stagger-stagger,50ms) * 1)}
+.rise:nth-child(3){animation-delay:calc(var(--mo-page-entry-delay,0ms) + var(--mo-list-stagger-stagger,50ms) * 2)}
+.rise:nth-child(4){animation-delay:calc(var(--mo-page-entry-delay,0ms) + var(--mo-list-stagger-stagger,50ms) * 3)}
+.rise:nth-child(5){animation-delay:calc(var(--mo-page-entry-delay,0ms) + var(--mo-list-stagger-stagger,50ms) * 4)}
+.rise:nth-child(6){animation-delay:calc(var(--mo-page-entry-delay,0ms) + var(--mo-list-stagger-stagger,50ms) * 5)}
+.rise:nth-child(7){animation-delay:calc(var(--mo-page-entry-delay,0ms) + var(--mo-list-stagger-stagger,50ms) * 6)}
+.rise:nth-child(8){animation-delay:calc(var(--mo-page-entry-delay,0ms) + var(--mo-list-stagger-stagger,50ms) * 7)}
+.rise:nth-child(n+9){animation-delay:calc(var(--mo-page-entry-delay,0ms) + var(--mo-list-stagger-stagger,50ms) * 8)}
+.sheet{animation:mo-pop var(--mo-dialog-d,320ms) var(--mo-dialog-ease,ease) var(--mo-dialog-delay,0ms) both}
+.results,.palette .list{animation:mo-menu var(--mo-menu-d,200ms) var(--mo-menu-ease,ease) var(--mo-menu-delay,0ms) both}
+.toast{animation:mo-toast var(--mo-toast-d,300ms) var(--mo-toast-ease,ease) var(--mo-toast-delay,0ms) both}
+.sw,.sw i{transition-duration:var(--mo-switch-d,250ms);transition-timing-function:var(--mo-switch-ease,ease)}
+.meter i,.rangebar i{transition-duration:var(--mo-progress-d,500ms);transition-timing-function:var(--mo-progress-ease,ease)}
+.live{animation:mo-pulse var(--mo-live-pulse-d,2400ms) var(--mo-live-pulse-ease,ease-in-out) infinite}
+.navi,.tab,.tabcell{transition:background var(--mo-tab-change-d,200ms) var(--mo-tab-change-ease,ease),color var(--mo-tab-change-d,200ms) var(--mo-tab-change-ease,ease)}
+.btn,.pill,.chip{transition:transform var(--mo-hover-lift-d,180ms) var(--mo-hover-lift-ease,ease),background var(--mo-hover-lift-d,180ms) var(--mo-hover-lift-ease,ease)}
+.btn:hover,.pill:hover,.chip:hover{transform:translateY(calc(var(--mo-hover-lift-dist,2px) * -1))}
+.card{transition:box-shadow var(--mo-cards-d,220ms) var(--mo-cards-ease,ease)}
+.card:hover{box-shadow:var(--e2)}
+.mo-panel{animation:mo-sheet var(--mo-sheet-d,300ms) var(--mo-sheet-ease,ease) var(--mo-sheet-delay,0ms) both}
+
+/* Reduced motion always wins, whatever the editor says. */
+:root[data-motion=reduced] *,:root[data-motion=reduced] *::before,:root[data-motion=reduced] *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+:root[data-motion=reduced] .btn:hover,:root[data-motion=reduced] .pill:hover,:root[data-motion=reduced] .chip:hover{transform:none}
+
+/* ---- the Appearance screen ---- */
+.tokens{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.token{display:flex;flex-direction:column;gap:6px;padding:10px;border-radius:calc(16px * var(--shape,1));background:var(--surf-low);min-width:0}
+.token i{display:block;height:36px;border-radius:calc(10px * var(--shape,1));border:1px solid var(--line)}
+.token b{font-size:13px}
+.token small{font-size:11.5px;color:var(--sub);overflow-wrap:anywhere}
+.palette-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.swatch-btn{width:40px;height:40px;border-radius:50%;border:3px solid transparent;padding:0;box-shadow:0 0 0 1.5px var(--line);background:var(--sw,#888)}
+.swatch-btn[aria-pressed=true]{border-color:var(--bg);box-shadow:0 0 0 3px var(--primary)}
+.swatch-btn.rainbow{background:conic-gradient(#e53935,#fdd835,#43a047,#1e88e5,#8e24aa,#e53935)}
+.state-tag{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:750;padding:2px 10px;border-radius:13px;background:var(--surf-high)}
+.state-tag.working{background:var(--good-c)}
+.state-tag.partial,.state-tag.progress{background:var(--warn-c)}
+.inv{display:grid;gap:8px}
+.inv .item{display:grid;gap:4px;padding:12px 14px;border-radius:calc(16px * var(--shape,1));background:var(--surf-low)}
+.inv .item .top{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.inv .item .top b{flex:1 1 200px}

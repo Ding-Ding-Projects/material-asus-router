@@ -1,0 +1,15 @@
+.mo-list{display:flex;flex-direction:column;gap:10px}
+.mo-kind{display:flex;flex-direction:column;gap:6px}
+.mo-demo{display:flex;gap:10px;padding:14px;border-radius:calc(16px * var(--shape,1));background:var(--surf-low);min-height:64px;align-items:center}
+.mo-demo i{width:36px;height:36px;border-radius:calc(12px * var(--shape,1));background:var(--primary);display:block}
+.mo-demo i:nth-child(2){background:var(--tertiary)}
+.mo-demo i:nth-child(3){background:var(--secondary-c);border:1px solid var(--line)}
+.mo-demo i:nth-child(4){background:var(--primary-c)}
+.mo-preview{display:flex;flex-direction:column;gap:6px}
+.mo-curve-host{display:flex;justify-content:flex-end}
+.mo-curve{width:160px;height:200px;max-width:100%;background:var(--surf-low);border-radius:calc(14px * var(--shape,1))}
+.mo-curve-box{stroke:var(--line);stroke-width:.01}
+.mo-curve-line{stroke:var(--primary);stroke-width:.025;stroke-linecap:round;stroke-linejoin:round}
+.mo-bez{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:4px 16px}
+.mo-bez .slider{width:100%}
+.mo-status .note{margin-bottom:0}

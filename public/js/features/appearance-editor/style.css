@@ -1,0 +1,15 @@
+.ae-tab{display:flex;flex-direction:column;gap:2px;min-width:0}
+.ae-ctl{display:flex;align-items:center;gap:8px;flex-wrap:wrap;max-width:100%}
+.ae-sw{display:inline-block;width:18px;height:18px;border-radius:50%;background:var(--sw,#888);border:1px solid var(--line)}
+.ae-target{overflow-wrap:anywhere}
+.ae-timeline{display:flex;height:14px;border-radius:7px;background:var(--surf-high);overflow:hidden;margin:6px 0}
+.ae-timeline i{display:block;height:100%;width:var(--w,0%)}
+.ae-timeline .wait{background:var(--line)}
+.ae-timeline .run{background:var(--primary)}
+.ae-save{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.ae-save .field{flex:1 1 200px;width:auto}
+.ae-log{max-height:260px;overflow:auto}
+:root[data-picking=true] *{cursor:crosshair!important}
+:root[data-picking=true] :hover{outline:2px dashed var(--primary);outline-offset:2px}
+.mo-panel .setting .ctl{flex-wrap:wrap;width:100%}
+.mo-panel .setting .slider{width:100%}
