@@ -2,12 +2,19 @@
 // kind of router this is. Every other module asks this cache instead of
 // running `nvram show` again, and writes invalidate it.
 
+// Some values span several lines (for example one SSH key per line). A line that does not
+// start with "name=" continues the value before it; the trailing "size:" summary is skipped.
 export function parseNvram(text) {
   const values = new Map();
-  for (const line of String(text).split("\n")) {
-    const at = line.indexOf("=");
-    if (at < 1) continue;
-    values.set(line.slice(0, at), line.slice(at + 1));
+  let last = null;
+  for (const line of String(text).replace(/\r/g, "").split("\n")) {
+    const match = /^([A-Za-z0-9_.:-]+)=/.exec(line);
+    if (match) {
+      last = match[1];
+      values.set(last, line.slice(match[0].length));
+    } else if (last !== null && !/^size: \d+ bytes/.test(line) && line !== "") {
+      values.set(last, `${values.get(last)}\n${line}`);
+    }
   }
   return values;
 }

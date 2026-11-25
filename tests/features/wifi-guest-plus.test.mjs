@@ -84,7 +84,7 @@ test("wifi-guest-plus: turning a guest network on shows in the screen data and t
     ]);
     const after = (await t.owner.get("/api/domain/wifi-guest-plus")).data;
     const net = after.networks.find((n) => n.band === 1 && n.number === 2);
-    assert.deepEqual([net.on, net.open, net.intranet, net.expireSeconds, net.limited], [true, true, true, 14400, true]);
+    assert.deepEqual([net.on, net.open, net.intranet, net.expireSeconds, net.limited], [true, false, true, 14400, true]);
     assert.deepEqual((await t.owner.get("/api/x/wifi-guest-plus/active")).data.active, [{ band: 1, number: 2, ssid: "Harbour Guest 2 5G" }]);
     assert.equal((await t.client().get("/api/x/wifi-guest-plus/active")).status, 401);
   } finally {

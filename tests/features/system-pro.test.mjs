@@ -105,7 +105,7 @@ test("system-pro: SSH keys are added and removed through a reviewed preview and 
   }
 });
 
-test("system-pro: a second SSH key can be added", { todo: "the shared nvram reader keeps only the first line of a multi-line value, so the change engine reverts the second key; fix in server/router/detect.mjs" }, async () => {
+test("system-pro: a second SSH key can be added", async () => {
   const t = await startApp();
   try {
     for (const comment of ["first", "second"]) {

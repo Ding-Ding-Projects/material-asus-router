@@ -68,7 +68,7 @@ function guestDefaults(band) {
   for (const n of GUESTS) {
     const p = `wl${band.index}.${n}`;
     Object.assign(out, {
-      [`${p}_auth_mode_x`]: "open", [`${p}_closed`]: "0", [`${p}_expire`]: "0", [`${p}_maxassoc`]: "32",
+      [`${p}_auth_mode_x`]: "psk2", [`${p}_closed`]: "0", [`${p}_expire`]: "0", [`${p}_maxassoc`]: "32",
       [`${p}_bw_enabled`]: "0", [`${p}_bw_dl`]: "20000", [`${p}_bw_ul`]: "10000",
     });
     // Guest network 1 is created by the pretend router itself; 2 and 3 are ours.
