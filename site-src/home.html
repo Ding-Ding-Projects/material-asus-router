@@ -1,4 +1,6 @@
 <section class="hero" id="hero">
+  <div class="aurora" aria-hidden="true"><i class="au a1"></i><i class="au a2"></i><i class="au a3"></i></div>
+  <div class="shapes" aria-hidden="true"><i class="shape s1"></i><i class="shape s2"></i><i class="shape s3"></i><i class="shape s4"></i></div>
   <div class="hero-copy reveal">
     <p class="eyebrow"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-shield"/></svg>{{t:hero.eyebrow}}</p>
     <h1>{{t:hero.title}}</h1>
@@ -13,14 +15,51 @@
       <li><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg>{{t:hero.p3}}</li>
     </ul>
   </div>
-  <div class="hero-art reveal" aria-hidden="true">
-    <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
-    <div class="hero-card">
-      <div class="hc-row"><span class="dot ok"></span><span>{{t:hero.card.preview}}</span></div>
-      <div class="hc-row"><span class="dot warn"></span><span>{{t:hero.card.guard}}</span></div>
-      <div class="hc-row"><span class="dot ok"></span><span>{{t:hero.card.undo}}</span></div>
+  <figure class="hero-art reveal">
+    <span class="float f1" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-history"/></svg><span class="bi"><span class="en">Undo ready</span><span class="zh" lang="zh-HK">隨時還原</span></span></span><span class="float f2" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-backup"/></svg><span class="bi"><span class="en">Copy saved</span><span class="zh" lang="zh-HK">已備份</span></span></span>
+    <div class="mock" id="mock" data-phase="3" aria-hidden="true">
+      <div class="mock-bar"><i></i><i></i><i></i><span class="mock-title">Material Asus Router</span><span class="mock-demo"><span class="bi"><span class="en">DEMO</span><span class="zh" lang="zh-HK">示範</span></span></span></div>
+      <div class="mock-body">
+        <nav class="mock-side">
+          <svg viewBox="0 0 24 24" class="on"><use href="#i-wifi"/></svg>
+          <svg viewBox="0 0 24 24"><use href="#i-devices"/></svg>
+          <svg viewBox="0 0 24 24"><use href="#i-shield"/></svg>
+          <svg viewBox="0 0 24 24"><use href="#i-people"/></svg>
+          <svg viewBox="0 0 24 24"><use href="#i-history"/></svg>
+        </nav>
+        <div class="mock-main">
+          <div class="mock-head"><b>Wi-Fi</b>
+            <span class="chip chip-p0"><span class="bi"><span class="en">Preview</span><span class="zh" lang="zh-HK">預覽</span></span></span><span class="chip chip-p1"><span class="bi"><span class="en">Timer armed</span><span class="zh" lang="zh-HK">計時器已啟動</span></span></span><span class="chip chip-p2"><span class="bi"><span class="en">Checking link</span><span class="zh" lang="zh-HK">檢查連線</span></span></span><span class="chip chip-p3"><span class="bi"><span class="en">Applied</span><span class="zh" lang="zh-HK">已套用</span></span></span>
+          </div>
+          <div class="mock-field"><span class="mock-lbl"><span class="bi"><span class="en">Network name</span><span class="zh" lang="zh-HK">網絡名稱</span></span></span>
+            <span class="mock-diff"><s>HomeNet</s><em>HomeNet-Fast</em></span>
+          </div>
+          <div class="mock-row">
+            <div class="mock-timer">
+              <svg viewBox="0 0 64 64"><circle class="mt-bg" cx="32" cy="32" r="26"/><circle class="mt-fg" cx="32" cy="32" r="26" pathLength="100"/></svg>
+              <span>90<small>s</small></span>
+            </div>
+            <div class="mock-stat"><b data-countup="12">12</b><span><span class="bi"><span class="en">devices</span><span class="zh" lang="zh-HK">部裝置</span></span></span></div>
+            <div class="mock-stat"><b data-countup="3">3</b><span><span class="bi"><span class="en">people</span><span class="zh" lang="zh-HK">位用戶</span></span></span></div>
+          </div>
+          <svg class="mock-spark" viewBox="0 0 200 40" preserveAspectRatio="none"><path pathLength="100" d="M0 30 C 12 28 18 12 32 16 S 56 34 72 22 S 98 6 116 14 S 146 32 160 20 S 188 8 200 12"/></svg>
+          <div class="mock-net"><span class="node"><span class="bi"><span class="en">App</span><span class="zh" lang="zh-HK">程式</span></span></span><span class="wire"><i></i><i></i><i></i></span><span class="node"><span class="bi"><span class="en">Router</span><span class="zh" lang="zh-HK">路由器</span></span> <code>198.51.100.1</code></span></div>
+        </div>
+      </div>
     </div>
-  </div>
+    <figcaption class="hero-caption"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-shield"/></svg><span><span class="bi"><span class="en">Demonstration with made-up data. This is not your router.</span><span class="zh" lang="zh-HK">示範用嘅虛構資料，唔係你部路由器。</span></span></span></figcaption>
+  </figure>
+</section>
+
+<section class="stats reveal" id="stats" aria-labelledby="stats-h">
+  <h2 class="sr-only" id="stats-h"><span class="bi"><span class="en">At a glance</span><span class="zh" lang="zh-HK">一眼睇晒</span></span></h2>
+  <ul class="stat-row">
+    <li><b class="num" data-from="features">&nbsp;</b><span><span class="bi"><span class="en">features covered</span><span class="zh" lang="zh-HK">項功能範圍</span></span></span></li>
+    <li><b class="num" data-from="areas">&nbsp;</b><span><span class="bi"><span class="en">feature areas</span><span class="zh" lang="zh-HK">個功能分類</span></span></span></li>
+    <li><b class="num" data-from="ready">&nbsp;</b><span><span class="bi"><span class="en">ready today (the rest is in progress)</span><span class="zh" lang="zh-HK">項已完成（其餘開發中）</span></span></span></li>
+    <li><b class="num" data-count="90">90</b><span><span class="bi"><span class="en">second safety timer on the router</span><span class="zh" lang="zh-HK">秒路由器安全計時器</span></span></span></li>
+    <li><b class="num" data-count="3">3</b><span><span class="bi"><span class="en">roles: owner, operator, viewer</span><span class="zh" lang="zh-HK">種角色：擁有者、操作員、檢視者</span></span></span></li>
+  </ul>
 </section>
 
 <section class="section" id="tasks">
@@ -35,6 +74,55 @@
     <a class="task-card reveal" href="{{href:safety/undo-changes|safety}}"><span class="task-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-undo"/></svg></span><h3>{{t:task.undo}}</h3><p>{{tb:task.undo.d}}</p><span class="go">{{t:go}}<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
     <a class="task-card reveal" href="{{href:app/accounts-and-roles|app}}"><span class="task-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-people"/></svg></span><h3>{{t:task.family}}</h3><p>{{tb:task.family.d}}</p><span class="go">{{t:go}}<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
     <a class="task-card reveal" href="{{href:start/demo-router|start}}"><span class="task-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-play"/></svg></span><h3>{{t:task.demo}}</h3><p>{{tb:task.demo.d}}</p><span class="go">{{t:go}}<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+  </div>
+</section>
+
+<section class="section" id="tiles">
+  <div class="section-head reveal">
+    <h2><span class="bi"><span class="en">Everything on the router, in plain words</span><span class="zh" lang="zh-HK">路由器嘅所有功能，用日常說話講</span></span></h2>
+    <p><span class="bi bi-block"><span class="en">A tour of the main areas. Each tile opens its guide, and its badge is read from the same list as the full inventory below, so it can never claim more than the guide does.</span><span class="zh" lang="zh-HK">主要功能一覽。每格都連去對應指南，標籤同下面完整清單用同一份資料，所以唔會講得比指南更多。</span></span></p>
+  </div>
+  <div class="bento">
+    <a class="tile t-wide t-wifi reveal" data-feature="{{href:router/wifi|router}}" href="{{href:router/wifi|router}}"><span class="tile-art" aria-hidden="true"><i></i><i></i><i></i></span><span class="tile-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wifi"/></svg></span><h3>Wi-Fi</h3><p><span class="bi"><span class="en">Rename networks, change passwords and bands. You see the old and new value first.</span><span class="zh" lang="zh-HK">改網絡名稱、密碼同頻段，改之前先睇清楚新舊數值。</span></span></p><span class="tile-badge badge in-progress" data-badge>{{t:status.in-progress}}</span></a>
+    <a class="tile t-devices reveal" data-feature="{{href:router/devices|router}}" href="{{href:router/devices|router}}"><span class="tile-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-devices"/></svg></span><h3><span class="bi"><span class="en">Devices</span><span class="zh" lang="zh-HK">裝置</span></span></h3><p><span class="bi"><span class="en">See who is connected and give each device a clear name.</span><span class="zh" lang="zh-HK">睇邊啲裝置連緊線，仲可以改個易認嘅名。</span></span></p><span class="tile-badge badge in-progress" data-badge>{{t:status.in-progress}}</span></a>
+    <a class="tile t-fire reveal" data-feature="{{href:router/firewall|router}}" href="{{href:router/firewall|router}}"><span class="tile-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-shield"/></svg></span><h3><span class="bi"><span class="en">Firewall</span><span class="zh" lang="zh-HK">防火牆</span></span></h3><p><span class="bi"><span class="en">Readable rules instead of cryptic switches.</span><span class="zh" lang="zh-HK">用睇得明嘅規則，代替難明嘅開關。</span></span></p><span class="tile-badge badge in-progress" data-badge>{{t:status.in-progress}}</span></a>
+    <a class="tile t-tall t-parent reveal" data-feature="{{href:router/parental-controls|router}}" href="{{href:router/parental-controls|router}}"><span class="tile-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-people"/></svg></span><h3><span class="bi"><span class="en">Parental controls</span><span class="zh" lang="zh-HK">家長控制</span></span></h3><p><span class="bi"><span class="en">Schedules and limits for each person or device, with a clear preview of who is affected.</span><span class="zh" lang="zh-HK">為每個人或裝置設定時間表同限制，並預先顯示邊個受影響。</span></span></p><span class="tile-badge badge in-progress" data-badge>{{t:status.in-progress}}</span></a>
+    <a class="tile reveal" data-feature="{{href:router/vpn|router}}" href="{{href:router/vpn|router}}"><span class="tile-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-lock"/></svg></span><h3>VPN</h3><p><span class="bi"><span class="en">Set up VPN access and check that it works.</span><span class="zh" lang="zh-HK">設定 VPN 同檢查係咪正常運作。</span></span></p><span class="tile-badge badge in-progress" data-badge>{{t:status.in-progress}}</span></a>
+    <a class="tile reveal" data-feature="{{href:router/traffic-priority|router}}" href="{{href:router/traffic-priority|router}}"><span class="tile-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-speed"/></svg></span><h3><span class="bi"><span class="en">Traffic priority</span><span class="zh" lang="zh-HK">流量優先</span></span></h3><p><span class="bi"><span class="en">Calls and games first when the line is busy.</span><span class="zh" lang="zh-HK">網絡忙嗰陣，通話同遊戲優先。</span></span></p><span class="tile-badge badge in-progress" data-badge>{{t:status.in-progress}}</span></a>
+    <a class="tile t-wide t-mesh reveal" data-feature="{{href:router/aimesh|router}}" href="{{href:router/aimesh|router}}"><span class="tile-art" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="tile-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-mesh"/></svg></span><h3>AiMesh</h3><p><span class="bi"><span class="en">All mesh nodes in one place, so a weak corner of the home is easy to find.</span><span class="zh" lang="zh-HK">所有 mesh 節點集中一處，屋入邊訊號弱嘅位置容易搵。</span></span></p><span class="tile-badge badge in-progress" data-badge>{{t:status.in-progress}}</span></a>
+    <a class="tile reveal" data-feature="{{href:router/backup-restore|router}}" href="{{href:router/backup-restore|router}}"><span class="tile-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-backup"/></svg></span><h3><span class="bi"><span class="en">Backup and restore</span><span class="zh" lang="zh-HK">備份同還原</span></span></h3><p><span class="bi"><span class="en">Keep a copy of your settings before big changes.</span><span class="zh" lang="zh-HK">大改動之前，先留一份設定備份。</span></span></p><span class="tile-badge badge in-progress" data-badge>{{t:status.in-progress}}</span></a>
+    <a class="tile reveal" data-feature="{{href:router/firmware|router}}" href="{{href:router/firmware|router}}"><span class="tile-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chip"/></svg></span><h3><span class="bi"><span class="en">Firmware</span><span class="zh" lang="zh-HK">韌體</span></span></h3><p><span class="bi"><span class="en">Know which firmware you run, and which features it has.</span><span class="zh" lang="zh-HK">知道自己用緊邊個韌體，同佢有咩功能。</span></span></p><span class="tile-badge badge in-progress" data-badge>{{t:status.in-progress}}</span></a>
+  </div>
+  <p class="more-link reveal"><a class="text-btn" href="#features"><span class="bi"><span class="en">See the full inventory</span><span class="zh" lang="zh-HK">睇完整功能清單</span></span><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></a></p>
+</section>
+
+<section class="section" id="story">
+  <div class="section-head reveal">
+    <h2><span class="bi"><span class="en">How a safe change works</span><span class="zh" lang="zh-HK">一個安全改動點樣運作</span></span></h2>
+    <p><span class="bi bi-block"><span class="en">Scroll through the five moments between pressing Apply and a router you can still reach. The picture on the side shows a demonstration with made-up values.</span><span class="zh" lang="zh-HK">向下捲，睇睇由撳「套用」到仲搵得返路由器之間嘅五個時刻。側邊嘅圖係用虛構數值做嘅示範。</span></span></p>
+  </div>
+  <div class="story" id="story-body" data-step="1">
+    <div class="story-visual" aria-hidden="true">
+      <p class="sv-tag"><span class="bi"><span class="en">Demonstration · made-up values</span><span class="zh" lang="zh-HK">示範 · 虛構數值</span></span></p>
+      <div class="sv-nodes">
+        <span class="sv-node"><span class="bi"><span class="en">App</span><span class="zh" lang="zh-HK">程式</span></span></span>
+        <span class="sv-link"><i></i><i></i><i></i></span>
+        <span class="sv-node sv-router"><span class="bi"><span class="en">Router</span><span class="zh" lang="zh-HK">路由器</span></span><small>198.51.100.1</small></span>
+      </div>
+      <div class="sv-cards">
+        <div class="sv-card c-diff"><b><span class="bi"><span class="en">Preview</span><span class="zh" lang="zh-HK">預覽</span></span></b><span><s>HomeNet</s> <em>HomeNet-Fast</em></span></div>
+        <div class="sv-card c-save"><b><span class="bi"><span class="en">Saved copy</span><span class="zh" lang="zh-HK">備份副本</span></span></b><span>HomeNet <small><span class="bi"><span class="en">kept for undo</span><span class="zh" lang="zh-HK">留低用嚟還原</span></span></small></span></div>
+        <div class="sv-card c-timer"><svg viewBox="0 0 64 64"><circle class="mt-bg" cx="32" cy="32" r="26"/><circle class="mt-fg" cx="32" cy="32" r="26" pathLength="100"/></svg><b>90 s</b><span><span class="bi"><span class="en">revert timer</span><span class="zh" lang="zh-HK">還原計時器</span></span></span></div>
+      </div>
+      <p class="sv-outcome"><span class="sv-ok"><span class="bi"><span class="en">Reached: timer cancelled</span><span class="zh" lang="zh-HK">連到：計時器取消</span></span></span><span class="sv-bad"><span class="bi"><span class="en">Lost: router restores itself</span><span class="zh" lang="zh-HK">連唔到：路由器自動還原</span></span></span></p>
+    </div>
+    <ol class="story-steps">
+      <li class="story-step" data-s="1"><span class="n">1</span><div><h3><span class="bi"><span class="en">Preview</span><span class="zh" lang="zh-HK">預覽</span></span></h3><p><span class="bi"><span class="en">You see the old and the new value side by side in plain words. Nothing has changed yet, and you can walk away.</span><span class="zh" lang="zh-HK">你會用日常說話睇到新舊數值並排。呢一步仲未改任何嘢，隨時可以走人。</span></span></p></div></li>
+      <li class="story-step" data-s="2"><span class="n">2</span><div><h3><span class="bi"><span class="en">Save a copy</span><span class="zh" lang="zh-HK">留一份副本</span></span></h3><p><span class="bi"><span class="en">Before anything is written, the app keeps the current values. That copy is what makes one-click undo possible.</span><span class="zh" lang="zh-HK">寫入之前，程式先記低而家嘅數值。有咗呢份副本，先可以一鍵還原。</span></span></p></div></li>
+      <li class="story-step" data-s="3"><span class="n">3</span><div><h3><span class="bi"><span class="en">Arm the timer</span><span class="zh" lang="zh-HK">啟動計時器</span></span></h3><p><span class="bi"><span class="en">For changes that can affect the network, the router is told to put the old values back in 90 seconds unless you confirm.</span><span class="zh" lang="zh-HK">如果改動可能影響網絡，路由器會收到指示：90 秒內冇人確認，就自動還原舊數值。</span></span></p></div></li>
+      <li class="story-step" data-s="4"><span class="n">4</span><div><h3><span class="bi"><span class="en">Apply</span><span class="zh" lang="zh-HK">套用</span></span></h3><p><span class="bi"><span class="en">The change is written. If it cuts your link, that is fine: the timer on the router is already running by itself.</span><span class="zh" lang="zh-HK">改動寫入路由器。就算斷咗線都唔使驚，路由器上面嘅計時器已經自己行緊。</span></span></p></div></li>
+      <li class="story-step" data-s="5"><span class="n">5</span><div><h3><span class="bi"><span class="en">Check the link</span><span class="zh" lang="zh-HK">檢查連線</span></span></h3><p><span class="bi"><span class="en">If the app reaches the router again, it cancels the timer and records the change. If not, the router restores the saved values and your connection comes back.</span><span class="zh" lang="zh-HK">程式再連到路由器，就會取消計時器同記錄呢次改動。連唔到，路由器自己還原備份，你嘅連線就返嚟。</span></span></p></div></li>
+    </ol>
   </div>
 </section>
 
@@ -129,7 +217,8 @@
     <p>{{tb:install.intro}}</p>
   </div>
   <div class="install-grid">
-    <article class="install-card reveal">
+    <article class="install-card featured reveal">
+      <span class="step-pill"><span class="bi"><span class="en">Recommended</span><span class="zh" lang="zh-HK">建議用呢個</span></span></span>
       <h3>{{t:install.one.title}}</h3>
       <p>{{tb:install.one.d}}</p>
       <div class="cmd"><pre><code id="cmd-setup">git clone https://github.com/Ding-Ding-Projects/material-asus-router.git
@@ -166,6 +255,29 @@ powershell -ExecutionPolicy Bypass -File scripts\setup.ps1</code></pre><button t
     <p>{{tb:download.intro}}</p>
   </div>
   {{downloads}}
+</section>
+
+<section class="section" id="docs">
+  <div class="section-head reveal">
+    <h2><span class="bi"><span class="en">Documentation by task</span><span class="zh" lang="zh-HK">按任務搵文檔</span></span></h2>
+    <p><span class="bi bi-block"><span class="en">Every guide says whether the feature is ready or still being built. Use the search bar at the top, or start from one of these.</span><span class="zh" lang="zh-HK">每份指南都會講明功能係已完成定係開發中。可以用上面嘅搜尋列，或者由下面開始。</span></span></p>
+  </div>
+  <div class="doc-hubs">
+    <a class="hub reveal" href="{{root}}articles/index.html"><span class="tile-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-book"/></svg></span><h3>{{t:nav.articles}}</h3><p>{{tb:articles.lead}}</p><span class="go">{{t:go}}<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+    <a class="hub reveal" href="{{root}}wiki/index.html"><span class="tile-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-history"/></svg></span><h3>{{t:nav.wiki}}</h3><p>{{tb:wiki.lead}}</p><span class="go">{{t:go}}<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+    <a class="hub reveal" href="{{root}}material-asus-router.pdf.html"><span class="tile-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-pdf"/></svg></span><h3>{{t:nav.pdf}}</h3><p><span class="bi"><span class="en">All guides and wiki pages in one phone-sized document, with a tappable contents list.</span><span class="zh" lang="zh-HK">所有指南同維基整合成一份手機尺寸文件，仲有可以點撳嘅目錄。</span></span></p><span class="go">{{t:go}}<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+  </div>
+  <h3 class="chips-title reveal"><span class="bi"><span class="en">Browse by area</span><span class="zh" lang="zh-HK">按分類瀏覽</span></span></h3>
+  <ul class="chip-cloud reveal">
+    <li><a href="{{root}}articles/start/index.html"><span class="bi"><span class="en">Start here</span><span class="zh" lang="zh-HK">由呢度開始</span></span></a></li>
+    <li><a href="{{root}}articles/setup/index.html"><span class="bi"><span class="en">Install and connect</span><span class="zh" lang="zh-HK">安裝同連接</span></span></a></li>
+    <li><a href="{{root}}articles/router/index.html"><span class="bi"><span class="en">Router areas</span><span class="zh" lang="zh-HK">路由器功能</span></span></a></li>
+    <li><a href="{{root}}articles/safety/index.html"><span class="bi"><span class="en">Safe changes</span><span class="zh" lang="zh-HK">安全改動</span></span></a></li>
+    <li><a href="{{root}}articles/tools/index.html"><span class="bi"><span class="en">Built-in tools</span><span class="zh" lang="zh-HK">內置工具</span></span></a></li>
+    <li><a href="{{root}}articles/app/index.html"><span class="bi"><span class="en">Using the app</span><span class="zh" lang="zh-HK">使用程式</span></span></a></li>
+    <li><a href="{{root}}articles/delivery/index.html"><span class="bi"><span class="en">Docker, desktop and releases</span><span class="zh" lang="zh-HK">Docker、桌面版同發佈</span></span></a></li>
+    <li><a href="{{root}}articles/reference/index.html"><span class="bi"><span class="en">Reference</span><span class="zh" lang="zh-HK">參考資料</span></span></a></li>
+  </ul>
 </section>
 
 <section class="section" id="screenshots">
