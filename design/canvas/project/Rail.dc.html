@@ -13,7 +13,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,100..1000&amp;display=swap" rel="stylesheet">
 <style>body{margin:0}</style>
 </helmet>
-<nav class="mx rail" aria-label="{{t.navLabel}}" style="--accent:{{accent}};--dark:{{darkNum}}">
+<nav class="mx rail {{motionCls}}" aria-label="{{t.navLabel}}" style="--accent:{{accent}};--dark:{{darkNum}}">
   <div class="brandrow">
     <svg class="logo" viewBox="0 0 48 48" aria-hidden="true">
       <path d="M45.2 24L44.9 24.9L44 25.8L42.8 26.5L41.6 27.1L40.7 27.7L40.2 28.3L40.3 29.1L40.8 30.1L41.6 31.3L42.2 32.5L42.5 33.7L42.4 34.6L41.6 35.2L40.5 35.5L39.1 35.6L37.7 35.5L36.6 35.5L35.9 35.9L35.5 36.6L35.5 37.7L35.6 39.1L35.5 40.5L35.2 41.6L34.6 42.4L33.7 42.5L32.5 42.2L31.3 41.6L30.1 40.8L29.1 40.3L28.3 40.2L27.7 40.7L27.1 41.6L26.5 42.8L25.8 44L24.9 44.9L24 45.2L23.1 44.9L22.2 44L21.5 42.8L20.9 41.6L20.3 40.7L19.7 40.2L18.9 40.3L17.9 40.8L16.7 41.6L15.5 42.2L14.3 42.5L13.4 42.4L12.8 41.6L12.5 40.5L12.4 39.1L12.5 37.7L12.5 36.6L12.1 35.9L11.4 35.5L10.3 35.5L8.9 35.6L7.5 35.5L6.4 35.2L5.6 34.6L5.5 33.7L5.8 32.5L6.4 31.3L7.2 30.1L7.7 29.1L7.8 28.3L7.3 27.7L6.4 27.1L5.2 26.5L4 25.8L3.1 24.9L2.8 24L3.1 23.1L4 22.2L5.2 21.5L6.4 20.9L7.3 20.3L7.8 19.7L7.7 18.9L7.2 17.9L6.4 16.7L5.8 15.5L5.5 14.3L5.6 13.4L6.4 12.8L7.5 12.5L8.9 12.4L10.3 12.5L11.4 12.5L12.1 12.1L12.5 11.4L12.5 10.3L12.4 8.9L12.5 7.5L12.8 6.4L13.4 5.6L14.3 5.5L15.5 5.8L16.7 6.4L17.9 7.2L18.9 7.7L19.7 7.8L20.3 7.3L20.9 6.4L21.5 5.2L22.2 4L23.1 3.1L24 2.8L24.9 3.1L25.8 4L26.5 5.2L27.1 6.4L27.7 7.3L28.3 7.8L29.1 7.7L30.1 7.2L31.3 6.4L32.5 5.8L33.7 5.5L34.6 5.6L35.2 6.4L35.5 7.5L35.6 8.9L35.5 10.3L35.5 11.4L35.9 12.1L36.6 12.5L37.7 12.5L39.1 12.4L40.5 12.5L41.6 12.8L42.4 13.4L42.5 14.3L42.2 15.5L41.6 16.7L40.8 17.9L40.3 18.9L40.2 19.7L40.7 20.3L41.6 20.9L42.8 21.5L44 22.2L44.9 23.1L45.2 24Z" fill="var(--primary)"/>
@@ -50,7 +50,7 @@
   <div class="area-note" style="padding:10px 18px 0">{{t.version}}</div>
 </nav>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"page":{"editor":"string","default":"overview","section":"Navigation"},"pending":{"editor":"number","default":2,"section":"Navigation"},"accent":{"editor":"color","default":"#4f5bd5","options":["#4f5bd5","#00897b","#d81b60","#f4511e","#7c4dff"],"section":"Look"},"dark":{"editor":"boolean","default":false,"section":"Look"},"lang":{"editor":"enum","options":["en","yue","both"],"default":"en","section":"Language"},"role":{"editor":"enum","options":["owner","operator","viewer"],"default":"owner","section":"Router"},"firmware":{"editor":"enum","options":["merlin","stock"],"default":"merlin","section":"Router"},"$preview":{"width":288,"height":900}}'>
+<script type="text/x-dc" data-dc-script data-props='{"page":{"editor":"string","default":"overview","section":"Navigation"},"pending":{"editor":"number","default":2,"section":"Navigation"},"accent":{"editor":"color","default":"#4f5bd5","options":["#4f5bd5","#00897b","#d81b60","#f4511e","#7c4dff"],"section":"Look"},"dark":{"editor":"boolean","default":false,"section":"Look"},"motion":{"editor":"enum","options":["calm","standard","expressive"],"default":"expressive","section":"Look"},"lang":{"editor":"enum","options":["en","yue","both"],"default":"en","section":"Language"},"role":{"editor":"enum","options":["owner","operator","viewer"],"default":"owner","section":"Router"},"firmware":{"editor":"enum","options":["merlin","stock"],"default":"merlin","section":"Router"},"$preview":{"width":288,"height":900}}'>
 class Component extends DCLogic {
   renderVals() {
     const p = this.props;
@@ -60,6 +60,7 @@ class Component extends DCLogic {
     const accent = p.accent || '#4f5bd5';
     const dark = p.dark === true || p.dark === 'true' || p.dark === 1 || p.dark === '1';
     const page = p.page || 'overview';
+    const motion = p.motion ?? 'expressive';
     const pending = Number(p.pending ?? 2) || 0;
     const T = (en, yue) => lang === 'en' ? en : lang === 'yue' ? yue : en + ' · ' + yue;
     const I = {
@@ -95,34 +96,38 @@ class Component extends DCLogic {
       ['devices', 'Devices', '裝置', 'Devices.dc.html', 'devices', 12],
       ['sec', 'Wireless', '無線'],
       ['wifi', 'Wi-Fi', 'Wi-Fi', 'WiFi.dc.html', 'wifi', 0],
-      ['aimesh', 'AiMesh', 'AiMesh', 'WiFi.dc.html', 'mesh', 0],
+      ['aimesh', 'AiMesh', 'AiMesh', 'Mesh.dc.html', 'mesh', 0],
       ['sec', 'Network', '網絡'],
       ['internet', 'Internet', '互聯網', 'Network.dc.html', 'globe', 0],
-      ['lan', 'Local network', '區域網絡', 'Network.dc.html', 'lan', 0],
-      ['forwarding', 'Port forwarding', '端口轉發', 'Network.dc.html', 'fwd', 4],
-      ['firewall', 'Firewall', '防火牆', 'Security.dc.html', 'shield', 0],
-      ['qos', 'Traffic priority', '流量優先次序', 'Network.dc.html', 'qos', 0],
-      ['vpn', 'VPN', 'VPN', 'Security.dc.html', 'lock', 0],
+      ['lan', 'Local network', '本地網絡', 'Lan.dc.html', 'lan', 0],
+      ['forwarding', 'Port forwarding', '端口轉發', 'Lan.dc.html', 'fwd', 4],
+      ['firewall', 'Firewall', '防火牆', 'Firewall.dc.html', 'shield', 0],
+      ['qos', 'Traffic priority', '流量優先', 'Qos.dc.html', 'qos', 0],
+      ['vpn', 'VPN', 'VPN', 'Vpn.dc.html', 'lock', 0],
       ['sec', 'Family', '家庭'],
-      ['parental', 'Parental controls', '家長監護', 'Security.dc.html', 'family', 0],
+      ['parental', 'Parental controls', '家長控制', 'Parental.dc.html', 'family', 0],
       ['sec', 'Storage', '儲存'],
-      ['usb', 'USB and storage', 'USB 同儲存', 'Tools.dc.html', 'drive', 0],
+      ['usb', 'USB and storage', 'USB 同儲存', 'Storage.dc.html', 'drive', 0],
       ['sec', 'Diagnose', '診斷'],
       ['logs', 'Logs', '記錄', 'Tools.dc.html', 'logs', 3],
       ['tools', 'Network tools', '網絡工具', 'Tools.dc.html', 'term', 0],
-      ['jobs', 'Scheduled jobs', '排程工作', 'Tools.dc.html', 'clock', 0],
+      ['speedlab', 'Speed lab', '速度實驗室', 'SpeedLab.dc.html', 'qos', 0],
+      ['utilities', 'Router utilities', '路由器工具', 'Utilities.dc.html', 'box', 0],
+      ['jobs', 'Scheduled jobs', '排程工作', 'Jobs.dc.html', 'clock', 0],
       ['sec', 'Router', '路由器'],
-      ['firmware', 'Firmware', '韌體', 'Advanced.dc.html', 'chip', 1],
-      ['system', 'System', '系統', 'Advanced.dc.html', 'sliders', 0],
-      ['maintenance', 'Maintenance', '維護', 'Advanced.dc.html', 'wrench', 0],
-      ['backup', 'Backup and restore', '備份同還原', 'Advanced.dc.html', 'backup', 0],
-      ['merlin', 'Merlin extras', 'Merlin 擴充功能', 'Advanced.dc.html', 'spark', 0],
+      ['firmware', 'Firmware', '韌體', 'Firmware.dc.html', 'chip', 1],
+      ['system', 'System', '系統', 'System.dc.html', 'sliders', 0],
+      ['maintenance', 'Maintenance', '維護', 'System.dc.html', 'wrench', 0],
+      ['backup', 'Backup and restore', '備份同還原', 'Backup.dc.html', 'backup', 0],
+      ['merlin', 'Merlin extras', 'Merlin 附加功能', 'Advanced.dc.html', 'spark', 0],
       ['advanced', 'Advanced', '進階', 'Advanced.dc.html', 'code', 0],
       ['changes', 'Change history', '變更記錄', 'Changes.dc.html', 'history', 5],
       ['sec', 'App', '應用程式'],
       ['settings', 'Settings', '設定', 'Settings.dc.html', 'gear', 0],
+      ['regex', 'Regex builder', '正則表達式產生器', 'Regex.dc.html', 'code', 0],
+      ['updates', 'Updates', '更新', 'Updates.dc.html', 'spark', 0],
       ['toolbox', 'Toolbox', '工具箱', 'Toolbox.dc.html', 'box', 0],
-      ['help', 'Help and docs', '說明同文件', 'Settings.dc.html', 'help', 0]
+      ['help', 'Help and docs', '說明同文件', 'Help.dc.html', 'help', 0]
     ];
     const nav = rows.filter(r => !(r[0] === 'merlin' && firmware !== 'merlin')).map(r => {
       if (r[0] === 'sec') return { isSec: true, isItem: false, label: T(r[1], r[2]) };
@@ -130,7 +135,7 @@ class Component extends DCLogic {
       return { isSec: false, isItem: true, cls: on ? 'navi on' : 'navi', cur: on ? 'page' : 'false', href: r[3], d: I[r[4]], label: T(r[1], r[2]), hasCt: r[5] > 0, ct: r[5] };
     });
     return {
-      accent, darkNum: dark ? 1 : 0, pending, hasPending: pending > 0, nav,
+      accent, darkNum: dark ? 1 : 0, motionCls: motion === 'calm' ? 'calm' : motion === 'standard' ? 'std' : '', pending, hasPending: pending > 0, nav,
       fabDisabled: role === 'viewer' ? 'true' : 'false',
       fwShort: firmware === 'merlin' ? 'Merlin 388.8_4' : T('Stock 388.24198', '原廠 388.24198'),
       t: {

@@ -165,7 +165,7 @@ textarea.field{height:auto;padding:14px 16px;line-height:1.5;resize:vertical;wid
         </div>
         <div class="docgrid">
           <nav class="dnav" aria-label="{{t.docNav}}"><sc-for list="{{docs}}" as="d" hint-placeholder-count="5"><button aria-pressed="{{d.pressed}}" onClick="{{d.pick}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{d.d}}"/></svg>{{d.label}}</button></sc-for></nav>
-          <article class="card" style="box-shadow:none"><div class="k">{{doc.dest}}</div><h2 class="h2" style="font-size:26px">{{doc.title}}</h2><p class="muted" style="font-size:15px;color:var(--text)">{{doc.body}}</p><pre class="code" tabindex="0">{{doc.code}}</pre><div class="cols"><a class="btn t sm" href="Docs.dc.html">{{t.openSite}}</a><button class="btn o sm" onClick="{{printDoc}}">{{t.exportPdf}}</button></div></article>
+          <article class="card" style="box-shadow:none"><div class="k">{{t.docTitle}}</div><h2 class="h2" style="font-size:26px">{{doc.title}}</h2><p class="muted" style="font-size:15px;color:var(--text)">{{doc.body}}</p><pre class="code" tabindex="0">{{doc.code}}</pre><div class="cols"><a class="btn t sm" href="Docs.dc.html">{{t.openSite}}</a><button class="btn o sm" onClick="{{printDoc}}">{{t.exportPdf}}</button></div></article>
         </div>
       </section>
 
@@ -227,7 +227,7 @@ class Component extends DCLogic {
     const vers=Object.keys(VL).map(k=>({label:k,cls:'chip'+(verId===k?' on':''),pressed:verId===k?'true':'false',pick:()=>set({ver:k})}));
     const v=VL[verId];
     const CK='M5 12.5l4.5 4.5L19 7.5',CL='M12 6v6l4 2';
-    const ST=[['done',T('Fetch sources','攞原始碼'),T('Commit 4f2a9c1 on main','main 提交 4f2a9c1'),'17:02',CK],['done',T('Install toolchain','安裝工具鏈'),T('Node 22 and Electron 33 ready','Node 22 同 Electron 33 已就緒'),'17:03',CK],['run',T('Compile app','編譯程式'),T('Bundling renderer, 64%','打包介面，64%'),'17:05',CL],['',T('Package installer','打包安裝程式'),T('Waiting','等緊'),'—',CL],['',T('Verify checksums','核對校驗碼'),T('Waiting','等緊'),'—',CL],['',T('Publish release','發佈版本'),T('Not started','未開始'),'—',CL]];
+    const ST=[['done',T('Fetch sources','攞原始碼'),T('Commit 4f2a9c1 on main','main 提交 4f2a9c1'),'17:02',CK],['done',T('Install toolchain','安裝工具鏈'),T('Node 22 and Electron 33 ready','Node 22 同 Electron 33 已就緒'),'17:03',CK],['run',T('Compile app','編譯程式'),T('Bundling renderer, 64%','打包介面，64%'),'17:05',CL],['',T('Package installer','打包安裝程式'),T('Waiting','等緊'),'-',CL],['',T('Verify checksums','核對校驗碼'),T('Waiting','等緊'),'-',CL],['',T('Publish release','發佈版本'),T('Not started','未開始'),'-',CL]];
     const stages=ST.map(([c,name,sub,time,d])=>({cls:'sico'+(c?' '+c:''),name,sub,time,d}));
     const DL=[['start',T('Getting started','開始使用'),'M5 4h14v16H5z M9 9h6 M9 13h6'],['export',T('Exporting data','匯出資料'),'M12 3v12 M7 10l5 5 5-5 M5 20h14'],['mesh',T('AiMesh nodes','AiMesh 節點'),'M12 7l-6 9 M12 7l6 9 M7 18h10'],['merlin',T('Merlin add-ons','Merlin 附加功能'),'M4 7h16 M4 12h16 M4 17h10'],['trouble',T('Troubleshooting','疑難排解'),'M12 8v5 M12 16.5h.01 M12 3l9 16H3z']];
     const DB={start:{kind:T('Guide','指南'),title:T('Connect to your router','連接路由器'),body:T('Enter the router address 198.51.100.1, sign in with the router account and approve the host key. The password or key is stored encrypted on the app server and never shown again.','輸入路由器地址 198.51.100.1，用路由器帳戶登入並確認主機金鑰。登入資料只會存喺呢部機嘅系統鑰匙圈。'),code:'ssh you@198.51.100.1 -p 22\n# host key SHA256:3f9a...c21 (demo value)'},

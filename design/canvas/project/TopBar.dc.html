@@ -13,7 +13,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,100..1000&amp;display=swap" rel="stylesheet">
 <style>body{margin:0}.tabbtn{border:0;background:none;font:inherit;color:inherit;padding:0;height:40px;cursor:pointer}.tab{padding-right:6px}.seg button[aria-pressed=true]{background:var(--surf);color:var(--text);box-shadow:var(--e1)}.hit{position:relative}</style>
 </helmet>
-<header class="mx topbar" aria-label="{{title}}" style="--accent:{{accent}};--dark:{{darkNum}}">
+<header class="mx topbar {{motionCls}}" aria-label="{{title}}" style="--accent:{{accent}};--dark:{{darkNum}}">
   <div class="tabs">
     <div class="tablist" role="tablist" aria-label="{{t.tabsLabel}}">
       <sc-for list="{{tabs}}" as="tb" hint-placeholder-count="3">
@@ -85,7 +85,7 @@
   </div>
 </header>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"title":{"editor":"string","default":"Overview","section":"Content"},"tabs":{"editor":"string","default":"Overview,Devices,Wi-Fi","section":"Content"},"active":{"editor":"number","default":0,"section":"Content"},"accent":{"editor":"color","default":"#4f5bd5","options":["#4f5bd5","#00897b","#d81b60","#f4511e","#7c4dff"],"section":"Look"},"dark":{"editor":"boolean","default":false,"section":"Look"},"lang":{"editor":"enum","options":["en","yue","both"],"default":"en","section":"Language"},"role":{"editor":"enum","options":["owner","operator","viewer"],"default":"owner","section":"Router"},"firmware":{"editor":"enum","options":["merlin","stock"],"default":"merlin","section":"Router"},"$preview":{"width":1152,"height":170}}'>
+<script type="text/x-dc" data-dc-script data-props='{"title":{"editor":"string","default":"Overview","section":"Content"},"tabs":{"editor":"string","default":"Overview,Devices,Wi-Fi","section":"Content"},"active":{"editor":"number","default":0,"section":"Content"},"accent":{"editor":"color","default":"#4f5bd5","options":["#4f5bd5","#00897b","#d81b60","#f4511e","#7c4dff"],"section":"Look"},"dark":{"editor":"boolean","default":false,"section":"Look"},"motion":{"editor":"enum","options":["calm","standard","expressive"],"default":"expressive","section":"Look"},"lang":{"editor":"enum","options":["en","yue","both"],"default":"en","section":"Language"},"role":{"editor":"enum","options":["owner","operator","viewer"],"default":"owner","section":"Router"},"firmware":{"editor":"enum","options":["merlin","stock"],"default":"merlin","section":"Router"},"$preview":{"width":1152,"height":170}}'>
 class Component extends DCLogic {
   renderVals() {
     const p = this.props;
@@ -95,6 +95,7 @@ class Component extends DCLogic {
     const role = p.role ?? 'owner';
     const firmware = p.firmware ?? 'merlin';
     const accent = p.accent || '#4f5bd5';
+    const motion = p.motion ?? 'expressive';
     const dark = p.dark === true || p.dark === 'true' || p.dark === 1 || p.dark === '1';
     const T = (en, yue) => lang === 'en' ? en : lang === 'yue' ? yue : en + ' · ' + yue;
     const tabsKey = String(p.tabs ?? 'Overview');
@@ -117,7 +118,7 @@ class Component extends DCLogic {
     const exportsRaw = [['CSV', 'Export view as CSV', '匯出成 CSV'], ['JSON', 'Export view as JSON', '匯出成 JSON'], ['PDF', 'Print or save as PDF', '列印或者儲存成 PDF'], ['LINK', 'Copy link to this view', '複製呢個畫面嘅連結']];
     const langOpts = [['en', 'EN'], ['yue', '粵'], ['both', T('Both', '兩者').split(' · ')[0] === 'Both' ? 'Both' : '雙語']];
     return {
-      accent, darkNum: dark ? 1 : 0, title: p.title || 'Overview', tabs,
+      accent, darkNum: dark ? 1 : 0, motionCls: motion === 'calm' ? 'calm' : motion === 'standard' ? 'std' : '', title: p.title || 'Overview', tabs,
       addTab: () => setTabs(tabList.concat([T('New tab', '新分頁').split(' · ')[0]]), tabList.length),
       langs: langOpts.map(o => ({ label: o[1], pressed: lang === o[0] ? 'true' : 'false', pick: () => { this.setState({ lov: { base: baseLang, v: o[0] } }); if (typeof p.onLang === 'function') p.onLang(o[0]); } })),
       rxOn, rxPressed: rxOn ? 'true' : 'false', toggleRx: () => this.setState({ rx: !rxOn }),
