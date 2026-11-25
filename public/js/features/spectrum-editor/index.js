@@ -33,6 +33,9 @@ async function screen(ctx) {
   const page = ctx.page(label, lede);
   ctx.root.append(page);
   const info = await api.get("/api/domain/channel-analyser");
+  const missing = new Set((await api.get("/api/domain/spectrum-editor")).missing);
+  // A setting this router does not have is switched off, with the reason, never written.
+  const flag = (e) => (e && missing.has(e.key) ? { ...e, disabled: { en: `This router does not have the setting ${e.key}.`, yue: `呢部路由器冇 ${e.key} 呢個設定。` } } : e);
   let current = info.bands.find((b) => b.radio)?.index ?? info.bands[0]?.index ?? 0;
   const scans = new Map();
   let scanning = false;
@@ -41,7 +44,7 @@ async function screen(ctx) {
   const tabs = h("div", { class: "seg", role: "radiogroup", "aria-label": t("Wi-Fi band", "Wi-Fi 頻段") });
   const body = h("div", { class: "se-body" });
   const announce = h("div", { class: "visually-hidden", role: "status", "aria-live": "polite" });
-  const entryOf = (id) => ctx.state.catalog.entries.find((e) => e.id === id);
+  const entryOf = (id) => flag(ctx.state.catalog.entries.find((e) => e.id === id));
   const valueOf = (e) => (e && ctx.dock.has(e.id) ? ctx.dock.value(e.id) : e?.value);
 
   async function scan() {
@@ -115,14 +118,16 @@ async function screen(ctx) {
     root.append(own$);
 
     const stageChannel = (c) => {
-      if (!channelEntry || channelEntry.disabled) return;
+      if (channelEntry?.disabled) return ctx.toast(tt(channelEntry.disabled), "warn");
+      if (!channelEntry) return;
       if (!canWrite) return ctx.toast(t("Your role can only look.", "你嘅角色只可以睇。"), "warn");
       ctx.dock.setEntry(channelEntry, String(c));
       announce.textContent = t(`Channel ${c} is waiting in your pending changes.`, `頻道 ${c} 已加入待套用變更。`);
       draw();
     };
     const stageWidth = (choice) => {
-      if (!widthEntry || widthEntry.disabled || !choice) return;
+      if (widthEntry?.disabled) return ctx.toast(tt(widthEntry.disabled), "warn");
+      if (!widthEntry || !choice) return;
       if (!canWrite) return ctx.toast(t("Your role can only look.", "你嘅角色只可以睇。"), "warn");
       ctx.dock.setEntry(widthEntry, choice.value);
       announce.textContent = t(`Width ${choice.mhz} MHz is waiting in your pending changes.`, `闊度 ${choice.mhz} MHz 已加入待套用變更。`);

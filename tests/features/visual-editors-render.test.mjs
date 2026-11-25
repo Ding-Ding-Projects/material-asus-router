@@ -339,3 +339,43 @@ test("render: a viewer sees every editor but cannot stage anything", async () =>
     await t.stop();
   }
 });
+
+test("render: a setting the router does not have is switched off with the reason, and never written", async () => {
+  const t = await startApp();
+  try {
+    for (const key of ["switch_stb_x", "bwdpi_app_rulelist", "wl0_sched", "wl0_chanspec"]) {
+      delete t.router.nvram[key];
+      delete t.router.committed[key];
+    }
+    for (const [id, key] of [["port-canvas", "switch_stb_x"], ["priority-board", "bwdpi_app_rulelist"], ["schedule-paint", "wl0_sched"], ["spectrum-editor", "wl0_chanspec"]])
+      assert.ok((await fresh(t, id)).missing.includes(key), `${id} reports ${key}`);
+    assert.deepEqual((await fresh(t, "schedule-paint")).missing.sort(), ["wl0_sched"], "settings the router has are not reported");
+
+    const ports = await mount(t, "port-canvas");
+    ports.root.querySelector('[data-port="3"]').click();
+    assert.ok(button(ports.root.querySelector(".pc-side"), /^IPTV box$/).disabled);
+    ports.done();
+
+    const board = await mount(t, "priority-board");
+    assert.match(text(board.root), /This router does not have the setting bwdpi_app_rulelist/);
+    assert.equal(board.root.querySelectorAll(".pb-group").length, 0);
+    board.done();
+
+    const sched = await mount(t, "schedule-paint");
+    button(sched.root, /When Wi-Fi is on/).click();
+    assert.ok(sched.root.querySelectorAll(".sp-cell").every((c) => c.disabled), "the Wi-Fi grid is locked");
+    sched.root.querySelectorAll(".sp-cell")[0].fire("pointerdown");
+    assert.equal(sched.dock.count(), 0);
+    sched.done();
+
+    const spec = await mount(t, "spectrum-editor");
+    button(spec.root, /Scan this band/).click();
+    await sleep(3600);
+    spec.root.querySelector(".own-curve").fire("keydown", { key: "ArrowRight" });
+    assert.equal(spec.dock.count(), 0, "nothing is staged for a setting that is not there");
+    assert.match(spec.toasts.at(-1)[1], /does not have the setting wl0_chanspec/);
+    spec.done();
+  } finally {
+    await t.stop();
+  }
+});

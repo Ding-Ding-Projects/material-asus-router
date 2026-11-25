@@ -24,10 +24,13 @@ async function screen(ctx) {
   const page = ctx.page(label, lede);
   ctx.root.append(page);
   let data = await api.get("/api/domain/internet-pro");
+  const missing = new Set((await api.get("/api/domain/port-canvas")).missing);
+  // A setting this router does not have is switched off, with the reason, never written.
+  const flag = (e) => (e && missing.has(e.key) ? { ...e, disabled: { en: `This router does not have the setting ${e.key}.`, yue: `呢部路由器冇 ${e.key} 呢個設定。` } } : e);
   let selected = null;
   const panel = h("div", { class: "pc-panel" });
   const side = h("section", { class: "card rise pc-side", "aria-live": "polite" });
-  const entry = (id) => data.entries.find((e) => e.id === `internet-pro.${id}`);
+  const entry = (id) => flag(data.entries.find((e) => e.id === `internet-pro.${id}`));
   const valueOf = (e) => (e && ctx.dock.has(e.id) ? ctx.dock.value(e.id) : e?.value);
   const zones = () => [...panel.querySelectorAll("[data-port]")];
   const guard = () => (canWrite ? true : (ctx.toast(t("Your role can only look.", "你嘅角色只可以睇。"), "warn"), false));

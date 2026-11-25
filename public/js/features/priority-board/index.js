@@ -21,12 +21,15 @@ async function screen(ctx) {
   const page = ctx.page(label, lede);
   ctx.root.append(page);
   let data = await api.get("/api/domain/qos-pro");
+  const missing = new Set((await api.get("/api/domain/priority-board")).missing);
+  // A setting this router does not have is switched off, with the reason, never written.
+  const flag = (e) => (e && missing.has(e.key) ? { ...e, disabled: { en: `This router does not have the setting ${e.key}.`, yue: `呢部路由器冇 ${e.key} 呢個設定。` } } : e);
   const names = new Map(((await api.get("/api/domain/devices").catch(() => ({ devices: [] }))).devices ?? []).map((d) => [d.ip, d.name]));
   const known = [...names].map(([ip, name]) => ({ ip, name }));
   let tab = "groups";
   const tabs = h("div", { class: "seg", role: "radiogroup", "aria-label": t("What to order", "要排嘅嘢") });
   const body = h("div", { class: "pb-body" });
-  const entry = (id) => data.entries.find((e) => e.id === id);
+  const entry = (id) => flag(data.entries.find((e) => e.id === id));
   const valueOf = (e) => (ctx.dock.has(e.id) ? ctx.dock.value(e.id) : e.value);
   const stage = (e, value) => {
     if (!canWrite) return ctx.toast(t("Your role can only look.", "你嘅角色只可以睇。"), "warn");

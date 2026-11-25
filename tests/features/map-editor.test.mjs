@@ -21,7 +21,7 @@ test("map-editor: pings are read and graded, and free addresses skip what is in 
   const free = freeAddresses("198.51.100.1", "255.255.255.0", ["198.51.100.1", "198.51.100.100", "198.51.100.101"], "198.51.100.100", "198.51.100.110", 5);
   assert.deepEqual(free, ["198.51.100.102", "198.51.100.103", "198.51.100.104", "198.51.100.105", "198.51.100.106"]);
   assert.deepEqual(freeAddresses("198.51.100.1", "255.255.255.0", ["198.51.100.1"], "198.51.100.100", "198.51.100.101", 3), ["198.51.100.100", "198.51.100.101", "198.51.100.2"]);
-  assert.deepEqual(freeAddresses("10.0.0.1", "255.0.0.0", [], "", "", 5), [], "a huge network is not listed");
+  assert.deepEqual(freeAddresses("192.0.2.1", "255.255.0.0", [], "", "", 5), [], "a huge network is not listed");
 });
 
 test("map-editor: the browser helpers say what a grade means in words and cut long names safely", () => {

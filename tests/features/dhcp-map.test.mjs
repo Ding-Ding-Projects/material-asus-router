@@ -29,7 +29,7 @@ test("dhcp-map: the browser moves the pool, keeps addresses and warns about bad 
   assert.deepEqual(movePool(cells, pool, "end", "198.51.100.150"), { start: "198.51.100.100", end: "198.51.100.150" });
   assert.deepEqual(movePool(cells, pool, "start", "198.51.100.120"), { start: "198.51.100.120", end: "198.51.100.120" }, "the other end follows when they would cross");
   assert.equal(movePool(cells, pool, "end", "198.51.100.255"), null, "the last address of the network cannot be handed out");
-  assert.equal(movePool(cells, pool, "end", "10.0.0.1"), null);
+  assert.equal(movePool(cells, pool, "end", "203.0.113.1"), null);
   assert.equal(stepIp(cells, "198.51.100.254", 1), null, "the broadcast address is not a step");
   assert.equal(stepIp(cells, "198.51.100.2", -1), "198.51.100.1");
   assert.equal(applyPool(cells, "198.51.100.101", "198.51.100.102").filter((c) => c.inPool).length, 2);
@@ -37,7 +37,9 @@ test("dhcp-map: the browser moves the pool, keeps addresses and warns about bad 
   const kept = reserveAt(cells, "AA:AA:AA:AA:AA:01", "198.51.100.40", "phone");
   assert.equal(kept.find((c) => c.ip === "198.51.100.40").kind, "reserved");
   assert.equal(kept.find((c) => c.ip === "198.51.100.101").kind, "free", "the old address frees up");
-  assert.equal(reserveAt(cells, "AA:AA:AA:AA:AA:01", "198.51.100.101", "x"), cells, "an address that is not free is left alone");
+  assert.equal(reserveAt(cells, "AA:AA:AA:AA:AA:01", "198.51.100.102", "x"), cells, "an address another device holds is left alone");
+  const own = reserveAt(cells, "AA:AA:AA:AA:AA:01", "198.51.100.101", "phone");
+  assert.deepEqual([own.find((c) => c.ip === "198.51.100.101").kind, own.find((c) => c.ip === "198.51.100.101").leased], ["reserved", true], "a device can keep the address it already has");
   assert.equal(releaseAt(kept, "198.51.100.40").find((c) => c.ip === "198.51.100.40").kind, "free");
 
   assert.deepEqual(warnings(cells, { start: "198.51.100.200", end: "198.51.100.100" }), ["empty-pool"]);

@@ -98,17 +98,20 @@ async function screen(ctx) {
   const page = ctx.page(label, lede);
   ctx.root.append(page);
   let parental = await api.get("/api/domain/parental-pro");
+  const missing = new Set((await api.get("/api/domain/schedule-paint")).missing);
+  // A setting this router does not have is switched off, with the reason, never written.
+  const flag = (e) => (e && missing.has(e.key) ? { ...e, disabled: { en: `This router does not have the setting ${e.key}.`, yue: `呢部路由器冇 ${e.key} 呢個設定。` } } : e);
   let tab = "parental";
   let band = null;
   let selected = null;
   const body = h("div", { class: "sp-body" });
   const tabs = h("div", { class: "seg", role: "radiogroup", "aria-label": t("What to schedule", "要排程嘅嘢") });
-  const entryOf = (id) => ctx.state.catalog.entries.find((e) => e.id === id);
+  const entryOf = (id) => flag(ctx.state.catalog.entries.find((e) => e.id === id));
   const valueOf = (entry) => (ctx.dock.has(entry.id) ? ctx.dock.value(entry.id) : entry.value);
   const guard = () => (canWrite ? true : (ctx.toast(t("Your role can only look.", "你嘅角色只可以睇。"), "warn"), false));
 
   // ---- time limits for devices ----
-  const pEntries = () => Object.fromEntries(Object.entries(ENTRY_IDS).map(([name, id]) => [name, parental.entries.find((e) => e.id === id)]));
+  const pEntries = () => Object.fromEntries(Object.entries(ENTRY_IDS).map(([name, id]) => [name, flag(parental.entries.find((e) => e.id === id))]));
   const devices = () => {
     const e = pEntries();
     const byKey = { [COLUMN_KEYS.mac]: e.mac, [COLUMN_KEYS.mode]: e.mode, [COLUMN_KEYS.name]: e.name, [COLUMN_KEYS.daytime]: e.daytime };
@@ -124,6 +127,8 @@ async function screen(ctx) {
   const nameOf = (d) => d.name || parental.known.find((k) => k.mac === d.mac)?.name || d.mac;
 
   function parentalView() {
+    const lacking = Object.values(pEntries()).find((e) => e?.disabled);
+    if (lacking) return h("div", { class: "empty" }, icon("family_restroom", "lg"), tt(lacking.disabled));
     const list = devices();
     const device = list.find((d) => d.mac === selected) ?? list[0];
     selected = device?.mac ?? null;
@@ -161,7 +166,7 @@ async function screen(ctx) {
   }
 
   // ---- when a Wi-Fi band is on ----
-  const bands = () => ctx.state.catalog.entries.filter((e) => /^wifi-pro\.wl\d+\.sched$/.test(e.id)).map((e) => ({ sched: e, on: entryOf(e.id.replace(/\.sched$/, ".sched-on")), name: e.groupLabel }));
+  const bands = () => ctx.state.catalog.entries.filter((e) => /^wifi-pro\.wl\d+\.sched$/.test(e.id)).map((e) => ({ sched: flag(e), on: entryOf(e.id.replace(/\.sched$/, ".sched-on")), name: e.groupLabel }));
 
   function wifiView() {
     const list = bands();
