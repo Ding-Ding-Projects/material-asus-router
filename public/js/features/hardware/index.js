@@ -91,7 +91,7 @@ function dials(ctx, root) {
       card.value.textContent = shown;
       card.unit.textContent = g.value === null ? "" : g.unit === "C" ? "°C" : " rpm";
       card.word.textContent = wording[s.word];
-      card.extra.textContent = g.mode !== null && g.mode !== undefined && g.kind === "fan" ? t(`Fan mode setting: ${g.mode}`, `風扇模式設定：${g.mode}`) : "";
+      card.extra.textContent = g.value !== null && g.mode !== null && g.mode !== undefined && g.kind === "fan" ? t(`Fan mode setting: ${g.mode}`, `風扇模式設定：${g.mode}`) : "";
       card.el.dataset.tone = s.tone;
       card.dial.setAttribute("aria-valuemin", "0");
       card.dial.setAttribute("aria-valuemax", String(g.maxAt));

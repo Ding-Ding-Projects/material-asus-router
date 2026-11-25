@@ -9,6 +9,8 @@ Every release of Material Asus Router, newest first. Each change names the full 
 - Feature folders with rich controls and a check that every control really works. (9358d7f2d562b2f9761df8835355f719e4546668)
 - Safety and records features: two-key super confirmation, element locks, the unlock ladder, support tickets, a built-in authenticator, QR pairing, local version history, exports, bulk actions, a changelog viewer, an offline documentation browser, update progress, front-screen provenance and a setup guide. These are on the safety-records branch and have no commit on the default branch yet.
 
+- Ports screen: live port jacks with link, speed and duplex read from the switch chip, the chip named, port roles, hardware acceleration, jumbo frame size and IPTV multicast settings. Hardware screen: live processor, radio and fan dials, light schedule, RGB colour for gaming models and the button settings. A "who uses the most" tab on Device traffic ranks top downloaders and uploaders. Settings whose names may not exist on every firmware are offered only when the router lists them.
+
 ### Fixed
 
 - The documentation site deployment and the publication language check. (4947429ea58beaf880fd7251a292cfadce109fd7)

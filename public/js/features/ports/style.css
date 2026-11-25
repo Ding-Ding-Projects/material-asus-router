@@ -1,6 +1,6 @@
 /* Ports: live port jacks. Motion is expressive, and stilled by reduced motion. */
 .pt-panel{gap:14px}
-.pt-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.pt-head{padding-right:34px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .pt-head .h2{margin-right:auto}
 .pt-jacks{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,108px),1fr));gap:12px;padding:16px;border-radius:28px;background:var(--surf-low)}
 .pt-jack{--tone:var(--sub);position:relative;display:grid;justify-items:center;gap:6px;padding:14px 8px 12px;border:2px solid var(--line);border-radius:22px;background:var(--surf);color:var(--text);font:inherit;cursor:pointer;min-width:0;min-height:48px;transition:transform .35s var(--spring),border-color .25s,background .25s,box-shadow .25s;animation:pt-in .6s var(--spring) both;animation-delay:calc(var(--i,0) * 70ms)}
