@@ -5,6 +5,13 @@
 import { draggable } from "./drag.js";
 import { gradeCopy, shortName } from "./model.js";
 
+// Appends children, skipping empty ones and flattening lists. (The native append would print "null" for a gap.)
+function add(el, ...kids) {
+  for (const kid of kids.flat(Infinity)) if (kid !== null && kid !== undefined && kid !== false) el.append(kid instanceof Node ? kid : document.createTextNode(String(kid)));
+  return el;
+}
+const fill = (el, ...kids) => (el.replaceChildren(), add(el, ...kids));
+
 const label = { en: "Network map editor", yue: "網絡地圖編輯器" };
 const lede = { en: "Pick a device to rename it, keep its address or block it. Drag a device onto Block or Keep address to do the same.", yue: "揀一部裝置就可以改名、留住地址或者封鎖。將裝置拖去「封鎖」或者「留住地址」都得。" };
 const REFRESH_MS = 8000;
@@ -91,11 +98,11 @@ async function screen(ctx) {
   function drawPanel() {
     const d = selected ? deviceOf(selected) : null;
     ctx.clear(panel);
-    if (!d) return void panel.append(h("div", { class: "empty" }, icon("touch_app", "lg"), t("Pick a device on the map.", "喺地圖揀一部裝置。")));
+    if (!d) return void add(panel, h("div", { class: "empty" }, icon("touch_app", "lg"), t("Pick a device on the map.", "喺地圖揀一部裝置。")));
     const name = h("input", { class: "field", maxlength: "32", value: d.customName, placeholder: d.host || d.ip, "aria-label": t("Device name", "裝置名稱"), disabled: !canWrite });
     const free = [d.ip, ...data.free.filter((ip) => ip !== d.ip)];
     const pick = h("select", { class: "field", "aria-label": t("Address to keep", "要留住嘅地址"), disabled: !canWrite }, free.map((ip) => h("option", { value: ip, selected: ip === (d.reserved || d.ip) }, ip === d.ip ? `${ip} (${t("now", "而家")})` : ip)));
-    panel.append(
+    add(panel, 
       h("div", { class: "k" }, t("Picked device", "揀咗嘅裝置")),
       h("h2", { class: "h2" }, d.name),
       h("div", { class: "t2 mono" }, `${d.mac} · ${d.ip} · ${d.via === "wired" ? t("cable", "網線") : d.via}`),
@@ -112,18 +119,18 @@ async function screen(ctx) {
 
   function drawTrays() {
     const tray = (zone, ic, en, yue) => h("div", { class: "me-tray", "data-zone": zone, role: "note" }, icon(ic), h("span", {}, t(en, yue)));
-    ctx.clear(trays).append(tray("block", "block", "Drop here to block", "拖到呢度封鎖"), tray("unblock", "check_circle", "Drop here to unblock", "拖到呢度解除封鎖"), tray("reserve", "push_pin", "Drop here to keep address", "拖到呢度留住地址"));
+    fill(trays, tray("block", "block", "Drop here to block", "拖到呢度封鎖"), tray("unblock", "check_circle", "Drop here to unblock", "拖到呢度解除封鎖"), tray("reserve", "push_pin", "Drop here to keep address", "拖到呢度留住地址"));
   }
 
   function drawLayers() {
-    ctx.clear(layerBar).append(...[["links", "Links", "連線"], ["signal", "Signal", "訊號"], ["quality", "Link quality", "連線質素"]].map(([id, en, yue]) =>
+    fill(layerBar, ...[["links", "Links", "連線"], ["signal", "Signal", "訊號"], ["quality", "Link quality", "連線質素"]].map(([id, en, yue]) =>
       h("button", { type: "button", class: `chip${layers[id] ? " on" : ""}`, "aria-pressed": String(layers[id]), onClick() { layers[id] = !layers[id]; draw(); } }, t(en, yue))));
   }
 
   function draw() {
     drawLayers();
     drawTrays();
-    ctx.clear(host).append(
+    fill(host, 
       nodeCard({ ...data.main, name: data.main.name, quality: null }, "main"),
       data.nodes.length ? h("div", { class: "me-nodes" }, data.nodes.map((n) => nodeCard(n, "node"))) : null,
       !data.mesh ? h("div", { class: "note" }, icon("info"), t("This router has no AiMesh nodes, so every device hangs off the router itself.", "呢部路由器冇 AiMesh 節點，所以所有裝置都連住路由器本身。")) : null,
@@ -131,7 +138,7 @@ async function screen(ctx) {
     drawPanel();
   }
 
-  page.append(h("section", { class: "card rise" }, layerBar, host, trays), panel);
+  add(page, h("section", { class: "card rise" }, layerBar, host, trays), panel);
   draw();
 
   const refresh = async () => {

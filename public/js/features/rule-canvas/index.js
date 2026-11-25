@@ -6,6 +6,13 @@
 import { draggable } from "./drag.js";
 import { conflictedRules, findConflicts, laneRows, parsePort, portText, problemsOf } from "./model.js";
 
+// Appends children, skipping empty ones and flattening lists. (The native append would print "null" for a gap.)
+function add(el, ...kids) {
+  for (const kid of kids.flat(Infinity)) if (kid !== null && kid !== undefined && kid !== false) el.append(kid instanceof Node ? kid : document.createTextNode(String(kid)));
+  return el;
+}
+const fill = (el, ...kids) => (el.replaceChildren(), add(el, ...kids));
+
 const label = { en: "Rule canvas", yue: "規則畫布" };
 const lede = { en: "See who can reach what. Drag a rule card onto another device to point it there, or click a port to change it.", yue: "睇清楚邊個可以連去邊。將規則卡拖去另一部裝置就改咗目標，撳個端口就可以改。" };
 const PROTOS = ["TCP", "UDP", "BOTH"];
@@ -43,7 +50,7 @@ async function screen(ctx) {
     rules = rules.filter((x) => x !== r);
     draw();
   };
-  const add = (r) => {
+  const addRule = (r) => {
     if (!stage({ op: "forward-add", ...body(r) }, `${t("Forward", "轉發")} ${r.proto} ${r.extPort} → ${r.ip}:${r.intPort}`)) return false;
     rules.push({ ...r, index: rules.length, pending: true });
     draw();
@@ -107,11 +114,11 @@ async function screen(ctx) {
     const bad = conflictedRules(conflicts);
     const rows = laneRows(data.devices, rules);
     const fwEntry = entry("firewall-pro.services.rules");
-    ctx.clear(head).append(
+    fill(head, 
       toggle("fw.forwarding", t("Port forwarding", "端口轉發"), data.forwarding.enabled),
       data.firewall.present ? toggle("firewall-pro.services.enable", t("Service rules", "服務規則"), data.firewall.enabled) : null,
       h("button", { type: "button", class: "btn f sm", disabled: !canWrite || rules.length >= 64, onClick: () => newRule() }, icon("add", "sm"), t("New rule", "新增規則")));
-    ctx.clear(banner).append(...conflicts.map((c) => h("div", { class: "note warn" }, icon("warning"), c.kind === "forward-forward"
+    fill(banner, ...conflicts.map((c) => h("div", { class: "note warn" }, icon("warning"), c.kind === "forward-forward"
       ? t(`Rules #${c.a + 1} and #${c.b + 1} both take port ${rules[c.a].extPort} from the internet. Only one can win.`, `規則 #${c.a + 1} 同 #${c.b + 1} 都要攞外面嘅 ${rules[c.a].extPort} 端口，只有一條會生效。`)
       : t(`Rule #${c.rule + 1} uses port ${rules[c.rule].extPort}, which the router itself offers to the internet (${tt(data.services.find((s) => s.id === c.service).name)}).`, `規則 #${c.rule + 1} 用 ${rules[c.rule].extPort} 端口，但路由器自己都開放呢個端口俾互聯網（${tt(data.services.find((s) => s.id === c.service).name)}）。`))),
       ...rules.flatMap((r, i) => problemsOf(r, data.devices).includes("unknown-device") ? [h("div", { class: "note" }, icon("help"), t(`Rule #${i + 1} points at ${r.ip}, which no known device uses right now.`, `規則 #${i + 1} 指向 ${r.ip}，而家冇已知裝置用呢個地址。`))] : []));
@@ -125,7 +132,7 @@ async function screen(ctx) {
     const devicesLane = h("section", { class: "rc-lane" }, h("h2", { class: "h2" }, icon("devices"), t("Devices", "裝置")), h("div", { class: "t2" }, t("Drop a rule card on a device to point it there", "將規則卡放喺裝置上就改咗目標")),
       rows.map((row) => h("div", { class: `rc-device${row.known ? "" : " unknown"}`, "data-ip": row.ip }, h("div", { class: "rc-devhead" }, icon(row.known ? "devices_other" : "help", "sm"), h("b", {}, row.name), h("span", { class: "t2 mono" }, row.ip)),
         rules.map((r, i) => (r.ip === row.ip ? deviceCard(r, i, bad, rows) : null)))));
-    ctx.clear(lanes).append(internet, router, devicesLane);
+    fill(lanes, internet, router, devicesLane);
   }
 
   function toggle(id, text, on) {
@@ -151,7 +158,7 @@ async function screen(ctx) {
       const src = h("input", { class: "field", maxlength: "15", placeholder: t("anyone", "任何人"), "aria-label": t("Only from this address", "只限呢個地址") });
       let proto = "TCP";
       const seg = h("div", { class: "seg", role: "radiogroup", "aria-label": t("Protocol", "協定") });
-      const drawSeg = () => ctx.clear(seg).append(...PROTOS.map((p) => h("button", { type: "button", role: "radio", class: p === proto ? "on" : "", "aria-checked": String(p === proto), onClick: () => { proto = p; drawSeg(); } }, p === "BOTH" ? t("TCP + UDP", "TCP 加 UDP") : p)));
+      const drawSeg = () => fill(seg, ...PROTOS.map((p) => h("button", { type: "button", role: "radio", class: p === proto ? "on" : "", "aria-checked": String(p === proto), onClick: () => { proto = p; drawSeg(); } }, p === "BOTH" ? t("TCP + UDP", "TCP 加 UDP") : p)));
       drawSeg();
       const error = h("div", { class: "note bad", hidden: true, role: "alert" });
       const fail = (en, yue) => { error.hidden = false; error.textContent = t(en, yue); };
@@ -164,7 +171,7 @@ async function screen(ctx) {
           if (!device.value) return fail("There is no device to send it to yet.", "暫時未有裝置可以送去。");
           if (!extRange || !intRange) return fail("Use ports from 1 to 65535, or a range such as 8000:8010.", "請用 1 至 65535 嘅端口，或者好似 8000:8010 嘅範圍。");
           if (src.value.trim() && !IPV4.test(src.value.trim())) return fail("The source address must be an IPv4 address, or empty for anyone.", "來源地址要係 IPv4 地址，留空即係任何人。");
-          if (add({ name: name.value.trim(), extPort: portText(extRange), ip: device.value, intPort: portText(intRange), proto, srcIp: src.value.trim() })) close(true);
+          if (addRule({ name: name.value.trim(), extPort: portText(extRange), ip: device.value, intPort: portText(intRange), proto, srcIp: src.value.trim() })) close(true);
         } }, icon("add", "sm"), t("Add to pending changes", "加入待套用變更")))];
       }, { label: t("New forwarding rule", "新增轉發規則") });
   }
@@ -175,7 +182,7 @@ async function screen(ctx) {
       const src = h("input", { class: "field", maxlength: "15", "aria-label": t("From address (optional)", "來源地址（可選）"), placeholder: t("any device", "任何裝置") });
       let proto = "TCP";
       const seg = h("div", { class: "seg", role: "radiogroup", "aria-label": t("Protocol", "協定") });
-      const drawSeg = () => ctx.clear(seg).append(...["TCP", "UDP"].map((p) => h("button", { type: "button", role: "radio", class: p === proto ? "on" : "", "aria-checked": String(p === proto), onClick: () => { proto = p; drawSeg(); } }, p)));
+      const drawSeg = () => fill(seg, ...["TCP", "UDP"].map((p) => h("button", { type: "button", role: "radio", class: p === proto ? "on" : "", "aria-checked": String(p === proto), onClick: () => { proto = p; drawSeg(); } }, p)));
       drawSeg();
       const error = h("div", { class: "note bad", hidden: true, role: "alert" });
       return [h("h2", { class: "h2" }, t("New service rule", "新增服務規則")), field(t("To port", "目的端口"), dst), field(t("Protocol", "協定"), seg), field(t("From address (optional)", "來源地址（可選）"), src), error,
@@ -189,7 +196,7 @@ async function screen(ctx) {
     }, { label: t("New service rule", "新增服務規則") });
   }
 
-  page.append(h("section", { class: "card rise" }, head, banner), lanes);
+  add(page, h("section", { class: "card rise" }, head, banner), lanes);
   draw();
 
   const refresh = async () => {

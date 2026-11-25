@@ -5,6 +5,13 @@
 // waits in the pending-changes dock, so it is previewed, guarded and undoable.
 import { axisRange, crowding, curvePath, halfSpan, nearestChannel, nearestWidth, stepChannel, stepWidth, widthChoices } from "./model.js";
 
+// Appends children, skipping empty ones and flattening lists. (The native append would print "null" for a gap.)
+function add(el, ...kids) {
+  for (const kid of kids.flat(Infinity)) if (kid !== null && kid !== undefined && kid !== false) el.append(kid instanceof Node ? kid : document.createTextNode(String(kid)));
+  return el;
+}
+const fill = (el, ...kids) => (el.replaceChildren(), add(el, ...kids));
+
 const label = { en: "Spectrum editor", yue: "頻譜編輯器" };
 const lede = { en: "Scan the air, then drag your own curve to a quieter channel. Drag its edges to change the width.", yue: "掃描一下空氣，再將你自己嗰條曲線拖去較靜嘅頻道。拖曲線兩邊就可以改闊度。" };
 const NS = "http://www.w3.org/2000/svg";
@@ -164,11 +171,11 @@ async function screen(ctx) {
 
   function draw() {
     const b = info.bands.find((x) => x.index === current);
-    ctx.clear(tabs).append(...info.bands.map((x) => h("button", { type: "button", role: "radio", "aria-checked": String(x.index === current), class: x.index === current ? "on" : "", onClick() { current = x.index; draw(); } }, `${x.band} GHz`)));
+    fill(tabs, ...info.bands.map((x) => h("button", { type: "button", role: "radio", "aria-checked": String(x.index === current), class: x.index === current ? "on" : "", onClick() { current = x.index; draw(); } }, `${x.band} GHz`)));
     const scanData = scans.get(current);
     const channelEntry = entryOf(`wl${current}.channel`);
     const widthEntry = entryOf(`wl${current}.width`);
-    ctx.clear(body).append(
+    fill(body, 
       h("div", { class: "chips" },
         h("button", { type: "button", class: "btn f", disabled: scanning || !b?.radio, onClick: scan }, icon(scanning ? "hourglass_top" : "wifi_find", "sm"), scanning ? t("Listening…", "聆聽緊…") : t("Scan this band", "掃描呢個頻段")),
         h("button", { type: "button", class: `chip${live ? " on" : ""}`, role: "switch", "aria-checked": String(live), onClick() { live = !live; clearInterval(timer); if (live) timer = setInterval(() => !scanning && !document.hidden && scan(), RESCAN_MS); draw(); } }, icon(live ? "sync" : "sync_disabled", "sm"), live ? t("Rescanning every 30 seconds", "每 30 秒重新掃描") : t("Rescan every 30 seconds", "每 30 秒重新掃描")),
@@ -192,7 +199,7 @@ async function screen(ctx) {
       staged ? h("div", { class: "note" }, icon("pending"), t("The new channel is waiting in your pending changes. Changing it can drop Wi-Fi for a moment, so the safety net is armed.", "新頻道喺待套用變更入面。轉頻道可能令 Wi-Fi 斷一陣，所以會開啟安全機制。")) : null);
   }
 
-  page.append(h("section", { class: "card rise" }, tabs, body, announce));
+  add(page, h("section", { class: "card rise" }, tabs, body, announce));
   draw();
   return () => clearInterval(timer);
 }

@@ -5,6 +5,13 @@
 import { draggable } from "./drag.js";
 import { canDropOn, isTarget, laneOf, readRules, route, writeRules } from "./model.js";
 
+// Appends children, skipping empty ones and flattening lists. (The native append would print "null" for a gap.)
+function add(el, ...kids) {
+  for (const kid of kids.flat(Infinity)) if (kid !== null && kid !== undefined && kid !== false) el.append(kid instanceof Node ? kid : document.createTextNode(String(kid)));
+  return el;
+}
+const fill = (el, ...kids) => (el.replaceChildren(), add(el, ...kids));
+
 const label = { en: "VPN Director canvas", yue: "VPN Director 畫布" };
 const lede = { en: "Choose which way out each device uses: the internet directly, or one of your VPN tunnels.", yue: "揀每部裝置用邊條出路：直接上網，定係你其中一條 VPN 隧道。" };
 const REFRESH_MS = 15000;
@@ -34,7 +41,7 @@ async function screen(ctx) {
   // ---- when the screen cannot be used ----
   const disabled = !data.merlin ? entry()?.disabled : !data.present ? { en: `This router does not have the setting ${data.missing.join(" or ")}.`, yue: `呢部路由器冇 ${data.missing.join(" 或者 ")} 呢個設定。` } : null;
   if (disabled || !entry()) {
-    page.append(h("section", { class: "card rise" }, h("div", { class: "empty" }, icon("alt_route", "lg"), disabled ? tt(disabled) : t("This router has no VPN Director.", "呢部路由器冇 VPN Director。"))));
+    add(page, h("section", { class: "card rise" }, h("div", { class: "empty" }, icon("alt_route", "lg"), disabled ? tt(disabled) : t("This router has no VPN Director.", "呢部路由器冇 VPN Director。"))));
     return;
   }
 
@@ -76,10 +83,10 @@ async function screen(ctx) {
     const all = rules();
     const sw = switchEntry();
     const on = sw ? (ctx.dock.has(sw.id) ? ctx.dock.value(sw.id) : sw.value) === sw.values.on : data.enabled;
-    ctx.clear(head).append(sw ? h("button", { type: "button", class: `chip${on ? " on" : ""}`, role: "switch", "aria-checked": String(on), disabled: !canWrite || Boolean(sw.disabled), onClick() { ctx.dock.setEntry(sw, on ? sw.values.off : sw.values.on); draw(); } }, icon(on ? "toggle_on" : "toggle_off", "sm"), on ? t("VPN Director is on", "VPN Director 已開") : t("VPN Director is off: the rules below do nothing yet", "VPN Director 已關：下面嘅規則暫時冇作用")) : null,
+    fill(head, sw ? h("button", { type: "button", class: `chip${on ? " on" : ""}`, role: "switch", "aria-checked": String(on), disabled: !canWrite || Boolean(sw.disabled), onClick() { ctx.dock.setEntry(sw, on ? sw.values.off : sw.values.on); draw(); } }, icon(on ? "toggle_on" : "toggle_off", "sm"), on ? t("VPN Director is on", "VPN Director 已開") : t("VPN Director is off: the rules below do nothing yet", "VPN Director 已關：下面嘅規則暫時冇作用")) : null,
       h("button", { type: "button", class: "btn t sm", disabled: !canWrite, onClick: addDestination }, icon("add_road", "sm"), t("Rule for one destination", "只針對一個目的地嘅規則")));
     const unrouted = devices.filter((d) => laneOf(all, d.ip) === "");
-    ctx.clear(lanes).append(
+    fill(lanes, 
       h("section", { class: "vd-lane tray", "data-iface": "", "aria-label": t("Devices without a rule", "冇規則嘅裝置") }, h("div", { class: "vd-lanehead" }, icon("devices"), h("b", {}, t("No rule", "冇規則")), h("span", { class: "t2" }, t("They use the router's default route", "用路由器預設路線"))), unrouted.map((d) => deviceChip(d, "")), unrouted.length ? null : h("div", { class: "vd-none" }, t("Every device has a rule.", "每部裝置都有規則。"))),
       data.tunnels.map((x) => laneBox(x, all)));
   }
@@ -102,7 +109,7 @@ async function screen(ctx) {
     }, { label: t("Rule for one destination", "只針對一個目的地嘅規則") });
   }
 
-  page.append(h("section", { class: "card rise" }, head), lanes);
+  add(page, h("section", { class: "card rise" }, head), lanes);
   draw();
 
   const refresh = async () => {

@@ -34,9 +34,9 @@ export function stepIp(cells, ip, steps) {
 // Keep an address for a device: it moves onto a free cell and its old cell becomes free.
 export function reserveAt(cells, mac, ip, name) {
   const target = cells.find((c) => c.ip === ip);
-  if (!target || target.kind !== "free") return cells;
+  if (!target || (target.kind !== "free" && target.mac !== mac)) return cells;
   return cells.map((c) => {
-    if (c.ip === ip) return { ...c, kind: "reserved", mac, name, leased: false, pending: true };
+    if (c.ip === ip) return { ...c, kind: "reserved", mac, name, leased: c.kind === "leased", pending: true };
     if (c.mac === mac) return { ip: c.ip, n: c.n, inPool: c.inPool, kind: "free" };
     return c;
   });

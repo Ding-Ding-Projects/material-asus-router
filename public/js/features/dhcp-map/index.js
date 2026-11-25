@@ -6,6 +6,13 @@
 import { draggable } from "./drag.js";
 import { applyPool, ipNumber, leaseLeft, movePool, releaseAt, reserveAt, rowsOf, stepIp, warnings } from "./model.js";
 
+// Appends children, skipping empty ones and flattening lists. (The native append would print "null" for a gap.)
+function add(el, ...kids) {
+  for (const kid of kids.flat(Infinity)) if (kid !== null && kid !== undefined && kid !== false) el.append(kid instanceof Node ? kid : document.createTextNode(String(kid)));
+  return el;
+}
+const fill = (el, ...kids) => (el.replaceChildren(), add(el, ...kids));
+
 const label = { en: "DHCP address map", yue: "DHCP 地址地圖" };
 const lede = { en: "Every address of your home network. Drag the pool's ends to resize it, or drag a device onto a free address to keep it.", yue: "屋企網絡嘅每個地址。拖動地址池兩端就可以改大細，將裝置拖去空閒地址就可以留住佢。" };
 const COLUMNS = 16;
@@ -43,7 +50,7 @@ async function screen(ctx) {
   function keep(cell, ip) {
     if (!guard()) return;
     const target = cellOf(ip);
-    if (!target || target.kind !== "free") return ctx.toast(t("That address is not free.", "嗰個地址唔係空閒。"), "warn");
+    if (!target || (target.kind !== "free" && target.mac !== cell.mac)) return ctx.toast(t("That address is not free.", "嗰個地址唔係空閒。"), "warn");
     ctx.dock.addOp({ op: "reserve", mac: cell.mac, ip, hostname: cell.name ?? "" }, `${t("Keep", "留住")} ${ip} ${t("for", "俾")} ${cell.name || cell.mac}`);
     cells = reserveAt(cells, cell.mac, ip, cell.name);
     selected = ip;
@@ -75,13 +82,13 @@ async function screen(ctx) {
   function drawPanel() {
     ctx.clear(panel);
     const c = selected ? cellOf(selected) : null;
-    if (!c) return void panel.append(h("div", { class: "empty" }, icon("touch_app", "lg"), t("Pick an address on the map.", "喺地圖揀一個地址。")));
+    if (!c) return void add(panel, h("div", { class: "empty" }, icon("touch_app", "lg"), t("Pick an address on the map.", "喺地圖揀一個地址。")));
     const free = cells.filter((x) => x.kind === "free" && x.n > 0).slice(0, 60);
     const kind = { free: t("Free", "空閒"), leased: t("Leased to a device", "借咗俾裝置"), reserved: t("Kept for a device", "留咗俾裝置"), router: t("The router", "路由器"), edge: "" }[c.kind];
     const left = c.kind === "leased" ? leaseLeft(c.ends, data.now) : null;
     const move = h("select", { class: "field", "aria-label": t("Move to another address", "搬去另一個地址"), disabled: !canWrite }, h("option", { value: "" }, t("Keep at another address…", "留喺另一個地址…")), free.map((x) => h("option", { value: x.ip }, x.ip)));
     move.addEventListener("change", () => move.value && keep(c, move.value));
-    panel.append(h("div", { class: "k" }, c.ip), h("h2", { class: "h2" }, c.name || kind), h("div", { class: "t2" }, `${kind}${c.mac ? ` · ${c.mac}` : ""}${c.inPool ? ` · ${t("in the pool", "喺地址池入面")}` : ""}`),
+    add(panel, h("div", { class: "k" }, c.ip), h("h2", { class: "h2" }, c.name || kind), h("div", { class: "t2" }, `${kind}${c.mac ? ` · ${c.mac}` : ""}${c.inPool ? ` · ${t("in the pool", "喺地址池入面")}` : ""}`),
       left ? h("div", { class: "t2" }, t(`The lease ends in ${left.hours} h ${left.minutes} min.`, `租約仲有 ${left.hours} 小時 ${left.minutes} 分鐘。`)) : null,
       c.kind === "leased" ? h("button", { type: "button", class: "btn t sm", disabled: !canWrite, onClick: () => keep(c, c.ip) }, icon("push_pin", "sm"), t("Keep this address", "留住呢個地址")) : null,
       c.kind === "reserved" ? h("button", { type: "button", class: "btn o sm", disabled: !canWrite, onClick: () => release(c) }, icon("link_off", "sm"), t("Release this address", "放開呢個地址")) : null,
@@ -110,20 +117,20 @@ async function screen(ctx) {
     cells = applyPool(cells, state.start, state.end);
     const count = (k) => cells.filter((c) => c.kind === k).length;
     const poolSize = Math.max(0, ipNumber(state.end) - ipNumber(state.start) + 1);
-    ctx.clear(summary).append(h("span", { class: "tag" }, icon("router", "sm"), `${t("Router", "路由器")} 1`), h("span", { class: "tag good" }, icon("push_pin", "sm"), `${t("Kept", "留住")} ${count("reserved")}`), h("span", { class: "tag" }, icon("devices", "sm"), `${t("Leased", "借出")} ${count("leased")}`), h("span", { class: "tag" }, icon("check_box_outline_blank", "sm"), `${t("Free", "空閒")} ${count("free")}`), h("span", { class: "tag warn" }, icon("grid_view", "sm"), `${t("Pool", "地址池")} ${poolSize}`));
-    ctx.clear(poolBar).append(stepper("start", t("First address", "第一個地址")), stepper("end", t("Last address", "最後一個地址")));
+    fill(summary, h("span", { class: "tag" }, icon("router", "sm"), `${t("Router", "路由器")} 1`), h("span", { class: "tag good" }, icon("push_pin", "sm"), `${t("Kept", "留住")} ${count("reserved")}`), h("span", { class: "tag" }, icon("devices", "sm"), `${t("Leased", "借出")} ${count("leased")}`), h("span", { class: "tag" }, icon("check_box_outline_blank", "sm"), `${t("Free", "空閒")} ${count("free")}`), h("span", { class: "tag warn" }, icon("grid_view", "sm"), `${t("Pool", "地址池")} ${poolSize}`));
+    fill(poolBar, stepper("start", t("First address", "第一個地址")), stepper("end", t("Last address", "最後一個地址")));
     const notes = warnings(cells, state);
-    ctx.clear(warn).append(...notes.map((w) => h("div", { class: "note warn" }, icon("warning"), {
+    fill(warn, ...notes.map((w) => h("div", { class: "note warn" }, icon("warning"), {
       "empty-pool": t("The last address is before the first, so the router has nothing to hand out.", "最後地址喺第一個地址之前，路由器冇地址可派。"),
       "small-pool": t("The pool has fewer addresses than there are devices holding one now. Some devices will not get an address.", "地址池嘅地址少過而家有地址嘅裝置，部分裝置會攞唔到地址。"),
       "router-in-pool": t("The router's own address is inside the pool. Move the pool's ends so it is outside.", "路由器自己嘅地址喺地址池入面。請移動地址池兩端，令佢喺外面。"),
     }[w])));
-    ctx.clear(grid).append(...rowsOf(cells, COLUMNS).map((row) => h("div", { class: "dm-row", role: "presentation" }, row.map((c) => cellButton(c, state)))));
-    if (!data.block.whole) grid.append(h("div", { class: "t2" }, t(`This network has ${data.block.networkSize} addresses, so the map shows the block of 256 around the router.`, `呢個網絡有 ${data.block.networkSize} 個地址，所以地圖顯示路由器周圍嗰 256 個。`)));
+    fill(grid, ...rowsOf(cells, COLUMNS).map((row) => h("div", { class: "dm-row", role: "presentation" }, row.map((c) => cellButton(c, state)))));
+    if (!data.block.whole) add(grid, h("div", { class: "t2" }, t(`This network has ${data.block.networkSize} addresses, so the map shows the block of 256 around the router.`, `呢個網絡有 ${data.block.networkSize} 個地址，所以地圖顯示路由器周圍嗰 256 個。`)));
     drawPanel();
   }
 
-  page.append(
+  add(page, 
     h("section", { class: "card rise" }, summary, poolBar, warn, grid,
       h("div", { class: "dm-trays" }, h("div", { class: "dm-release", "data-release": "1", role: "note" }, icon("link_off"), t("Drop a kept address here to release it", "將留住咗嘅地址拖到呢度放開"))),
       h("div", { class: "dm-legend t2" }, t("Outlined cells are inside the pool. Numbers are the last part of each address.", "有框嘅格仔喺地址池入面。數字係每個地址嘅最後一組。"))),

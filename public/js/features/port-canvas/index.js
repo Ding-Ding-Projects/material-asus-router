@@ -6,6 +6,13 @@
 import { draggable } from "./drag.js";
 import { LAN_PORTS, assignIptv, partnerOf, portsFor, profileIds, roleOf, togglePair, valueFor, validVlan } from "./model.js";
 
+// Appends children, skipping empty ones and flattening lists. (The native append would print "null" for a gap.)
+function add(el, ...kids) {
+  for (const kid of kids.flat(Infinity)) if (kid !== null && kid !== undefined && kid !== false) el.append(kid instanceof Node ? kid : document.createTextNode(String(kid)));
+  return el;
+}
+const fill = (el, ...kids) => (el.replaceChildren(), add(el, ...kids));
+
 const label = { en: "Ports and VLAN canvas", yue: "接口同 VLAN 畫布" };
 const lede = { en: "The back of your router. Drag the IPTV box onto the port its set-top box is plugged into.", yue: "你部路由器嘅背面。將 IPTV 機頂盒拖去佢插住嗰個接口。" };
 const REFRESH_MS = 15000;
@@ -64,12 +71,12 @@ async function screen(ctx) {
   function drawSide(stb, profile) {
     ctx.clear(side);
     const stbEntry = entry("stb");
-    if (selected === null) return void side.append(h("div", { class: "empty" }, icon("touch_app", "lg"), t("Pick a port on the router.", "喺路由器揀一個接口。")));
-    if (selected === "wan") return void side.append(h("div", { class: "k" }, t("Internet port", "互聯網接口")), h("h2", { class: "h2" }, t("Where your provider plugs in", "供應商插線嘅位置")), h("div", { class: "muted" }, t("This port carries the internet. Its VLAN id (if your provider uses one) is set below.", "呢個接口接互聯網。如果供應商用 VLAN，編號喺下面設定。")));
+    if (selected === null) return void add(side, h("div", { class: "empty" }, icon("touch_app", "lg"), t("Pick a port on the router.", "喺路由器揀一個接口。")));
+    if (selected === "wan") return void add(side, h("div", { class: "k" }, t("Internet port", "互聯網接口")), h("h2", { class: "h2" }, t("Where your provider plugs in", "供應商插線嘅位置")), h("div", { class: "muted" }, t("This port carries the internet. Its VLAN id (if your provider uses one) is set below.", "呢個接口接互聯網。如果供應商用 VLAN，編號喺下面設定。")));
     const ports = portsFor(stb);
     const partner = partnerOf(selected);
     const iptv = ports.includes(selected);
-    side.append(h("div", { class: "k" }, `LAN ${selected}`), h("h2", { class: "h2" }, iptv ? t("IPTV box", "IPTV 機頂盒") : t("Ordinary devices", "一般裝置")),
+    add(side, h("div", { class: "k" }, `LAN ${selected}`), h("h2", { class: "h2" }, iptv ? t("IPTV box", "IPTV 機頂盒") : t("Ordinary devices", "一般裝置")),
       h("div", { class: "seg", role: "radiogroup", "aria-label": t("Role of this port", "呢個接口嘅用途") },
         h("button", { type: "button", role: "radio", "aria-checked": String(!iptv), class: iptv ? "" : "on", disabled: !canWrite || !stbEntry || Boolean(stbEntry.disabled), onClick: () => stage(stbEntry, valueFor(ports.filter((p) => p !== selected))) }, t("Ordinary devices", "一般裝置")),
         h("button", { type: "button", role: "radio", "aria-checked": String(iptv), class: iptv ? "on" : "", disabled: !canWrite || !stbEntry || Boolean(stbEntry.disabled), onClick: () => stage(stbEntry, assignIptv(stb, selected)) }, t("IPTV box", "IPTV 機頂盒"))),
@@ -85,7 +92,7 @@ async function screen(ctx) {
     const pending = stbEntry && ctx.dock.has(stbEntry.id);
     const chip = h("div", { class: "pc-role", role: "note" }, icon("tv", "sm"), h("span", {}, t("IPTV box", "IPTV 機頂盒")), icon("drag_indicator", "sm"));
     if (canWrite && stbEntry && !stbEntry.disabled) draggable(chip, { zones, enabled: () => canWrite, onDrop: (zone) => zone.dataset.port !== "wan" && stage(stbEntry, assignIptv(stb, Number(zone.dataset.port))) });
-    ctx.clear(panel).append(
+    fill(panel, 
       h("div", { class: "pc-palette" }, h("span", { class: "t2" }, t("Drag onto a port:", "拖去一個接口：")), chip, h("button", { type: "button", class: "btn o sm", disabled: !canWrite || stb === "0" || !stbEntry, onClick: () => stage(stbEntry, "0") }, icon("close", "sm"), t("No IPTV port", "冇 IPTV 接口"))),
       h("div", { class: "pc-back", role: "group", "aria-label": t("Back of the router", "路由器背面") }, socket("wan", 0, stb, pending), h("span", { class: "pc-gap", "aria-hidden": "true" }), LAN_PORTS.map((p) => socket("lan", p, stb, pending))),
       h("div", { class: "pc-profile" },
@@ -98,7 +105,7 @@ async function screen(ctx) {
     drawSide(stb, profile);
   }
 
-  page.append(h("section", { class: "card rise" }, panel), side);
+  add(page, h("section", { class: "card rise" }, panel), side);
   draw();
 
   const refresh = async () => {

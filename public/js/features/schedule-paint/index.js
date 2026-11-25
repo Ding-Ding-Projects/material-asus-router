@@ -7,6 +7,13 @@ import {
   COLUMN_KEYS, DAYS, ENTRY_IDS, MAX_WIFI_SLOTS, PRESETS, cloneGrid, countOn, gridToSchedule, gridToSlots, moveFocus, paint, readDevices, scheduleToGrid, slotsToGrid, toggleDay, toggleHour, writeDevices,
 } from "./model.js";
 
+// Appends children, skipping empty ones and flattening lists. (The native append would print "null" for a gap.)
+function add(el, ...kids) {
+  for (const kid of kids.flat(Infinity)) if (kid !== null && kid !== undefined && kid !== false) el.append(kid instanceof Node ? kid : document.createTextNode(String(kid)));
+  return el;
+}
+const fill = (el, ...kids) => (el.replaceChildren(), add(el, ...kids));
+
 const label = { en: "Schedule painter", yue: "時間表畫板" };
 const lede = { en: "Paint the hours you want. Drag across the grid, or use the arrow keys and Space.", yue: "畫出你想要嘅時段。喺格仔上面拖過去，或者用方向鍵同空白鍵。" };
 const REFRESH_MS = 12000;
@@ -32,12 +39,12 @@ function paintGrid(ctx, { grid, locked, dim, change, name }) {
   };
   const commit = () => change(cloneGrid(current));
 
-  root.append(h("span", { class: "sp-corner" }));
+  add(root, h("span", { class: "sp-corner" }));
   for (let hr = 0; hr < 24; hr += 1)
-    root.append(h("button", { type: "button", class: "sp-hour", disabled: locked, tabindex: "-1", "aria-label": `${t("Toggle", "切換")} ${String(hr).padStart(2, "0")}:00`, onClick() { current = toggleHour(current, hr); sync(); commit(); } }, hr % 3 === 0 ? String(hr).padStart(2, "0") : ""));
+    add(root, h("button", { type: "button", class: "sp-hour", disabled: locked, tabindex: "-1", "aria-label": `${t("Toggle", "切換")} ${String(hr).padStart(2, "0")}:00`, onClick() { current = toggleHour(current, hr); sync(); commit(); } }, hr % 3 === 0 ? String(hr).padStart(2, "0") : ""));
   DAYS.forEach((day, d) => {
     cells[d] = [];
-    root.append(h("button", { type: "button", class: "sp-day", disabled: locked, tabindex: "-1", "aria-label": `${t("Toggle every", "切換整個")} ${t(...day)}`, onClick() { current = toggleDay(current, d); sync(); commit(); } }, t(...day)));
+    add(root, h("button", { type: "button", class: "sp-day", disabled: locked, tabindex: "-1", "aria-label": `${t("Toggle every", "切換整個")} ${t(...day)}`, onClick() { current = toggleDay(current, d); sync(); commit(); } }, t(...day)));
     for (let hr = 0; hr < 24; hr += 1) {
       const cell = h("button", { type: "button", class: "sp-cell", "data-d": String(d), "data-h": String(hr), disabled: locked,
         onPointerdown(e) {
@@ -66,7 +73,7 @@ function paintGrid(ctx, { grid, locked, dim, change, name }) {
           }
         } }, "");
       cells[d].push(cell);
-      root.append(cell);
+      add(root, cell);
     }
   });
   root.addEventListener("pointermove", (e) => {
@@ -186,12 +193,12 @@ async function screen(ctx) {
   }
 
   function drawTabs() {
-    ctx.clear(tabs).append(...[["parental", "Time limits for devices", "裝置時間限制"], ["wifi", "When Wi-Fi is on", "Wi-Fi 開啟時段"]].map(([id, en, yue]) => h("button", { type: "button", role: "radio", "aria-checked": String(tab === id), class: tab === id ? "on" : "", onClick() { tab = id; drawTabs(); drawBody(); } }, t(en, yue))));
+    fill(tabs, ...[["parental", "Time limits for devices", "裝置時間限制"], ["wifi", "When Wi-Fi is on", "Wi-Fi 開啟時段"]].map(([id, en, yue]) => h("button", { type: "button", role: "radio", "aria-checked": String(tab === id), class: tab === id ? "on" : "", onClick() { tab = id; drawTabs(); drawBody(); } }, t(en, yue))));
   }
   function drawBody() {
-    ctx.clear(body).append(tab === "parental" ? parentalView() : wifiView());
+    fill(body, tab === "parental" ? parentalView() : wifiView());
   }
-  page.append(h("section", { class: "card rise" }, tabs, body));
+  add(page, h("section", { class: "card rise" }, tabs, body));
   drawTabs();
   drawBody();
 

@@ -4,6 +4,13 @@
 import { draggable } from "./drag.js";
 import { PRIORITIES, formatOrder, lanes, moveGroup, parseOrder, readLimits, readRules, setPriority, share, speedText, writeLimits, writeRules } from "./model.js";
 
+// Appends children, skipping empty ones and flattening lists. (The native append would print "null" for a gap.)
+function add(el, ...kids) {
+  for (const kid of kids.flat(Infinity)) if (kid !== null && kid !== undefined && kid !== false) el.append(kid instanceof Node ? kid : document.createTextNode(String(kid)));
+  return el;
+}
+const fill = (el, ...kids) => (el.replaceChildren(), add(el, ...kids));
+
 const label = { en: "Priority board", yue: "優先次序板" };
 const lede = { en: "Drag what matters most to the top. When the line is busy, the top is served first.", yue: "將最重要嘅拖到最頂。線路繁忙嘅時候，最頂嘅最先處理。" };
 const REFRESH_MS = 12000;
@@ -104,8 +111,8 @@ async function screen(ctx) {
     };
     const nameOf = (ip) => names.get(ip) ?? ip;
     const free = known.filter((k) => !limits.some((l) => l.device === k.ip));
-    const add = h("select", { class: "field", "aria-label": t("Limit another device", "限制另一部裝置"), disabled: !canWrite || !free.length || limits.length >= e.maxItems }, h("option", { value: "" }, t("Limit a device…", "限制一部裝置…")), free.map((k) => h("option", { value: k.ip }, `${k.name} · ${k.ip}`)));
-    add.addEventListener("change", () => add.value && save([...limits, { index: limits.length, on: true, device: add.value, down: Math.round((line.down || 20000) / 2), up: Math.round((line.up || 10000) / 2) }]));
+    const addPick = h("select", { class: "field", "aria-label": t("Limit another device", "限制另一部裝置"), disabled: !canWrite || !free.length || limits.length >= e.maxItems }, h("option", { value: "" }, t("Limit a device…", "限制一部裝置…")), free.map((k) => h("option", { value: k.ip }, `${k.name} · ${k.ip}`)));
+    addPick.addEventListener("change", () => addPick.value && save([...limits, { index: limits.length, on: true, device: addPick.value, down: Math.round((line.down || 20000) / 2), up: Math.round((line.up || 10000) / 2) }]));
     const view = h("div", { class: "pb-main" },
       methodNote("limiter", "The bandwidth limiter is not the method in use right now, so these limits have no effect until it is.", "而家用緊嘅唔係頻寬限制，所以呢啲限制要等改用佢先生效。"),
       limits.length ? limits.map((l) => h("div", { class: `pb-limit${l.on ? "" : " off"}` },
@@ -113,19 +120,19 @@ async function screen(ctx) {
           h("button", { type: "button", class: `chip${l.on ? " on" : ""}`, role: "switch", "aria-checked": String(l.on), disabled: !canWrite, onClick: () => replace(l, { on: !l.on }) }, l.on ? t("On", "開") : t("Off", "關")),
           h("button", { type: "button", class: "btn o sm icon", disabled: !canWrite, "aria-label": `${t("Remove the limit for", "移除限制：")} ${nameOf(l.device)}`, onClick: () => save(limits.filter((x) => x.index !== l.index)) }, icon("delete", "sm"))),
         slider(l, "down", t("Download", "下載")), slider(l, "up", t("Upload", "上載")))) : h("div", { class: "empty" }, icon("speed", "lg"), t("No device is limited.", "冇裝置受限制。")),
-      add,
+      addPick,
       line.down || line.up ? h("div", { class: "t2" }, t(`Your line: ${speedText(line.down, "?")} down, ${speedText(line.up, "?")} up.`, `你條線：下載 ${speedText(line.down, "?")}，上載 ${speedText(line.up, "?")}。`)) : h("div", { class: "note warn" }, icon("info"), t("The line speed is not set, so the sliders use a generous top end. Set it under Traffic priority.", "未設定線路速度，所以滑桿用咗一個闊啲嘅上限。請去「流量優先」設定。")));
     return view;
   }
 
   function drawTabs() {
-    ctx.clear(tabs).append(...[["groups", "Adaptive groups", "自適應群組"], ["rules", "Priority lanes", "優先通道"], ["limits", "Device limits", "裝置限制"]].map(([id, en, yue]) => h("button", { type: "button", role: "radio", "aria-checked": String(tab === id), class: tab === id ? "on" : "", onClick() { tab = id; drawTabs(); drawBody(); } }, t(en, yue))));
+    fill(tabs, ...[["groups", "Adaptive groups", "自適應群組"], ["rules", "Priority lanes", "優先通道"], ["limits", "Device limits", "裝置限制"]].map(([id, en, yue]) => h("button", { type: "button", role: "radio", "aria-checked": String(tab === id), class: tab === id ? "on" : "", onClick() { tab = id; drawTabs(); drawBody(); } }, t(en, yue))));
   }
   function drawBody() {
-    ctx.clear(body).append(tab === "groups" ? groupsView() : tab === "rules" ? rulesView() : limitsView());
+    fill(body, tab === "groups" ? groupsView() : tab === "rules" ? rulesView() : limitsView());
     for (const el of body.querySelectorAll("[data-share]")) el.style.setProperty("width", `${el.dataset.share}%`);
   }
-  page.append(h("section", { class: "card rise" }, tabs, body));
+  add(page, h("section", { class: "card rise" }, tabs, body));
   drawTabs();
   drawBody();
 

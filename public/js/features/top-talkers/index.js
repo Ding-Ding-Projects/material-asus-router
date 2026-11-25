@@ -5,6 +5,13 @@
 // in the pending-changes dock like every other change.
 import { METRICS, accumulate, bytesText, rank, rateText, sparkline } from "./model.js";
 
+// Appends children, skipping empty ones and flattening lists. (The native append would print "null" for a gap.)
+function add(el, ...kids) {
+  for (const kid of kids.flat(Infinity)) if (kid !== null && kid !== undefined && kid !== false) el.append(kid instanceof Node ? kid : document.createTextNode(String(kid)));
+  return el;
+}
+const fill = (el, ...kids) => (el.replaceChildren(), add(el, ...kids));
+
 const label = { en: "Top talkers", yue: "邊個用得最多" };
 const lede = { en: "Who is downloading and uploading the most, live.", yue: "邊個下載同上載得最多，即時睇。" };
 const NS = "http://www.w3.org/2000/svg";
@@ -48,15 +55,15 @@ async function screen(ctx) {
   }
 
   function drawTabs() {
-    ctx.clear(tabs).append(...METRICS.map((m) => h("button", { type: "button", role: "radio", "aria-checked": String(metric === m), class: metric === m ? "on" : "", onClick() { metric = m; drawTabs(); draw(); } }, icon(TAB[m].icon, "sm"), tt(TAB[m]))));
+    fill(tabs, ...METRICS.map((m) => h("button", { type: "button", role: "radio", "aria-checked": String(metric === m), class: metric === m ? "on" : "", onClick() { metric = m; drawTabs(); draw(); } }, icon(TAB[m].icon, "sm"), tt(TAB[m]))));
   }
 
   function draw() {
-    if (failure) return void ctx.clear(status).append(h("div", { class: "note bad" }, icon("error"), failure));
-    if (!view) return void ctx.clear(status).append(h("div", { class: "note" }, icon("hourglass_top"), t("Reading the router…", "讀緊路由器…")));
+    if (failure) return void fill(status, h("div", { class: "note bad" }, icon("error"), failure));
+    if (!view) return void fill(status, h("div", { class: "note" }, icon("hourglass_top"), t("Reading the router…", "讀緊路由器…")));
     const rows = rank(view.devices, metric, { hideIdle: settings.hideIdle, top: Math.max(settings.top, 10) });
     const total = view.total;
-    ctx.clear(status).append(
+    fill(status, 
       view.warm ? h("div", { class: "note" }, icon("hourglass_top"), t("Warming up. The first reading only starts the clock; speeds appear after the next one.", "預熱緊。第一次讀取只係開始計時，下一次先會見到速度。")) : null,
       view.accounting === false ? h("div", { class: "note warn" }, icon("info"), t("This router is not counting bytes for each connection, so speeds cannot be worked out. Turn on connection accounting on the router.", "呢部路由器冇計算每條連線嘅位元組，所以計唔到速度。請喺路由器開啟連線計數。")) : null,
       h("div", { class: "chips" },
@@ -64,7 +71,7 @@ async function screen(ctx) {
         h("span", { class: "tag" }, icon("upload", "sm"), `${t("Everyone up", "全部上載")} ${rateText(total.up, unit)}`),
         h("span", { class: "tag" }, icon("devices", "sm"), `${rows.length} ${t("busy", "部繁忙")}`)));
     const top = rows[0]?.value || 1;
-    ctx.clear(list).append(...(rows.length ? rows.map((r) => {
+    fill(list, ...(rows.length ? rows.map((r) => {
       const li = h("li", { class: `tt-row${selected === r.ip ? " sel" : ""}${r.rank === 1 ? " first" : ""}` },
         h("button", { type: "button", class: "tt-pick", "aria-pressed": String(selected === r.ip), onClick() { selected = selected === r.ip ? null : r.ip; draw(); } },
           h("span", { class: "tt-rank" }, String(r.rank)),
@@ -85,7 +92,7 @@ async function screen(ctx) {
     if (!r) return;
     const totals = seen[r.ip] ?? { up: 0, down: 0 };
     const blockable = Boolean(r.mac);
-    detail.append(h("div", { class: "k" }, `#${r.rank}`), h("h2", { class: "h2" }, r.name), h("div", { class: "t2 mono" }, `${r.ip}${r.mac ? ` · ${r.mac}` : ""}`),
+    add(detail, h("div", { class: "k" }, `#${r.rank}`), h("h2", { class: "h2" }, r.name), h("div", { class: "t2 mono" }, `${r.ip}${r.mac ? ` · ${r.mac}` : ""}`),
       h("div", { class: "chips" },
         h("span", { class: "tag good" }, icon("download", "sm"), `${t("Down now", "而家下載")} ${rateText(r.down, unit)}`), h("span", { class: "tag" }, icon("upload", "sm"), `${t("Up now", "而家上載")} ${rateText(r.up, unit)}`),
         h("span", { class: "tag" }, `${r.flows} ${t("connections", "條連線")}`)),
@@ -115,7 +122,7 @@ async function screen(ctx) {
     draw();
   }
 
-  page.append(h("section", { class: "card rise" }, tabs, status, list), detail);
+  add(page, h("section", { class: "card rise" }, tabs, status, list), detail);
   detail.hidden = true;
   drawTabs();
   draw();
