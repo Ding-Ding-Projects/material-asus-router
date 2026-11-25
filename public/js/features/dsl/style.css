@@ -1,0 +1,31 @@
+/* DSL line: gauges and the retrain timeline. */
+.dsl-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.dsl-state { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 999px; font-weight: 650; background: rgba(127, 127, 127, .15); }
+.dsl-state.up { background: rgba(27, 127, 75, .18); }
+.dsl-state.down { background: rgba(190, 40, 40, .18); }
+.dsl-verdict { display: flex; align-items: center; gap: 8px; margin: 10px 0; font-weight: 600; }
+.dsl-verdict.good { color: var(--ok, #1b7f4b); }
+.dsl-verdict.warn { color: var(--warn, #b26a00); }
+.dsl-verdict.bad { color: var(--bad, #b3261e); }
+.dsl-rings { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+.dsl-ring { display: grid; justify-items: center; min-width: 0; }
+.dsl-ring-svg { width: 120px; height: 120px; }
+.dsl-track { stroke: var(--line); stroke-width: 9; }
+.dsl-arc { stroke: var(--primary); stroke-width: 9; stroke-linecap: round; }
+.dsl-arc.good { stroke: var(--ok, #1b7f4b); }
+.dsl-arc.warn { stroke: var(--warn, #b26a00); }
+.dsl-arc.bad { stroke: var(--bad, #b3261e); }
+.dsl-ring-text { text-align: center; overflow-wrap: anywhere; }
+.dsl-rates { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); }
+.dsl-steps { list-style: none; margin: 8px 0; padding: 0; display: grid; gap: 8px; }
+.dsl-step { display: flex; align-items: center; gap: 8px; color: var(--sub); }
+.dsl-step.done { color: var(--ok, #1b7f4b); }
+.dsl-step.active { color: var(--primary); font-weight: 650; }
+@media (prefers-reduced-motion: no-preference) {
+  .dsl-arc { animation: dsl-sweep 900ms cubic-bezier(.2, .9, .25, 1) both; }
+  .dsl-step.active .material-symbols-rounded { animation: dsl-spin 1.2s linear infinite; }
+  .dsl-state.training { animation: dsl-breathe 1.4s ease-in-out infinite; }
+  @keyframes dsl-sweep { from { stroke-dasharray: 0 252; } }
+  @keyframes dsl-spin { to { transform: rotate(360deg); } }
+  @keyframes dsl-breathe { 50% { opacity: .55; } }
+}
