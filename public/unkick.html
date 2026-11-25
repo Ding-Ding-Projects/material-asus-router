@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Unkick</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/style.css">
+<link rel="stylesheet" href="/unkick.css">
+</head>
+<body>
+<main class="center unkick">
+  <section class="card" aria-live="polite">
+    <div class="unkick-icon" aria-hidden="true"></div>
+    <h1 class="disp" id="title">Checking your device...</h1>
+    <p class="lede" id="lede">One moment.</p>
+    <ul class="unkick-list" id="list"></ul>
+    <div class="actions">
+      <button class="btn f" id="lift" type="button" hidden>Unkick me</button>
+      <button class="btn o" id="again" type="button" hidden>Check again</button>
+    </div>
+    <p class="unkick-note" id="note">This page can only lift a pause on the device you are using now. It never shows anyone else's devices.</p>
+  </section>
+</main>
+<script src="/js/unkick.js"></script>
+</body>
+</html>

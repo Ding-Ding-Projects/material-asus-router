@@ -1,0 +1,8 @@
+.unkick .card{max-width:480px;text-align:center}
+.unkick-icon{width:72px;height:72px;margin:4px auto 12px;border-radius:24px;background:var(--primary);mask:radial-gradient(circle at 50% 50%,#000 60%,transparent 61%);animation:unkick-breathe 2.4s ease-in-out infinite}
+.unkick-list{list-style:none;padding:0;margin:12px 0;text-align:left;display:grid;gap:8px}
+.unkick-list li{padding:12px 14px;border-radius:16px;background:var(--surf-high)}
+.unkick-note{font-size:13px;opacity:.75;margin-top:14px}
+.unkick .actions{justify-content:center}
+@keyframes unkick-breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+@media (prefers-reduced-motion:reduce){.unkick-icon{animation:none}}

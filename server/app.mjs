@@ -14,6 +14,7 @@ import { SafetyService } from "./changes/safety.mjs";
 import { DOMAINS, findByKey, validate } from "./router/catalog.mjs";
 import { describeEntry, readDevices, readDomain } from "./router/domains.mjs";
 import { suggestedRouter } from "./features/onboarding-wizard/index.mjs";
+import { selfService as bandwidthSelfService } from "./features/bandwidth-control/index.mjs";
 import { features, featureAction, featureActionNames, featureDomainMeta, mountFeatureRoutes } from "./features/registry.mjs";
 import { MASK, isSecret } from "./router/secrets.mjs";
 import { RouterSession, VAULT_PASSWORD, VAULT_PUBLIC_KEY } from "./router/session.mjs";
@@ -253,6 +254,18 @@ function defineRoutes(app, route) {
   const owner = () => store.read().owner;
 
   route("GET", "/health", () => ({ ok: true, version: VERSION, router: session.connected ? "connected" : session.configured ? "configured" : "none" }), { public: true });
+
+  // Unkick: anyone on the home network may lift a pause or ban on their own device, without an
+  // account. The device is recognised by the address it connects from, so this can only ever
+  // touch the visitor's own device. A custom header keeps other websites from pressing the button.
+  const unkick = async ({ req }, lift) => {
+    if (lift && req.headers["x-unkick"] !== "1") throw bad("Use the Unkick page to lift a pause.", 403);
+    if (!session.configured) return { found: false, reason: "router" };
+    const ctx = await liveContext(app);
+    return bandwidthSelfService({ exec: ctx.exec, ip: req.socket.remoteAddress ?? "", lift });
+  };
+  route("GET", "/api/unkick", (c) => unkick(c, false), { public: true });
+  route("POST", "/api/unkick", (c) => unkick(c, true), { public: true });
 
   route("GET", "/api/session", ({ req }) => {
     const who = sessions.get(req);
