@@ -1,0 +1,27 @@
+/* Top talkers: the three tabs, the champion card and the ranked bars. */
+.tt-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+.tt-tab { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 8px 16px; border: 1px solid var(--line); border-radius: 999px; background: var(--surf); color: inherit; font: inherit; cursor: pointer; }
+.tt-tab.on { background: var(--primary); color: var(--on-primary, #fff); border-color: var(--primary); font-weight: 650; }
+.tt-tab:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
+.tt-panel { display: grid; gap: 12px; min-width: 0; }
+.tt-champ { display: flex; align-items: center; gap: 12px; padding: 14px; border-radius: 18px; background: var(--tone, rgba(127, 127, 127, .12)); overflow-wrap: anywhere; }
+.tt-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.tt-row { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 14px; background: var(--surf); min-width: 0; }
+.tt-row .grow { min-width: 0; overflow-wrap: anywhere; }
+.tt-place { min-width: 28px; text-align: center; font-weight: 700; color: var(--sub); }
+.tt-row[data-place="1"] .tt-place { color: var(--primary); }
+.tt-bar { height: 8px; margin-top: 6px; border-radius: 4px; background: var(--line); overflow: hidden; }
+.tt-fill { display: block; height: 100%; border-radius: 4px; background: var(--primary); }
+.tt-nums { text-align: right; white-space: nowrap; }
+.tt-visit { display: grid; gap: 4px; }
+/* The bar widths in twentieths, because inline styles are not allowed. */
+.tt-fill.w0 { width: 2%; } .tt-fill.w1 { width: 5%; } .tt-fill.w2 { width: 10%; } .tt-fill.w3 { width: 15%; } .tt-fill.w4 { width: 20%; }
+.tt-fill.w5 { width: 25%; } .tt-fill.w6 { width: 30%; } .tt-fill.w7 { width: 35%; } .tt-fill.w8 { width: 40%; } .tt-fill.w9 { width: 45%; }
+.tt-fill.w10 { width: 50%; } .tt-fill.w11 { width: 55%; } .tt-fill.w12 { width: 60%; } .tt-fill.w13 { width: 65%; } .tt-fill.w14 { width: 70%; }
+.tt-fill.w15 { width: 75%; } .tt-fill.w16 { width: 80%; } .tt-fill.w17 { width: 85%; } .tt-fill.w18 { width: 90%; } .tt-fill.w19 { width: 95%; } .tt-fill.w20 { width: 100%; }
+@media (max-width: 480px) { .tt-row { flex-wrap: wrap; } .tt-nums { text-align: left; width: 100%; padding-left: 40px; white-space: normal; } }
+@media (prefers-reduced-motion: no-preference) {
+  .tt-fill { transition: width 600ms cubic-bezier(.2, .9, .25, 1); }
+  .tt-champ .material-symbols-rounded { animation: tt-wobble 1.8s ease-in-out infinite; }
+  @keyframes tt-wobble { 0%, 100% { transform: rotate(-6deg); } 50% { transform: rotate(6deg); } }
+}
