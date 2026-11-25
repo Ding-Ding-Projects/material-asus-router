@@ -18,6 +18,7 @@ Every release of Material Asus Router, newest first. Each change names the full 
 
 - The speed test, DNS benchmark, port checker, device traffic, channel analyser, Wi-Fi QR, Wake-on-LAN and uptime example keep their own preferences in the app and no longer create settings on the router. (7cf23e89c229ab501b27c7aebc5fc9a651cbf8fe)
 - NAT-PMP, 802.11k roaming, the guest device limit, the lights switch and the firmware check follow the names and values the 3006 firmware uses. (d4855154b25a97c638a35d76099d72823fbf936a)
+- Ports screen: live port jacks with link, speed and duplex read from the switch chip, the chip named, port roles, hardware acceleration, jumbo frame size and IPTV multicast settings. Hardware screen: live processor, radio and fan dials, light schedule, RGB colour for gaming models and the button settings. A "who uses the most" tab on Device traffic ranks top downloaders and uploaders. Settings whose names may not exist on every firmware are offered only when the router lists them.
 
 ### Fixed
 

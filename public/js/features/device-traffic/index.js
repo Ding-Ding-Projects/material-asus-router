@@ -2,6 +2,7 @@
 // devices. It reads /api/x/device-traffic/sample every few seconds while the
 // screen is open and stops when it is left.
 import { barChart, lineChart } from "./chart.js";
+import { createLeaders } from "./leaders.js";
 
 const label = { en: "Device traffic", yue: "裝置流量" };
 
@@ -29,10 +30,20 @@ async function screen(ctx) {
   let timer = null;
   let busy = false;
   const body = h("div", {});
+  let tab = "live";
+  try {
+    if (localStorage.getItem("mar.traffic.tab") === "leaders") tab = "leaders";
+  } catch {}
+  const leaders = createLeaders(ctx, { unit: config.unit, speedText, sizeText });
 
   const heads = [["name", t("Device", "裝置")], ["down", t("Download", "下載")], ["up", t("Upload", "上傳")], ["flows", t("Connections", "連線數")], ["totalDown", t("Down total", "累計下載")], ["totalUp", t("Up total", "累計上傳")]];
 
   function draw() {
+    // The "who is uploading or downloading the most" tab keeps its own page and updates it in place.
+    if (tab === "leaders" && view) {
+      if (body.firstChild !== leaders.el) ctx.clear(body).append(leaders.el);
+      return void leaders.update(view);
+    }
     ctx.clear(body);
     if (!view) return void body.append(h("div", { class: "card tone" }, h("div", { class: "empty" }, icon("hourglass_top", "lg"), t("Reading the router…", "讀緊路由器…"))));
     if (view.accounting === false)
@@ -74,7 +85,30 @@ async function screen(ctx) {
   const noteText = () => t(`Updates every ${config.interval} s while this page is open.`, `呢頁開住嗰陣，每 ${config.interval} 秒更新。`);
   const note = h("span", { class: "muted" }, noteText());
   const toggle = h("button", { class: "btn t sm", onClick: () => { paused = !paused; ctx.clear(toggle).append(icon(paused ? "play_arrow" : "pause", "sm"), paused ? t("Resume", "繼續") : t("Pause", "暫停")); if (!paused) poll(); } }, icon("pause", "sm"), t("Pause", "暫停"));
-  page.append(h("div", { class: "chips" }, toggle, note), body, ...ctx.controls.appGroupCards("device-traffic", config.entries, async () => {
+  const tabs = [["live", t("Live table", "即時表格"), "table_rows"], ["leaders", t("Who uses the most", "邊個用最多"), "emoji_events"]];
+  const tabButtons = tabs.map(([id, text, glyph], i) => h("button", {
+    type: "button", role: "tab", id: `dt-tab-${id}`, class: "dt-tab", "aria-selected": String(id === tab), tabindex: id === tab ? "0" : "-1",
+    onClick: () => select(id),
+    onKeydown: (event) => {
+      const next = { ArrowRight: 1, ArrowLeft: -1 }[event.key];
+      if (!next) return;
+      event.preventDefault();
+      const target = tabs[(i + next + tabs.length) % tabs.length][0];
+      select(target);
+      tabButtons.find((b) => b.id === `dt-tab-${target}`).focus();
+    },
+  }, icon(glyph, "sm"), text));
+  function select(id) {
+    tab = id;
+    try { localStorage.setItem("mar.traffic.tab", id); } catch {}
+    tabButtons.forEach((b) => { const on = b.id === `dt-tab-${id}`; b.setAttribute("aria-selected", String(on)); b.tabIndex = on ? 0 : -1; });
+    body.setAttribute("aria-labelledby", `dt-tab-${id}`);
+    ctx.clear(body);
+    draw();
+  }
+  body.setAttribute("role", "tabpanel");
+  body.setAttribute("aria-labelledby", `dt-tab-${tab}`);
+  page.append(h("div", { class: "dt-tabs", role: "tablist", "aria-label": t("Device traffic views", "裝置流量檢視") }, tabButtons), h("div", { class: "chips" }, toggle, note), body, ...ctx.controls.appGroupCards("device-traffic", config.entries, async () => {
     Object.assign(config, await api.get("/api/domain/device-traffic"));
     note.textContent = noteText();
     clearInterval(timer);

@@ -100,3 +100,41 @@ test("device-traffic: the browser helpers sort and format and the module is well
   assert.deepEqual(sortRows(rows, "down", "desc").map((r) => r.ip), ["198.51.100.3", "198.51.100.10", "198.51.100.2"]);
   assert.deepEqual(sortRows(rows, "name", "asc").map((r) => r.name), ["A", "b", "c"]);
 });
+
+// ---- the "who is uploading or downloading the most" tab ----------------------
+import { createLeaders, rank } from "../../public/js/features/device-traffic/leaders.js";
+
+const leadersView = () => ({
+  warm: false,
+  accounting: true,
+  devices: [
+    { ip: "198.51.100.101", mac: "AC:5A:F0:01:02:03", name: "Living room TV", down: 2_500_000, up: 50_000, totalDown: 9e9, totalUp: 1e6 },
+    { ip: "198.51.100.20", mac: "", name: "nas", down: 100_000, up: 800_000, totalDown: 2e6, totalUp: 5e9 },
+    { ip: "198.51.100.103", mac: "", name: "kitchen-speaker", down: 0, up: 0, totalDown: 0, totalUp: 0 },
+  ],
+  history: [
+    { at: 1000, up: 0, down: 0, devices: {} },
+    { at: 3000, up: 0, down: 0, devices: { "198.51.100.101": { up: 10, down: 1000 }, "198.51.100.20": { up: 500, down: 100 } } },
+    { at: 7000, up: 0, down: 0, devices: { "198.51.100.101": { up: 10, down: 3000 }, "198.51.100.20": { up: 600, down: 100 } } },
+  ],
+});
+
+test("device-traffic leaders: each view ranks by its own measure and skips devices that moved nothing", () => {
+  const view = leadersView();
+  const now = rank(view, "down", "now");
+  assert.deepEqual(now.rows.map((r) => r.name), ["Living room TV", "nas"], "the idle speaker is left out");
+  assert.equal(Math.round(now.rows[0].share * 100), 96);
+  assert.deepEqual(rank(view, "up", "now").rows.map((r) => r.name), ["nas", "Living room TV"]);
+  // 2 s at 1000 plus 4 s at 3000 bytes per second.
+  const window = rank(view, "down", "window");
+  assert.equal(window.rows[0].value, 2 * 1000 + 4 * 3000 + 0);
+  assert.equal(window.seconds, 6);
+  assert.deepEqual(rank(view, "up", "total").rows.map((r) => r.name), ["nas", "Living room TV"]);
+  assert.deepEqual(rank({ ...view, history: [] }, "down", "window").rows, [], "no readings yet means an empty list, not a guess");
+  assert.equal(rank({ ...view, devices: Array.from({ length: 14 }, (_, i) => ({ ip: `198.51.100.${100 + i}`, name: `d${i}`, mac: "", down: 1000 + i, up: 0, totalDown: 0, totalUp: 0 })) }, "down", "now").rows.length, 10, "at most ten are listed");
+});
+
+test("device-traffic leaders: the tab module is well formed and the screen has the tab", () => {
+  assert.equal(typeof createLeaders, "function");
+  assert.equal(checkFeatureModule(feature, "device-traffic"), null);
+});

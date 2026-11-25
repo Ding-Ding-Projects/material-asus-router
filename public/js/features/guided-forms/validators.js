@@ -83,6 +83,10 @@ function validateListControl(entry, text) {
       const ok = groups.length <= 8 && groups.every((g) => g && g.every((id) => /^\d{1,2}$/.test(id) && Number(id) <= 63)) && new Set(ids).size === ids.length;
       return ok ? good(text) : bad("Use up to 8 groups joined with <, each a list of category numbers joined with commas, none repeated.", "最多 8 組，用 < 連住，每組係用逗號分隔嘅類別號碼，唔可以重複。");
     }
+    case "rgb": {
+      const m = text.match(/^(\d{1,3}),(\d{1,3}),(\d{1,3})$/);
+      return m && [m[1], m[2], m[3]].every((n) => Number(n) <= 255) ? good([m[1], m[2], m[3]].map(Number).join(",")) : bad("Enter a colour as red,green,blue with each number from 0 to 255, such as 79,91,213.", "用紅,綠,藍輸入顏色，每個數字 0 至 255，例如 79,91,213。");
+    }
     case "ipv6addr":
       return validIpv6(text) ? good(text) : bad("Enter an IPv6 address such as 2001:db8::1.", "輸入 IPv6 地址，例如 2001:db8::1。");
     case "hexpart":

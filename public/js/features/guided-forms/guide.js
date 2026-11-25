@@ -22,6 +22,7 @@ export function exampleValue(entry) {
     case "schedule": return pick(["12345@08:00-17:00", "06@10:00-12:00"]);
     case "chips": { const pool = entry.options ? entry.options.map(([v]) => v) : ["alpha", "beta"]; return pick([pool.slice(0, 1).join(entry.delimiter ?? ","), pool.slice(0, 2).join(entry.delimiter ?? ",")]); }
     case "color": return pick(["#3366cc", "#cc6633"]);
+    case "rgb": return pick(["0,128,255", "255,64,0"]);
     case "file": return pick(entry.encoding === "base64" ? ["c2FtcGxlLWE=", "c2FtcGxlLWI="] : ["sample-a", "sample-b"]);
     case "password": return "sample-pass-1234".padEnd(entry.minLength ?? 0, "x").slice(0, entry.maxLength ?? 256);
     default: return "Sample".padEnd(entry.minLength ?? 0, "x").slice(0, entry.maxLength ?? 256);
