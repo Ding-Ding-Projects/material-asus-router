@@ -2,7 +2,7 @@
 // (wl scanresults), charts the neighbouring networks by channel and recommends
 // the quietest channel the router's own channel setting offers. Choosing it
 // goes through the change engine like any other edit.
-import { L, ON_OFF, quote } from "../kit.mjs";
+import { L, ON_OFF, appPrefs, quote } from "../kit.mjs";
 import { bandOf, parseScan, recommend, summarise } from "./parse.mjs";
 
 const IFNAME = /^[a-z]{2,5}\d{1,2}$/;
@@ -30,41 +30,45 @@ async function scan(ctx, bandIndex, { wait }) {
   return { b, networks: parseScan(out.stdout), own };
 }
 
+// What the scan counts is a preference of this app: it is saved by the app and never written to the router.
+const g = { domain: "channel-analyser", group: "scan", groupLabel: L("Scanning", "掃描"), risk: "low" };
+const prefs = appPrefs("channel-analyser", [
+  { ...g, id: "channel-analyser.min-rssi", key: "min_rssi", default: "-85", control: "slider", min: -95, max: -50, step: 5, unit: " dBm",
+    label: L("Ignore networks weaker than", "忽略比呢個更弱嘅網絡"), help: L("Very faint networks barely disturb you. Lower values count more neighbours.", "好弱嘅網絡幾乎唔影響你。數值愈低，計入愈多鄰居。") },
+  { ...g, id: "channel-analyser.hidden", key: "hidden", default: "1", control: "switch", values: ON_OFF,
+    label: L("Count hidden networks", "計入隱藏網絡"), help: L("Hidden networks still use the air, so they count by default.", "隱藏嘅網絡一樣佔用頻道，所以預設會計入。") },
+  { ...g, id: "channel-analyser.wait", key: "wait", default: "3", control: "stepper", min: 2, max: 10, unit: "s",
+    label: L("Wait for the scan", "等掃描嘅時間"), help: L("How long the radio listens before the results are read. Longer finds more networks.", "電台聽幾耐先讀結果。耐啲會搵到多啲網絡。") },
+]);
+
 export default {
   id: "channel-analyser",
 
-  catalog: () => {
-    const g = { domain: "channel-analyser", group: "scan", groupLabel: L("Scanning", "掃描"), risk: "low" };
-    return [
-      { ...g, id: "channel-analyser.min-rssi", key: "mar_chan_min_rssi", control: "slider", min: -95, max: -50, step: 5, unit: " dBm",
-        label: L("Ignore networks weaker than", "忽略比呢個更弱嘅網絡"), help: L("Very faint networks barely disturb you. Lower values count more neighbours.", "好弱嘅網絡幾乎唔影響你。數值愈低，計入愈多鄰居。") },
-      { ...g, id: "channel-analyser.hidden", key: "mar_chan_hidden", control: "switch", values: ON_OFF,
-        label: L("Count hidden networks", "計入隱藏網絡"), help: L("Hidden networks still use the air, so they count by default.", "隱藏嘅網絡一樣佔用頻道，所以預設會計入。") },
-      { ...g, id: "channel-analyser.wait", key: "mar_chan_wait", control: "stepper", min: 2, max: 10, unit: "s",
-        label: L("Wait for the scan", "等掃描嘅時間"), help: L("How long the radio listens before the results are read. Longer finds more networks.", "電台聽幾耐先讀結果。耐啲會搵到多啲網絡。") },
-    ];
-  },
-
   domainMeta: [{ id: "channel-analyser", icon: "wifi_find", label: L("Channel analyser", "頻道分析"), group: { en: "Network", yue: "網絡" } }],
   domains: {
-    "channel-analyser": async (ctx) => ({
-      bands: bandsOf(ctx.nvram, ctx.info),
-      minRssi: Number(ctx.nvram.get("mar_chan_min_rssi") ?? -85),
-      hidden: (ctx.nvram.get("mar_chan_hidden") ?? "1") === "1",
-      waitSeconds: Number(ctx.nvram.get("mar_chan_wait") ?? 3),
-      entries: ctx.entries(),
-    }),
+    "channel-analyser": async (ctx) => {
+      const saved = await prefs.read();
+      return {
+        bands: bandsOf(ctx.nvram, ctx.info),
+        minRssi: Number(saved.get("min_rssi")),
+        hidden: saved.get("hidden") === "1",
+        waitSeconds: Number(saved.get("wait")),
+        entries: prefs.entries(saved),
+      };
+    },
   },
 
   routes(api) {
+    prefs.routes(api);
     // GET /scan?band=0 : scans one band and returns the networks, the chart rows and a recommendation.
     api.get("/scan", async ({ live, query, bad }) => {
       const ctx = await live();
       const index = Number(query.band ?? 0);
       if (!Number.isInteger(index) || index < 0) throw bad("Choose a band.");
-      const minRssi = Number(ctx.nvram.get("mar_chan_min_rssi") ?? -85);
-      const hidden = (ctx.nvram.get("mar_chan_hidden") ?? "1") === "1";
-      const wait = query.wait !== undefined ? Math.min(10000, Math.max(0, Number(query.wait) || 0)) : Number(ctx.nvram.get("mar_chan_wait") ?? 3) * 1000;
+      const saved = await prefs.read();
+      const minRssi = Number(saved.get("min_rssi"));
+      const hidden = saved.get("hidden") === "1";
+      const wait = query.wait !== undefined ? Math.min(10000, Math.max(0, Number(query.wait) || 0)) : Number(saved.get("wait")) * 1000;
       const { b, networks: all, own } = await scan(ctx, index, { wait });
       const networks = all.filter((n) => n.rssi >= minRssi && (hidden || n.ssid));
       const entry = ctx.catalog.find((e) => e.id === `wl${index}.channel`);
@@ -84,17 +88,16 @@ export default {
   },
 
   fakeRouter: {
-    nvram: { mar_chan_min_rssi: "-85", mar_chan_hidden: "1", mar_chan_wait: "3" },
     handlers: [
       (command, router) => {
         let m;
-        if ((m = command.match(/^wl -i '?(eth\d)'? scan$/))) return {};
-        if ((m = command.match(/^wl -i '?(eth\d)'? chanspec$/))) return { stdout: m[1] === "eth6" ? `${router.nvram.wl0_chanspec === "0" ? 6 : router.nvram.wl0_chanspec} (0x1006)\n` : `${router.nvram.wl1_chanspec === "0" ? "36/80" : router.nvram.wl1_chanspec} (0xe02a)\n` };
-        if ((m = command.match(/^wl -i '?(eth\d)'? scanresults$/))) {
+        if ((m = command.match(/^wl -i '?((?:eth|wl)\d)'? scan$/))) return {};
+        if ((m = command.match(/^wl -i '?((?:eth|wl)\d)'? chanspec$/))) return { stdout: m[1] === router.nvram.wl0_ifname ? `${router.nvram.wl0_chanspec === "0" ? 6 : router.nvram.wl0_chanspec} (0x1006)\n` : `${router.nvram.wl1_chanspec === "0" ? "36/80" : router.nvram.wl1_chanspec} (0xe02a)\n` };
+        if ((m = command.match(/^wl -i '?((?:eth|wl)\d)'? scanresults$/))) {
           const block = (ssid, mac, rssi, channel, secured = true) => `SSID: "${ssid}"\nMode: Managed\tRSSI: ${rssi} dBm\tSNR: 30 dB\tnoise: -92 dBm\tChannel: ${channel}\nBSSID: ${mac}\tCapability: ESS ${secured ? "RSN" : ""}\nSupported Rates: [ 6(b) 9 12(b) 18 ]\n\n`;
           const twoFour = block("Neighbour Cafe", "AA:10:00:00:00:01", -48, 6) + block("TeaHouse 2G", "AA:10:00:00:00:02", -60, 6) + block("Flat 9B", "AA:10:00:00:00:03", -71, 1) + block("Alex Phone", "AA:10:00:00:00:04", -66, 11, false) + block("", "AA:10:00:00:00:05", -74, 7) + block("Far Away", "AA:10:00:00:00:06", -92, 3);
           const five = block("Neighbour Cafe 5G", "AA:20:00:00:00:01", -52, "36/80") + block("TeaHouse 5G", "AA:20:00:00:00:02", -64, "36/40") + block("Flat 9B 5G", "AA:20:00:00:00:03", -70, "44/80");
-          return { stdout: m[1] === "eth6" ? twoFour : five };
+          return { stdout: m[1] === router.nvram.wl0_ifname ? twoFour : five };
         }
         return undefined;
       },

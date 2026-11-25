@@ -2,11 +2,16 @@
 // channel, the recommendation avoids busy channels, and choosing a channel
 // goes through the change engine.
 import assert from "node:assert/strict";
+import { mkdtemp } from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
 import { test } from "node:test";
 import { checkFeatureModule } from "../../public/js/features/validate.js";
 import feature, { spanOf } from "../../public/js/features/channel-analyser/index.js";
 import { bandOf, interference, overlap, parseScan, recommend, summarise } from "../../server/features/channel-analyser/parse.mjs";
 import { startApp } from "../helpers.mjs";
+
+process.env.DATA_DIR = await mkdtemp(path.join(os.tmpdir(), "mar-chan-"));
 
 const SAMPLE = `SSID: "Cafe"\nMode: Managed\tRSSI: -48 dBm\tSNR: 30 dB\tnoise: -92 dBm\tChannel: 6\nBSSID: aa:10:00:00:00:01\tCapability: ESS RSN\n\nSSID: ""\nMode: Managed\tRSSI: -74 dBm\tChannel: 36/80\nBSSID: AA:10:00:00:00:05\tCapability: ESS\n\nSSID: "No channel"\nMode: Managed\tRSSI: -70 dBm\n`;
 
@@ -56,10 +61,11 @@ test("channel-analyser: the routes scan each band, count only what the settings 
     assert.equal(five.ownChannel, 36);
     assert.equal(five.recommendation.channel, 149, "the 5 GHz channels the router offers that nobody uses");
 
-    // Count fewer networks: raise the threshold through the change engine.
-    const preview = await t.owner.post("/api/changes/preview", { changes: [{ id: "channel-analyser.min-rssi", value: "-60" }, { id: "channel-analyser.hidden", value: "0" }] });
-    assert.equal(preview.status, 200, preview.text);
-    assert.equal((await t.owner.post("/api/changes/apply", { previewId: preview.data.id })).status, 200);
+    // Count fewer networks: raise the threshold. It is a preference of this app, saved by the app, never written to the router.
+    assert.deepEqual((await t.owner.get("/api/catalog")).data.entries.filter((e) => e.feature === "channel-analyser"), []);
+    const saved = await t.owner.request("PUT", "/api/x/channel-analyser/prefs", { changes: [{ id: "channel-analyser.min-rssi", value: "-60" }, { id: "channel-analyser.hidden", value: "0" }] });
+    assert.equal(saved.status, 200, saved.text);
+    assert.equal((await t.owner.request("PUT", "/api/x/channel-analyser/prefs", { changes: [{ id: "channel-analyser.min-rssi", value: "-10" }] })).status, 400);
     const fewer = (await t.owner.get("/api/x/channel-analyser/scan?band=0&wait=0")).data;
     assert.equal(fewer.counted, 2);
 

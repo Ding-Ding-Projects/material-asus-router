@@ -2,16 +2,21 @@
 // service with curl on the router, and every way it can be unavailable is
 // reported honestly instead of guessed.
 import assert from "node:assert/strict";
+import { mkdtemp } from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
 import { test } from "node:test";
 import { checkFeatureModule } from "../../public/js/features/validate.js";
 import feature, { REASONS } from "../../public/js/features/port-checker/index.js";
 import { isUnreachableAddress, readReply, rulesOf, settingsOf } from "../../server/features/port-checker/index.mjs";
 import { startApp } from "../helpers.mjs";
 
+process.env.DATA_DIR = await mkdtemp(path.join(os.tmpdir(), "mar-portcheck-"));
+
+// The check service is a preference of this app: saved by the app, never written to the router.
 async function change(t, changes) {
-  const preview = await t.owner.post("/api/changes/preview", { changes });
-  assert.equal(preview.status, 200, preview.text);
-  assert.equal((await t.owner.post("/api/changes/apply", { previewId: preview.data.id })).status, 200);
+  const saved = await t.owner.request("PUT", "/api/x/port-checker/prefs", { changes });
+  assert.equal(saved.status, 200, saved.text);
 }
 
 test("port-checker: replies are read strictly and shared addresses are recognised", () => {
@@ -27,15 +32,17 @@ test("port-checker: replies are read strictly and shared addresses are recognise
   for (const ip of ["203.0.113.5", "100.63.0.1", "172.32.0.1", ""]) assert.equal(isUnreachableAddress(ip), false, ip);
   const rules = rulesOf(new Map([["vts_rulelist", "<Game>25565>198.51.100.20>25565>TCP><Range>8000:8010>198.51.100.21>8000:8010>TCP><Voice>5060>198.51.100.22>5060>UDP>"]]));
   assert.deepEqual(rules.map((r) => [r.external, r.checkable, r.why]), [["25565", true, null], ["8000:8010", false, "range"], ["5060", false, "udp"]]);
-  assert.equal(settingsOf(new Map([["mar_portcheck_host", "bad host"]])).host, "");
+  assert.equal(settingsOf(new Map([["host", "bad host"]])).host, "");
   assert.ok(REASONS["no-service"][1].length > 3);
 });
 
 test("port-checker: with no service it says so, with a service it checks through the router", async () => {
   const t = await startApp();
   try {
+    assert.deepEqual((await t.owner.get("/api/catalog")).data.entries.filter((e) => e.feature === "port-checker"), []);
     const domain = (await t.owner.get("/api/domain/port-checker")).data;
     assert.equal(domain.configured, false);
+    assert.equal(domain.entries.length, 5);
     assert.equal(domain.behindSharedAddress, true, "the pretend router sits behind a shared address");
     assert.equal(domain.rules.length, 1);
     assert.equal(domain.rules[0].checkable, true);
@@ -61,6 +68,8 @@ test("port-checker: with no service it says so, with a service it checks through
     await change(t, [{ id: "port-checker.host", value: "broken.example.net" }]);
     assert.equal((await t.owner.post("/api/x/port-checker/check", { port: 443 })).data.reason, "service-error");
 
+    assert.equal((await t.owner.request("PUT", "/api/x/port-checker/prefs", { changes: [{ id: "port-checker.host", value: "bad host" }] })).status, 400);
+    assert.ok(!t.router.commands.some((c) => c.startsWith("nvram set")), "nothing was written to the router");
     assert.equal((await t.owner.post("/api/x/port-checker/check", { port: 0 })).status, 400);
     assert.equal((await t.owner.post("/api/x/port-checker/check", { port: "80; reboot" })).status, 400);
     assert.equal((await t.owner.post("/api/x/port-checker/check", { port: 80, protocol: "udp" })).status, 400);

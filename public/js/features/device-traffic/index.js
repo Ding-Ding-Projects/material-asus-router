@@ -71,8 +71,16 @@ async function screen(ctx) {
     busy = false;
   }
 
+  const noteText = () => t(`Updates every ${config.interval} s while this page is open.`, `呢頁開住嗰陣，每 ${config.interval} 秒更新。`);
+  const note = h("span", { class: "muted" }, noteText());
   const toggle = h("button", { class: "btn t sm", onClick: () => { paused = !paused; ctx.clear(toggle).append(icon(paused ? "play_arrow" : "pause", "sm"), paused ? t("Resume", "繼續") : t("Pause", "暫停")); if (!paused) poll(); } }, icon("pause", "sm"), t("Pause", "暫停"));
-  page.append(h("div", { class: "chips" }, toggle, h("span", { class: "muted" }, t(`Updates every ${config.interval} s while this page is open.`, `呢頁開住嗰陣，每 ${config.interval} 秒更新。`))), body, ...ctx.controls.settingGroups(config.entries).map((g) => ctx.controls.groupCard(g.label, g.entries)));
+  page.append(h("div", { class: "chips" }, toggle, note), body, ...ctx.controls.appGroupCards("device-traffic", config.entries, async () => {
+    Object.assign(config, await api.get("/api/domain/device-traffic"));
+    note.textContent = noteText();
+    clearInterval(timer);
+    timer = setInterval(poll, config.interval * 1000);
+    draw();
+  }));
   draw();
   await poll();
   timer = setInterval(poll, config.interval * 1000);
@@ -82,6 +90,6 @@ async function screen(ctx) {
 export default {
   id: "device-traffic",
   screens: [{ id: "device-traffic", group: { en: "Monitor", yue: "監察" }, icon: "monitoring", label, render: screen }],
-  settings: [{ id: "device-traffic", icon: "monitoring", label, async render(ctx) { const data = await ctx.api.get("/api/domain/device-traffic"); return ctx.controls.settingGroups(data.entries).map((g) => ctx.controls.groupCard(g.label, g.entries)); } }],
+  settings: [{ id: "device-traffic", icon: "monitoring", label, async render(ctx) { const data = await ctx.api.get("/api/domain/device-traffic"); return ctx.controls.appGroupCards("device-traffic", data.entries); } }],
   commands: [{ id: "device-traffic.open", icon: "monitoring", label: { en: "See traffic per device", yue: "睇每部裝置嘅流量" }, keywords: "traffic bandwidth devices usage download upload 流量 裝置", run: (ctx) => ctx.navigate("device-traffic") }],
 };

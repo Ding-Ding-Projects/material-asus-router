@@ -3,12 +3,17 @@
 // modules unmasked in zigzag order, de-interleaved, every block's
 // Reed-Solomon codewords recomputed and compared, and the text read back.
 import assert from "node:assert/strict";
+import { mkdtemp } from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
 import { test } from "node:test";
 import { checkFeatureModule } from "../../public/js/features/validate.js";
 import feature from "../../public/js/features/wifi-qr/index.js";
 import { LEVELS, blockInfo, dataCodewords, encode, formatBits, functionMap, maskTest, rawModules, remainder, sizeOf, toPath, utf8, wifiPayload } from "../../public/js/features/wifi-qr/qr.js";
 import { networksOf, securityOf } from "../../server/features/wifi-qr/index.mjs";
 import { startApp } from "../helpers.mjs";
+
+process.env.DATA_DIR = await mkdtemp(path.join(os.tmpdir(), "mar-qr-"));
 
 const FORMAT_LEVEL = { 1: "L", 0: "M", 3: "Q", 2: "H" };
 
@@ -127,7 +132,14 @@ test("wifi-qr: networks come from the router and the password is given out only 
       ["wl0", "main", "Harbour Home", "WPA", true], ["wl0.1", "guest", "Harbour Guest", "WPA", false],
       ["wl1", "main", "Harbour Home 5G", "WPA", true], ["wl1.1", "guest", "Harbour Guest 5G", "WPA", false]]);
     assert.equal(domain.level, "M");
-    assert.equal(domain.entries.length, 3);
+    assert.deepEqual(domain.entries.map((e) => [e.id, e.value]), [["wifi-qr.level", "M"], ["wifi-qr.password-text", "0"], ["wifi-qr.note", "Scan with your phone camera to join."]]);
+    assert.deepEqual((await t.owner.get("/api/catalog")).data.entries.filter((e) => e.feature === "wifi-qr"), [], "the card settings are the app's own, not the router's");
+    const card = await t.owner.request("PUT", "/api/x/wifi-qr/prefs", { changes: [{ id: "wifi-qr.level", value: "H" }, { id: "wifi-qr.note", value: "Welcome" }] });
+    assert.equal(card.status, 200, card.text);
+    assert.deepEqual([(await t.owner.get("/api/domain/wifi-qr")).data.level, (await t.owner.get("/api/domain/wifi-qr")).data.note], ["H", "Welcome"]);
+    assert.equal((await t.owner.request("PUT", "/api/x/wifi-qr/prefs", { changes: [{ id: "wifi-qr.level", value: "Z" }] })).status, 400);
+    assert.ok(!t.router.commands.some((c) => c.startsWith("nvram set")), "nothing was written to the router");
+    await t.owner.request("PUT", "/api/x/wifi-qr/prefs", { changes: [{ id: "wifi-qr.level", value: "M" }] });
     assert.equal(JSON.stringify(domain).includes("milk-tea"), false, "the screen data carries no password");
 
     const secret = (await t.owner.post("/api/x/wifi-qr/payload", { id: "wl0" })).data;

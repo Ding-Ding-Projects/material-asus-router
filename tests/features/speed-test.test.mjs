@@ -12,17 +12,23 @@ import { startApp } from "../helpers.mjs";
 
 process.env.DATA_DIR = await mkdtemp(path.join(os.tmpdir(), "mar-speed-"));
 
+// The test server settings are this app's own preferences, saved by the app and never written to the router.
 async function change(t, id, value) {
-  const preview = await t.owner.post("/api/changes/preview", { changes: [{ id, value }] });
-  assert.equal(preview.status, 200, preview.text);
-  assert.equal((await t.owner.post("/api/changes/apply", { previewId: preview.data.id })).status, 200);
+  const saved = await t.owner.request("PUT", "/api/x/speed-test/prefs", { changes: [{ id, value }] });
+  assert.equal(saved.status, 200, saved.text);
 }
 
-test("speed-test: settings read the router, a run measures in steps and the result is saved", async () => {
+test("speed-test: preferences are saved by the app, a run measures in steps and the result is saved", async () => {
   const t = await startApp();
   try {
-    const entries = (await t.owner.get("/api/catalog")).data.entries.filter((e) => e.feature === "speed-test");
-    assert.deepEqual(entries.map((e) => e.id).sort(), ["speed-test.chunks", "speed-test.host", "speed-test.scheme", "speed-test.size", "speed-test.style", "speed-test.upload"]);
+    // Nothing here is a router setting: the preferences are the app's own and the router never receives them.
+    assert.deepEqual((await t.owner.get("/api/catalog")).data.entries.filter((e) => e.feature === "speed-test"), []);
+    const before = Object.keys(t.router.nvram).sort();
+    const prefs = (await t.owner.get("/api/domain/speed-test")).data.entries;
+    assert.deepEqual(prefs.map((e) => e.id).sort(), ["speed-test.chunks", "speed-test.host", "speed-test.scheme", "speed-test.size", "speed-test.style", "speed-test.upload"]);
+    assert.ok(prefs.every((e) => e.appSetting === true));
+    assert.equal((await t.owner.request("PUT", "/api/x/speed-test/prefs", { changes: [{ id: "speed-test.chunks", value: "99" }] })).status, 400, "a wrong value is refused");
+    assert.equal((await t.owner.request("PUT", "/api/x/speed-test/prefs", { changes: [{ id: "speed-test.nothing", value: "1" }] })).status, 404);
 
     const first = await t.owner.post("/api/x/speed-test/runs");
     assert.equal(first.status, 409, "no server chosen yet");
@@ -59,8 +65,8 @@ test("speed-test: settings read the router, a run measures in steps and the resu
     for (let i = 0; i < 3; i += 1) done = (await t.owner.post(`/api/x/speed-test/runs/${second.id}/step`)).data;
     assert.equal(done.finished.up, null);
     assert.ok(t.router.commands.some((c) => c.includes("https://speed.example.net/8MB.bin")));
-
-    
+    assert.deepEqual(Object.keys(t.router.nvram).sort(), before, "the router has no new or changed setting names");
+    assert.ok(!t.router.commands.some((c) => c.startsWith("nvram set")), "nothing was written to the router");
   } finally {
     await t.stop();
   }
@@ -83,6 +89,7 @@ test("speed-test: an unreachable server is reported, history can be cleared and 
     const guest = t.client();
     await guest.signIn("alex", "viewer password 1");
     assert.equal((await guest.get("/api/x/speed-test/history")).status, 200);
+    assert.equal((await guest.request("PUT", "/api/x/speed-test/prefs", { changes: [{ id: "speed-test.upload", value: "0" }] })).status, 403, "viewers cannot save preferences");
     assert.equal((await guest.post("/api/x/speed-test/runs")).status, 403);
   } finally {
     await t.stop();

@@ -2,7 +2,7 @@
 // router's connection tracking table (/proc/net/nf_conntrack). The table is
 // read twice and the difference gives the rate, so the first reading is
 // "warming up". This does not use the ASUS traffic analyser database (bwdpi).
-import { L, ON_OFF, parseRows } from "../kit.mjs";
+import { L, ON_OFF, appPrefs, parseRows } from "../kit.mjs";
 import { lanTest, parseConntrack, rates } from "./conntrack.mjs";
 
 const HISTORY = 90;
@@ -49,36 +49,39 @@ async function sample(ctx, force = false) {
   return view;
 }
 
+// How the live view looks is a preference of this app: it is saved by the app and never written to the router.
+const g = { domain: "device-traffic", group: "live", groupLabel: L("Live view", "即時顯示"), risk: "low" };
+const prefs = appPrefs("device-traffic", [
+  { ...g, id: "device-traffic.interval", key: "interval", default: "2", control: "stepper", min: 1, max: 10, unit: "s",
+    label: L("Refresh every", "更新間隔"), help: L("How often the table is read. Shorter is smoother but asks the router more often.", "幾耐讀一次表。短啲會順啲，但路由器要做多啲。") },
+  { ...g, id: "device-traffic.top", key: "top", default: "8", control: "stepper", min: 3, max: 20, unit: "devices",
+    label: L("Devices in the chart", "圖表顯示嘅裝置數"), help: L("The chart shows the busiest devices only.", "圖表只顯示最繁忙嘅裝置。") },
+  { ...g, id: "device-traffic.hide-idle", key: "hide_idle", default: "1", control: "switch", values: ON_OFF,
+    label: L("Hide idle devices", "隱藏冇流量嘅裝置"), help: L("Devices with no traffic right now are left out of the table.", "而家冇流量嘅裝置唔會喺表入面出現。") },
+  { ...g, id: "device-traffic.unit", key: "unit", default: "bits", control: "segmented", options: [["bits", L("Megabits", "兆位元"), L("Mbit/s, like internet plans", "Mbit/s，同寬頻計劃一樣")], ["bytes", L("Megabytes", "兆位元組"), L("MB/s, like file copies", "MB/s，同複製檔案一樣")]],
+    label: L("Show speeds in", "速度單位"), help: L("Only changes how numbers are shown.", "只改變數字點樣顯示。") },
+]);
+
 export default {
   id: "device-traffic",
 
-  catalog: () => {
-    const g = { domain: "device-traffic", group: "live", groupLabel: L("Live view", "即時顯示"), risk: "low" };
-    return [
-      { ...g, id: "device-traffic.interval", key: "mar_traffic_interval", control: "stepper", min: 1, max: 10, unit: "s",
-        label: L("Refresh every", "更新間隔"), help: L("How often the table is read. Shorter is smoother but asks the router more often.", "幾耐讀一次表。短啲會順啲，但路由器要做多啲。") },
-      { ...g, id: "device-traffic.top", key: "mar_traffic_top", control: "stepper", min: 3, max: 20, unit: "devices",
-        label: L("Devices in the chart", "圖表顯示嘅裝置數"), help: L("The chart shows the busiest devices only.", "圖表只顯示最繁忙嘅裝置。") },
-      { ...g, id: "device-traffic.hide-idle", key: "mar_traffic_hide_idle", control: "switch", values: ON_OFF,
-        label: L("Hide idle devices", "隱藏冇流量嘅裝置"), help: L("Devices with no traffic right now are left out of the table.", "而家冇流量嘅裝置唔會喺表入面出現。") },
-      { ...g, id: "device-traffic.unit", key: "mar_traffic_unit", control: "segmented", options: [["bits", L("Megabits", "兆位元"), L("Mbit/s, like internet plans", "Mbit/s，同寬頻計劃一樣")], ["bytes", L("Megabytes", "兆位元組"), L("MB/s, like file copies", "MB/s，同複製檔案一樣")]],
-        label: L("Show speeds in", "速度單位"), help: L("Only changes how numbers are shown.", "只改變數字點樣顯示。") },
-    ];
-  },
-
   domainMeta: [{ id: "device-traffic", icon: "monitoring", label: L("Device traffic", "裝置流量"), group: { en: "Monitor", yue: "監察" }, live: true }],
   domains: {
-    "device-traffic": async (ctx) => ({
-      interval: Number(ctx.nvram.get("mar_traffic_interval") ?? 2),
-      top: Number(ctx.nvram.get("mar_traffic_top") ?? 8),
-      hideIdle: (ctx.nvram.get("mar_traffic_hide_idle") ?? "1") === "1",
-      unit: ctx.nvram.get("mar_traffic_unit") === "bytes" ? "bytes" : "bits",
-      lan: ctx.info.lan,
-      entries: ctx.entries(),
-    }),
+    "device-traffic": async (ctx) => {
+      const saved = await prefs.read();
+      return {
+        interval: Number(saved.get("interval")),
+        top: Number(saved.get("top")),
+        hideIdle: saved.get("hide_idle") === "1",
+        unit: saved.get("unit") === "bytes" ? "bytes" : "bits",
+        lan: ctx.info.lan,
+        entries: prefs.entries(saved),
+      };
+    },
   },
 
   routes(api) {
+    prefs.routes(api);
     api.get("/sample", async ({ live }) => sample(await live()));
     api.post("/reset", async () => {
       previous = null;
@@ -89,7 +92,6 @@ export default {
   },
 
   fakeRouter: {
-    nvram: { mar_traffic_interval: "2", mar_traffic_top: "8", mar_traffic_hide_idle: "1", mar_traffic_unit: "bits" },
     handlers: [
       (command, router) => {
         if (command !== "head -n 100000 /proc/net/nf_conntrack") return undefined;
@@ -102,7 +104,7 @@ export default {
         ];
         router.trafficStart ??= Date.now();
         const seconds = (Date.now() - router.trafficStart) / 1000;
-        const acct = router.nvram.mar_fake_conntrack_acct !== "0";
+        const acct = router.conntrackAcct !== false;
         const flow = (ip, port, down, up, extra = "") => {
           const orig = Math.round(up * seconds / 2) + 4000;
           const reply = Math.round(down * seconds / 2) + 9000;

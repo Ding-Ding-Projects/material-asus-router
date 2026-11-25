@@ -8,7 +8,9 @@
 //     server/changes, server/app.mjs or server/actions.mjs)
 //   - every setting is a typed control, never a bare text box
 //   - every router write goes through the change engine
-import { L, ON_OFF } from "../kit.mjs";
+//   - a preference of the app itself (how this card looks) is saved by the app with appPrefs, never as a
+//     router setting: a router only ever gets settings it already has
+import { L, ON_OFF, appPrefs } from "../kit.mjs";
 
 const read = async (exec) => {
   const out = await exec("head -n 100000 /proc/uptime");
@@ -16,34 +18,34 @@ const read = async (exec) => {
   return { seconds, days: Math.floor(seconds / 86400) };
 };
 
+// Preferences of this app: the same entry shape as the catalogue (id, control, label, help) plus the name they
+// are saved under (key) and a default. They are read and saved through GET and PUT /api/x/example-uptime/prefs,
+// each with the same rich control as a router setting, and they never touch the router.
+const prefs = appPrefs("example-uptime", [
+  { id: "example-uptime.show", domain: "example-uptime", group: "card", groupLabel: L("Uptime card", "運行時間卡"), key: "show", default: "1", control: "switch", values: ON_OFF,
+    label: L("Show the uptime card", "顯示運行時間卡"), help: L("Shows how long the router has been running on the overview.", "喺概覽顯示路由器已經運行咗幾耐。") },
+  { id: "example-uptime.warn", domain: "example-uptime", group: "card", groupLabel: L("Uptime card", "運行時間卡"), key: "warn_days", default: "30", control: "stepper", min: 1, max: 365, unit: "days",
+    label: L("Remind me to restart after", "幾耐之後提醒重啟"), help: L("The card turns amber once the router has run this long.", "運行超過呢個日數，卡片會變琥珀色。") },
+  { id: "example-uptime.color", domain: "example-uptime", group: "card", groupLabel: L("Uptime card", "運行時間卡"), key: "color", default: "#3366cc", control: "color",
+    label: L("Card colour", "卡片顏色"), help: L("The accent colour of the card.", "卡片嘅強調顏色。") },
+]);
+
 export default {
   id: "example-uptime",
-
-  // Settings: the same entry shape as server/router/catalog.mjs. Each entry
-  // reads its value from nvram and is changed through preview, guard and undo.
-  catalog: () => [
-    { id: "example-uptime.show", domain: "example-uptime", group: "card", groupLabel: L("Uptime card", "運行時間卡"), key: "example_uptime_show", control: "switch", values: ON_OFF, risk: "low",
-      label: L("Show the uptime card", "顯示運行時間卡"), help: L("Shows how long the router has been running on the overview.", "喺概覽顯示路由器已經運行咗幾耐。") },
-    { id: "example-uptime.warn", domain: "example-uptime", group: "card", groupLabel: L("Uptime card", "運行時間卡"), key: "example_uptime_warn_days", control: "stepper", min: 1, max: 365, unit: "days", risk: "low",
-      label: L("Remind me to restart after", "幾耐之後提醒重啟"), help: L("The card turns amber once the router has run this long.", "運行超過呢個日數，卡片會變琥珀色。") },
-    { id: "example-uptime.color", domain: "example-uptime", group: "card", groupLabel: L("Uptime card", "運行時間卡"), key: "example_uptime_color", control: "color", risk: "low",
-      label: L("Card colour", "卡片顏色"), help: L("The accent colour of the card.", "卡片嘅強調顏色。") },
-  ],
 
   // A screen the server can read: GET /api/domain/example-uptime.
   domainMeta: [{ id: "example-uptime", icon: "timer", label: L("Uptime (example)", "運行時間（範例）"), group: { en: "Monitor", yue: "監察" } }],
   domains: {
-    "example-uptime": async (ctx) => ({
-      ...(await read(ctx.exec)),
-      warnDays: Number(ctx.nvram.get("example_uptime_warn_days") ?? 30),
-      color: ctx.nvram.get("example_uptime_color") ?? "#3366cc",
-      entries: ctx.entries(),
-    }),
+    "example-uptime": async (ctx) => {
+      const saved = await prefs.read();
+      return { ...(await read(ctx.exec)), warnDays: Number(saved.get("warn_days")), color: saved.get("color"), show: saved.get("show") === "1", entries: prefs.entries(saved) };
+    },
   },
 
   // Extra HTTP routes under /api/x/example-uptime. Sign-in, CSRF and the
   // viewer/operator roles apply automatically.
   routes(api) {
+    prefs.routes(api);
     api.get("/summary", async ({ live }) => {
       const ctx = await live();
       return { ...(await read(ctx.exec)), model: ctx.info.model };
@@ -67,9 +69,8 @@ export default {
   },
 
   // What the pretend router needs so tests and demo mode can exercise the
-  // feature: starting settings, and answers to commands only this feature sends.
+  // feature: answers to commands only this feature sends.
   fakeRouter: {
-    nvram: { example_uptime_show: "1", example_uptime_warn_days: "30", example_uptime_color: "#3366cc" },
     handlers: [(command) => (command === "example-uptime-mark" ? { stdout: "marked\n" } : undefined)],
   },
 };

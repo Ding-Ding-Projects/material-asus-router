@@ -144,3 +144,67 @@ export function settingGroups(entries) {
   }
   return groups;
 }
+
+// ---- the app's own preferences ------------------------------------------------
+// A feature's preferences (a test server, a refresh rate) are saved by this app, not by the router, so they do
+// not go through the pending-changes dock: the control saves by itself a moment after the last edit and says so.
+// The same rich control draws it, so it looks and works like every router setting.
+const SAVE_DELAY_MS = 500;
+
+export function appSettingRow(featureId, entry, onSaved = () => {}) {
+  const locked = !app.canWrite;
+  let value = String(entry.value ?? "");
+  let saved = value;
+  let timer = null;
+  let attempt = 0;
+  const row = h("div", { class: "setting app-setting", id: `s-${entry.id}` });
+  const status = h("div", { class: "t2", role: "status", "aria-live": "polite" });
+  const help = h("div", { class: "help", hidden: true }, tt(entry.help), h("div", { class: "t2" }, t("Saved by this app. It is never written to the router.", "由呢個程式儲存，唔會寫入路由器。")));
+  let ctl;
+  const say = (text, bad = false) => {
+    status.textContent = text;
+    status.classList.toggle("bad", bad);
+  };
+  async function save() {
+    timer = null;
+    const mine = (attempt += 1);
+    try {
+      const answer = await api.put(`/api/x/${featureId}/prefs`, { changes: [{ id: entry.id, value }] });
+      if (mine !== attempt) return;
+      saved = value;
+      say(t("Saved", "已儲存"));
+      row.classList.remove("edited");
+      onSaved(answer.entries);
+    } catch (error) {
+      if (mine !== attempt) return;
+      say(error.message, true);
+      row.classList.add("edited");
+    }
+  }
+  const revert = h("button", { class: "btn t sm", hidden: true, onClick() { value = saved; ctl.sync?.(); clearTimeout(timer); timer = null; row.classList.remove("edited"); revert.hidden = true; say(""); } }, icon("undo", "sm"), t("Undo edit", "取消編輯"));
+  ctl = control(entry, () => value, (next) => {
+    value = String(next);
+    say(t("Saving…", "儲存緊…"));
+    row.classList.add("edited");
+    revert.hidden = false;
+    clearTimeout(timer);
+    timer = setTimeout(save, SAVE_DELAY_MS);
+  }, locked);
+  const info = h("button", { class: "info", "aria-label": t("What is this?", "呢個係咩？"), "aria-expanded": "false", onClick(e) { help.hidden = !help.hidden; e.currentTarget.setAttribute("aria-expanded", String(!help.hidden)); } }, icon("info", "sm"));
+  row.append(
+    h("div", { class: "top" },
+      h("div", { class: "grow" }, h("div", { class: "t1" }, tt(entry.label), " ", h("span", { class: "tag", title: t("Saved by this app, not on the router.", "由呢個程式儲存，唔係喺路由器。") }, icon("save", "sm"), t("This app", "呢個程式"))), status),
+      h("div", { class: "ctl" }, ctl.el, revert, info)),
+    help);
+  return row;
+}
+
+export function appGroupCard(featureId, label, entries, onSaved) {
+  if (!entries.length) return null;
+  return h("section", { class: "card rise" }, label ? h("h2", { class: "h2" }, tt(label)) : null, entries.map((e) => appSettingRow(featureId, e, onSaved)));
+}
+
+// One card per group for a feature's saved preferences.
+export function appGroupCards(featureId, entries, onSaved) {
+  return settingGroups(entries).map((g) => appGroupCard(featureId, g.label, g.entries, onSaved));
+}

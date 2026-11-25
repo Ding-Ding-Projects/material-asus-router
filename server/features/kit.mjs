@@ -10,3 +10,5 @@ export const L = (en, yue) => ({ en, yue });
 // The usual on/off values for a switch stored as 1 or 0.
 export const ON_OFF = { on: "1", off: "0" };
 export const DAY = 86400;
+// App preferences: a feature's own settings, saved by the app and never written to the router.
+export { appPrefs, checkPref, samplePref } from "./app-prefs.mjs";

@@ -93,7 +93,7 @@ async function screen(ctx) {
         h("button", { class: "btn o sm", onClick: () => { shown.delete(network.id); cache.delete(network.id); ctx.clear(box); } }, icon("visibility_off", "sm"), t("Hide", "隱藏"))));
   }
 
-  page.append(list, ...ctx.controls.settingGroups(data.entries).map((g) => ctx.controls.groupCard(g.label, g.entries)));
+  page.append(list, ...ctx.controls.appGroupCards("wifi-qr", data.entries, async () => { Object.assign(data, await api.get("/api/domain/wifi-qr")); cache.clear(); await draw(); }));
   await draw();
   // A code holds the password, so leave nothing behind when the screen is left.
   return () => { cache.clear(); shown.clear(); };
@@ -102,6 +102,6 @@ async function screen(ctx) {
 export default {
   id: "wifi-qr",
   screens: [{ id: "wifi-qr", group: { en: "Network", yue: "網絡" }, icon: "qr_code_2", label, render: screen }],
-  settings: [{ id: "wifi-qr", icon: "qr_code_2", label, async render(ctx) { const data = await ctx.api.get("/api/domain/wifi-qr"); return ctx.controls.settingGroups(data.entries).map((g) => ctx.controls.groupCard(g.label, g.entries)); } }],
+  settings: [{ id: "wifi-qr", icon: "qr_code_2", label, async render(ctx) { const data = await ctx.api.get("/api/domain/wifi-qr"); return ctx.controls.appGroupCards("wifi-qr", data.entries); } }],
   commands: [{ id: "wifi-qr.open", icon: "qr_code_2", label: { en: "Show a Wi-Fi QR code", yue: "顯示 Wi-Fi QR 碼" }, keywords: "wifi qr code guest join print card password 二維碼 訪客 連線", run: (ctx) => ctx.navigate("wifi-qr") }],
 };

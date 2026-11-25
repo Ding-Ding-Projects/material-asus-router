@@ -2,7 +2,7 @@
 // times each answer, so the ranking is what your own internet link sees. The
 // timing is taken on the router (its uptime clock, 10 ms steps) and averaged
 // over several rounds, so the SSH round trip never counts.
-import { L, ON_OFF, isIpv4, quote } from "../kit.mjs";
+import { L, ON_OFF, appPrefs, isIpv4, quote } from "../kit.mjs";
 
 const RESOLVERS = [
   ["1.1.1.1", "Cloudflare"], ["1.0.0.1", "Cloudflare (second)"], ["8.8.8.8", "Google"], ["8.8.4.4", "Google (second)"],
@@ -13,16 +13,17 @@ const NAME = /^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?(\.[a-z0-9]([a-z0-9-]{0,61}[a-z
 
 const listOf = (value, fallback) => (value === undefined || value === "" ? fallback : String(value).split(",").filter(Boolean));
 
-export function settingsOf(nvram) {
-  const resolvers = listOf(nvram.get("mar_dnsb_resolvers"), ["1.1.1.1", "8.8.8.8", "9.9.9.9"]).filter(isIpv4);
-  const names = listOf(nvram.get("mar_dnsb_names"), ["example.com", "wikipedia.org", "iana.org"]).filter((n) => NAME.test(n));
+// prefs: the saved preferences (a Map); nvram: the router's settings, which only supply the name servers it uses now.
+export function settingsOf(prefs, nvram) {
+  const resolvers = listOf(prefs.get("resolvers"), ["1.1.1.1", "8.8.8.8", "9.9.9.9"]).filter(isIpv4);
+  const names = listOf(prefs.get("names"), ["example.com", "wikipedia.org", "iana.org"]).filter((n) => NAME.test(n));
   const routerDns = (nvram.get("wan0_dns") ?? "").split(/\s+/).filter(isIpv4);
   return {
     resolvers,
     names,
-    rounds: Math.min(10, Math.max(1, Number(nvram.get("mar_dnsb_rounds") ?? 3) || 3)),
-    includeRouter: (nvram.get("mar_dnsb_router") ?? "1") === "1",
-    fresh: (nvram.get("mar_dnsb_fresh") ?? "0") === "1",
+    rounds: Math.min(10, Math.max(1, Number(prefs.get("rounds") ?? 3) || 3)),
+    includeRouter: (prefs.get("router") ?? "1") === "1",
+    fresh: (prefs.get("fresh") ?? "0") === "1",
     routerDns,
   };
 }
@@ -74,38 +75,39 @@ async function timeOne(exec, name, server, fresh) {
   return { ok: answered, ms: answered ? Math.round(ms * 10) / 10 : null };
 }
 
+// What to test is a preference of this app: it is saved by the app and never written to the router.
+const g = { domain: "dns-benchmark", group: "test", groupLabel: L("What to test", "測試內容"), risk: "low" };
+const prefs = appPrefs("dns-benchmark", [
+  { ...g, id: "dns-benchmark.resolvers", key: "resolvers", default: "1.1.1.1,8.8.8.8,9.9.9.9", control: "chips", options: RESOLVERS.map(([ip, name]) => [ip, L(`${name} (${ip})`, `${name}（${ip}）`)]), maxItems: 7,
+    label: L("Name servers to compare", "要比較嘅域名伺服器"), help: L("Public name servers to test. Pick the ones you might switch to.", "要測試嘅公共域名伺服器。揀你可能轉用嘅。") },
+  { ...g, id: "dns-benchmark.names", key: "names", default: "example.com,wikipedia.org,iana.org", control: "chips", options: NAMES.map((n) => [n, L(n, n)]), maxItems: 6,
+    label: L("Names to look up", "要查嘅域名"), help: L("Each name server is asked for these names.", "每個域名伺服器都會被問呢啲名。") },
+  { ...g, id: "dns-benchmark.rounds", key: "rounds", default: "3", control: "stepper", min: 1, max: 10, unit: "rounds",
+    label: L("Rounds", "回合數"), help: L("More rounds give steadier results but take longer.", "回合愈多愈穩定，但花時間愈多。") },
+  { ...g, id: "dns-benchmark.router", key: "router", default: "1", control: "switch", values: ON_OFF,
+    label: L("Include the router's current name servers", "包括路由器而家用緊嘅域名伺服器"), help: L("Shows how your present setup compares.", "睇吓你而家嘅設定比起其他點。") },
+  { ...g, id: "dns-benchmark.fresh", key: "fresh", default: "0", control: "switch", values: ON_OFF,
+    label: L("Ask for names that are not cached", "問冇緩存嘅名"), help: L("Adds a random prefix so each answer is not already remembered. Measures the full lookup.", "加隨機前綴，答案就唔會係已經記住嘅。量度完整查詢。") },
+]);
+
 export default {
   id: "dns-benchmark",
-
-  catalog: () => {
-    const g = { domain: "dns-benchmark", group: "test", groupLabel: L("What to test", "測試內容"), risk: "low" };
-    return [
-      { ...g, id: "dns-benchmark.resolvers", key: "mar_dnsb_resolvers", control: "chips", options: RESOLVERS.map(([ip, name]) => [ip, L(`${name} (${ip})`, `${name}（${ip}）`)]), maxItems: 7,
-        label: L("Name servers to compare", "要比較嘅域名伺服器"), help: L("Public name servers to test. Pick the ones you might switch to.", "要測試嘅公共域名伺服器。揀你可能轉用嘅。") },
-      { ...g, id: "dns-benchmark.names", key: "mar_dnsb_names", control: "chips", options: NAMES.map((n) => [n, L(n, n)]), maxItems: 6,
-        label: L("Names to look up", "要查嘅域名"), help: L("Each name server is asked for these names.", "每個域名伺服器都會被問呢啲名。") },
-      { ...g, id: "dns-benchmark.rounds", key: "mar_dnsb_rounds", control: "stepper", min: 1, max: 10, unit: "rounds",
-        label: L("Rounds", "回合數"), help: L("More rounds give steadier results but take longer.", "回合愈多愈穩定，但花時間愈多。") },
-      { ...g, id: "dns-benchmark.router", key: "mar_dnsb_router", control: "switch", values: ON_OFF,
-        label: L("Include the router's current name servers", "包括路由器而家用緊嘅域名伺服器"), help: L("Shows how your present setup compares.", "睇吓你而家嘅設定比起其他點。") },
-      { ...g, id: "dns-benchmark.fresh", key: "mar_dnsb_fresh", control: "switch", values: ON_OFF,
-        label: L("Ask for names that are not cached", "問冇緩存嘅名"), help: L("Adds a random prefix so each answer is not already remembered. Measures the full lookup.", "加隨機前綴，答案就唔會係已經記住嘅。量度完整查詢。") },
-    ];
-  },
 
   domainMeta: [{ id: "dns-benchmark", icon: "dns", label: L("DNS benchmark", "DNS 測速"), group: { en: "Network", yue: "網絡" } }],
   domains: {
     "dns-benchmark": async (ctx) => {
-      const s = settingsOf(ctx.nvram);
-      return { ...s, plan: planOf(s), entries: ctx.entries() };
+      const saved = await prefs.read();
+      const s = settingsOf(saved, ctx.nvram);
+      return { ...s, plan: planOf(s), entries: prefs.entries(saved) };
     },
   },
 
   routes(api) {
+    prefs.routes(api);
     // POST /bench { ip } : asks one name server for every chosen name, for every round, and returns its timings.
     api.post("/bench", async ({ live, body, bad }) => {
       const ctx = await live();
-      const s = settingsOf(ctx.nvram);
+      const s = settingsOf(await prefs.read(), ctx.nvram);
       const entry = planOf(s).find((x) => x.ip === String(body.ip ?? ""));
       if (!entry) throw bad("That name server is not in the list to test.", 400);
       if (!s.names.length) throw bad("Choose at least one name to look up.", 409);
@@ -120,7 +122,6 @@ export default {
   },
 
   fakeRouter: {
-    nvram: { mar_dnsb_resolvers: "1.1.1.1,8.8.8.8,9.9.9.9", mar_dnsb_names: "example.com,wikipedia.org,iana.org", mar_dnsb_rounds: "3", mar_dnsb_router: "1", mar_dnsb_fresh: "0" },
     handlers: [
       (command, router) => {
         const m = command.match(/^s=\$\(head -n 100000 \/proc\/uptime\); nslookup '([^']+)' '([^']+)' >\/dev\/null 2>&1; r=\$\?; e=\$\(head -n 100000 \/proc\/uptime\); echo "\$s\|\$e\|\$r"$/);

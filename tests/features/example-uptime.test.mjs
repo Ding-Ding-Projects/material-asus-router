@@ -2,27 +2,33 @@
 // should cover: its settings, its domain, its routes and role checks, its
 // action, and that its frontend module is well formed.
 import assert from "node:assert/strict";
+import { mkdtemp } from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
 import { test } from "node:test";
 import { checkFeatureModule } from "../../public/js/features/validate.js";
 import feature from "../../public/js/features/example-uptime/index.js";
 import { startApp } from "../helpers.mjs";
+
+process.env.DATA_DIR = await mkdtemp(path.join(os.tmpdir(), "mar-uptime-"));
 
 test("example-uptime: the settings, domain card, routes, action and fake router handler all work", async () => {
   const t = await startApp();
   try {
     const catalog = (await t.owner.get("/api/catalog")).data;
     assert.ok(catalog.domains.some((d) => d.id === "example-uptime" && d.supported));
-    assert.deepEqual(catalog.entries.filter((e) => e.feature === "example-uptime").map((e) => [e.id, e.control, e.value]), [
-      ["example-uptime.show", "switch", "1"],
-      ["example-uptime.warn", "stepper", "30"],
-      ["example-uptime.color", "color", "#3366cc"],
-    ]);
+    // The card's look is a preference of this app, so the router's catalogue has nothing of it.
+    assert.deepEqual(catalog.entries.filter((e) => e.feature === "example-uptime"), []);
 
     const domain = (await t.owner.get("/api/domain/example-uptime")).data;
     assert.equal(domain.id, "example-uptime");
     assert.ok(domain.days >= 3, "the pretend router has been up for days");
     assert.equal(domain.warnDays, 30);
-    assert.equal(domain.entries.length, 3);
+    assert.deepEqual(domain.entries.map((e) => [e.id, e.control, e.value, e.appSetting]), [
+      ["example-uptime.show", "switch", "1", true],
+      ["example-uptime.warn", "stepper", "30", true],
+      ["example-uptime.color", "color", "#3366cc", true],
+    ]);
 
     const summary = (await t.owner.get("/api/x/example-uptime/summary")).data;
     assert.equal(summary.model, "RT-AX86U");
@@ -32,12 +38,14 @@ test("example-uptime: the settings, domain card, routes, action and fake router 
     assert.deepEqual([mark.data.ok, mark.data.message], [true, "marked"]);
     assert.ok(t.router.commands.includes("example-uptime-mark"));
 
-    // A change goes through the change engine like any other.
-    const preview = await t.owner.post("/api/changes/preview", { changes: [{ id: "example-uptime.warn", value: "60" }] });
-    assert.equal(preview.status, 200, preview.text);
-    assert.equal((await t.owner.post("/api/changes/apply", { previewId: preview.data.id })).status, 200);
-    assert.equal(t.router.nvram.example_uptime_warn_days, "60");
+    // A preference is saved by the app: it is checked, kept, and never sent to the router.
+    const saved = await t.owner.request("PUT", "/api/x/example-uptime/prefs", { changes: [{ id: "example-uptime.warn", value: "60" }] });
+    assert.equal(saved.status, 200, saved.text);
     assert.equal((await t.owner.get("/api/domain/example-uptime")).data.warnDays, 60);
+    assert.equal((await t.owner.request("PUT", "/api/x/example-uptime/prefs", { changes: [{ id: "example-uptime.warn", value: "9999" }] })).status, 400);
+    assert.equal((await t.owner.request("PUT", "/api/x/example-uptime/prefs", { changes: [{ id: "example-uptime.color", value: "red" }] })).status, 400);
+    assert.ok(!("example_uptime_warn_days" in t.router.nvram), "the router never gets a setting of this app");
+    assert.ok(!t.router.commands.some((c) => c.startsWith("nvram set")));
   } finally {
     await t.stop();
   }
