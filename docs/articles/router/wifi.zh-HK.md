@@ -68,3 +68,17 @@ Wi-Fi 設定係逐個頻段分開：2.4 GHz 覆蓋最遠，5 GHz 更快，6 GHz�
 | 每個頻段嘅控制項定義同說明 | 已完成 |
 | Wi-Fi 畫面同預覽 | 開發中 |
 | Wi-Fi 改動嘅定時還原 | 引擎已有，未喺真路由器做完整測試 |
+
+## 實際睇吓
+
+::sim[wifi-spectrum]
+
+*上面嘅面板係示範，數值都係虛構，唔會讀或者改你嘅路由器。*
+
+## 再深入啲
+
+- [漫遊同頻段引導](../wireless/roaming.md)
+- [DFS 頻道同雷達](../wireless/dfs-channels.md)
+- [Smart Connect](../wireless/smart-connect.md)
+- [Wi-Fi 排程](../wireless/wifi-schedule.md)
+- [WPS 一鍵連線](../wireless/wps.md)

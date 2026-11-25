@@ -69,3 +69,15 @@ Disable a rule you only need now and then, instead of deleting it. Everything yo
 | Master switch | Built |
 | Rule list, form and plain-word preview | In progress |
 | Real-router test | Not yet |
+
+## See it in action
+
+::sim[port-forward]
+
+*The panel above is a demonstration with made-up values. It does not read or change your router.*
+
+## Go deeper
+
+- [Forward a port safely](../security/port-forward-safely.md)
+- [Port triggering](../lan/port-triggering.md)
+- [DMZ host](../lan/dmz.md)

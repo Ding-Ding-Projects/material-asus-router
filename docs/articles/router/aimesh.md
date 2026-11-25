@@ -60,3 +60,13 @@ On some models, a node's own settings are hidden because the main router control
 | Read node list and state | Built to what the router exposes |
 | AiMesh screen | In progress |
 | Add and remove nodes, node updates | Planned |
+
+## See it in action
+
+::sim[network-map]
+
+*The panel above is a demonstration with made-up values. It does not read or change your router.*
+
+## Go deeper
+
+- [Manage an AiMesh network](../connect/aimesh-management.md)

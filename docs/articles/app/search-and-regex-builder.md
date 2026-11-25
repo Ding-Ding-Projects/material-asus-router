@@ -31,3 +31,22 @@ Only simple filtering exists in places today. The builder is not built, and how 
 
 - Patterns run on your device against data you already have.
 - Searching the router log may be limited by how much the router keeps.
+
+## A planned walkthrough (demonstration)
+
+You want every log line that mentions a Wi-Fi device leaving with reason 3 or 4.
+
+1. Type `deauth` in the search box. Plain text finds every line with that word.
+2. Switch the box to the regular-expression builder and enter `reason [34]`.
+3. The builder shows which part matched, explains the pattern in words and warns about a pattern that could run very long.
+
+| You type | It finds |
+| --- | --- |
+| `reason 3` as plain text | The exact text |
+| `reason [34]`\|4)` as an expression | Either reason |
+
+## Questions people ask
+
+**Do I have to learn regular expressions?** No. Plain text always works, and the builder explains each piece.
+
+**Can a pattern freeze the page?** The builder limits how long a match may run and stops it with a message.

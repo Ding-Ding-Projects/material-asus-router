@@ -8,6 +8,7 @@ import { spawnSync } from 'node:child_process';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { escapeHtml, parseFrontMatter, renderMarkdown, stripInline } from './markdown.mjs';
+import { buildSims } from '../site-src/sims/build.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = path.join(ROOT, 'site-src');
@@ -249,7 +250,7 @@ function renderPage({ pageUrl, title, description, page, body, extraScripts = ''
   const root = rootPrefix(pageUrl);
   const html = fillStrings(shellTemplate, pageUrl, {
     title: escapeHtml(title), description: escapeHtml(description), page, body: BODY_MARK, repo: REPO, version: escapeHtml(pkg.version),
-    updated: escapeHtml(updatedIso), updated_text: escapeHtml(updatedText), commit: escapeHtml(commitShort || 'unknown'), extra_scripts: extraScripts,
+    updated: escapeHtml(updatedIso), updated_text: escapeHtml(updatedText), commit: escapeHtml(commitShort || 'unknown'), extra_scripts: `${extraScripts}<script type="module" src="${root}assets/features/index.js"></script>`,
   }).replace(BODY_MARK, () => body);
   writeOut(pageUrl, html);
   return root;
@@ -386,6 +387,12 @@ function buildWikiIndex() {
   renderPage({ pageUrl, title: 'Wiki | Material Asus Router', description: 'Reference notes and answers for Material Asus Router.', page: 'wiki', body });
 }
 
+function buildSettings() {
+  const pageUrl = 'settings.html';
+  const body = fillStrings(readFileSync(path.join(SRC, 'settings.html'), 'utf8'), pageUrl);
+  renderPage({ pageUrl, title: 'Settings | Material Asus Router', description: 'Language, tone, reading comfort, colours, motion, tabs, exports and more, saved only in your browser.', page: 'settings', body });
+}
+
 function build404() {
   const pageUrl = '404.html';
   const body = `<div class="page-head"><h1>${t('notfound.title')}</h1><p class="lead">${t('notfound.text', true)}</p><a class="filled-btn" href="index.html">${t('nav.home')}</a></div>`;
@@ -403,6 +410,7 @@ function writeSearchIndex() {
       x: cap(d.html.text), y: d.zh ? cap(d.zh.html.text) : '',
     });
   }
+  entries.push({ t: 'Settings', z: '設定', u: 'settings.html', k: 'page', c: { en: 'Home', zh: '首頁' }, s: 'Language, funny level, narrator, sounds, School mode, comfort modes, colours, motion, tabs, locks and schedules.', h: [], x: 'settings preferences language funny narrator sound school adhd focus appearance accessibility locks schedule', y: '' });
   const pseudo = [['demo', 'nav.demo', 'index.html#demo'], ['install', 'nav.install', 'index.html#install'], ['download', 'nav.download', 'index.html#download']];
   for (const [id, key, url] of pseudo) entries.push({ t: entry(key).en, z: entry(key).zh, u: url, k: 'page', c: { en: 'Home', zh: '首頁' }, s: '', h: [], x: '', y: '' });
   writeOut('search-index.js', `window.__SEARCH_INDEX=${JSON.stringify(entries)};`);
@@ -413,6 +421,9 @@ function copyAssets() {
   const assets = path.join(OUT, 'assets');
   mkdirSync(path.join(assets, 'fonts'), { recursive: true });
   for (const name of ['style.css', 'app.js', 'home.js', 'favicon.svg']) copyFileSync(path.join(SRC, name), path.join(assets, name));
+  const featuresDir = path.join(SRC, 'features');
+  mkdirSync(path.join(assets, 'features'), { recursive: true });
+  for (const name of readdirSync(featuresDir)) copyFileSync(path.join(featuresDir, name), path.join(assets, 'features', name));
   const dictionary = {};
   for (const [key, value] of Object.entries(i18n)) dictionary[key] = { en: stripTags(value.en).replace(/&amp;/g, '&').replace(/&middot;/g, '·').replace(/&rarr;/g, '→'), zh: stripTags(value.zh).replace(/&amp;/g, '&').replace(/&middot;/g, '·') };
   writeFileSync(path.join(assets, 'i18n.js'), `window.__I18N=${JSON.stringify(dictionary)};`);
@@ -521,6 +532,7 @@ buildArticlesIndex();
 for (const topic of CATEGORIES) buildCategory(topic);
 for (const doc of docs) buildDocPage(doc);
 buildWikiIndex();
+buildSettings();
 build404();
 writeSearchIndex();
 buildPdfPage();
@@ -535,3 +547,4 @@ if (errors.length) {
   process.exit(1);
 }
 console.log(`Site built in ${OUT}: ${articles.length} article(s), ${wikiDocs.length} wiki page(s), ${CATEGORIES.length} categories, release ${release.verified ? release.tag : `not verified (${release.reason})`}.`);
+buildSims({ out: OUT, renderPage, breadcrumb, relUrl, docsBySlug, escapeHtml, fail });

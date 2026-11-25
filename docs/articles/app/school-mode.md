@@ -31,3 +31,17 @@ The setting and the rules that decide what it hides are not built.
 
 - School mode never removes safety confirmations.
 - It changes the app's presentation, not what the router does.
+
+## A planned walkthrough (demonstration)
+
+A teacher shows the app on a classroom display to teach how a home network works.
+
+1. The owner switches on school mode for the installation.
+2. Wording drops to the plainest level, sounds and celebration animations stop, and optional extras disappear from the menu.
+3. Real changes still need the same preview and confirmation, so a student cannot change the router by accident.
+
+## Questions people ask
+
+**Does it hide the router's data?** No. It changes presentation, not what is shown about your network. Do not project a screen that lists real device names and addresses in a public room.
+
+**Can a viewer turn it off?** No. Only the owner can switch it.

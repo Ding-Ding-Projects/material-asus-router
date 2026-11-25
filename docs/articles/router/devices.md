@@ -85,3 +85,14 @@ If the device supports Wake-on-LAN, choose **Wake** to send a wake packet from t
 | Reading the device list | Built |
 | Rename, block, reserve and wake screens | In progress |
 | Verified on real routers | Not yet |
+
+## See it in action
+
+::sim[network-map]
+
+*The panel above is a demonstration with made-up values. It does not read or change your router.*
+
+## Go deeper
+
+- [Read the network map](../workflows/network-map.md)
+- [Wireless MAC filter](../wireless/mac-filter.md)

@@ -58,3 +58,11 @@ After a Merlin update, check that your extras still work. Scripts and add-ons sa
 | Detect Merlin and list supported extras | Built |
 | Scheduled jobs list | Built |
 | Other extras | Planned, in the order of the table |
+
+## Go deeper
+
+- [Merlin custom scripts](../merlin/merlin-scripts.md)
+- [Cron jobs](../merlin/cron-jobs.md)
+- [Entware](../merlin/entware.md)
+- [Merlin add-ons](../merlin/addons.md)
+- [Stock or Merlin](../reference/stock-vs-merlin.md)

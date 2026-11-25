@@ -31,3 +31,30 @@ A check from outside needs a test service the app can call, which has not been c
 
 - Only test ports on your own router.
 - The app will tell you what leaves your network before it sends the test request.
+
+## How it will work
+
+You enter a port and protocol. An outside server tries to connect to your public address on that port and reports whether it is **open**, **closed** or **filtered**. This is the honest test for a forward, because a check from inside your home often says "open" when the world cannot reach it.
+
+## What the answers mean
+
+| Answer | Meaning |
+| --- | --- |
+| Open | Something answered. The forward works and the service is listening |
+| Closed | The connection reached your router and was refused. The forward may be missing, or the service is not running |
+| Filtered or no answer | Something dropped it: a firewall, double NAT, or your provider |
+
+## Run it as part of a routine
+
+1. Before you forward a port, check it is **closed**. That is the baseline.
+2. Add the forward, then check again. It should be **open**.
+3. Delete the forward when finished, and check it is **closed** again.
+
+Use it as part of the [hardening checklist](../security/hardening-checklist.md): scan your common ports and expect all closed except the ones you chose.
+
+## Questions people ask
+
+**Is it safe to send my address to a checker?** The checker sees your public address, which every site you visit already sees. Use a service you trust.
+
+**Why does it say open for a port I never forwarded?** UPnP may have opened it. See [UPnP](../lan/upnp.md).
+

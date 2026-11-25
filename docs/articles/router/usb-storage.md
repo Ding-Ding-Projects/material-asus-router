@@ -58,3 +58,7 @@ Use **Eject** in the app before unplugging. Pulling a drive without ejecting can
 | Read attached drives | Built |
 | Sharing screen and users | In progress |
 | Eject | In progress |
+
+## Go deeper
+
+- [USB apps: sharing, media and backups](../connect/usb-apps.md)

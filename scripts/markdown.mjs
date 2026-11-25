@@ -1,6 +1,19 @@
+import { readFileSync } from 'node:fs';
+
 // A small, dependency-free Markdown renderer for the documentation site.
 // Supports front matter, headings with anchors, paragraphs, nested lists, task lists, tables,
 // fenced code, block quotes with callouts, images, links and inline emphasis. Raw HTML is escaped.
+
+// Interactive demonstrations: a line "::sim[name]" becomes a placeholder that site-src/sims/loader.js hydrates.
+let simRegistry = null;
+function simEntry(id) {
+  if (!simRegistry) simRegistry = JSON.parse(readFileSync(new URL('../site-src/sims/registry.json', import.meta.url), 'utf8'));
+  const hit = simRegistry.find((s) => s.id === id);
+  if (!hit) throw new Error(`Unknown demonstration "${id}" in ::sim[${id}]. Known: ${simRegistry.map((s) => s.id).join(', ')}`);
+  return hit;
+}
+const simBi = (obj) => `<span class="bi"><span class="en">${escapeHtml(obj.en)}</span><span class="zh" lang="zh-HK">${escapeHtml(obj.zh)}</span></span>`;
+const SIM_LINE = /^::sim\[([a-z0-9-]+)\]\s*$/;
 
 export function escapeHtml(text) {
   return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -77,6 +90,7 @@ export function renderMarkdown(source, ctx) {
     return count ? `${base}-${count}` : base;
   };
   const text = [];
+  let simLoader = false;
   const inl = (s) => inlineRender(s, ctx);
 
   function parse(lines) {
@@ -85,6 +99,20 @@ export function renderMarkdown(source, ctx) {
     while (i < lines.length) {
       const line = lines[i];
       if (/^\s*$/.test(line)) { i++; continue; }
+      const sim = SIM_LINE.exec(line);
+      if (sim) {
+        const entry = simEntry(sim[1]);
+        const printed = /--$/.test(idPrefix);   // the phone PDF edition shows a static card instead of a live demonstration
+        const loader = !printed && !simLoader ? `<script type="module">import('./' + (document.body.dataset.root || '') + 'assets/sims/loader.js')</script>` : '';
+        if (!printed) simLoader = true;
+        text.push(entry.title.en);
+        const note = printed
+          ? { en: 'Interactive demonstration on the website, not your router.', zh: '互動示範喺網站，並非你嘅路由器。' }
+          : { en: 'Interactive demonstration, not your router. It needs JavaScript.', zh: '互動示範，並非你嘅路由器，需要 JavaScript。' };
+        out.push(`<div class="sim-slot"${printed ? '' : ` data-sim="${entry.id}"`}><div class="sim-fallback"><p><strong>${simBi(entry.title)}</strong></p><p>${simBi(entry.summary)}</p><p class="muted small">${simBi(note)}</p></div></div>${loader}`);
+        i++;
+        continue;
+      }
       const fence = /^(\s*)(`{3,}|~{3,})\s*([\w+-]*)\s*(.*)$/.exec(line);
       if (fence) {
         const closer = new RegExp(`^\\s*${fence[2][0]}{${fence[2].length},}\\s*$`);
@@ -175,7 +203,7 @@ export function renderMarkdown(source, ctx) {
         continue;
       }
       const para = [];
-      while (i < lines.length && !/^\s*$/.test(lines[i]) && !/^\s*(`{3,}|~{3,}|#{1,6}\s|>|[-*+]\s|\d+[.)]\s|\|.*\|\s*$)/.test(lines[i])) { para.push(lines[i]); i++; }
+      while (i < lines.length && !/^\s*$/.test(lines[i]) && !/^\s*(`{3,}|~{3,}|#{1,6}\s|>|[-*+]\s|\d+[.)]\s|\|.*\|\s*$)/.test(lines[i]) && !SIM_LINE.test(lines[i])) { para.push(lines[i]); i++; }
       if (!para.length) { para.push(lines[i]); i++; }
       const joined = para.join('\n');
       text.push(stripInline(joined));

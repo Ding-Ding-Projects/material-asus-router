@@ -98,3 +98,32 @@ Reference it from a page with its path relative to the page, for example `![The 
 - Be honest about status: describe unbuilt features as planned, set `status: in-progress`, and say what is missing.
 - Callouts: start a block quote with `[!NOTE]`, `[!TIP]`, `[!WARNING]`, `[!IMPORTANT]` or `[!EXAMPLE]`.
 - Code fences carry a language label and get a copy button.
+
+## Interactive demonstrations
+
+The site ships twelve small simulations, each an ES module in `site-src/sims/` that draws with SVG. Every one is labelled "Demonstration, not your router", uses made-up data from the `198.51.100.0/24` and `203.0.113.x` documentation ranges, can be driven with the keyboard, and has Play or Pause, Step and Reset buttons. When the site's motion setting is "reduced" or "none", or the visitor's system asks for reduced motion, nothing animates on its own and the Play button is disabled; Step and the controls still work, so every state can be reached as a still frame.
+
+To put one in an article, write a directive on a line of its own, with a blank line before and after:
+
+```
+::sim[change-guard]
+```
+
+The build replaces the line with a placeholder card (title, summary and a note that JavaScript is needed). In the browser, `assets/sims/loader.js` finds each placeholder and mounts the live demonstration when it scrolls near the viewport, so a long article with several demonstrations stays light. An unknown name stops the build and lists the valid names. The directive is ignored inside code fences, so the example above is safe to copy. The phone PDF edition shows only the static card.
+
+| Name | What it shows |
+| --- | --- |
+| `change-guard` | Preview, arm, apply, then keep or revert, with adjustable guard time and failure injection |
+| `network-map` | Router, AiMesh nodes and devices you can drag, with band and signal |
+| `wifi-spectrum` | Neighbouring networks as bell curves, your channel and width, interference score |
+| `dhcp-pool` | A grid of addresses: leased, reserved, free, with lease expiry |
+| `port-forward` | Packets from the internet meeting forwarding rules |
+| `firewall` | Packets tested against ordered rules, with a connection table |
+| `qos-queues` | Game, call and download flows with and without priority |
+| `vpn-director` | Devices routed directly or through a tunnel, with a kill switch |
+| `parental-schedule` | A week grid you paint, with a live clock |
+| `subnet-calculator` | 32 address bits with a movable prefix boundary |
+| `dns-race` | Four resolvers answering one lookup |
+| `one-click-modes` | The exact settings a mode would change, with apply and undo |
+
+The gallery page `sims/index.html` lists every demonstration. To add one, create `site-src/sims/sim-<name>.js` that default-exports `{ id, title, summary, hint, label, view, setup(ui) }` (copy a small existing module), add an entry to `site-src/sims/registry.json` with a short kind label and the related guide's slug, and run `node scripts/build-site.mjs site`. Text shown to readers must be English and Cantonese pairs, built with the `ui.txt` and `ui.say` helpers so the language setting applies.

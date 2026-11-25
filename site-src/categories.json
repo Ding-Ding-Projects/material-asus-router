@@ -2,113 +2,421 @@
   {
     "id": "start",
     "icon": "i-play",
-    "title": { "en": "Start here", "zh": "由呢度開始" },
-    "summary": { "en": "What the app is, how it keeps changes safe, and how to try it without a router.", "zh": "呢個程式係乜、點樣令每次改動都安全，同埋點樣唔使路由器都可以試。" },
+    "title": {
+      "en": "Start here",
+      "zh": "由呢度開始"
+    },
+    "summary": {
+      "en": "What the app is, how it keeps changes safe, and how to try it without a router.",
+      "zh": "呢個程式係乜、點樣令每次改動都安全，同埋點樣唔使路由器都可以試。"
+    },
     "intro": {
       "en": "New to Material Asus Router? Read these first. They explain the idea in plain words: you see what will change before it changes, a safety timer on the router undoes a change that cuts you off, and every change can be undone.",
       "zh": "第一次用 Material Asus Router？請先睇呢幾篇。用最白話嘅方式講個概念：改動之前先睇清楚會變乜，如果改動令你斷線，路由器上面嘅安全計時器會自動還原，而且每次改動都可以還原。"
     },
     "steps": {
-      "en": ["Read the welcome page to see what the app does and does not do.", "Try the built-in pretend router to get a feel for the screens.", "Install it and connect your own router when you are ready."],
-      "zh": ["先睇歡迎頁，了解程式做得到同做唔到啲乜。", "用內置嘅模擬路由器試一試，熟悉各個畫面。", "準備好就安裝，再連接你自己嘅路由器。"]
+      "en": [
+        "Read the welcome page to see what the app does and does not do.",
+        "Try the built-in pretend router to get a feel for the screens.",
+        "Install it and connect your own router when you are ready."
+      ],
+      "zh": [
+        "先睇歡迎頁，了解程式做得到同做唔到啲乜。",
+        "用內置嘅模擬路由器試一試，熟悉各個畫面。",
+        "準備好就安裝，再連接你自己嘅路由器。"
+      ]
     }
   },
   {
     "id": "setup",
     "icon": "i-terminal",
-    "title": { "en": "Install and connect", "zh": "安裝同連接" },
-    "summary": { "en": "One-command setup, signing in to the router, firmware detection and the first account.", "zh": "一個指令完成設定、登入路由器、偵測韌體，同建立第一個帳戶。" },
+    "title": {
+      "en": "Install and connect",
+      "zh": "安裝同連接"
+    },
+    "summary": {
+      "en": "One-command setup, signing in to the router, firmware detection and the first account.",
+      "zh": "一個指令完成設定、登入路由器、偵測韌體，同建立第一個帳戶。"
+    },
     "intro": {
       "en": "Setup is built around one command that asks only for what it cannot choose for itself. After that, you open the app, create the first account (the owner) and connect the router with a generated SSH key or the router password.",
       "zh": "設定只需要一個指令，只會問你揀唔到嘅嘢。之後打開程式，建立第一個帳戶（擁有者），再用自動產生嘅 SSH 金鑰或者路由器密碼連接路由器。"
     },
     "steps": {
-      "en": ["Run the setup command and open the link it prints.", "Create the owner account.", "Connect the router and approve its host key once."],
-      "zh": ["執行設定指令，打開佢顯示嘅連結。", "建立擁有者帳戶。", "連接路由器，並一次過核准佢嘅主機金鑰。"]
+      "en": [
+        "Run the setup command and open the link it prints.",
+        "Create the owner account.",
+        "Connect the router and approve its host key once."
+      ],
+      "zh": [
+        "執行設定指令，打開佢顯示嘅連結。",
+        "建立擁有者帳戶。",
+        "連接路由器，並一次過核准佢嘅主機金鑰。"
+      ]
     }
   },
   {
     "id": "router",
     "icon": "i-router",
-    "title": { "en": "Router areas", "zh": "路由器功能" },
-    "summary": { "en": "One guide for every area of the router: Wi-Fi, Internet, firewall, VPN, mesh and more.", "zh": "路由器每個功能範圍都有一篇指南：Wi-Fi、互聯網、防火牆、VPN、Mesh 等等。" },
+    "title": {
+      "en": "Router areas",
+      "zh": "路由器功能"
+    },
+    "summary": {
+      "en": "One guide for every area of the router: Wi-Fi, Internet, firewall, VPN, mesh and more.",
+      "zh": "路由器每個功能範圍都有一篇指南：Wi-Fi、互聯網、防火牆、VPN、Mesh 等等。"
+    },
     "intro": {
       "en": "Each article covers one area of the router in the same shape: what it controls, the settings you can change, what the app checks before it applies a change, and what only works on Asuswrt-Merlin.",
       "zh": "每篇文章講一個功能範圍，結構一樣：控制啲乜、可以改邊啲設定、套用前程式會檢查啲乜，以及邊啲功能只限 Asuswrt-Merlin。"
     },
     "steps": {
-      "en": ["Pick the area you want to change.", "Check the status badge: Ready or In progress.", "Follow the safe-change steps in the article."],
-      "zh": ["揀你想改嘅範圍。", "留意狀態標籤：已完成或者開發中。", "跟住文章入面嘅安全改動步驟做。"]
+      "en": [
+        "Pick the area you want to change.",
+        "Check the status badge: Ready or In progress.",
+        "Follow the safe-change steps in the article."
+      ],
+      "zh": [
+        "揀你想改嘅範圍。",
+        "留意狀態標籤：已完成或者開發中。",
+        "跟住文章入面嘅安全改動步驟做。"
+      ]
+    }
+  },
+  {
+    "id": "wireless",
+    "icon": "i-wifi",
+    "title": {
+      "en": "Wi-Fi in depth",
+      "zh": "Wi-Fi 深入篇"
+    },
+    "summary": {
+      "en": "Roaming, beamforming, OFDMA, Target Wake Time, DFS, Smart Connect, schedules, MAC filters and WPS.",
+      "zh": "漫遊、波束成形、OFDMA、目標喚醒時間、DFS、Smart Connect、排程、MAC 過濾同 WPS。"
+    },
+    "intro": {
+      "en": "The basic Wi-Fi guide covers name, password and channel. These guides cover the advanced radio features: what each one does, when it helps, when it causes trouble, and how the app will let you change it safely.",
+      "zh": "基本 Wi-Fi 指南講名稱、密碼同頻道。呢度講進階無線功能：每個功能做啲乜、幾時有用、幾時會搞出問題，以及程式將會點樣令你安全咁改。"
+    },
+    "steps": {
+      "en": [
+        "Find the symptom or feature you care about.",
+        "Read what it does and the safe default.",
+        "Check the status badge before expecting a control in the app."
+      ],
+      "zh": [
+        "搵返你關心嘅症狀或者功能。",
+        "睇佢做啲乜同安全嘅預設值。",
+        "期望程式有控制項之前，先睇狀態標籤。"
+      ]
+    }
+  },
+  {
+    "id": "internet",
+    "icon": "i-router",
+    "title": {
+      "en": "Internet and DNS",
+      "zh": "互聯網同 DNS"
+    },
+    "summary": {
+      "en": "Connection types, dual WAN, IPv6, IPTV and VLAN, DNS over TLS and DNS Director.",
+      "zh": "連線類型、雙 WAN、IPv6、IPTV 同 VLAN、DNS over TLS 同 DNS Director。"
+    },
+    "intro": {
+      "en": "These guides explain how the router reaches the internet and how names are looked up: which connection type to pick, how failover between two connections works, how IPv6 and tagged IPTV traffic fit in, and how to keep DNS private.",
+      "zh": "呢啲指南講路由器點樣連去互聯網同點樣查域名：連線類型點揀、兩條線之間嘅故障轉移點運作、IPv6 同有標籤嘅 IPTV 流量點配合，以及點樣令 DNS 更私隱。"
+    },
+    "steps": {
+      "en": [
+        "Know which connection your provider gives you.",
+        "Change one thing at a time, under the connection-loss guard.",
+        "Test with the built-in tools afterwards."
+      ],
+      "zh": [
+        "先知道供應商俾你邊種連線。",
+        "一次只改一樣，並且有斷線保護。",
+        "之後用內置工具測試。"
+      ]
+    }
+  },
+  {
+    "id": "lan",
+    "icon": "i-settings",
+    "title": {
+      "en": "Local network",
+      "zh": "本地網絡"
+    },
+    "summary": {
+      "en": "Address pools, static routes, port triggering, DMZ, UPnP and NAT passthrough.",
+      "zh": "位址池、靜態路由、端口觸發、DMZ、UPnP 同 NAT 穿透。"
+    },
+    "intro": {
+      "en": "Inside your home the router hands out addresses and decides which traffic goes where. These guides cover the tools that shape that: planning an address pool, adding routes to another network, and the several ways to let outside traffic in, from safest to riskiest.",
+      "zh": "屋企網絡入面，路由器派位址同決定流量去邊。呢啲指南講塑造呢啲嘅工具：規劃位址池、加去另一個網絡嘅路由，同幾種俾外面流量入嚟嘅方法，由最穩陣到最危險。"
+    },
+    "steps": {
+      "en": [
+        "Plan the address range first.",
+        "Prefer the narrowest way to let traffic in.",
+        "Check the result with the port checker or ping."
+      ],
+      "zh": [
+        "先規劃位址範圍。",
+        "優先揀最窄嘅方式俾流量入嚟。",
+        "用端口檢查或者 ping 核對結果。"
+      ]
+    }
+  },
+  {
+    "id": "security",
+    "icon": "i-lock",
+    "title": {
+      "en": "Security and filtering",
+      "zh": "保安同過濾"
+    },
+    "summary": {
+      "en": "Firewall rules, URL and keyword filters, AiProtection, parental schedules and a hardening checklist.",
+      "zh": "防火牆規則、網址同關鍵字過濾、AiProtection、家長排程同加固清單。"
+    },
+    "intro": {
+      "en": "A router is the front door of the home network. These guides explain what each filter really blocks, what it cannot see, and the short list of settings that make the biggest difference.",
+      "zh": "路由器係屋企網絡嘅大門。呢啲指南解釋每種過濾實際擋住啲乜、睇唔到啲乜，同埋影響最大嗰幾項設定。"
+    },
+    "steps": {
+      "en": [
+        "Start with the hardening checklist.",
+        "Add filters only for a clear reason.",
+        "Review the log to see what was blocked."
+      ],
+      "zh": [
+        "由加固清單開始。",
+        "有清楚原因先加過濾。",
+        "睇記錄了解擋咗啲乜。"
+      ]
+    }
+  },
+  {
+    "id": "connect",
+    "icon": "i-shield",
+    "title": {
+      "en": "VPN, mesh and storage",
+      "zh": "VPN、Mesh 同儲存"
+    },
+    "summary": {
+      "en": "Traffic priority modes, VPN servers and clients, WireGuard peers, VPN Director, USB apps and AiMesh.",
+      "zh": "流量優先模式、VPN 伺服器同客戶端、WireGuard 對等端、VPN Director、USB 應用同 AiMesh。"
+    },
+    "intro": {
+      "en": "These guides go beyond switching a feature on: how to pick a traffic priority mode and set honest speeds, how to share one VPN with the right devices only, how to run storage apps from a USB drive, and how to look after a mesh.",
+      "zh": "呢啲指南唔止教你開關功能：點樣揀流量優先模式同填真實速度、點樣只俾啱嘅裝置行 VPN、點樣由 USB 硬碟行儲存應用，同點樣打理 Mesh。"
+    },
+    "steps": {
+      "en": [
+        "Decide what you want to achieve first.",
+        "Pick the simplest option that does it.",
+        "Test with one device before rolling it out."
+      ],
+      "zh": [
+        "先決定想達到乜。",
+        "揀最簡單而做得到嘅方案。",
+        "先用一部裝置測試，先至全面推行。"
+      ]
+    }
+  },
+  {
+    "id": "merlin",
+    "icon": "i-history",
+    "title": {
+      "en": "System, firmware and Merlin",
+      "zh": "系統、韌體同 Merlin"
+    },
+    "summary": {
+      "en": "Logging, LEDs, scheduled reboot, SSH keys, firmware updates, scripts, cron, Entware and add-ons.",
+      "zh": "記錄、燈號、排程重新啟動、SSH 金鑰、韌體更新、腳本、cron、Entware 同附加元件。"
+    },
+    "intro": {
+      "en": "Housekeeping and the extra power of Asuswrt-Merlin. Everything here that needs Merlin says so, and the app shows those controls disabled, with the reason, on stock firmware.",
+      "zh": "日常維護同 Asuswrt-Merlin 嘅額外功能。需要 Merlin 嘅都會註明，而喺原廠韌體上，程式會將呢啲控制項顯示為停用並講明原因。"
+    },
+    "steps": {
+      "en": [
+        "Back up before any firmware or script change.",
+        "Know which firmware you run.",
+        "Keep scripts small and tested."
+      ],
+      "zh": [
+        "改韌體或者腳本之前先備份。",
+        "知道自己行邊種韌體。",
+        "腳本保持精簡同測試過。"
+      ]
+    }
+  },
+  {
+    "id": "workflows",
+    "icon": "i-terminal",
+    "title": {
+      "en": "Tools, modes and terminal",
+      "zh": "工具、模式同終端機"
+    },
+    "summary": {
+      "en": "Router tools, one-click modes, visual editors, the SSH action catalogue and the owner terminal.",
+      "zh": "路由器工具、一鍵模式、視覺化編輯器、SSH 動作目錄同擁有者終端機。"
+    },
+    "intro": {
+      "en": "How the app turns a click into a safe change on the router: the tools you can run, the one-click bundles of settings, the editors for list-shaped settings, the fixed catalogue of commands the app may send, and the owner-only terminal.",
+      "zh": "程式點樣將一下撳掣變成路由器上面安全嘅改動：可以行嘅工具、一鍵設定組合、清單式設定嘅編輯器、程式可以發出嘅固定指令目錄，同只限擁有者用嘅終端機。"
+    },
+    "steps": {
+      "en": [
+        "Pick the tool or mode.",
+        "Read the preview.",
+        "Confirm, then check the change history."
+      ],
+      "zh": [
+        "揀工具或者模式。",
+        "睇預覽。",
+        "確認，之後睇變更記錄。"
+      ]
     }
   },
   {
     "id": "safety",
     "icon": "i-shield",
-    "title": { "en": "Safe changes", "zh": "安全改動" },
-    "summary": { "en": "Previews, the connection-loss guard, undo, history and the two-key reboot confirmation.", "zh": "預覽、斷線保護、還原、歷史記錄，同需要兩個步驟確認嘅重新啟動。" },
+    "title": {
+      "en": "Safe changes",
+      "zh": "安全改動"
+    },
+    "summary": {
+      "en": "Previews, the connection-loss guard, undo, history and the two-key reboot confirmation.",
+      "zh": "預覽、斷線保護、還原、歷史記錄，同需要兩個步驟確認嘅重新啟動。"
+    },
     "intro": {
       "en": "Every change follows the same path: a readable preview with old and new values, a confirmation, saved previous values, then apply. Changes that could cut your connection arm a timed revert on the router first.",
       "zh": "每次改動都行同一條路：先有易讀嘅預覽，列出舊值同新值，確認後儲存舊值，再套用。可能令你斷線嘅改動，會先喺路由器上面設定定時還原。"
     },
     "steps": {
-      "en": ["Understand the preview and confirm step.", "Learn how the guard timer protects you.", "Know where to find history and how to undo."],
-      "zh": ["了解預覽同確認步驟。", "了解保護計時器點樣保護你。", "知道喺邊度睇歷史同點樣還原。"]
+      "en": [
+        "Understand the preview and confirm step.",
+        "Learn how the guard timer protects you.",
+        "Know where to find history and how to undo."
+      ],
+      "zh": [
+        "了解預覽同確認步驟。",
+        "了解保護計時器點樣保護你。",
+        "知道喺邊度睇歷史同點樣還原。"
+      ]
     }
   },
   {
     "id": "tools",
     "icon": "i-terminal",
-    "title": { "en": "Built-in tools", "zh": "內置工具" },
-    "summary": { "en": "Ping, traceroute, name lookup, logs and other tools that run from the router.", "zh": "Ping、Traceroute、域名查詢、記錄等由路由器執行嘅工具。" },
+    "title": {
+      "en": "Built-in tools",
+      "zh": "內置工具"
+    },
+    "summary": {
+      "en": "Ping, traceroute, name lookup, logs and other tools that run from the router.",
+      "zh": "Ping、Traceroute、域名查詢、記錄等由路由器執行嘅工具。"
+    },
     "intro": {
       "en": "These tools run on the router itself, so they show what the router sees. Output in the articles is always labelled as an example, never as output from your router.",
       "zh": "呢啲工具喺路由器本身執行，所以顯示嘅係路由器睇到嘅情況。文章入面嘅輸出一律標明係範例，唔係你路由器嘅實際輸出。"
     },
     "steps": {
-      "en": ["Choose a tool.", "Enter a host name or address.", "Read the result and copy it if you need it."],
-      "zh": ["揀一個工具。", "輸入主機名稱或者位址。", "睇結果，需要嘅話可以複製。"]
+      "en": [
+        "Choose a tool.",
+        "Enter a host name or address.",
+        "Read the result and copy it if you need it."
+      ],
+      "zh": [
+        "揀一個工具。",
+        "輸入主機名稱或者位址。",
+        "睇結果，需要嘅話可以複製。"
+      ]
     }
   },
   {
     "id": "app",
     "icon": "i-people",
-    "title": { "en": "Using the app", "zh": "使用程式" },
-    "summary": { "en": "Accounts and roles, language, appearance, navigation, records and safety controls.", "zh": "帳戶同角色、語言、外觀、導覽、記錄同安全控制。" },
+    "title": {
+      "en": "Using the app",
+      "zh": "使用程式"
+    },
+    "summary": {
+      "en": "Accounts and roles, language, appearance, navigation, records and safety controls.",
+      "zh": "帳戶同角色、語言、外觀、導覽、記錄同安全控制。"
+    },
     "intro": {
       "en": "The app itself has features worth knowing: owner, operator and viewer roles, English and Cantonese, themes, search with a regular expression builder, and records of everything that changed.",
       "zh": "程式本身都有好多值得知道嘅功能：擁有者、操作員同檢視者角色、英文同廣東話、主題、附正規表達式建構器嘅搜尋，同每次改動嘅記錄。"
     },
     "steps": {
-      "en": ["Add family members with the right role.", "Set language and appearance.", "Review history and records."],
-      "zh": ["用啱嘅角色加入家人。", "設定語言同外觀。", "查看歷史同記錄。"]
+      "en": [
+        "Add family members with the right role.",
+        "Set language and appearance.",
+        "Review history and records."
+      ],
+      "zh": [
+        "用啱嘅角色加入家人。",
+        "設定語言同外觀。",
+        "查看歷史同記錄。"
+      ]
     }
   },
   {
     "id": "delivery",
     "icon": "i-download",
-    "title": { "en": "Docker, desktop and releases", "zh": "Docker、桌面版同發佈" },
-    "summary": { "en": "Running with Docker, the Windows desktop app, and how releases are published and checked.", "zh": "用 Docker 執行、Windows 桌面版，同發佈版本點樣公佈同檢查。" },
+    "title": {
+      "en": "Docker, desktop and releases",
+      "zh": "Docker、桌面版同發佈"
+    },
+    "summary": {
+      "en": "Running with Docker, the Windows desktop app, and how releases are published and checked.",
+      "zh": "用 Docker 執行、Windows 桌面版，同發佈版本點樣公佈同檢查。"
+    },
     "intro": {
       "en": "The app ships as a Docker image with a tracked Compose file and a host.bat launcher, and as a Windows desktop app planned in the same release. These articles cover each route and how to verify a download.",
       "zh": "程式以 Docker 映像連同 Compose 檔案同 host.bat 啟動器提供，同時計劃喺同一個版本推出 Windows 桌面版。呢啲文章講解每條途徑，以及點樣核實下載。"
     },
     "steps": {
-      "en": ["Choose Docker or the desktop app.", "Start it and open the link.", "Check the release details before you install."],
-      "zh": ["揀 Docker 定桌面版。", "啟動並打開連結。", "安裝之前先核對發佈資料。"]
+      "en": [
+        "Choose Docker or the desktop app.",
+        "Start it and open the link.",
+        "Check the release details before you install."
+      ],
+      "zh": [
+        "揀 Docker 定桌面版。",
+        "啟動並打開連結。",
+        "安裝之前先核對發佈資料。"
+      ]
     }
   },
   {
     "id": "reference",
     "icon": "i-book",
-    "title": { "en": "Reference", "zh": "參考資料" },
-    "summary": { "en": "Settings, commands, security notes and troubleshooting in one place.", "zh": "設定、指令、保安說明同疑難排解集中喺一處。" },
+    "title": {
+      "en": "Reference",
+      "zh": "參考資料"
+    },
+    "summary": {
+      "en": "Settings, commands, security notes and troubleshooting in one place.",
+      "zh": "設定、指令、保安說明同疑難排解集中喺一處。"
+    },
     "intro": {
       "en": "Look things up here: command-line options, where data is stored, how credentials are protected and what to do when something does not work.",
       "zh": "喺呢度查資料：指令選項、資料儲存位置、憑證點樣受保護，以及遇到問題點算。"
     },
     "steps": {
-      "en": ["Search for the term you need.", "Open the matching reference page.", "Follow the linked guide if you need steps."],
-      "zh": ["搜尋你需要嘅字詞。", "打開相符嘅參考頁。", "需要步驟嘅話，跟連結去指南。"]
+      "en": [
+        "Search for the term you need.",
+        "Open the matching reference page.",
+        "Follow the linked guide if you need steps."
+      ],
+      "zh": [
+        "搜尋你需要嘅字詞。",
+        "打開相符嘅參考頁。",
+        "需要步驟嘅話，跟連結去指南。"
+      ]
     }
   }
 ]

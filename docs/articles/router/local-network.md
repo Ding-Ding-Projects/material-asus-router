@@ -61,3 +61,15 @@ Everything that points at the old address, such as bookmarks, [port forwards](po
 | Control definitions, validation and guarded apply | Built |
 | Local network screen | In progress |
 | Real-router test of an address change | Not yet |
+
+## See it in action
+
+::sim[dhcp-pool]
+
+*The panel above is a demonstration with made-up values. It does not read or change your router.*
+
+## Go deeper
+
+- [Plan the address pool](../lan/dhcp-pool-planning.md)
+- [Static routes](../lan/static-routes.md)
+- [UPnP](../lan/upnp.md)

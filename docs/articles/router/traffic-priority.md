@@ -60,3 +60,14 @@ Giving a device a higher or lower priority, and limiting a single device's bandw
 | QoS controls and help text | Built |
 | Screen | In progress |
 | Per-device rules | Planned |
+
+## See it in action
+
+::sim[qos-queues]
+
+*The panel above is a demonstration with made-up values. It does not read or change your router.*
+
+## Go deeper
+
+- [Traffic priority modes](../connect/qos-modes.md)
+- [Speed test](../tools/speed-test.md)

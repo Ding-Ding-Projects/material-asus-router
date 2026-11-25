@@ -63,3 +63,8 @@ summary: 喺 Asuswrt-Merlin 上按你揀嘅時間喺路由器執行指令，有�
 | 新增、編輯同移除 | 開發中 |
 | 下次執行時間預覽 | 開發中 |
 | 真路由器測試 | 未有 |
+
+## 再深入啲
+
+- [Merlin 上嘅 Cron 工作](../merlin/cron-jobs.md)
+- [排程重新啟動](../merlin/scheduled-reboot.md)

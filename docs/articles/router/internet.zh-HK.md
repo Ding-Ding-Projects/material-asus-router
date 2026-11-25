@@ -58,3 +58,12 @@ PPPoE 連線仲需要供應商俾嘅用戶名同密碼。密碼只會喺遮住�
 | 連線類型同 DNS 控制項定義 | 已完成 |
 | 互聯網畫面同狀態顯示 | 開發中 |
 | 真路由器改連線類型測試 | 未有 |
+
+## 再深入啲
+
+- [揀連線類型](../internet/wan-types.md)
+- [雙 WAN](../internet/dual-wan.md)
+- [IPv6](../internet/ipv6.md)
+- [IPTV 同 VLAN 標籤](../internet/iptv-vlan.md)
+- [DNS over TLS](../internet/dns-over-tls.md)
+- [DNS Director](../internet/dns-director.md)

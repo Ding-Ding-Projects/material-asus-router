@@ -63,3 +63,13 @@ While the timer runs, the app shows a countdown and the sentence "If this page c
 - The router must be running when the timer is armed. A power cut during the delay can leave the router with half-applied values.
 - If the router's clock or shell is unusual, the timer might not start. The app checks that the timer started and refuses to apply if it did not.
 - Setting the delay too short may revert a slow but successful change. Keep the default unless you have a reason.
+
+## See it in action
+
+::sim[change-guard]
+
+*The panel above is a demonstration with made-up values. It does not read or change your router.*
+
+## Go deeper
+
+- [The guard timeline, step by step](../workflows/guard-timeline.md)

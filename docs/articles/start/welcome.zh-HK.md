@@ -44,3 +44,9 @@ Material Asus Router 係一個自己架設嘅網頁 app，透過 SSH 管理你�
 4. [連接路由器](../setup/connect-router.md)將佢同你部路由器連埋一齊。
 
 簡短答案喺 [wiki](../../wiki/home.md) 同[常見問題](../reference/faq.md)。
+
+## 再深入啲
+
+- [按症狀疑難排解](../reference/troubleshooting-by-symptom.md)
+- [路由器加固清單](../security/hardening-checklist.md)
+- [一鍵模式](../workflows/one-click-modes.md)

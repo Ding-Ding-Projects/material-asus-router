@@ -1,4 +1,4 @@
-/* Home page interactions: the change-flow demonstration, the guard diagram and the feature filter. */
+/* Home page interactions: the change-flow demonstration, the guard diagram, the feature filter, count-up numbers, the hero mock and the scroll story. */
 (function () {
   'use strict';
   var M = window.MAR;
@@ -127,4 +127,88 @@
       });
     });
   }
+
+  // ---------- visual layer: motion-aware helpers, count-up, hero mock, story, tile badges ----------
+  var rootEl = document.documentElement;
+  var fullMotion = function () {
+    var reduceOs = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    return rootEl.getAttribute('data-motion') === 'full' && !reduceOs;
+  };
+
+  // numbers in the stats strip come from the real feature inventory, never from hand-typed counts
+  var featureItems = $$('.feature');
+  var counts = {
+    features: featureItems.length,
+    areas: $$('.feature-group').length,
+    ready: featureItems.filter(function (li) { return li.getAttribute('data-status') === 'ready'; }).length
+  };
+  $$('[data-from]').forEach(function (el) { el.setAttribute('data-count', String(counts[el.getAttribute('data-from')] || 0)); });
+  function countUp(el) {
+    var target = parseInt(el.getAttribute('data-count'), 10) || 0;
+    if (!fullMotion() || target === 0) { el.textContent = String(target); return; }
+    var start = null, dur = 1100;
+    function frame(ts) {
+      if (start === null) start = ts;
+      var p = Math.min(1, (ts - start) / dur), e = 1 - Math.pow(1 - p, 4);
+      el.textContent = String(Math.round(target * e));
+      if (p < 1) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+  var nums = $$('.num[data-count], [data-countup]');
+  nums.forEach(function (el) {
+    if (el.hasAttribute('data-countup')) el.setAttribute('data-count', el.getAttribute('data-countup'));
+    el.textContent = el.getAttribute('data-count'); // the true value first, so nothing depends on the animation
+  });
+  if ('IntersectionObserver' in window) {
+    var seen = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting) { countUp(e.target); seen.unobserve(e.target); } });
+    }, { threshold: 0.6 });
+    nums.forEach(function (el) { seen.observe(el); });
+  }
+
+  // hero mock: cycles preview, timer armed, link check and applied, only while visible and only with full motion
+  var mock = $('#mock');
+  if (mock) {
+    var phase = 3, tick = null, inView = true;
+    var setPhase = function (n) { phase = n; mock.setAttribute('data-phase', String(n)); };
+    var stopMock = function () { if (tick) { clearInterval(tick); tick = null; } };
+    var runMock = function () {
+      stopMock();
+      if (!fullMotion() || !inView || document.visibilityState === 'hidden') { setPhase(3); return; }
+      setPhase(0);
+      tick = setInterval(function () { setPhase((phase + 1) % 4); }, 2600);
+    };
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) { inView = entries[0].isIntersecting; runMock(); }, { threshold: 0.2 }).observe(mock);
+    } else runMock();
+    new MutationObserver(runMock).observe(rootEl, { attributes: true, attributeFilter: ['data-motion'] });
+    document.addEventListener('visibilitychange', runMock);
+  }
+
+  // "how a safe change works": the step in view drives the picture beside it
+  var story = $('#story-body');
+  if (story && 'IntersectionObserver' in window) {
+    var stepEls = $$('.story-step', story);
+    var choose = function (el) {
+      story.setAttribute('data-step', el.getAttribute('data-s'));
+      stepEls.forEach(function (o) { o.classList.toggle('on', o === el); });
+    };
+    var spy = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting) choose(e.target); });
+    }, { rootMargin: '-35% 0px -45% 0px', threshold: 0 });
+    stepEls.forEach(function (s) {
+      spy.observe(s);
+      s.setAttribute('tabindex', '0');
+      s.addEventListener('focus', function () { choose(s); });
+    });
+  }
+
+  // tile badges read the real status from the full inventory below, so a tile can never claim more than its guide
+  $$('.tile[data-feature]').forEach(function (tile) {
+    var href = tile.getAttribute('data-feature');
+    var match = $$('.feature-link').filter(function (a) { return a.getAttribute('href') === href; })[0];
+    var badge = $('[data-badge]', tile), src = match && $('.badge', match);
+    if (badge && src) { badge.className = 'tile-badge ' + src.className; badge.innerHTML = src.innerHTML; }
+  });
 })();

@@ -58,3 +58,14 @@ summary: 為你揀嘅裝置設定上網時間限制同封鎖，時間表一眼�
 | 總開關同裝置清單 | 已完成 |
 | 時間表編輯器同淺白預覽 | 開發中 |
 | 內容過濾 | 第一個版本唔計劃包括 |
+
+## 實際睇吓
+
+::sim[parental-schedule]
+
+*上面嘅面板係示範，數值都係虛構，唔會讀或者改你嘅路由器。*
+
+## 再深入啲
+
+- [家長排程](../security/parental-schedules.md)
+- [網址同關鍵字過濾](../security/url-keyword-filters.md)

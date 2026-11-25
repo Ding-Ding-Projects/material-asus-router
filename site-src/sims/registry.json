@@ -1,0 +1,194 @@
+[
+  {
+    "id": "change-guard",
+    "title": {
+      "en": "Change guard timeline",
+      "zh": "連線守護時間線"
+    },
+    "summary": {
+      "en": "Follow one change through preview, arm, apply and check. Break the connection and watch the guard put the old setting back.",
+      "zh": "跟住一次更改行過預覽、佈防、套用同檢查；斷咗線就睇守護點樣還原舊設定。"
+    },
+    "kind": {
+      "en": "Safety",
+      "zh": "安全"
+    },
+    "related": "safety/connection-guard"
+  },
+  {
+    "id": "network-map",
+    "title": {
+      "en": "Network map with mesh nodes",
+      "zh": "網絡地圖同 AiMesh 節點"
+    },
+    "summary": {
+      "en": "Drag a device or a mesh node. Each device joins the node with the strongest signal, and falls back to 2.4 GHz when 5 GHz gets too weak.",
+      "zh": "拖動裝置或者網狀節點。每部裝置會連去訊號最強嘅節點；5 GHz 太弱就轉用 2.4 GHz。"
+    },
+    "kind": {
+      "en": "Wi-Fi",
+      "zh": "Wi-Fi"
+    },
+    "related": "router/aimesh"
+  },
+  {
+    "id": "wifi-spectrum",
+    "title": {
+      "en": "Wi-Fi channel spectrum",
+      "zh": "Wi-Fi 頻道頻譜"
+    },
+    "summary": {
+      "en": "Neighbouring networks appear as bell curves. Slide your own network along the band and watch the interference score fall or rise.",
+      "zh": "鄰居嘅網絡以鐘形曲線顯示。喺頻段上移動你自己嘅網絡，睇干擾分數升定跌。"
+    },
+    "kind": {
+      "en": "Wi-Fi",
+      "zh": "Wi-Fi"
+    },
+    "related": "tools/wifi-channel-analyser"
+  },
+  {
+    "id": "dhcp-pool",
+    "title": {
+      "en": "DHCP address pool",
+      "zh": "DHCP 位址池"
+    },
+    "summary": {
+      "en": "Each cell is one address on the demo network. Move the pool, shorten the lease, and watch devices take and lose addresses.",
+      "zh": "每格係示範網絡入面一個位址。調整位址池、縮短租期，睇裝置攞到同失去位址。"
+    },
+    "kind": {
+      "en": "Network",
+      "zh": "網絡"
+    },
+    "related": "lan/dhcp-pool-planning"
+  },
+  {
+    "id": "port-forward",
+    "title": {
+      "en": "Port forwarding packet path",
+      "zh": "連接埠轉發封包路徑"
+    },
+    "summary": {
+      "en": "Packets from the internet reach the router first. A matching rule forwards them to one device; no rule means the packet stops at the router.",
+      "zh": "互聯網嘅封包先去到路由器。有符合嘅規則就轉去指定裝置；冇規則就喺路由器停低。"
+    },
+    "kind": {
+      "en": "Network",
+      "zh": "網絡"
+    },
+    "related": "router/port-forwarding"
+  },
+  {
+    "id": "firewall",
+    "title": {
+      "en": "Firewall packet decisions",
+      "zh": "防火牆封包決定"
+    },
+    "summary": {
+      "en": "Five demo rules sit in a fixed order. Each packet is tested from the top, and the first rule that matches decides whether it passes.",
+      "zh": "五條示範規則按固定次序排列。每個封包由上而下檢查，第一條符合嘅規則決定放行定丟棄。"
+    },
+    "kind": {
+      "en": "Security",
+      "zh": "保安"
+    },
+    "related": "router/firewall"
+  },
+  {
+    "id": "qos-queues",
+    "title": {
+      "en": "Traffic priority queues",
+      "zh": "流量優先隊列"
+    },
+    "summary": {
+      "en": "A game, a call and a big download share one internet link. Compare one shared queue with a priority queue, side by side.",
+      "zh": "遊戲、通話同大型下載共用一條上網線路。並排比較共用隊列同優先隊列。"
+    },
+    "kind": {
+      "en": "Performance",
+      "zh": "效能"
+    },
+    "related": "router/traffic-priority"
+  },
+  {
+    "id": "vpn-director",
+    "title": {
+      "en": "VPN routing by device",
+      "zh": "按裝置分流嘅 VPN 路由"
+    },
+    "summary": {
+      "en": "Choose, device by device, which traffic goes through the VPN tunnel and which goes straight out. Then drop the tunnel and see what the kill switch does.",
+      "zh": "逐部裝置揀走 VPN 隧道定直接上網。然後切斷隧道，睇斷網保護做咩。"
+    },
+    "kind": {
+      "en": "Privacy",
+      "zh": "私隱"
+    },
+    "related": "router/vpn"
+  },
+  {
+    "id": "parental-schedule",
+    "title": {
+      "en": "Parental schedule painting",
+      "zh": "家長時間表塗畫"
+    },
+    "summary": {
+      "en": "Paint the hours when a child's tablet should be offline. A live clock crosses the week and shows whether the internet is on or off right now.",
+      "zh": "塗出小朋友平板電腦要離線嘅時段。即時時鐘橫過一星期，顯示而家上網開定關。"
+    },
+    "kind": {
+      "en": "Family",
+      "zh": "家庭"
+    },
+    "related": "security/parental-schedules"
+  },
+  {
+    "id": "subnet-calculator",
+    "title": {
+      "en": "Subnet calculator",
+      "zh": "子網計算器"
+    },
+    "summary": {
+      "en": "Slide the prefix boundary across 32 bits. Bits on the left name the network; bits on the right are left for devices.",
+      "zh": "喺 32 個位元之間移動前綴界線。左邊嘅位元代表網絡，右邊嘅位元留畀裝置。"
+    },
+    "kind": {
+      "en": "Tools",
+      "zh": "工具"
+    },
+    "related": "tools/subnet-calculator"
+  },
+  {
+    "id": "dns-race",
+    "title": {
+      "en": "DNS lookup race",
+      "zh": "DNS 查詢競賽"
+    },
+    "summary": {
+      "en": "One question, four resolvers. The router cache is fastest when it already knows the answer, and slowest of all when it has to ask upstream.",
+      "zh": "同一條問題問四個解析器。路由器快取知道答案時最快；要向上游查詢時就未必。"
+    },
+    "kind": {
+      "en": "Internet",
+      "zh": "互聯網"
+    },
+    "related": "tools/dns-benchmark"
+  },
+  {
+    "id": "one-click-modes",
+    "title": {
+      "en": "One-click modes preview",
+      "zh": "一鍵模式預覽"
+    },
+    "summary": {
+      "en": "A mode is a named bundle of settings. Pick one to see exactly what would change before anything is applied, then apply it to the demo or undo it.",
+      "zh": "模式係一組有名稱嘅設定。揀一個，套用之前就睇到會改邊啲設定，之後可以套用到示範或者還原。"
+    },
+    "kind": {
+      "en": "Everyday",
+      "zh": "日常"
+    },
+    "related": "start/quick-tour"
+  }
+]

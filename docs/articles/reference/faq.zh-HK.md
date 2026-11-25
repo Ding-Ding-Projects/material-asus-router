@@ -99,6 +99,82 @@ App 只會用路由器自己頁面用嘅同一套機制改設定，亦唔會自�
 
 冇嘢離開你嘅網絡。佢將帳戶、路由器連線同改動紀錄儲存喺你自己嘅資料卷。見[資料同安全模型](security-model.md)。
 
+## Wi-Fi 同互聯網
+
+### 點解部手機死死地黐住弱訊號？
+
+手機自己決定幾時轉，好多都等得太遲。漫遊助手可以推一推，但要解決死角就要加多個接入點。請睇[漫遊](../wireless/roaming.md)同[管理 AiMesh 網絡](../connect/aimesh-management.md)。
+
+### 所有頻段用同一個 Wi-Fi 名好嗎？
+
+手機同電腦就好，用 [Smart Connect](../wireless/smart-connect.md)。智能插座等唔肯連嘅小工具，另外留一個 2.4 GHz 名。
+
+### 用 DFS 頻道安全嗎？
+
+安全，而且通常最靜。路由器用之前要聽一分鐘雷達，聽到就會讓位。如果 Wi-Fi 每日同一個鐘數斷，就轉用固定頻道。請睇 [DFS 頻道](../wireless/dfs-channels.md)。
+
+### 連線類型點揀？
+
+由自動 IP 開始。供應商俾咗用戶名同密碼先用 PPPoE。請睇[揀連線類型](../internet/wan-types.md)。
+
+### DNS over TLS 值得用嗎？
+
+佢令線路睇唔到你嘅查詢，並將信任轉去你揀嘅解析器。你揀咗比供應商更信任嘅解析器就值得。請睇 [DNS over TLS](../internet/dns-over-tls.md)。
+
+### 點解端口轉發喺屋企入面得，喺外面唔得？
+
+喺入面測試通常無論路由器點設定都成功。要用流動數據測試。外面失敗最常見係雙重 NAT。請睇[按症狀疑難排解](troubleshooting-by-symptom.md)。
+
+## 保安
+
+### MAC 過濾係真正保安嗎？
+
+唔係。位址可以抄，手機又可能每個網絡用隨機位址。佢只擋到隨便嘅訪客。請睇[無線 MAC 過濾](../wireless/mac-filter.md)。
+
+### 要唔要關 UPnP？
+
+有鏡頭、家用伺服器或者共用電腦就關，只轉發需要嘅。只有一部遊戲機而冇特別嘅嘢，佢係合理嘅方便。請睇 [UPnP](../lan/upnp.md)。
+
+### DMZ 主機有冇好用嘅時候？
+
+好少。佢令一部裝置所有端口都暴露。先試[端口轉發](../security/port-forward-safely.md)或者[觸發](../lan/port-triggering.md)。
+
+### 最有用嘅十項保安設定係乜？
+
+[加固清單](../security/hardening-checklist.md)按次序列出。
+
+## VPN、USB 同 Mesh
+
+### 應該行邊種 VPN 伺服器？
+
+路由器有就用 WireGuard，否則用 OpenVPN，避免 PPTP。請睇[揀 VPN 伺服器類型](../connect/vpn-servers.md)。
+
+### 可以只將部分裝置經 VPN 嗎？
+
+喺 Asuswrt-Merlin 可以，用 [VPN Director](../connect/vpn-director.md)。
+
+### USB 硬碟可以做檔案伺服器嗎？
+
+可以，做輕量工作。請睇 [USB 應用](../connect/usb-apps.md)。
+
+## Merlin 同程式工具
+
+### 一定要 Asuswrt-Merlin 嗎？
+
+唔使。程式兩種都支援。Merlin 多咗腳本、cron 同 DNS 或者 VPN 路由。請睇[原廠定 Merlin](stock-vs-merlin.md)。
+
+### 可以喺程式行自己嘅指令嗎？
+
+正常畫面唔得。程式只會發出固定嘅[動作目錄](../workflows/ssh-action-catalogue.md)。擁有者專用嘅[終端機](../workflows/owner-terminal.md)屬計劃中。
+
+### 一鍵模式係乜？
+
+有名嘅設定組合，例如睡覺或者訪客，作為一次預覽過嘅改動套用，一次還原。屬計劃中，請睇[一鍵模式](../workflows/one-click-modes.md)。
+
+### 點解網站上面有啲示範嘅數字係虛構？
+
+佢哋用嚟教一個概念，並且一定標明係示範。永遠唔會讀或者改你嘅路由器。
+
 ## 參考
 
 - [API 概覽](api.md)

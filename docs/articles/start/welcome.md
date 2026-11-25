@@ -48,3 +48,9 @@ You can try everything first without a router, using the built-in pretend router
 4. [Connect your router](../setup/connect-router.md) links it to your router.
 
 Short answers are in the [wiki](../../wiki/home.md) and the [FAQ](../reference/faq.md).
+
+## Go deeper
+
+- [Troubleshooting by symptom](../reference/troubleshooting-by-symptom.md)
+- [Router hardening checklist](../security/hardening-checklist.md)
+- [One-click modes](../workflows/one-click-modes.md)

@@ -31,3 +31,21 @@ Only the reboot two-key confirmation exists as a lock. Area locks and the ladder
 
 - Locks add care; they do not replace roles.
 - Viewers see locked areas as read-only anyway.
+
+## A planned walkthrough (demonstration)
+
+Some areas are risky: reboot, restore, the owner terminal. A lock puts steps in front of them:
+
+| Rung | What you do | Typical use |
+| --- | --- | --- |
+| 1 | Click to unlock | Low-risk settings |
+| 2 | Confirm with your password | Changes that affect connections |
+| 3 | Type a short phrase shown on screen | Reboot, restore, delete |
+
+Climbing a rung unlocks only that area, for a short time. It locks again when you leave or go idle.
+
+## Questions people ask
+
+**Does it replace roles?** No. Roles decide what a person may do. Locks make a person who is allowed slow down and mean it. See [Roles and access](../safety/roles-and-access.md) and [Super confirmation](../safety/super-confirmation.md).
+
+**What if I forget the password?** The owner can reset a lock from a signed-in session. A lock never hides data from the owner.
