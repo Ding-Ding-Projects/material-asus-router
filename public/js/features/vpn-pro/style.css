@@ -1,0 +1,6 @@
+/* VPN tools: the section panel, the QR code and the configuration text. */
+.vpn-panel { display: flex; flex-direction: column; gap: 20px; }
+.qrbox { display: flex; justify-content: center; padding: 8px 0; }
+.qr { image-rendering: pixelated; max-width: 100%; height: auto; border-radius: 12px; background: #fff; }
+.fp.config { max-height: 180px; overflow: auto; white-space: pre-wrap; font-size: 12px; }
+.tabs { flex-wrap: wrap; }
