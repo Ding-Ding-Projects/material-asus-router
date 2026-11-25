@@ -8,6 +8,7 @@ import { spawnSync } from 'node:child_process';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { escapeHtml, parseFrontMatter, renderMarkdown, stripInline } from './markdown.mjs';
+import { buildSims } from '../site-src/sims/build.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = path.join(ROOT, 'site-src');
@@ -535,3 +536,4 @@ if (errors.length) {
   process.exit(1);
 }
 console.log(`Site built in ${OUT}: ${articles.length} article(s), ${wikiDocs.length} wiki page(s), ${CATEGORIES.length} categories, release ${release.verified ? release.tag : `not verified (${release.reason})`}.`);
+buildSims({ out: OUT, renderPage, breadcrumb, relUrl, docsBySlug, escapeHtml, fail });
