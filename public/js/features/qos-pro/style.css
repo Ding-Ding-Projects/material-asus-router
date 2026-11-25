@@ -1,0 +1,14 @@
+/* Traffic priority: the draggable priority order and the line speed. */
+.qp-order { display: grid; gap: 8px; min-width: 0; }
+.qp-tiers { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.qp-tier { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 12px; background: var(--surf); cursor: grab; min-width: 0; }
+.qp-tier.over { outline: 2px solid var(--primary); }
+.qp-tier .grow { min-width: 0; overflow-wrap: anywhere; }
+.qp-rank { min-width: 22px; text-align: center; font-weight: 650; color: var(--sub); }
+.qp-moves { display: flex; gap: 2px; }
+.qp-speedwrap { display: grid; gap: 8px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); }
+.qp-speedcard { display: grid; gap: 8px; }
+.qp-speed { font-weight: 650; }
+@media (prefers-reduced-motion: no-preference) {
+  .qp-tier { transition: outline-color 120ms, transform 120ms; }
+}

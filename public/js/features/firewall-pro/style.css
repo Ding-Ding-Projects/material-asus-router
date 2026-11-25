@@ -1,0 +1,31 @@
+/* Firewall and filters, and the rule-table control that qos-pro shares. */
+.ruletable { display: grid; gap: 10px; min-width: 0; }
+.rt-rows { display: grid; gap: 8px; }
+.rt-row, .rt-add { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 8px 10px; align-items: start; padding: 10px; border: 1px solid var(--line); border-radius: 12px; background: var(--surf); }
+.rt-add { grid-template-columns: minmax(0, 1fr) auto; border-style: dashed; }
+.rt-n { min-width: 22px; padding-top: 22px; font-weight: 650; color: var(--sub); text-align: center; }
+.rt-cells { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; min-width: 0; }
+.rt-cell { display: grid; gap: 4px; min-width: 0; }
+.rt-cell .field, .rt-cell select { width: 100%; min-width: 0; }
+.rt-cell.c-kbps { grid-column: span 2; }
+.rt-rate { display: grid; gap: 6px; min-width: 0; }
+.rt-rate input[type="range"] { width: 100%; }
+.rt-rate .num { width: 8em; }
+.ruletable .rt-rate .ctl { flex-wrap: wrap; min-width: 0; }
+.rt-unit { overflow-wrap: anywhere; }
+.rt-device { display: grid; gap: 6px; min-width: 0; }
+.rt-tools { display: flex; gap: 2px; padding-top: 18px; }
+.rt-problem { grid-column: 1 / -1; color: var(--bad); font-size: 13px; min-height: 0; }
+.rt-problem:empty { display: none; }
+.rt-empty, .rt-count { font-size: 13px; }
+.fp-days { gap: 6px; }
+.fp-time, .setting .ctl.fp-time { flex-wrap: wrap; min-width: 0; }
+.fp-time .field { width: auto; }
+.fp-schedule { display: grid; gap: 8px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); }
+.fp-preview .slot { pointer-events: none; }
+@media (max-width: 520px) {
+  .rt-row { grid-template-columns: minmax(0, 1fr); }
+  .rt-n { display: none; }
+  .rt-tools { padding-top: 0; }
+  .rt-cell.c-kbps { grid-column: auto; }
+}

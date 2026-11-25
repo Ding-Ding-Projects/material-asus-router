@@ -1,0 +1,11 @@
+/* Parental controls: one card per device with a week grid. */
+.pp-devices { display: grid; gap: 12px; margin: 8px 0 12px; }
+.pp-device { display: grid; gap: 10px; padding: 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--surf); min-width: 0; }
+.pp-schedule { display: grid; gap: 8px; min-width: 0; }
+.pp-grid .slot { min-height: 24px; }
+.pp-add { display: grid; gap: 8px; padding-top: 10px; border-top: 1px solid var(--line); }
+.pp-add .ctl { flex-wrap: wrap; }
+.pp-add .field { min-width: 0; flex: 1 1 180px; }
+.pp-columnview { display: grid; gap: 6px; }
+.pp-column { margin: 0; padding-left: 20px; display: grid; gap: 2px; }
+.pp-device .seg { flex-wrap: wrap; }
