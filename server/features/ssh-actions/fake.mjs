@@ -69,7 +69,6 @@ function seed(router) {
     swaps: [],
     crons: merlin ? [{ name: "nightly-backup", line: "0 4 * * * /jffs/scripts/backup.sh" }] : [],
     down: new Set(),
-    deauthed: [],
     tools: { iperf3: false },
     cutOnDown: null,
   };
@@ -219,7 +218,8 @@ export function handler(command, router) {
     return { stdout: `Chain ${m[1] === "nat" ? "PREROUTING" : "INPUT"} (policy ACCEPT 0 packets, 0 bytes)\n pkts bytes target     prot opt in     out     source               destination\n  412 51200 ACCEPT     all  --  br0    *       198.51.100.0/24      0.0.0.0/0\n   12   720 DROP       all  --  eth0   *       0.0.0.0/0            0.0.0.0/0\n` };
   if (command === "head -n 200 /proc/net/nf_conntrack")
     return { stdout: "ipv4 2 tcp 6 431999 ESTABLISHED src=198.51.100.101 dst=203.0.113.9 sport=51234 dport=443 src=203.0.113.9 dst=100.64.12.34 sport=443 dport=51234 [ASSURED] mark=0 use=2\nipv4 2 udp 17 28 src=198.51.100.102 dst=1.1.1.1 sport=40111 dport=53 src=1.1.1.1 dst=100.64.12.34 sport=53 dport=40111 mark=0 use=2\n" };
-  if (w[0] === "wl" && w[1] === "-i" && w[3] === "deauthenticate" && w.length === 5) return (state.deauthed.push(w[4]), {});
+  // Disconnecting a Wi-Fi client is answered by the wifi-diagnostics pretend radio, which also
+  // models the device leaving and rejoining; answering it here too would hide that.
 
   // ---- tools, jobs ------------------------------------------------------------
   if (command === "command -v cru") return router.nvram["3rd-party"] === "merlin" ? { stdout: "/usr/sbin/cru\n" } : { code: 1 };
