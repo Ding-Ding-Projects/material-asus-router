@@ -8,6 +8,9 @@
 //   network      confirm, then apply under the connection-loss guard
 //   destructive  two-key super confirmation (see actions.mjs)
 
+import { featureCatalog, reportFeatureError } from "../features/registry.mjs";
+import { validateExtra } from "./controls.mjs";
+
 const L = (en, yue) => ({ en, yue });
 const ON_OFF = { on: "1", off: "0" };
 const DAY = 86400;
@@ -52,7 +55,7 @@ function bandSettings(index, nband) {
   return [
     { id: `${p}.radio`, domain: "wifi", group, groupLabel: band, key: `${p}_radio`, control: "switch", values: ON_OFF, restart: "restart_wireless", risk: "network",
       label: L(`${band.en} radio`, `${band.yue} 無線電`), help: L("Turn this band's wireless signal on or off. Devices on it disconnect while it is off.", "開或者關呢個頻段嘅無線訊號。關咗嘅時候，連住佢嘅裝置會斷線。") },
-    { id: `${p}.ssid`, domain: "wifi", group, groupLabel: band, key: `${p}_ssid`, control: "text", maxLength: 32, minLength: 1, restart: "restart_wireless", risk: "network",
+    { id: `${p}.ssid`, domain: "wifi", group, groupLabel: band, key: `${p}_ssid`, control: "text", freeText: true, freeTextReason: "A network name is whatever the owner wants to call it.", maxLength: 32, minLength: 1, restart: "restart_wireless", risk: "network",
       label: L("Network name", "網絡名稱"), help: L("The name people see when they look for Wi-Fi. Up to 32 characters.", "大家搵 Wi-Fi 時見到嘅名。最多 32 個字元。") },
     { id: `${p}.hidden`, domain: "wifi", group, groupLabel: band, key: `${p}_closed`, control: "switch", values: ON_OFF, restart: "restart_wireless", risk: "network",
       label: L("Hide network name", "隱藏網絡名稱"), help: L("Hidden networks must be typed in by hand. This does not make Wi-Fi more secure.", "隱藏咗就要人手打名先連到。咁做唔會令 Wi-Fi 安全啲。") },
@@ -70,7 +73,7 @@ function bandSettings(index, nband) {
       label: L("Transmit power", "發射功率"), help: L("Lower power keeps the signal inside a small home and can reduce interference.", "細屋可以調低功率，訊號唔會射到出面，亦減少干擾。") },
     { id: `${g}.enabled`, domain: "wifi", group: `guest${index}`, groupLabel: L(`Guest network, ${band.en}`, `訪客網絡（${band.yue}）`), key: `${g}_bss_enabled`, control: "switch", values: ON_OFF, restart: "restart_wireless", risk: "low",
       label: L("Guest network", "訪客網絡"), help: L("A separate Wi-Fi for visitors.", "俾訪客用嘅另一個 Wi-Fi。") },
-    { id: `${g}.ssid`, domain: "wifi", group: `guest${index}`, groupLabel: L(`Guest network, ${band.en}`, `訪客網絡（${band.yue}）`), key: `${g}_ssid`, control: "text", maxLength: 32, minLength: 1, restart: "restart_wireless", risk: "low",
+    { id: `${g}.ssid`, domain: "wifi", group: `guest${index}`, groupLabel: L(`Guest network, ${band.en}`, `訪客網絡（${band.yue}）`), key: `${g}_ssid`, control: "text", freeText: true, freeTextReason: "A network name is whatever the owner wants to call it.", maxLength: 32, minLength: 1, restart: "restart_wireless", risk: "low",
       label: L("Guest network name", "訪客網絡名稱"), help: L("The name visitors look for.", "訪客搵嘅網絡名稱。") },
     { id: `${g}.password`, domain: "wifi", group: `guest${index}`, groupLabel: L(`Guest network, ${band.en}`, `訪客網絡（${band.yue}）`), key: `${g}_wpa_psk`, control: "password", secret: true, minLength: 8, maxLength: 63, restart: "restart_wireless", risk: "low",
       label: L("Guest password", "訪客密碼"), help: L("8 to 63 characters.", "8 至 63 個字元。") },
@@ -181,7 +184,19 @@ const STATIC = [
 // Builds the catalogue for one router, given what detection found.
 export function buildCatalog(info) {
   const bands = info.bands.flatMap((band) => bandSettings(band.index, band.nband));
-  return [...bands, ...STATIC].map((entry) => {
+  const stock = [...bands, ...STATIC];
+  const taken = new Set(stock.flatMap((e) => [e.id, e.key]));
+  const extra = [];
+  for (const entry of featureCatalog(info)) {
+    if (taken.has(entry.id) || taken.has(entry.key)) {
+      reportFeatureError(entry.feature, `entry "${entry.id}" (setting ${entry.key}) is already used by another entry`);
+      continue;
+    }
+    taken.add(entry.id);
+    taken.add(entry.key);
+    extra.push(entry);
+  }
+  return [...stock, ...extra].map((entry) => {
     let disabled = null;
     if (entry.firmware === "merlin" && !info.merlin)
       disabled = L("Needs Asuswrt-Merlin firmware. This router runs the stock ASUS firmware.", "要用 Asuswrt-Merlin 韌體先有。呢部路由器用緊原廠 ASUS 韌體。");
@@ -202,15 +217,18 @@ export function validate(entry, value) {
     throw Object.assign(new Error(`${entry.label.en}: ${en}`), { status: 400 });
   };
   if (entry.disabled) fail(entry.disabled.en);
+  if (entry.readOnly) fail("this setting is read only.");
   switch (entry.control) {
     case "switch":
       if (![entry.values.on, entry.values.off].includes(text)) fail("choose on or off.");
       return text;
     case "select":
+    case "segmented":
       if (!entry.options.some(([v]) => v === text)) fail("choose one of the listed options.");
       return text;
     case "number":
-    case "slider": {
+    case "slider":
+    case "stepper": {
       const n = Number(text);
       if (!Number.isInteger(n) || n < entry.min || n > entry.max) fail(`enter a whole number from ${entry.min} to ${entry.max}.`);
       return String(n);
@@ -228,7 +246,10 @@ export function validate(entry, value) {
       if (text.length < (entry.minLength ?? 0) || text.length > (entry.maxLength ?? 256)) fail(`use ${entry.minLength ?? 0} to ${entry.maxLength} characters.`);
       if (/[\x00-\x1f<>]/.test(text)) fail("remove line breaks and the < and > characters.");
       return text;
-    default:
-      fail("this setting cannot be changed here.");
+    default: {
+      const value = validateExtra(entry, text, fail);
+      if (value === undefined) fail("this setting cannot be changed here.");
+      return value;
+    }
   }
 }

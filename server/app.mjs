@@ -2,14 +2,15 @@
 // createApp() builds everything around one data folder so tests can run a
 // complete app against a pretend router.
 import { createServer } from "node:http";
-import { readFile, stat } from "node:fs/promises";
+import { readFile, readdir, stat } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { COOKIE, Sessions, checkPassword, hashPassword } from "./auth.mjs";
-import { ACTIONS, generateKey, installKeyChange, publicKey, runAction } from "./actions.mjs";
+import { ACTIONS, generateKey, installKeyChange, publicKey, runAction, runFeatureAction } from "./actions.mjs";
 import { ChangeEngine, validateRaw } from "./changes/engine.mjs";
 import { DOMAINS, findByKey, validate } from "./router/catalog.mjs";
 import { describeEntry, readDomain } from "./router/domains.mjs";
+import { features, featureAction, featureDomainMeta, mountFeatureRoutes } from "./features/registry.mjs";
 import { MASK, isSecret } from "./router/secrets.mjs";
 import { RouterSession, VAULT_PASSWORD, VAULT_PUBLIC_KEY } from "./router/session.mjs";
 import { hostTarget } from "./router/shell.mjs";
@@ -235,7 +236,7 @@ async function liveContext(app) {
   return app.session.context();
 }
 
-const domainView = (domain, info) => ({ ...domain, supported: domain.id === "merlin" || domain.id === "jobs" ? info.merlin : domain.id === "aimesh" ? info.capabilities.includes("amas") : domain.id === "usb" ? info.capabilities.includes("usbX1") : true });
+const domainView = (domain, info) => ({ ...domain, supported: domain.feature ? (!domain.firmware || (domain.firmware === "merlin" && info.merlin)) && (!domain.requires || info.capabilities.includes(domain.requires)) : domain.id === "merlin" || domain.id === "jobs" ? info.merlin : domain.id === "aimesh" ? info.capabilities.includes("amas") : domain.id === "usb" ? info.capabilities.includes("usbX1") : true });
 
 // ---- routes -------------------------------------------------------------
 
@@ -384,7 +385,7 @@ function defineRoutes(app, route) {
     const ctx = await liveContext(app);
     return {
       info: ctx.info,
-      domains: DOMAINS.map((d) => domainView(d, ctx.info)),
+      domains: [...DOMAINS, ...featureDomainMeta().filter((m) => !DOMAINS.some((d) => d.id === m.id))].map((d) => domainView(d, ctx.info)),
       entries: ctx.catalog.map((e) => describeEntry(e, ctx.nvram)),
     };
   });
@@ -393,7 +394,7 @@ function defineRoutes(app, route) {
     const ctx = await liveContext(app);
     if (params.id === "history") return { id: "history", items: engine.history() };
     // These screens always show the router's present state.
-    const live = ["advanced", "devices", "overview"].includes(params.id);
+    const live = ["advanced", "devices", "overview"].includes(params.id) || Boolean(featureDomainMeta().find((m) => m.id === params.id)?.live);
     return readDomain(params.id, live ? await session.context({ fresh: true }) : ctx, query);
   });
 
@@ -427,6 +428,11 @@ function defineRoutes(app, route) {
   route("POST", "/api/changes/:id/undo", async ({ params, who }) => engine.undo(params.id, { user: who.name }));
 
   route("POST", "/api/actions/:name", async ({ params, body, who }) => {
+    const custom = featureAction(params.name);
+    if (custom) {
+      const info = await session.info();
+      return runFeatureAction(custom, body, { session, info, who, exec: (c, o) => session.exec(c, o), nvram: () => session.nvram({ fresh: true }), preview: (input) => engine.preview(input, { user: who.name }) });
+    }
     if (!ACTIONS.includes(params.name)) throw bad("That action does not exist.", 404);
     if (params.name === "install-key") {
       if (who.role !== "owner") throw bad("Only the owner can allow a new SSH key.", 403);
@@ -435,6 +441,25 @@ function defineRoutes(app, route) {
     }
     const info = await session.info();
     return runAction(params.name, body, { session, info });
+  });
+
+  // -- features: every folder in server/features adds its own routes under /api/x/<id> --
+  // They go through the same table as every route above, so sign-in, CSRF
+  // and role checks always apply; a feature cannot make a route public.
+  route("GET", "/api/features/manifest", async () => {
+    const dir = path.join(PUBLIC_DIR, "js", "features");
+    const folders = (await readdir(dir, { withFileTypes: true }).catch(() => [])).filter((e) => e.isDirectory()).map((e) => e.name).sort();
+    const modules = [];
+    const styles = [];
+    for (const name of folders) {
+      if ((await stat(path.join(dir, name, "index.js")).catch(() => null))?.isFile()) modules.push(`/js/features/${name}/index.js`);
+      if ((await stat(path.join(dir, name, "style.css")).catch(() => null))?.isFile()) styles.push(`/js/features/${name}/style.css`);
+    }
+    return { modules, styles, server: features.map((f) => f.id) };
+  });
+  mountFeatureRoutes((id, method, sub, handler, flags = {}) => {
+    const { public: _ignored, ...allowed } = flags;
+    route(method, `/api/x/${id}${sub}`, (c) => handler({ ...c, live: () => liveContext(app), preview: (input) => engine.preview(input, { user: c.who.name }), bad }), allowed);
   });
 
   // -- backup and restore --

@@ -30,7 +30,7 @@ export const LEDE = {
 };
 
 export function domainInfo(id) {
-  return app.catalog.domains.find((d) => d.id === id) ?? { id, icon: "settings", label: { en: id, yue: id } };
+  return app.catalog.domains.find((d) => d.id === id) ?? app.featureScreens?.[id] ?? { id, icon: "settings", label: { en: id, yue: id } };
 }
 
 export function header(id, extra) {

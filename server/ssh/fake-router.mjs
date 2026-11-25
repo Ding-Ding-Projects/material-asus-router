@@ -4,6 +4,7 @@
 // this project needs a real router to prove its behaviour.
 import { createHash } from "node:crypto";
 import ssh2 from "ssh2";
+import { featureFakeHandlers, featureNvram } from "../features/registry.mjs";
 import { generateEd25519 } from "./keys.mjs";
 
 const { Server, utils } = ssh2;
@@ -163,7 +164,8 @@ export class FakeRouter {
   constructor({ firmware = "merlin", model, password = "router-password", username = "admin", guardScale = 1 } = {}) {
     this.username = username;
     this.password = password;
-    this.nvram = defaultNvram({ firmware, model });
+    // Feature folders add their own default settings (fakeRouter.nvram).
+    this.nvram = { ...defaultNvram({ firmware, model }), ...featureNvram({ firmware, model }) };
     this.committed = { ...this.nvram };
     this.services = [];
     this.commands = [];
@@ -245,8 +247,20 @@ export class FakeRouter {
     return new Promise((resolve) => (this.server ? this.server.close(() => resolve()) : resolve()));
   }
 
+  // Feature folders may answer a command first (fakeRouter.handlers). A handler
+  // returns { stdout, stderr, code } to answer, or undefined to pass.
+  #feature(command) {
+    for (const handler of featureFakeHandlers()) {
+      const result = handler(command, this);
+      if (result !== undefined) return { code: 0, stdout: "", ...result };
+    }
+    return undefined;
+  }
+
   execute(command) {
     this.commands.push(command);
+    const answered = this.#feature(command);
+    if (answered) return answered;
     const guard = command.match(
       /^mkdir -p \/tmp\/mar; printf '%s' '([A-Za-z0-9+/=]+)' \| base64 -d > (\/tmp\/mar\/r-[A-Za-z0-9-]+\.sh); \( trap '' HUP; sleep (\d+); sh \2 \) <\/dev\/null >\/dev\/null 2>&1 & echo \$!$/,
     );
@@ -273,6 +287,8 @@ export class FakeRouter {
   }
 
   #one(cmd) {
+    const answered = this.#feature(cmd);
+    if (answered) return answered;
     let m;
     if ((m = cmd.match(/^nvram get ([A-Za-z0-9_.:-]+)$/))) return { stdout: `${this.nvram[m[1]] ?? ""}\n` };
     if (cmd === "nvram show")

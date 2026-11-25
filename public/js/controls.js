@@ -1,39 +1,15 @@
-// Rich controls for catalogue settings: switch, select (segmented or menu),
-// slider, number, text, password with reveal, and IPv4 fields. Each control
-// edits the pending-changes dock, never the router directly.
+// Rich controls for catalogue settings. Drawn here: switch, select (segmented
+// or menu, with option descriptions), slider with units, number, IPv4 fields,
+// password with reveal and strength, and free text with counter and hint.
+// Every other type (segmented, stepper, port, mac, device, cidr, range, chips,
+// color, schedule, file and any a feature adds) is registered with
+// registerControl() in control-registry.js; controls-rich.js holds the stock
+// ones. Each control edits the pending-changes dock, never the router directly.
 import { api, h, icon, t, tt, toast } from "./core.js";
 import { app, dock } from "./dock.js";
-
-function ipv4Field(value, onChange, disabled) {
-  const parts = String(value || "").split(".");
-  while (parts.length < 4) parts.push("");
-  const inputs = [0, 1, 2, 3].map((i) =>
-    h("input", {
-      class: "oct",
-      inputmode: "numeric",
-      maxlength: "3",
-      autocomplete: "off",
-      "aria-label": t(`Part ${i + 1} of the address`, `地址第 ${i + 1} 部分`),
-      value: parts[i],
-      disabled,
-      onInput(e) {
-        const cleaned = e.target.value.replace(/\D/g, "").slice(0, 3);
-        const hadDot = /\./.test(e.target.value);
-        e.target.value = cleaned;
-        if (i < 3 && (cleaned.length === 3 || (hadDot && cleaned))) inputs[i + 1].focus();
-        const joined = inputs.map((x) => x.value);
-        onChange(joined.every((x) => x === "") ? "" : joined.join("."));
-      },
-      onKeydown(e) {
-        if (e.key === "Backspace" && !e.target.value && i > 0) inputs[i - 1].focus();
-        if (e.key === "." && i < 3) (e.preventDefault(), inputs[i + 1].focus());
-      },
-    }),
-  );
-  const wrap = h("span", { class: "ipv4", role: "group" });
-  inputs.forEach((input, i) => wrap.append(i ? h("span", { "aria-hidden": "true" }, ".") : null, input));
-  return { el: wrap, set: (v) => String(v).split(".").forEach((p, i) => inputs[i] && (inputs[i].value = p)) };
-}
+import { controlTypes } from "./control-registry.js";
+import { ipv4Field } from "./ipv4-field.js";
+import "./controls-rich.js";
 
 function control(entry, current, commit, locked) {
   const disabled = locked;
@@ -56,8 +32,8 @@ function control(entry, current, commit, locked) {
     case "select": {
       if (entry.options.length <= 4) {
         const wrap = h("div", { class: "seg", role: "radiogroup", "aria-label": tt(entry.label) });
-        const buttons = entry.options.map(([value, label]) =>
-          h("button", { role: "radio", disabled, onClick() { commit(value); sync(); } }, tt(label)),
+        const buttons = entry.options.map(([value, label, about]) =>
+          h("button", { role: "radio", disabled, title: about ? tt(about) : undefined, onClick() { commit(value); sync(); } }, tt(label)),
         );
         const sync = () => buttons.forEach((b, i) => { b.classList.toggle("on", entry.options[i][0] === current()); b.setAttribute("aria-checked", String(entry.options[i][0] === current())); });
         wrap.append(...buttons);
@@ -65,7 +41,7 @@ function control(entry, current, commit, locked) {
         return { el: wrap, sync };
       }
       const select = h("select", { class: "field", "aria-label": tt(entry.label), disabled, onChange: (e) => commit(e.target.value) },
-        entry.options.map(([value, label]) => h("option", { value, selected: value === current() }, tt(label))));
+        entry.options.map(([value, label, about]) => h("option", { value, selected: value === current() }, about ? `${tt(label)} · ${tt(about)}` : tt(label))));
       if (!entry.options.some(([v]) => v === current())) select.prepend(h("option", { value: current(), selected: true }, current() || "—"));
       return { el: select, sync: () => (select.value = current()) };
     }
@@ -85,7 +61,10 @@ function control(entry, current, commit, locked) {
     case "password": {
       let shown = false;
       let loaded = null;
-      const input = h("input", { class: "field", type: "password", autocomplete: "new-password", placeholder: entry.hasValue ? t("Unchanged. Type to replace.", "冇改。打字就會更換。") : t("Not set", "未設定"), minlength: String(entry.minLength ?? 0), maxlength: String(entry.maxLength ?? 256), "aria-label": tt(entry.label), disabled, onInput: (e) => commit(e.target.value) });
+      const strength = h("div", { class: "meter strength", role: "img" }, h("i"));
+      const rate = (v) => { const score = Math.min(4, (v.length >= 8) + (v.length >= 12) + (/[a-z]/.test(v) && /[A-Z]/.test(v)) + (/d/.test(v) && /[^A-Za-z0-9]/.test(v))); strength.className = `meter strength ${score < 2 ? "bad" : score < 3 ? "warn" : ""}`; strength.setAttribute("aria-label", [t("Very weak", "好弱"), t("Weak", "弱"), t("Fair", "一般"), t("Good", "好"), t("Strong", "強")][v ? score : 0]); strength.firstChild.style.setProperty("--w", `${v ? (score + 1) * 20 : 0}%`); };
+      const input = h("input", { class: "field", type: "password", autocomplete: "new-password", placeholder: entry.hasValue ? t("Unchanged. Type to replace.", "冇改。打字就會更換。") : t("Not set", "未設定"), minlength: String(entry.minLength ?? 0), maxlength: String(entry.maxLength ?? 256), "aria-label": tt(entry.label), disabled, onInput: (e) => { rate(e.target.value); commit(e.target.value); } });
+      rate("");
       const eye = h("button", {
         class: "btn t icon",
         type: "button",
@@ -107,11 +86,14 @@ function control(entry, current, commit, locked) {
           eye.firstChild.textContent = shown ? "visibility_off" : "visibility";
         },
       }, icon("visibility", "sm"));
-      return { el: h("div", { class: "pwd" }, input, eye), sync: () => (input.value = dock.value(entry.id) ?? "") };
+      return { el: h("div", { class: "pwdbox" }, h("div", { class: "pwd" }, input, eye), strength), sync: () => { input.value = dock.value(entry.id) ?? ""; rate(input.value); } };
     }
     default: {
-      const input = h("input", { class: "field", type: "text", maxlength: String(entry.maxLength ?? 256), autocomplete: "off", spellcheck: "false", value: current(), "aria-label": tt(entry.label), placeholder: entry.optional ? t("Optional", "可選") : "", disabled, onInput: (e) => commit(e.target.value) });
-      return { el: input, sync: () => (input.value = current()) };
+      const custom = controlTypes.get(entry.control);
+      if (custom) return custom(entry, current, commit, locked, { entry });
+      const counter = entry.maxLength ? h("span", { class: "t2 counter" }, `${String(current()).length}/${entry.maxLength}`) : null;
+      const input = h("input", { class: "field", type: "text", maxlength: String(entry.maxLength ?? 256), autocomplete: "off", spellcheck: "false", value: current(), "aria-label": tt(entry.label), placeholder: entry.optional ? t("Optional", "可選") : "", disabled, onInput: (e) => { if (counter) counter.textContent = `${e.target.value.length}/${entry.maxLength}`; commit(e.target.value); } });
+      return { el: h("div", { class: "textbox" }, input, counter, entry.hint ? h("div", { class: "t2" }, tt(entry.hint)) : null), sync: () => { input.value = current(); if (counter) counter.textContent = `${String(current()).length}/${entry.maxLength}`; } };
     }
   }
 }

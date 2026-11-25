@@ -12,15 +12,49 @@ import { jobs, logs, tools } from "./screens/tools.js";
 import { advanced } from "./screens/advanced.js";
 import { history } from "./screens/history.js";
 import { aimesh, backup, firmware, maintenance, merlin, system, usb } from "./screens/system.js";
+import { featureState, loadFeatures, mountOverlays } from "./features/registry.js";
+import { openPalette } from "./palette.js";
 
 const root = $("#app");
 const generic = (id) => (el) => settingsScreen(el, id);
 const SCREENS = { overview, devices, wifi: generic("wifi"), internet: generic("internet"), lan, forwarding, firewall: generic("firewall"), parental, qos: generic("qos"), vpn: generic("vpn"), aimesh, usb, logs, tools, jobs, backup, firmware, system, maintenance, merlin, advanced, history };
+const CORE_SCREENS = new Set(Object.keys(SCREENS));
 const SECTIONS = [
   [["Monitor", "監察"], ["overview", "devices", "logs", "history"]],
   [["Network", "網絡"], ["wifi", "internet", "lan", "forwarding", "firewall", "parental", "qos", "vpn", "aimesh"]],
   [["Router", "路由器"], ["usb", "tools", "jobs", "backup", "firmware", "system", "maintenance", "merlin", "advanced"]],
 ];
+
+// The rail: the stock sections, plus any screen a feature or the server adds
+// (placed under its own group, a new group when it names one).
+const pairOf = (group) => (!group ? ["Features", "功能"] : typeof group === "string" ? [group, group] : [group.en, group.yue]);
+function railSections() {
+  const sections = SECTIONS.map(([label, ids]) => [label, [...ids]]);
+  const known = new Set(SECTIONS.flatMap(([, ids]) => ids));
+  const place = (id, group) => {
+    const [en, yue] = pairOf(group);
+    let section = sections.find(([label]) => label[0] === en);
+    if (!section) sections.push((section = [[en, yue], []]));
+    section[1].push(id);
+  };
+  for (const d of app.catalog.domains) if (!known.has(d.id)) place(d.id, d.group);
+  for (const [id, screen] of featureState.screens) if (!known.has(id) && !app.catalog.domains.some((d) => d.id === id)) place(id, screen.group);
+  return sections;
+}
+
+// Every screen, feature command and feature settings section, for Ctrl+K.
+function paletteItems() {
+  const items = [];
+  for (const [[en, yue], ids] of railSections())
+    for (const id of ids) {
+      const d = domainInfo(id);
+      items.push({ id, icon: d.icon, label: d.label, kind: { en, yue }, run: () => navigate(id) });
+    }
+  items.push({ id: "theme", icon: "contrast", label: { en: "Switch theme", yue: "轉主題" }, kind: { en: "Command", yue: "指令" }, keywords: "dark light", run: () => applyTheme(THEMES[(THEMES.indexOf(theme()) + 1) % 3]) });
+  for (const c of featureState.commands) items.push({ id: c.id, icon: c.icon, label: c.label, kind: { en: "Command", yue: "指令" }, keywords: c.keywords, run: () => c.run(featureState.ctx) });
+  for (const section of featureState.settings) items.push({ id: `settings-${section.id}`, icon: section.icon ?? "tune", label: section.label, kind: { en: "Setting", yue: "設定" }, run: () => { app.focusSection = section.id; navigate("feature-settings"); } });
+  return items;
+}
 
 // ---- theme ------------------------------------------------------------------
 
@@ -68,6 +102,9 @@ async function enterApp() {
       h("h1", { class: "disp" }, t("Cannot reach the router", "連唔到路由器")), h("p", { class: "lede" }, error.message),
       h("div", { class: "actions" }, app.me.role === "owner" ? h("button", { class: "btn o", onClick: () => connectScreen(root, boot, { owner: true }) }, t("Change router", "更換路由器")) : null, h("button", { class: "btn f", onClick: boot }, icon("refresh", "sm"), t("Try again", "再試")))))));
   }
+  await loadFeatures({ navigate, reserved: CORE_SCREENS });
+  for (const d of app.catalog.domains) if (!SCREENS[d.id]) SCREENS[d.id] = generic(d.id);
+  for (const [id, screen] of featureState.screens) SCREENS[id] = screen.render;
   buildShell();
   navigate(location.hash.replace(/^#\//, "") || "overview", { replace: true });
 }
@@ -97,7 +134,7 @@ function buildShell() {
   loadTabs();
   const rail = h("nav", { class: "rail", "aria-label": t("Sections", "版面") },
     h("div", { class: "brandrow" }, h("div", { class: "logo" }, icon("router", "lg")), h("div", { class: "brand" }, "Material Asus Router", h("small", {}, `${app.catalog.info.model} · ${app.catalog.info.merlin ? "Merlin" : t("Stock firmware", "原廠韌體")}`))),
-    SECTIONS.map(([[en, yue], ids]) => [
+    railSections().map(([[en, yue], ids]) => [
       h("div", { class: "navsec k" }, t(en, yue)),
       ids.map((id) => {
         const d = domainInfo(id);
@@ -111,6 +148,8 @@ function buildShell() {
   const bar = h("div", { class: "bar" },
     h("label", { class: "search" }, icon("search"), search),
     bell,
+    h("button", { class: "icb", "aria-label": t("Command palette (Ctrl+K)", "指令面板（Ctrl+K）"), title: t("Command palette (Ctrl+K)", "指令面板（Ctrl+K）"), onClick: () => openPalette(paletteItems()) }, icon("bolt")),
+    featureState.toolbar.map((b) => h("button", { class: "icb", "aria-label": tt(b.label), title: tt(b.label), onClick: () => b.onClick(featureState.ctx) }, icon(b.icon))),
     h("div", { class: "seg", role: "radiogroup", "aria-label": t("Language", "語言") }, [["en", "EN"], ["yue", "粵"], ["both", "EN+粵"]].map(([id, label]) => h("button", { role: "radio", "aria-checked": String(getLang() === id), class: getLang() === id ? "on" : "", onClick: () => setLang(id) }, label))),
     h("button", { class: "icb", "aria-label": t("Theme", "主題"), title: t("Theme", "主題"), onClick: () => applyTheme(THEMES[(THEMES.indexOf(theme()) + 1) % 3]) }, icon("contrast")),
     h("button", { class: "icb", "aria-label": t("Sign out", "登出"), title: `${app.me.name} · ${app.me.role}`, onClick: signOut }, h("span", { class: "avatar" }, app.me.name.slice(0, 1).toUpperCase())),
@@ -131,7 +170,8 @@ function buildShell() {
   drawBell();
   renderDock(dockEl);
   const offs = [bus.on("dock", () => renderDock(dockEl)), bus.on("notices", drawBell), bus.on("lang", () => { shell.dispose(); buildShell(); navigate(app.route, { replace: true }); }), bus.on("changed", () => api.get("/api/catalog").then((c) => { app.catalog = c; if (app.route !== "overview") navigate(app.route, { replace: true, keepScroll: true }); }).catch(() => {}))];
-  shell.dispose = () => offs.forEach((f) => f());
+  const stopOverlays = mountOverlays();
+  shell.dispose = () => { offs.forEach((f) => f()); stopOverlays(); };
   document.addEventListener("click", (e) => { if (!results.contains(e.target) && e.target !== search) results.hidden = true; }, { capture: true });
 }
 
@@ -166,7 +206,8 @@ function showResults(input, box) {
   const q = input.value.trim().toLowerCase();
   clear(box);
   if (!q) return void (box.hidden = true);
-  const doms = app.catalog.domains.filter((d) => `${d.label.en} ${d.label.yue} ${d.id}`.toLowerCase().includes(q)).slice(0, 4);
+  const screens = [...app.catalog.domains, ...Object.values(app.featureScreens ?? {}).filter((f) => !app.catalog.domains.some((d) => d.id === f.id))];
+  const doms = screens.filter((d) => `${d.label.en} ${d.label.yue} ${d.id}`.toLowerCase().includes(q)).slice(0, 4);
   const ents = app.catalog.entries.filter((e) => `${e.label.en} ${e.label.yue} ${e.key} ${e.help.en}`.toLowerCase().includes(q)).slice(0, 10);
   const go = (domain, entry) => () => { input.value = ""; box.hidden = true; app.focusEntry = entry; navigate(domain); };
   box.append(
@@ -211,6 +252,12 @@ export async function navigate(id, { replace = false, keepScroll = false } = {})
     cleanup = typeof result === "function" ? result : null;
     clear(content).append(holder);
     window.scrollTo(0, keepScroll ? scroll : 0);
+    if (app.focusSection) {
+      const el = document.getElementById(`fs-${app.focusSection}`);
+      app.focusSection = null;
+      el?.scrollIntoView({ block: "start" });
+      el?.classList.add("flash");
+    }
     if (app.focusEntry) {
       const el = document.getElementById(`s-${app.focusEntry}`);
       app.focusEntry = null;
@@ -233,3 +280,10 @@ bus.on("signedout", () => { if (app.me) { app.me = null; toast(t("You were signe
 bus.on("lang", () => { if (!app.me || !content) boot(); });
 
 boot();
+
+document.addEventListener("keydown", (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k" && app.me && content && !document.querySelector("dialog[open]")) {
+    e.preventDefault();
+    openPalette(paletteItems());
+  }
+});

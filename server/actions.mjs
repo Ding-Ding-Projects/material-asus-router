@@ -80,3 +80,15 @@ export async function runAction(name, body, { session, info }) {
       throw bad("That action does not exist.", 404);
   }
 }
+
+// Runs an action a feature folder registered (its name is "<feature>.<name>").
+// A destructive action asks for both confirmations the reboot does, unless the
+// feature lists exactly which ones it wants.
+export async function runFeatureAction(action, body, ctx) {
+  const needs = action.confirm ?? (action.risk === "destructive" ? ["model", "hold"] : []);
+  if (needs.includes("model") && body.confirm !== ctx.info.model) throw Object.assign(bad(`Type the router model, ${ctx.info.model}, exactly to confirm.`, 403), { code: "CONFIRM_MODEL" });
+  if (needs.includes("hold") && body.hold !== true) throw Object.assign(bad("Press and hold the button to confirm.", 403), { code: "CONFIRM_HOLD" });
+  const result = await action.run({ ...ctx, body });
+  if (action.risk !== "low") ctx.session.invalidate();
+  return result ?? { ok: true };
+}

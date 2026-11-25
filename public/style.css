@@ -254,3 +254,33 @@ pre.out{margin:0;padding:16px;border-radius:16px;background:var(--surf-high);fon
   .logline{flex-direction:column;gap:2px}
   .logline .time{width:auto}
 }
+
+/* Rich controls added by controls-rich.js */
+.stepper{display:inline-flex;align-items:center;gap:6px}
+.field.num{width:96px;text-align:center;font-variant-numeric:tabular-nums}
+.portpick,.macpick,.cidr,.rangepick,.chiplist,.schedulepick,.filepick,.pwdbox,.textbox{display:grid;gap:8px;min-width:0}
+.macpick .field.mac{font-family:ui-monospace,Consolas,monospace;letter-spacing:.04em}
+.macpick .field.mac[aria-invalid=true]{border-color:var(--bad)}
+.cidr .ctl,.rangepick .ctl{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.field.prefix{width:84px}
+.subnet{font-variant-numeric:tabular-nums}
+.rangebar{position:relative;height:12px;border-radius:6px;background:var(--surf-high);overflow:hidden}
+.rangebar i{position:absolute;top:0;bottom:0;left:var(--l,0%);width:var(--w,0%);border-radius:6px;background:var(--primary);transition:left .3s,width .3s}
+.chip .x{display:inline-flex;align-items:center;border:0;background:none;padding:0;color:inherit;min-width:24px;min-height:24px}
+.swatch{width:48px;height:40px;padding:2px;border-radius:12px;border:1.5px solid var(--line);background:var(--surf)}
+.field.hex{width:110px}
+.schedule{display:grid;grid-template-columns:36px repeat(var(--cols,24),minmax(10px,1fr));gap:2px;align-items:center;touch-action:none;user-select:none}
+.schedule .dayname{font-size:12px;font-weight:650;color:var(--sub)}
+.slot{min-height:22px;padding:0;border-radius:4px;border:1px solid var(--line);background:var(--surf)}
+.slot.on{background:var(--primary);border-color:var(--primary)}
+.drop{display:flex;align-items:center;gap:12px;padding:16px;border-radius:16px;border:2px dashed var(--line);background:var(--surf-low);cursor:pointer}
+.drop.over{border-color:var(--primary);background:var(--primary-c)}
+.meter.strength{height:6px;width:min(100%,260px)}
+.counter{text-align:right;font-variant-numeric:tabular-nums}
+
+/* Command palette */
+.palette{display:grid;gap:8px;min-width:min(520px,86vw)}
+.palette .list{display:grid;gap:2px;max-height:50vh;overflow:auto}
+.palette .list button{display:flex;align-items:center;gap:12px;min-height:44px;padding:0 12px;border-radius:12px;border:0;background:none;text-align:left;color:var(--text)}
+.palette .list button[aria-selected=true],.palette .list button:hover{background:var(--surf-high)}
+.palette .list .kind{margin-left:auto;font-size:12px;color:var(--sub)}

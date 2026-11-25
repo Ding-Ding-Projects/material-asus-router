@@ -1,6 +1,7 @@
 // Read side of the app: one function per screen. Each returns plain data the
 // browser renders. Nothing here writes to the router, and secrets are masked
 // before anything leaves this file.
+import { featureDomain } from "../features/registry.mjs";
 import { DOMAINS } from "./catalog.mjs";
 import { parseRows } from "./editors.mjs";
 import { MASK, isSecret } from "./secrets.mjs";
@@ -12,6 +13,9 @@ const num = (text, fallback = 0) => {
 };
 const get = (nvram, key) => nvram.get(key) ?? "";
 const bandLabel = (nband) => ({ "2": "2.4 GHz", "1": "5 GHz", "4": "6 GHz" })[String(nband)] ?? "Wi-Fi";
+
+// Entry fields a control may need in the browser, beyond the ones above.
+const PASSED_FIELDS = ["options", "values", "min", "max", "step", "unit", "minLength", "maxLength", "presets", "pattern", "delimiter", "maxItems", "network", "allowRange", "within", "accept", "encoding", "minPrefix", "maxPrefix", "freeText", "freeTextReason", "readOnly", "feature", "columns", "hint", "counter", "meta"];
 
 // A catalogue entry plus its current value, safe to send to the browser.
 export function describeEntry(entry, nvram) {
@@ -35,7 +39,7 @@ export function describeEntry(entry, nvram) {
     hasValue: raw !== "",
     masked: secret && raw !== "",
   };
-  for (const field of ["options", "values", "min", "max", "step", "unit", "minLength", "maxLength"])
+  for (const field of PASSED_FIELDS)
     if (entry[field] !== undefined) out[field] = entry[field];
   return out;
 }
@@ -334,6 +338,11 @@ const backup = (ctx) => ({ id: "backup", model: ctx.info.model, keyCount: ctx.nv
 const CATALOG_ONLY = new Set(["wifi", "internet", "lan", "firewall", "qos", "vpn"]);
 
 export async function readDomain(id, ctx, query = {}) {
+  const custom = DOMAINS.some((d) => d.id === id) ? null : featureDomain(id);
+  if (custom) {
+    const data = await custom.read({ ...ctx, query, entries: (domain = id) => entriesFor(ctx, domain) });
+    return { id, ...data };
+  }
   if (!DOMAINS.some((d) => d.id === id)) throw Object.assign(new Error("That screen does not exist."), { status: 404 });
   switch (id) {
     case "overview":
