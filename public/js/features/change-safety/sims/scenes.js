@@ -348,10 +348,15 @@ function parentalScene(data) {
   const grid = (slots) => {
     const g = Array.from({ length: 7 }, () => Array(24).fill(false));
     for (const sl of slots) {
-      const days = sl.days.split("").map(Number);
       const from = Number(sl.from.slice(0, 2));
-      const to = Number(sl.to.slice(0, 2)) || 24;
-      for (const d of days.length ? days : [0, 1, 2, 3, 4, 5, 6]) for (let h2 = from; h2 < to; h2 += 1) if (g[d % 7]) g[d % 7][h2 % 24] = true;
+      const to = Number(sl.to.slice(0, 2));
+      for (const d of sl.days) {
+        if (to > from) for (let hr = from; hr < to; hr += 1) g[d][hr] = true;
+        else {
+          for (let hr = from; hr < 24; hr += 1) g[d][hr] = true;
+          for (let hr = 0; hr < to; hr += 1) g[(d + 1) % 7][hr] = true;
+        }
+      }
     }
     return g;
   };

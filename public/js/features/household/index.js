@@ -128,7 +128,7 @@ async function render(ctx, start = "people") {
     clear(body);
     const view = { people: peopleView, presence: presenceView, homeassistant: haView, networks: networksView, talkers: talkersView }[state.tab];
     const out = await view();
-    body.append(...[out].flat().filter(Boolean));
+    body.append(...[out].flat(Infinity).filter(Boolean));
   }
   async function reloadAll() {
     try { await load(); } catch (error) { toast(errText(error), "bad"); }

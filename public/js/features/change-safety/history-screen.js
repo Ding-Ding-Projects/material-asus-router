@@ -6,7 +6,7 @@
 // old and new values.
 import { api, bus, clear, h, icon, openDialog, t, tt, toast } from "../../core.js";
 import { AREAS, EXPORTS, areaName, checkPattern, describeChange, groupTimeline, historyQuery, shown } from "./model.js";
-import { guarded, levelBadge, refreshUndo, safety, openProgress, redo, undo } from "./safety.js";
+import { guarded, levelBadge, rawPost, refreshUndo, safety, openProgress, redo, undo } from "./safety.js";
 import { simulateChange } from "./sims/index.js";
 
 const PAGE = 40;
@@ -171,7 +171,7 @@ export async function historyScreen(root) {
   async function restore(oid, scope) {
     try {
       if (safety.live) {
-        const out = await guarded((extra) => api.post("/api/safety/history/restore", { oid, ...scope, apply: true, ...extra }), {});
+        const out = await guarded(async (extra, ctx) => (ctx.previewId ? { applied: await rawPost("/api/changes/apply", { previewId: ctx.previewId, ...extra }), skipped: [] } : rawPost("/api/safety/history/restore", { oid, ...scope, apply: true, ...extra })), {});
         if (!out) return;
         if (out.skipped?.length) toast(t(`${out.skipped.length} setting(s) were left alone (secrets are never restored).`, `有 ${out.skipped.length} 項設定冇動（機密唔會還原）。`));
         if (out.applied?.runId) openProgress(out.applied.runId, t("Restoring", "還原緊"));
@@ -180,7 +180,7 @@ export async function historyScreen(root) {
         load();
         return;
       }
-      const out = await api.post("/api/safety/history/restore", { oid, ...scope, apply: false });
+      const out = await rawPost("/api/safety/history/restore", { oid, ...scope, apply: false });
       if (out.skipped?.length) toast(t(`${out.skipped.length} setting(s) will be left alone (secrets are never restored).`, `有 ${out.skipped.length} 項設定唔會動（機密唔會還原）。`));
       const { reviewPreview } = await import("../../dock.js");
       await reviewPreview(out.preview, { title: t("Restore from history", "由記錄還原") });

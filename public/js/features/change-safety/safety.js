@@ -28,7 +28,7 @@ const errorText = (error) => {
 // ---- load and refresh --------------------------------------------------------------
 
 export async function loadSafety(me = null) {
-  safety.owner = me?.role === "owner";
+  if (me) safety.owner = me.role === "owner";
   try {
     const [settings, undo] = await Promise.all([api.get("/api/safety/settings"), api.get("/api/safety/undo-state")]);
     safety.live = settings.liveMode !== false;
@@ -86,16 +86,18 @@ export async function guarded(call, context = {}, firstError = null) {
   for (let round = 0; round < 5; round += 1) {
     try {
       if (seed) { const e = seed; seed = null; throw e; }
-      return await call(extra);
+      return await call(extra, context);
     } catch (error) {
       if (error.code === "CONFIRM_REQUIRED") {
         const detail = error.data?.detail ?? {};
-        const proof = await confirmDialog(detail.confirmation ?? detail, { ...context, previewId: detail.previewId ?? context.previewId });
+        if (detail.previewId) context.previewId = detail.previewId;
+        const proof = await confirmDialog(detail.confirmation ?? detail, context);
         if (!proof) return null;
         extra.confirmation = proof;
         continue;
       }
       if (error.code === "ALLOWANCE") {
+        if (error.data?.detail?.previewId) context.previewId = error.data.detail.previewId;
         const ok = await allowanceDialog(error.data?.detail ?? {});
         if (!ok) return null;
         extra.override = true;
@@ -387,7 +389,7 @@ export async function stackStep(kind) {
   bus.emit("safety");
   try {
     if (safety.live) {
-      const record = await guarded((extra) => rawPost(`/api/safety/${kind}`, { apply: true, ...extra }), { skipWarning: false });
+      const record = await guarded((extra, ctx) => (ctx.previewId ? rawPost("/api/changes/apply", { previewId: ctx.previewId, ...extra }) : rawPost(`/api/safety/${kind}`, { apply: true, ...extra })), {});
       if (!record) return null;
       await afterApply(record, null, kind === "undo" ? t("Undoing", "還原緊") : t("Redoing", "重做緊"));
       return record;
@@ -493,6 +495,7 @@ function runLaunch(first) {
     let typed = "";
     let down = { 1: false, 2: false };
     let timer = null;
+    let readyTimer = null;
     let runId = null;
     const base = `/api/safety/launch/${view.id}`;
     const step = async (path, body) => {
@@ -504,17 +507,23 @@ function runLaunch(first) {
       } catch (error) {
         toast(errorText(error), "bad");
         if (["LAUNCH_ABORTED", "LAUNCH_DONE", "LAUNCH_GONE"].includes(error.code)) finish(null);
-        else if (error.code === "LAUNCH_CODE") { typed = ""; dlg.render(); }
+        else if (error.code === "LAUNCH_CODE") { typed = ""; view = { ...view, attemptsLeft: error.data?.detail?.attemptsLeft ?? Math.max((view.attemptsLeft ?? 3) - 1, 0) }; dlg.render(); }
         return null;
       }
     };
-    const finish = (value) => { clearInterval(timer); dlg.close(value); };
+    const finish = (value) => { clearInterval(timer); clearInterval(readyTimer); dlg.close(value); };
     const keyChange = async (which, state) => {
       if (down[which] === (state === "down")) return;
       down[which] = state === "down";
       try { view = { ...view, ...(await rawPost(`${base}/key`, { key: which, state })) }; } catch (error) { toast(errorText(error), "bad"); }
       dlg.render();
-      if (down[1] && down[2]) setTimeout(async () => { if (down[1] && down[2] && view.state === "code-ok") await step("keys-ready"); }, 700);
+      if (down[1] && down[2] && !readyTimer) {
+        // The server wants both keys held together for a moment, so ask again until it agrees or a key is let go.
+        readyTimer = setInterval(async () => {
+          if (!(down[1] && down[2]) || view.state !== "code-ok") { clearInterval(readyTimer); readyTimer = null; return; }
+          try { view = { ...view, ...(await rawPost(`${base}/keys-ready`)) }; clearInterval(readyTimer); readyTimer = null; dlg.render(); } catch (error) { if (error.code !== "LAUNCH_KEYS") { clearInterval(readyTimer); readyTimer = null; toast(errText(error), "bad"); } }
+        }, 400);
+      }
     };
     const keyButton = (which) => h("button", { class: `launch-key ${down[which] ? "down" : ""}`, type: "button", "aria-pressed": String(down[which]), "aria-label": t(`Key ${which}: hold`, `匙 ${which}：撳住`),
       onPointerdown: (e) => { e.preventDefault(); keyChange(which, "down"); }, onPointerup: () => keyChange(which, "up"), onPointerleave: () => keyChange(which, "up"), onPointercancel: () => keyChange(which, "up"),

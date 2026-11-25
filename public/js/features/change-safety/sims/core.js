@@ -5,7 +5,7 @@
 import { bus, getLang } from "../../../core.js";
 
 const SVGNS = 'http://www.w3.org/2000/svg';
-export const root = document.documentElement;
+export const root = typeof document === 'undefined' ? null : document.documentElement;
 
 function setAttrs(e, a) {
   for (const k in a) {

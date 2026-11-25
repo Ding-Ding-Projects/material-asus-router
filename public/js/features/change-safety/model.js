@@ -289,13 +289,16 @@ export function poolOf(change, all = []) {
   const end = get("dhcp_end") ?? (change.key === "dhcp_end" ? change : null);
   return { oldStart: ipToNumber(start?.old), newStart: ipToNumber(start?.new), oldEnd: ipToNumber(end?.old), newEnd: ipToNumber(end?.new) };
 }
+// Parental time windows: "W" + three hex digits for the days (bit 0 is Sunday) + HHMM start + HHMM end.
+// A start after the end runs overnight. Several windows may be joined with "<" or ">".
 export function scheduleOf(value) {
-  // MULTIFILTER time values look like <W03E21000700 ... ; keep every day and slot readable.
-  const text = String(value ?? "");
   const slots = [];
-  const re = /([WD])(\d{2})(\d{2})(\d{2})(\d{2})/g;
-  let m;
-  while ((m = re.exec(text))) slots.push({ kind: m[1], days: m[2], from: `${m[3]}:00`, to: `${m[4]}:00` });
+  for (const part of String(value ?? "").split(/[<>]/)) {
+    const m = /^W([0-9A-Fa-f]{3})(\d{4})(\d{4})$/.exec(part.trim());
+    if (!m) continue;
+    const mask = parseInt(m[1], 16);
+    slots.push({ days: [0, 1, 2, 3, 4, 5, 6].filter((d) => mask & (1 << d)), from: `${m[2].slice(0, 2)}:${m[2].slice(2)}`, to: `${m[3].slice(0, 2)}:${m[3].slice(2)}` });
+  }
   return slots;
 }
 export const bytesPerSecondText = (b) => (b >= 1e6 ? `${(b / 1e6).toFixed(1)} MB/s` : `${Math.round(b / 1e3)} kB/s`);

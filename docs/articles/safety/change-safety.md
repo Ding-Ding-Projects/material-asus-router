@@ -7,7 +7,7 @@ status: in-progress
 related: safety/safe-changes, safety/change-history, safety/undo-changes, safety/connection-guard, safety/super-confirmation
 ---
 
-This page describes what the server does to keep a change from surprising the people at home. The screens that use it are **In progress**; the server side described here is built and tested against the pretend router.
+This page describes what the server does to keep a change from surprising the people at home. The screens that use it are described in [The change-safety screens](change-safety-interface.md) and are **In progress**; the server side described here is built and tested against the pretend router.
 
 ## Live mode and review mode
 

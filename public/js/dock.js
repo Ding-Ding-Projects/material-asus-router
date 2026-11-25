@@ -108,6 +108,7 @@ export function renderDock(host) {
 
 async function applyNow() {
   clearTimeout(autoTimer);
+  if (safety.busy) return;
   const body = dock.toBody();
   const preview = await previewOf(body);
   if (!preview) return;
