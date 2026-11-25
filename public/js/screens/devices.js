@@ -26,6 +26,17 @@ function renameDialog(device) {
   ]);
 }
 
+// Lock IP: keep the device's current address so the router never hands it to anything else.
+// It is the router's address reservation, queued in the changes like any other edit.
+function lockIp(device) {
+  const ip = device.reservedIp || device.ip;
+  if (!ip) return toast(t("This device has no address to lock yet.", "呢部裝置未有地址可以鎖定。"), "bad");
+  dock.addOp({ op: "reserve", mac: device.mac, ip, hostname: device.hostname || "" }, `${t("Lock IP", "鎖定 IP")} ${ip} → ${device.name}`);
+}
+function unlockIp(device) {
+  dock.addOp({ op: "unreserve", mac: device.mac }, `${t("Unlock IP", "解除鎖定 IP")} ${device.reservedIp} → ${device.name}`);
+}
+
 function reserveDialog(device) {
   let ip = device.reservedIp || device.ip;
   let hostname = device.hostname;
@@ -69,7 +80,8 @@ export async function devices(root) {
         h("span", { class: "pill p" }, icon("checklist", "sm"), t(`${chosen.length} selected`, `已選 ${chosen.length} 部`)),
         h("button", { class: "btn t sm", onClick: () => { chosen.forEach((d) => !d.blocked && toggleBlock(d, true)); selected.clear(); paint(); } }, icon("block", "sm"), t("Block", "封鎖")),
         h("button", { class: "btn t sm", onClick: () => { chosen.forEach((d) => d.blocked && toggleBlock(d, false)); selected.clear(); paint(); } }, icon("lock_open", "sm"), t("Unblock", "解除封鎖")),
-        h("button", { class: "btn t sm", onClick: () => { chosen.filter((d) => d.ip).forEach((d) => dock.addOp({ op: "reserve", mac: d.mac, ip: d.reservedIp || d.ip, hostname: d.hostname }, `${t("Reserve", "留住")} ${d.ip} → ${d.name}`)); selected.clear(); paint(); } }, icon("push_pin", "sm"), t("Keep current addresses", "留住而家地址")),
+        h("button", { class: "btn t sm", onClick: () => { chosen.filter((d) => d.ip && !d.reservedIp).forEach(lockIp); selected.clear(); paint(); } }, icon("lock", "sm"), t("Lock IPs", "鎖定 IP")),
+        h("button", { class: "btn t sm", onClick: () => { chosen.filter((d) => d.reservedIp).forEach(unlockIp); selected.clear(); paint(); } }, icon("lock_open_right", "sm"), t("Unlock IPs", "解除鎖定 IP")),
         h("button", { class: "btn t sm", onClick: async () => { for (const d of chosen) await api.post("/api/actions/wake", { mac: d.mac }).catch(() => {}); toast(t("Wake signals sent.", "已發出喚醒訊號。")); } }, icon("power_settings_new", "sm"), t("Wake", "喚醒")),
         h("button", { class: "btn o sm", onClick: () => { selected.clear(); paint(); } }, t("Clear", "清除")));
     const all = h("input", { type: "checkbox", "aria-label": t("Select all shown", "全選顯示嘅裝置"), checked: list.length > 0 && list.every((d) => selected.has(d.mac)), disabled: !app.canWrite, onChange: (e) => { list.forEach((d) => (e.target.checked ? selected.add(d.mac) : selected.delete(d.mac))); paint(); } });
@@ -79,12 +91,16 @@ export async function devices(root) {
         h("td", {}, h("input", { type: "checkbox", "aria-label": `${t("Select", "選取")} ${d.name}`, checked: selected.has(d.mac), disabled: !app.canWrite, onChange: (e) => { e.target.checked ? selected.add(d.mac) : selected.delete(d.mac); paint(); } })),
         h("td", {}, h("div", { class: "t1" }, d.name), h("div", { class: "t2 mono" }, d.hostname && d.hostname !== d.name ? d.hostname : ""), pend.length ? h("span", { class: "tag warn" }, icon("edit_note", "sm"), t("Edit waiting", "有改動等緊")) : null),
         h("td", {}, h("span", { class: `dot ${d.online ? "" : "off"}`, title: d.online ? "online" : "offline" }), " ", d.blocked ? h("span", { class: "tag bad" }, t("Blocked", "已封鎖")) : d.scheduled ? h("span", { class: "tag warn" }, t("Scheduled", "有時間表")) : d.online ? t("Online", "在線") : t("Offline", "離線")),
-        h("td", { class: "mono" }, d.ip || "—", d.reservedIp ? h("span", { class: "tag", title: t("Reserved", "已留住") }, icon("push_pin", "sm")) : null),
+        h("td", { class: "mono" }, d.ip || "—", d.reservedIp ? h("span", { class: "tag", title: t(`Locked to ${d.reservedIp}`, `鎖定喺 ${d.reservedIp}`) }, icon("lock", "sm"), t("IP locked", "IP 已鎖定")) : null),
         h("td", { class: "mono" }, d.mac),
         h("td", {}, d.iface === "wireless" ? `${d.band} · ${d.rssi ?? "?"} dBm` : t("Wired", "有線")),
         h("td", {}, app.canWrite ? h("div", { class: "chips" },
           h("button", { class: "btn t icon", title: t("Rename", "改名"), "aria-label": `${t("Rename", "改名")} ${d.name}`, onClick: async () => { if (await renameDialog(d).closed) paint(); } }, icon("edit", "sm")),
-          h("button", { class: "btn t icon", title: t("Reserve address", "留住地址"), "aria-label": `${t("Reserve address for", "留住地址俾")} ${d.name}`, onClick: async () => { if (await reserveDialog(d).closed) paint(); } }, icon("push_pin", "sm")),
+          d.reservedIp
+            ? h("button", { class: "btn t sm", "aria-label": `${t("Unlock IP of", "解除鎖定 IP：")} ${d.name}`, onClick: () => { unlockIp(d); paint(); } }, icon("lock_open_right", "sm"), t("Unlock IP", "解除鎖定 IP"))
+            : h("button", { class: "btn t sm", disabled: !d.ip, "aria-label": `${t("Lock IP of", "鎖定 IP：")} ${d.name}`, onClick: () => { lockIp(d); paint(); } }, icon("lock", "sm"), t("Lock IP", "鎖定 IP")),
+          h("button", { class: "btn t icon", title: t("Lock to a different address", "鎖定去另一個地址"), "aria-label": `${t("Lock to a different address for", "鎖定另一個地址俾")} ${d.name}`, onClick: async () => { if (await reserveDialog(d).closed) paint(); } }, icon("edit_location_alt", "sm")),
+          h("button", { class: "btn t icon", title: t("Kick or ban", "踢走或者封鎖"), "aria-label": `${t("Kick or ban", "踢走或者封鎖")} ${d.name}`, onClick: async () => (await import("../main.js")).navigate("bandwidth-control") }, icon("pan_tool", "sm")),
           h("button", { class: "btn t icon", title: d.blocked ? t("Unblock", "解除封鎖") : t("Block", "封鎖"), "aria-label": `${d.blocked ? t("Unblock", "解除封鎖") : t("Block", "封鎖")} ${d.name}`, onClick: () => { toggleBlock(d, !d.blocked); paint(); } }, icon(d.blocked ? "lock_open" : "block", "sm")),
           h("button", { class: "btn t icon", title: t("Wake", "喚醒"), "aria-label": `${t("Wake", "喚醒")} ${d.name}`, onClick: async () => { try { await api.post("/api/actions/wake", { mac: d.mac }); toast(t("Wake signal sent.", "已發出喚醒訊號。")); } catch (e) { toast(e.message, "bad"); } } }, icon("power_settings_new", "sm"))) : null));
     });
