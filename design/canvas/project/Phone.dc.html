@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Phone overview</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="theme.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,100..1000&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}
+.card.ov{overflow:visible}
+.cbw{width:44px;height:44px;border:0;background:none;display:grid;place-items:center;flex:none;padding:0}
+.cb2{width:22px;height:22px;border-radius:7px;border:2px solid var(--sub);display:grid;place-items:center;color:var(--on-primary)}
+.cb2 svg{opacity:0}.cb2.on{background:var(--primary);border-color:var(--primary)}.cb2.on svg{opacity:1}
+.lockedcard{outline:3px solid var(--primary);outline-offset:-3px}
+.pos{position:relative}
+.tilehead{display:flex;align-items:center;gap:4px}.tilehead .k{flex:1}
+.legend{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub)}.legend i{width:12px;height:12px;border-radius:6px;display:inline-block}
+.struck{text-decoration:line-through;opacity:.6}
+.onp{background:color-mix(in srgb,var(--on-primary) 18%,transparent);color:var(--on-primary)}
+.inp{height:48px;border-radius:24px;border:1.5px solid var(--line);background:var(--surf);padding:0 18px;font:inherit;font-size:15px;color:var(--text);min-width:0}
+.code{font-family:ui-monospace,'Cascadia Code',Consolas,monospace;font-size:13px;line-height:1.6}
+.scroll{overflow:auto;max-height:340px;scrollbar-width:thin}
+.dt{overflow-x:auto;border-radius:24px;background:var(--surf-low)}
+.dt .r{display:grid;grid-template-columns:var(--cols);gap:12px;align-items:center;padding:8px 18px;border-top:1px solid var(--line);min-width:var(--mw,760px);font-size:14.5px;position:relative}
+.dt .r.h{border-top:0;font-size:12.5px;font-weight:750;color:var(--sub);letter-spacing:.3px;padding-top:12px;padding-bottom:12px}
+.dt .r>*{min-width:0}
+.dis{opacity:.5;cursor:not-allowed}
+.glassbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-radius:22px;padding:8px 8px 8px 20px}
+.spin{animation:spin 8s linear infinite;transform-origin:center}@keyframes spin{to{transform:rotate(360deg)}}
+.calm .spin,.std .spin{animation:none}@media (prefers-reduced-motion:reduce){.spin{animation:none}}
+.ph{position:relative;width:390px;height:844px;display:flex;flex-direction:column;overflow:hidden;background:var(--bg);font-size:15px}
+.ph .card{padding:18px;border-radius:26px}
+.ph .card.hero{padding:22px;min-height:0}
+.ph .disp.s{font-size:36px}
+.ph .big{font-size:38px}
+.ph .h2{font-size:19px}
+.ph .icb{width:40px;height:40px}
+.hit{position:relative}
+.clip{position:absolute;inset:0;overflow:hidden;border-radius:26px;pointer-events:none}
+.card.hero>:not(.clip):not(.tip){position:relative}
+.phhead{background:var(--surf-low);padding:0 12px 6px;display:flex;flex-direction:column;gap:6px;flex:none;position:relative;z-index:5;border-radius:0 0 24px 24px}
+.phstatus{display:flex;align-items:center;gap:6px;height:26px;font-size:12px;padding:6px 6px 0}
+.phbar{display:flex;align-items:center;gap:2px}
+.phlogo{width:40px;height:40px;flex:none;margin-right:8px}
+.phtitle{font-weight:800;font-size:18px;line-height:1.1;font-stretch:112%}
+.phrow{display:flex;align-items:center;gap:8px}
+.phtabs{display:flex;align-items:flex-end;gap:4px;overflow-x:auto;scrollbar-width:none}
+.phtabs .tab{height:36px;font-size:13px;padding:0 6px 0 12px;border-radius:12px 12px 0 0;flex:none}
+.phtabs .tab.on{background:var(--bg)}
+.phtabs .tabbtn{border:0;background:none;font:inherit;color:inherit;padding:0;height:36px}
+.phtabs .tab.new{width:36px;padding:0;justify-content:center}
+.phprov{display:flex;gap:10px;font-size:10.5px;color:var(--sub);flex-wrap:wrap;padding:0 4px;align-items:center}
+.pscroll{flex:1;min-height:0;overflow-y:auto;padding:12px 16px 110px;display:flex;flex-direction:column;gap:14px;scrollbar-width:none}
+.phnav{display:flex;height:76px;flex:none;background:var(--surf-low);padding:8px 8px 12px;position:relative;z-index:6}
+.phn{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;border:0;background:none;color:var(--sub);font:600 11.5px var(--font);text-decoration:none;min-height:56px;justify-content:center}
+.phn i{width:60px;height:30px;border-radius:15px;display:grid;place-items:center}
+.phn.on{color:var(--text);font-weight:800}.phn.on i{background:var(--secondary-c);color:var(--on-secondary-c)}
+.phfab{position:absolute;right:16px;bottom:92px;z-index:7;display:flex;align-items:center;gap:10px;height:56px;padding:0 20px;border-radius:18px;border:0;background:var(--primary-c);color:var(--on-primary-c);font:700 15px var(--font);box-shadow:var(--e2);text-decoration:none}
+.phscrim{position:absolute;inset:0;background:rgba(8,10,24,.45);backdrop-filter:blur(3px);z-index:20}
+.phsheet{position:absolute;left:0;right:0;bottom:0;max-height:80%;z-index:21;background:var(--surf);border-radius:32px 32px 0 0;box-shadow:var(--e3);display:flex;flex-direction:column;gap:12px;padding:8px 0 12px}
+.phhandle{width:36px;height:5px;border-radius:3px;background:var(--line);margin:4px auto 0}
+.phlist{overflow-y:auto;padding:0 12px 12px;display:flex;flex-direction:column;min-height:0}
+.card.ov{overflow:visible}
+.cbw{width:44px;height:44px;border:0;background:none;display:grid;place-items:center;flex:none;padding:0}
+.cb2{width:22px;height:22px;border-radius:7px;border:2px solid var(--sub);display:grid;place-items:center;color:var(--on-primary)}
+.cb2 svg{opacity:0}.cb2.on{background:var(--primary);border-color:var(--primary)}.cb2.on svg{opacity:1}
+.hscroll{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:0 16px}
+.hscroll .btn{flex:none}
+.pscroll>*{flex:none}
+.phhead .search{height:42px!important}
+.phstatus{height:22px;padding-top:2px}
+.mini{width:30px;height:30px;border-radius:15px;border:3px solid var(--secondary-c);display:grid;place-items:center;font-size:11px;font-weight:800;color:#fff;margin-left:-8px}
+.ph .tip{max-width:180px}
+.ph .menu{min-width:200px}
+</style>
+</helmet>
+<div class="mx ph {{motionCls}}" style="--accent:{{accent}};--dark:{{darkNum}}">
+<header class="phhead" aria-label="{{ph.t.title}}">
+  <div class="phstatus" aria-hidden="true"><b>17:44</b><span class="sp"></span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9a15 15 0 0 1 20 0"/><path d="M5 12.5a10 10 0 0 1 14 0"/><path d="M8.5 16a5 5 0 0 1 7 0"/><path d="M12 19.5h.01"/></svg><svg width="22" height="14" viewBox="0 0 24 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M2 10v2M7 7v5M12 4v8M17 1v11"/></svg><svg width="26" height="14" viewBox="0 0 26 14" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="1" y="2" width="20" height="10" rx="3"/><path d="M23 5v4" stroke-linecap="round"/><rect x="3" y="4" width="13" height="6" rx="1.5" fill="currentColor" stroke="none"/></svg></div>
+  <div class="phbar">
+    <svg class="phlogo" viewBox="0 0 200 200" aria-hidden="true"><path d="{{ph.logo}}" fill="var(--primary)"/><g fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"><path d="M68 84a46 46 0 0 1 64 0"/><path d="M80 98a28 28 0 0 1 40 0"/><path d="M62 124h76a10 10 0 0 1 10 10v2a10 10 0 0 1-10 10H62a10 10 0 0 1-10-10v-2a10 10 0 0 1 10-10z"/></g><circle cx="100" cy="112" r="6" fill="#fff"/></svg>
+    <div class="grow" style="min-width:0"><div class="phtitle">{{ph.t.title}}</div><div class="t2" style="margin:0">RT-AX86U · 198.51.100.1</div></div>
+    <a class="icb" href="Notifications.dc.html" aria-label="{{ph.t.bell}}" title="{{ph.t.bell}}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 17V11a6 6 0 0 1 12 0v6l2 2H4z"/><path d="M10 21h4"/></svg><span class="dotb">4</span></a>
+    <div class="hit">
+      <button class="icb" aria-label="{{ph.t.dim}}" title="{{ph.t.dim}}" aria-expanded="{{ph.dimOpen}}" onClick="{{ph.toggleDim}}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11h18"/><path d="M4.5 11v6.5a1.5 1.5 0 0 0 1.5 1.5h12a1.5 1.5 0 0 0 1.5-1.5V11"/><path d="M7 11c0-3 2.2-5.5 5-5.5S17 8 17 11"/><path d="M9 3c0 1 1 1 1 2M13 3c0 1 1 1 1 2"/></svg></button>
+      <sc-if value="{{ph.dimOpen}}" hint-placeholder-val="{{ false }}"><div class="tip" role="status" style="top:46px;right:-60px;width:230px">{{ph.t.dimMsg}}</div></sc-if>
+    </div>
+    <button class="icb" aria-label="{{ph.t.lockLabel}}" aria-pressed="{{ph.lockPressed}}" title="{{ph.t.lockLabel}}" onClick="{{ph.toggleLock}}" style="{{ph.lockStyle}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11h14v10H5z"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></button>
+    <div class="hit">
+      <button class="icb" aria-label="{{ph.t.export}}" title="{{ph.t.export}}" aria-haspopup="menu" aria-expanded="{{ph.menuOpen}}" onClick="{{ph.toggleMenu}}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M4 19h16"/></svg></button>
+      <sc-if value="{{ph.menuOpen}}" hint-placeholder-val="{{ false }}">
+        <div class="menu" role="menu" style="top:46px;right:0">
+          <sc-for list="{{ph.exports}}" as="ex" hint-placeholder-count="4"><button class="mi" role="menuitem" onClick="{{ex.pick}}">{{ex.label}}</button></sc-for>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+  <div class="phrow">
+    <label class="search" style="flex:1 1 auto;height:46px;padding-left:14px;gap:8px">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14z"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input aria-label="{{ph.t.searchLabel}}" placeholder="{{ph.t.placeholder}}" class="{{ph.inputCls}}">
+      <sc-if value="{{ph.rxOn}}" hint-placeholder-val="{{ false }}"><span class="tag good mono">{{ph.t.rxState}}</span></sc-if>
+      <button class="rxbtn" aria-pressed="{{ph.rxPressed}}" aria-label="{{ph.t.rx}}" title="{{ph.t.rx}}" onClick="{{ph.toggleRx}}">.*</button>
+    </label>
+  </div>
+  <div class="phrow" style="gap:6px;flex-wrap:nowrap">
+    <div class="seg" role="group" aria-label="{{ph.t.langLabel}}" style="flex:none">
+      <sc-for list="{{ph.langs}}" as="lg" hint-placeholder-count="3"><button aria-pressed="{{lg.pressed}}" onClick="{{lg.pick}}" style="padding:0 11px;height:32px">{{lg.label}}</button></sc-for>
+    </div>
+    <span class="pill t" style="height:34px;padding:0 12px;font-size:12px;min-width:0" title="{{ph.t.updateTip}}">
+      <svg width="30" height="12" viewBox="0 0 40 12" aria-hidden="true"><path d="M0 6H40" stroke="currentColor" stroke-opacity=".3" stroke-width="3" stroke-linecap="round"/><svg x="0" y="0" width="24" height="12" overflow="hidden"><path class="wavy" d="M0 6 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></svg>
+      <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ph.t.update}}</span>
+    </span>
+  </div>
+  <div class="phtabs" role="tablist" aria-label="{{ph.t.tabsLabel}}">
+    <sc-for list="{{ph.tabs}}" as="tb" hint-placeholder-count="3">
+      <div class="{{tb.cls}}"><button class="tabbtn" role="tab" aria-selected="{{tb.sel}}" onClick="{{tb.pick}}">{{tb.label}}</button><button class="x" aria-label="{{tb.closeLabel}}" onClick="{{tb.close}}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    </sc-for>
+    <button class="tab new" aria-label="{{ph.t.newTab}}" title="{{ph.t.newTab}}" onClick="{{ph.addTab}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+  </div>
+  <div class="phprov"><span>{{ph.t.version}}</span><span>{{ph.t.updated}}</span><span class="mono">{{ph.t.source}}</span><sc-if value="{{ph.hasExported}}" hint-placeholder-val="{{ false }}"><span class="tag good" style="height:20px">{{ph.t.exported}}</span></sc-if></div>
+</header>
+
+<main class="pscroll">
+
+  <section class="card hero ov rise {{cardCls.hero}}" aria-label="{{t.hero}}">
+    <div class="clip" aria-hidden="true">
+      <svg class="deco a spin" viewBox="0 0 200 200" style="right:-60px;top:-70px;width:230px;height:230px"><path d="{{shapeA}}"/></svg>
+      <svg class="deco b" viewBox="0 0 200 200" style="left:-40px;bottom:-90px;width:170px;height:170px"><path d="{{shapeB}}"/></svg>
+    </div>
+    <div class="tilehead"><span class="k" style="opacity:1">{{t.hero}}</span><button class="info" aria-label="{{tips.hero.label}}" aria-expanded="{{tips.hero.on}}" onClick="{{tips.hero.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.hero.label}}" aria-pressed="{{lk.hero.pressed}}" style="{{lk.hero.style}}" onClick="{{lk.hero.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11h14v10H5z"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></button></div><sc-if value="{{tips.hero.on}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:52px;right:16px">{{tips.hero.text}}</div></sc-if>
+    <div style="display:flex;flex-wrap:wrap;gap:6px">
+      <span class="tag onp"><span class="dot live" style="background:var(--on-primary)"></span>198.51.100.1</span>
+      <span class="tag onp">{{t.fw}}</span>
+    </div>
+    <h1 class="disp s" style="max-width:11ch">{{t.headline}}</h1>
+    <div style="display:flex;flex-wrap:wrap;gap:14px 28px">
+      <div><div class="k">{{t.uptime}}</div><div class="big">3<small>d</small> 5<small>h</small></div></div>
+      <div><div class="k">{{t.latency}}</div><div class="big">4<small>ms</small></div></div>
+      <div><div class="k">{{t.devs}}</div><div class="big">12</div></div>
+    </div>
+    <div>
+      <div class="k" style="display:flex;justify-content:space-between"><span>{{t.health}}</span><span>98%</span></div>
+      <svg width="310" height="22" viewBox="0 0 310 22" style="max-width:100%;display:block;margin-top:6px" role="img" aria-label="{{t.healthAlt}}">
+        <path d="M0 11H310" stroke="currentColor" stroke-opacity=".3" stroke-width="6" stroke-linecap="round" fill="none"/>
+        <svg x="0" y="0" width="304" height="22" overflow="hidden"><path class="wavy" d="{{wavePath}}" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/></svg>
+      </svg>
+    </div>
+  </section>
+
+  <section aria-label="{{t.qa}}">
+    <div class="hscroll" role="group" aria-label="{{t.qa}}">
+      <sc-for list="{{qas}}" as="q" hint-placeholder-count="4">
+        <button class="{{q.cls}}" aria-pressed="{{q.pressed}}" onClick="{{q.pick}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{q.d}}"/></svg>{{q.label}}</button>
+      </sc-for>
+    </div>
+    <sc-if value="{{noteOn}}" hint-placeholder-val="{{ false }}"><div class="tag good" style="margin-top:8px">{{note}}</div></sc-if>
+  </section>
+
+  <section class="card ov rise {{cardCls.chart}}" aria-label="{{t.chart}}">
+    <div class="tilehead"><span class="k" style="opacity:1">{{t.chart}}</span><button class="info" aria-label="{{tips.chart.label}}" aria-expanded="{{tips.chart.on}}" onClick="{{tips.chart.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.chart.label}}" aria-pressed="{{lk.chart.pressed}}" style="{{lk.chart.style}}" onClick="{{lk.chart.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11h14v10H5z"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></button></div><sc-if value="{{tips.chart.on}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:52px;right:16px">{{tips.chart.text}}</div></sc-if>
+    <div class="cols" style="justify-content:space-between">
+      <div><div class="big" style="font-size:34px">412<small>Mb/s</small></div><div class="t2" style="margin:0">{{t.down}}</div></div>
+      <div><div class="big" style="font-size:34px">38<small>Mb/s</small></div><div class="t2" style="margin:0">{{t.up}}</div></div>
+    </div>
+    <div class="plot">
+      <svg viewBox="0 0 320 130" role="img" aria-label="{{t.chartAlt}}">
+        <defs><linearGradient id="lgP" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--primary)" stop-opacity=".38"/><stop offset="1" stop-color="var(--primary)" stop-opacity="0"/></linearGradient></defs>
+        <line class="gridline" x1="0" x2="320" y1="40" y2="40"/><line class="gridline" x1="0" x2="320" y1="85" y2="85"/>
+        <path d="{{chart.area}}" fill="url(#lgP)"/>
+        <path d="{{chart.line}}" fill="none" stroke="var(--primary)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="ptwrap" style="left:{{chart.px}}%;top:{{chart.py}}%"><span class="pt live"></span></span>
+    </div>
+    <div class="seg" role="group" aria-label="{{t.range}}" style="align-self:flex-start">
+      <sc-for list="{{ranges}}" as="rg" hint-placeholder-count="3"><button aria-pressed="{{rg.pressed}}" onClick="{{rg.pick}}">{{rg.label}}</button></sc-for>
+    </div>
+  </section>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+    <section class="card ov rise {{cardCls.cpu}}" aria-label="{{t.cpu}}" style="padding:16px">
+      <div class="tilehead"><span class="k" style="opacity:1">{{t.cpu}}</span><button class="info" aria-label="{{tips.cpu.label}}" aria-expanded="{{tips.cpu.on}}" onClick="{{tips.cpu.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.cpu.label}}" aria-pressed="{{lk.cpu.pressed}}" style="{{lk.cpu.style}}" onClick="{{lk.cpu.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11h14v10H5z"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></button></div><sc-if value="{{tips.cpu.on}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:52px;right:16px">{{tips.cpu.text}}</div></sc-if>
+      <div class="big">18<small>%</small></div>
+      <div class="meter"><i style="width:18%"></i></div>
+      <div class="t2">{{t.cpuSub}}</div>
+    </section>
+    <section class="card ov rise {{cardCls.mem}}" aria-label="{{t.mem}}" style="padding:16px">
+      <div class="tilehead"><span class="k" style="opacity:1">{{t.mem}}</span><button class="info" aria-label="{{tips.mem.label}}" aria-expanded="{{tips.mem.on}}" onClick="{{tips.mem.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.mem.label}}" aria-pressed="{{lk.mem.pressed}}" style="{{lk.mem.style}}" onClick="{{lk.mem.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11h14v10H5z"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></button></div><sc-if value="{{tips.mem.on}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:52px;right:16px">{{tips.mem.text}}</div></sc-if>
+      <div class="big">41<small>%</small></div>
+      <div class="meter"><i style="width:41%"></i></div>
+      <div class="t2">{{t.memSub}}</div>
+    </section>
+    <section class="card ov ter rise {{cardCls.temp}}" aria-label="{{t.temp}}" style="padding:16px">
+      <div class="tilehead"><span class="k" style="opacity:1">{{t.temp}}</span><button class="info" aria-label="{{tips.temp.label}}" aria-expanded="{{tips.temp.on}}" onClick="{{tips.temp.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.temp.label}}" aria-pressed="{{lk.temp.pressed}}" style="{{lk.temp.style}}" onClick="{{lk.temp.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11h14v10H5z"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></button></div><sc-if value="{{tips.temp.on}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:52px;right:16px">{{tips.temp.text}}</div></sc-if>
+      <div class="big">52<small>°C</small></div>
+      <div class="t2" style="color:inherit">{{t.tempSub}}</div>
+    </section>
+    <section class="card ov sec rise {{cardCls.devsT}}" aria-label="{{t.devsT}}" style="padding:16px">
+      <div class="tilehead"><span class="k" style="opacity:1">{{t.devsT}}</span><button class="info" aria-label="{{tips.devsT.label}}" aria-expanded="{{tips.devsT.on}}" onClick="{{tips.devsT.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.devsT.label}}" aria-pressed="{{lk.devsT.pressed}}" style="{{lk.devsT.style}}" onClick="{{lk.devsT.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11h14v10H5z"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></button></div><sc-if value="{{tips.devsT.on}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:52px;right:16px">{{tips.devsT.text}}</div></sc-if>
+      <div class="big">12</div>
+      <div style="display:flex;padding-left:10px"><span class="mini" style="background:var(--primary)">P</span><span class="mini" style="background:var(--tertiary)">A</span><span class="mini" style="background:var(--warn)">T</span><span class="mini" style="background:var(--sub)">+9</span></div>
+    </section>
+  </div>
+
+  <section class="card ov rise {{cardCls.recent}}" aria-label="{{t.recent}}">
+    <div class="tilehead"><span class="k" style="opacity:1">{{t.recent}}</span><button class="info" aria-label="{{tips.recent.label}}" aria-expanded="{{tips.recent.on}}" onClick="{{tips.recent.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.recent.label}}" aria-pressed="{{lk.recent.pressed}}" style="{{lk.recent.style}}" onClick="{{lk.recent.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11h14v10H5z"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></button></div><sc-if value="{{tips.recent.on}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:52px;right:16px">{{tips.recent.text}}</div></sc-if>
+    <div class="cols"><h2 class="h2 grow">{{t.recentTitle}}</h2><button class="btn o sm" onClick="{{selectAll}}">{{t.selectAll}}</button></div>
+    <sc-if value="{{hasSel}}" hint-placeholder-val="{{ false }}"><div class="glass glassbar" role="region" aria-label="{{t.bulk}}"><b style="flex:1;min-width:120px">{{selText}}</b><button class="{{bulkCls}}" onClick="{{bulkA}}">{{t.bulkA}}</button><button class="btn o sm" onClick="{{clearSel}}">{{t.clear}}</button></div></sc-if>
+    <div class="tl">
+      <sc-for list="{{changes}}" as="c" hint-placeholder-count="3">
+        <div class="row pos" style="gap:6px">
+          <button class="cbw" role="checkbox" aria-checked="{{c.checked}}" aria-label="{{c.selLabel}}" onClick="{{c.toggle}}"><span class="{{c.cbCls}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></button>
+          <div class="grow"><div class="{{c.cls}}">{{c.text}}</div><div class="t2">{{c.time}}</div></div>
+          <button class="{{c.undoCls}}" onClick="{{c.undo}}">{{t.undo}}</button>
+          <button class="info" aria-label="{{t.rowMenu}}" aria-haspopup="menu" aria-expanded="{{c.menuOpen}}" onClick="{{c.more}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="5" r="1.8" fill="currentColor"/><circle cx="12" cy="12" r="1.8" fill="currentColor"/><circle cx="12" cy="19" r="1.8" fill="currentColor"/></svg></button><sc-if value="{{c.menuOpen}}" hint-placeholder-val="{{ false }}"><div class="menu" role="menu" style="right:8px;top:54px"><button class="mi" role="menuitem" onClick="{{c.mA}}">{{t.mA}}</button><button class="mi" role="menuitem" onClick="{{c.mB}}">{{t.mB}}</button><button class="mi" role="menuitem" onClick="{{c.mC}}">{{t.mC}}</button></div></sc-if>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+</main>
+<a class="phfab" href="PhoneWifi.dc.html" aria-label="{{t.review}}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span>{{t.review}}</span><sc-if value="{{hasPending}}" hint-placeholder-val="{{ true }}"><span class="badge">{{pendCount}}</span></sc-if></a>
+<nav class="phnav" aria-label="{{ph.t.navLabel}}">
+  <sc-for list="{{ph.nav}}" as="n" hint-placeholder-count="5">
+    <sc-if value="{{n.isLink}}" hint-placeholder-val="{{ true }}"><a class="{{n.cls}}" href="{{n.href}}" aria-current="{{n.cur}}"><i><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{n.d}}"/></svg></i><span>{{n.label}}</span></a></sc-if>
+    <sc-if value="{{n.isBtn}}" hint-placeholder-val="{{ false }}"><button class="{{n.cls}}" aria-haspopup="dialog" aria-expanded="{{ph.moreOpen}}" onClick="{{ph.openMore}}"><i><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{n.d}}"/></svg></i><span>{{n.label}}</span></button></sc-if>
+  </sc-for>
+</nav>
+<sc-if value="{{ph.moreOpen}}" hint-placeholder-val="{{ false }}">
+  <div class="phscrim" role="presentation" onClick="{{ph.closeMore}}"></div>
+  <div class="phsheet" role="dialog" aria-modal="true" aria-label="{{ph.t.moreTitle}}">
+    <div class="phhandle" aria-hidden="true"></div>
+    <div class="cols" style="padding:0 16px"><h2 class="h2 grow">{{ph.t.moreTitle}} <span class="badge" style="vertical-align:middle">{{ph.moreCount}}</span></h2><button class="info" aria-label="{{ph.t.close}}" onClick="{{ph.closeMore}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div style="padding:0 16px"><label class="search" style="height:46px;padding-left:14px;gap:8px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14z"/><path d="M20 20l-3.5-3.5"/></svg><input aria-label="{{ph.t.moreSearch}}" placeholder="{{ph.t.moreSearch}}" value="{{ph.moreQ}}" onInput="{{ph.onMoreQ}}"></label></div>
+    <div class="phlist" role="list">
+      <sc-for list="{{ph.moreRows}}" as="m" hint-placeholder-count="10">
+        <sc-if value="{{m.isSec}}" hint-placeholder-val="{{ false }}"><div class="navsec" style="padding:12px 8px 4px">{{m.label}}</div></sc-if>
+        <sc-if value="{{m.isItem}}" hint-placeholder-val="{{ true }}"><a class="navi" role="listitem" style="height:48px" href="{{m.href}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{m.d}}"/></svg><span>{{m.label}}</span><sc-if value="{{m.hasCt}}" hint-placeholder-val="{{ false }}"><span class="ct">{{m.ct}}</span></sc-if><sc-if value="{{m.locked}}" hint-placeholder-val="{{ false }}"><span class="tag warn" style="margin-left:auto">{{m.lockText}}</span></sc-if></a></sc-if>
+      </sc-for>
+    </div>
+  </div>
+</sc-if>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#4f5bd5","options":["#4f5bd5","#00897b","#d81b60","#f4511e","#7c4dff"],"section":"Look"},"dark":{"editor":"boolean","default":false,"section":"Look"},"motion":{"editor":"enum","options":["calm","standard","expressive"],"default":"expressive","section":"Look"},"firmware":{"editor":"enum","options":["merlin","stock"],"default":"merlin","section":"Router"},"role":{"editor":"enum","options":["owner","operator","viewer"],"default":"owner","section":"Router"},"lang":{"editor":"enum","options":["en","yue","both"],"default":"en","section":"Language"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const p = this.props; const s = this.state || {};
+    const lang0 = p.lang ?? 'en'; const lang = (s.lov && s.lov.base === lang0) ? s.lov.v : lang0; const role = p.role ?? 'owner'; const firmware = p.firmware ?? 'merlin'; const motion = p.motion ?? 'expressive';
+    const accent = p.accent || '#4f5bd5';
+    const dark = p.dark === true || p.dark === 'true' || p.dark === 1 || p.dark === '1';
+    const T = (en, yue) => lang === 'en' ? en : lang === 'yue' ? yue : en + ' · ' + yue;
+    const canWrite = role !== 'viewer';
+    const set = (o) => this.setState(o);
+    const toggleIn = (a, v) => a.includes(v) ? a.filter(x => x !== v) : a.concat([v]);
+    const IC = {"check":"M5 12.5l4.5 4.5L19 7.5","info":"M12 11v6M12 7.5h.01","lock":"M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4","search":"M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14z M20 20l-3.5-3.5","play":"M7 4l13 8-13 8z","stop":"M6 6h12v12H6z","restart":"M20 12a8 8 0 1 1-2.6-5.9 M20 4v5h-5","copy":"M9 9h11v11H9z M5 15V5h10","logs":"M6 3h9l4 4v14H6z M14 3v5h5 M9 13h7 M9 17h7","trash":"M4 7h16 M9 7V4h6v3 M6 7l1 13h10l1-13","edit":"M12 20h9 M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z","plus":"M12 5v14M5 12h14","down":"M12 4v11M7 10l5 5 5-5M4 19h16","up":"M12 20V9M7 14l5-5 5 5M4 5h16","filter":"M3 5h18l-7 8v6l-4 2v-8z","eye":"M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6","eyeoff":"M3 3l18 18 M10.6 6.2A9.6 9.6 0 0 1 12 6c6 0 10 6 10 6a17 17 0 0 1-3.2 3.7 M6.3 7.7A17 17 0 0 0 2 12s4 6 10 6a9.6 9.6 0 0 0 3.4-.6","undo":"M9 14L4 9l5-5 M4 9h10a6 6 0 0 1 0 12h-3","warn":"M12 3l10 18H2z M12 10v5 M12 18h.01","x":"M6 6l12 12M18 6L6 18","wifi":"M2 9a15 15 0 0 1 20 0 M5 12.5a10 10 0 0 1 14 0 M8.5 16a5 5 0 0 1 7 0 M12 19.5h.01","server":"M3 4h18v6H3z M3 14h18v6H3z M7 7h.01 M7 17h.01","usb":"M12 3v13 M9 6l3-3 3 3 M12 12l-4-3v4 M12 14l4-3 M6 16h4v4H6z M16 8h3v3h-3z","pi":"M5 6h14v12H5z M9 10h6v4H9z M2 9h3 M2 15h3 M19 9h3 M19 15h3","vm":"M4 5h16v11H4z M2 20h20 M9 16v4 M15 16v4","docker":"M3 13h18c0 4-3 7-8 7s-8-3-8-7z M6 13V9h3v4 M10 13V9h3v4 M14 13V9h3v4 M10 9V6h3v3","term":"M3 5h18v14H3z M7 10l3 2-3 2 M12 15h5","globe":"M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18 M3 12h18 M12 3c3 3 3 15 0 18 M12 3c-3 3-3 15 0 18","shield":"M12 3l8 3v6c0 5-3.5 8-8 9c-4.5-1-8-4-8-9V6z","clock":"M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18 M12 7v5l3 2","bolt":"M13 3L5 14h6l-1 7 8-11h-6z","chev":"M6 9l6 6 6-6","chevr":"M9 6l6 6-6 6","bell":"M6 17V11a6 6 0 0 1 12 0v6l2 2H4z M10 21h4","home":"M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z","gear":"M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6 M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.4-2.3 1a7 7 0 0 0-2-1.2L14.3 3h-4l-.4 2.7a7 7 0 0 0-2 1.2l-2.3-1-2 3.4 2 1.5A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.5 2 3.4 2.3-1a7 7 0 0 0 2 1.2l.4 2.7h4l.4-2.7a7 7 0 0 0 2-1.2l2.3 1 2-3.4-2-1.5c.1-.4.1-.8.1-1.2z","devices":"M4 6h12v9H4z M2 18h16 M19 9h3v9h-3z","menu":"M4 6h16M4 12h16M4 18h16","spark":"M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z","code":"M8 6l-5 6 5 6 M16 6l5 6-5 6 M14 4l-4 16","sliders":"M4 7h10 M18 7h2 M4 17h2 M10 17h10 M16 5v4 M8 15v4","history":"M3 12a9 9 0 1 0 3-6.7 M3 4v5h5 M12 8v4l3 2","mic":"M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z M5 11a7 7 0 0 0 14 0 M12 18v3","sound":"M4 9h4l5-4v14l-5-4H4z M16 9a4 4 0 0 1 0 6 M18.5 6.5a8 8 0 0 1 0 11","palette":"M12 3a9 9 0 1 0 0 18c1.5 0 2-1 1.5-2s0-2.5 1.5-2.5H17a4 4 0 0 0 4-4C21 6.5 17 3 12 3z M7.5 11h.01 M10 7.5h.01 M14.5 7.5h.01","user":"M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8 M4 21c0-4 3.6-7 8-7s8 3 8 7","family":"M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6 M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6 M17 8a2.5 2.5 0 1 1 0 5 M17.5 14.2c2.3.4 3.5 2.4 3.5 5.8","backup":"M12 16V4 M7 9l5-5 5 5 M4 15v5h16v-5","route":"M6 4a2 2 0 1 0 0 4 2 2 0 0 0 0-4z M18 16a2 2 0 1 0 0 4 2 2 0 0 0 0-4z M8 6h6a3 3 0 0 1 0 6H10a3 3 0 0 0 0 6h6","box":"M3 8h18v12H3z M8 8V5h8v3 M3 13h18","link":"M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1 M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1","disk":"M3 14l3-8h12l3 8v5H3z M3 14h18 M17 17h.01","chip":"M7 7h10v10H7z M9 3v4 M15 3v4 M9 17v4 M15 17v4 M3 9h4 M3 15h4 M17 9h4 M17 15h4","pause":"M8 5v14 M16 5v14","flag":"M5 21V4 M5 4h12l-2 4 2 4H5","tag":"M3 12V4h8l10 10-8 8z M7 8h.01","help":"M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18 M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7 M12 17h.01","chart":"M5 20v-6 M12 20V6 M19 20v-10","moon":"M20 14A8 8 0 1 1 10 4a6.5 6.5 0 0 0 10 10z","grid":"M4 4h7v7H4z M13 4h7v7h-7z M4 13h7v7H4z M13 13h7v7h-7z","lan":"M9 3h6v5H9z M3 16h6v5H3z M15 16h6v5h-6z M12 8v4 M6 16v-4h12v4","mesh":"M12 3a2.2 2.2 0 1 0 0 4.4A2.2 2.2 0 0 0 12 3z M5 16a2.2 2.2 0 1 0 0 4.4A2.2 2.2 0 0 0 5 16z M19 16a2.2 2.2 0 1 0 0 4.4A2.2 2.2 0 0 0 19 16z M11 7l-5 9 M13 7l5 9 M7.2 18.2h9.6","fwd":"M3 12h14 M12 6l6 6-6 6 M21 4v16","wrench":"M15 4a5 5 0 0 0-4.5 6.8L4 17.3 6.7 20l6.5-6.5A5 5 0 0 0 20 9l-3 3-3-1-1-3z","save":"M5 3h12l4 4v14H5z M8 3v6h8V3 M8 21v-7h8v7"};
+    const tipSel = s.tip || ''; const locksOn = s.locks || [];
+    const mkTips = (defs) => { const o = {}; Object.keys(defs).forEach(k => { o[k] = { on: tipSel === k, text: defs[k][1], label: T('About: ', '關於：') + defs[k][0], toggle: () => set({ tip: tipSel === k ? '' : k }) }; }); return o; };
+    const mkLocks = (defs) => { const lk = {}, cardCls = {}; Object.keys(defs).forEach(k => { const on = !canWrite || locksOn.includes(k); lk[k] = { pressed: on ? 'true' : 'false', label: (on ? T('Unlock ', '解鎖 ') : T('Lock ', '鎖定 ')) + defs[k], toggle: () => { if (canWrite) set({ locks: toggleIn(locksOn, k) }); }, style: on ? 'background:var(--tertiary-c);color:var(--on-tertiary-c)' : '' }; cardCls[k] = on ? 'lockedcard' : ''; }); return { lk, cardCls }; };
+    const wavy = (len, y) => { let d = 'M0 ' + y; for (let i = 0; i < Math.ceil(len / 16) + 2; i++) d += ' q4 -6 8 0 t8 0'; return d; };
+    const line = (vals, w, h, pad, lo, hi) => { const mn = lo ?? Math.min(...vals), mx = hi ?? Math.max(...vals); const sp = (mx - mn) || 1; return vals.map((v, i) => { const x = pad + (w - 2 * pad) * i / Math.max(vals.length - 1, 1); const y = h - pad - (h - 2 * pad) * (v - mn) / sp; return (i ? 'L' : 'M') + x.toFixed(1) + ' ' + y.toFixed(1); }).join(' '); };
+    const cookieP = (r, a, n) => { let d = ''; for (let i = 0; i <= 120; i++) { const th = i * Math.PI * 2 / 120; const rr = r + a * Math.cos(n * th); d += (i ? 'L' : 'M') + (100 + rr * Math.cos(th)).toFixed(1) + ' ' + (100 + rr * Math.sin(th)).toFixed(1); } return d + 'Z'; };
+    const base = (title, tabs, pendN) => ({ accent, dark, darkNum: dark ? 1 : 0, lang, role, firmware, motionCls: motion === 'calm' ? 'calm' : motion === 'standard' ? 'std' : '', pendCount: pendN, tabsStr: tabs.join(','), viewer: !canWrite });
+    const phoneChrome = (active, tabsDef, title, extraT) => {
+      const lang0 = p.lang ?? 'en';
+      const tabsKey = tabsDef.join(',');
+      const st = s.ptabsFrom === tabsKey ? s : {};
+      const tabList = st.ptabs || tabsDef;
+      const act = Math.max(0, Math.min(st.pact ?? 0, tabList.length - 1));
+      const setTabs = (tabs, a) => set({ ptabsFrom: tabsKey, ptabs: tabs, pact: a });
+      const locked = !canWrite ? true : !!s.plock;
+      const rxOn = !!s.prx; const menuOpen = !!s.pmenu; const dimOpen = !!s.pdim; const moreOpen = !!s.pmore; const moreQ = s.pmq || '';
+      const exportsRaw = [['CSV', 'Export view as CSV', '匯出成 CSV'], ['JSON', 'Export view as JSON', '匯出成 JSON'], ['PDF', 'Print or save as PDF', '列印或者儲存成 PDF'], ['LINK', 'Copy link to this view', '複製呢個畫面嘅連結']];
+      const rows = [
+        ['sec', 'Home', '主頁'], ['overview', 'Overview', '概覽', 'Phone.dc.html', 'home', 0], ['devices', 'Devices', '裝置', 'Devices.dc.html', 'devices', 12],
+        ['sec', 'Wireless', '無線'], ['wifi', 'Wi-Fi', 'Wi-Fi', 'PhoneWifi.dc.html', 'wifi', 0], ['aimesh', 'AiMesh', 'AiMesh', 'WiFi.dc.html', 'mesh', 0],
+        ['sec', 'Network', '網絡'], ['internet', 'Internet', '互聯網', 'Network.dc.html', 'globe', 0], ['lan', 'Local network', '區域網絡', 'Network.dc.html', 'lan', 0], ['forwarding', 'Port forwarding', '端口轉發', 'Network.dc.html', 'fwd', 4], ['firewall', 'Firewall', '防火牆', 'Security.dc.html', 'shield', 0], ['qos', 'Traffic priority', '流量優先次序', 'Network.dc.html', 'chart', 0], ['vpn', 'VPN', 'VPN', 'Security.dc.html', 'lock', 0],
+        ['sec', 'Family', '家庭'], ['parental', 'Parental controls', '家長監護', 'Security.dc.html', 'family', 0],
+        ['sec', 'Storage', '儲存'], ['usb', 'USB and storage', 'USB 同儲存', 'Tools.dc.html', 'disk', 0],
+        ['sec', 'Diagnose', '診斷'], ['logs', 'Logs', '記錄', 'Tools.dc.html', 'logs', 3], ['tools', 'Network tools', '網絡工具', 'Tools.dc.html', 'term', 0], ['jobs', 'Scheduled jobs', '排程工作', 'Tools.dc.html', 'clock', 0],
+        ['sec', 'Router', '路由器'], ['firmware', 'Firmware', '韌體', 'Advanced.dc.html', 'chip', 1], ['system', 'System', '系統', 'Advanced.dc.html', 'sliders', 0], ['maintenance', 'Maintenance', '維護', 'Advanced.dc.html', 'wrench', 0], ['backup', 'Backup and restore', '備份同還原', 'Advanced.dc.html', 'backup', 0], ['merlin', 'Merlin extras', 'Merlin 擴充功能', 'Advanced.dc.html', 'spark', 0, true], ['advanced', 'Advanced', '進階', 'Advanced.dc.html', 'code', 0], ['changes', 'Change history', '變更記錄', 'Changes.dc.html', 'history', 5],
+        ['sec', 'App', '應用程式'], ['settings', 'Settings', '設定', 'Settings.dc.html', 'gear', 0], ['toolbox', 'Toolbox', '工具箱', 'Toolbox.dc.html', 'box', 0], ['deploy', 'Deploy assistant', '部署助手', 'Deploy.dc.html', 'bolt', 0], ['help', 'Help and docs', '說明同文件', 'Settings.dc.html', 'help', 0]
+      ];
+      const mq = moreQ.toLowerCase();
+      const itemsAll = rows.filter(r => r[0] !== 'sec');
+      const filtered = mq ? itemsAll.filter(r => (r[1] + ' ' + r[2]).toLowerCase().includes(mq)) : itemsAll;
+      const moreRows = [];
+      let lastSec = '';
+      rows.forEach(r => {
+        if (r[0] === 'sec') { lastSec = r; return; }
+        if (!filtered.includes(r)) return;
+        if (lastSec && !mq) { moreRows.push({ isSec: true, isItem: false, label: T(lastSec[1], lastSec[2]) }); lastSec = ''; }
+        moreRows.push({ isSec: false, isItem: true, label: T(r[1], r[2]), href: r[3], d: IC[r[4]], hasCt: r[5] > 0, ct: r[5], locked: !!r[6] && firmware !== 'merlin', lockText: T('Merlin only', '只限 Merlin') });
+      });
+      const navDefs = [['overview', 'Overview', '概覽', 'Phone.dc.html', IC.home], ['devices', 'Devices', '裝置', 'Devices.dc.html', IC.devices], ['wifi', 'Wi-Fi', 'Wi-Fi', 'PhoneWifi.dc.html', IC.wifi], ['network', 'Network', '網絡', 'Network.dc.html', IC.globe]];
+      const nav = navDefs.map(n => ({ isLink: true, isBtn: false, cls: n[0] === active ? 'phn on' : 'phn', cur: n[0] === active ? 'page' : 'false', href: n[3], d: n[4], label: T(n[1], n[2]) }))
+        .concat([{ isLink: false, isBtn: true, cls: moreOpen ? 'phn on' : 'phn', cur: 'false', href: '', d: IC.grid, label: T('More', '更多') }]);
+      return {
+        logo: cookieP(88, 8, 12),
+        tabs: tabList.map((label, i) => ({ label, cls: i === act ? 'tab on' : 'tab', sel: i === act ? 'true' : 'false', closeLabel: T('Close tab ', '閂閉分頁 ') + label, pick: () => setTabs(tabList, i), close: () => { const nt = tabList.filter((_, j) => j !== i); setTabs(nt, Math.min(act > i ? act - 1 : act, Math.max(nt.length - 1, 0))); } })),
+        addTab: () => setTabs(tabList.concat([T('New tab', '新分頁').split(' · ')[0]]), tabList.length),
+        langs: [['en', 'EN'], ['yue', '粵'], ['both', lang0 === 'yue' ? '雙語' : 'Both']].map(o => ({ label: o[1], pressed: lang === o[0] ? 'true' : 'false', pick: () => set({ lov: { base: lang0, v: o[0] } }) })),
+        rxOn, rxPressed: rxOn ? 'true' : 'false', toggleRx: () => set({ prx: !rxOn }), inputCls: rxOn ? 'mono' : '',
+        dimOpen, toggleDim: () => set({ pdim: !dimOpen, pmenu: false }), lockPressed: locked ? 'true' : 'false', lockStyle: locked ? 'background:var(--tertiary-c);color:var(--on-tertiary-c)' : '', toggleLock: () => { if (canWrite) set({ plock: !s.plock }); },
+        menuOpen, toggleMenu: () => set({ pmenu: !menuOpen, pdim: false }), exports: exportsRaw.map(e => ({ label: T(e[1], e[2]), pick: () => set({ pmenu: false, pexp: e[0] }) })), hasExported: !!s.pexp,
+        nav, moreOpen, openMore: () => set({ pmore: !moreOpen }), closeMore: () => set({ pmore: false, pmq: '' }), moreRows, moreCount: filtered.length, moreQ, onMoreQ: (e) => set({ pmq: e.target.value }),
+        t: Object.assign({
+          title, tabsLabel: T('Workspace tabs', '工作區分頁'), newTab: T('New tab', '新分頁'), update: T('Update coming soon', '更新即將推出'), updateTip: T('A newer app build is being prepared. It is not published yet.', '新版本準備緊，仲未發佈。'),
+          searchLabel: T('Search the router app', '搜尋路由器應用程式'), placeholder: rxOn ? '^(Pixel|iPhone)-.*' : T('Search settings, devices', '搵設定、裝置'), rx: T('Regex builder', '正則表達式產生器'), rxState: T('regex · 3', '正則 · 3'), langLabel: T('Language mode', '語言模式'),
+          bell: T('Notifications, 4 unread', '通知，4 則未讀'), dim: T('Dim sum surprise', '點心驚喜'), dimMsg: T('Surprise! A fresh steamer of har gow just arrived. Nothing on your router changed.', '驚喜！一籠熱辣辣嘅蝦餃嚟咗，路由器冇任何改動。'),
+          lockLabel: !canWrite ? T('Read-only role: edits are locked', '唯讀角色：編輯已鎖定') : (locked ? T('Unlock this page for editing', '解鎖呢頁嚟編輯') : T('Lock this page against edits', '鎖定呢頁防止修改')), export: T('Export this view', '匯出呢個畫面'),
+          version: T('Version 0.1.0', '版本 0.1.0'), updated: T('updated 25 Nov 2026 17:40 HKT', '2026 年 11 月 25 日 17:40 更新'), source: 'a1b2c3d', exported: T('Exported ', '已匯出 ') + (s.pexp || ''),
+          navLabel: T('Main areas', '主要功能'), moreTitle: T('All areas', '所有功能'), moreSearch: T('Search all areas', '搜尋所有功能'), close: T('Close', '關閉')
+        }, extraT || {})
+      };
+    };
+    const shapeA = cookieP(78, 11, 10), shapeB = cookieP(66, 16, 4);
+    const note = s.note || ''; const pend = s.pend || ['dns', 'chan']; const sel = s.sel || []; const rowMenu = s.rowMenu || ''; const undone = s.undone || []; const range = s.range || '10m';
+    const QA = [['guest', 'Guest Wi-Fi', '訪客 Wi-Fi', IC.family, true], ['restart', 'Restart Wi-Fi', '重啟 Wi-Fi', IC.restart, true], ['speed', 'Speed test', '速度測試', IC.bolt, false], ['wake', 'Wake NAS', '喚醒 NAS', IC.server, false]];
+    const qas = QA.map(a => {
+      const on = pend.includes(a[0]);
+      return { label: T(a[1], a[2]), d: a[3], cls: on ? 'btn f sm' : 'btn t sm', pressed: on ? 'true' : 'false', pick: () => { if (!canWrite) return; if (a[4]) set({ pend: toggleIn(pend, a[0]) }); else set({ note: a[0] === 'speed' ? T('Speed test: 412 down, 38 up, 4 ms.', '速度測試：下載 412、上載 38、4 毫秒。') : T('Sent the wake packet to NAS 198.51.100.20.', '已向 NAS 198.51.100.20 發送喚醒封包。') }); } };
+    });
+    const seed = { '1m': 3, '10m': 7, '1h': 11 }[range];
+    const vals = []; for (let i = 0; i < 30; i++) vals.push(300 + 120 * Math.sin(i / 3 + seed) + 40 * Math.sin(i * 1.7 + seed * 2) + i * 2);
+    const lineD = line(vals, 320, 130, 8); const lastY = 130 - 8 - (130 - 16) * (vals[29] - Math.min(...vals)) / ((Math.max(...vals) - Math.min(...vals)) || 1);
+    const chart = { line: lineD, area: lineD + ' L312 122 L8 122 Z', px: (304 / 320 * 100).toFixed(2), py: (lastY / 130 * 100).toFixed(2) };
+    const ranges = [['1m', T('1 min', '1 分鐘')], ['10m', T('10 min', '10 分鐘')], ['1h', T('1 hour', '1 小時')]].map(r => ({ label: r[1], pressed: range === r[0] ? 'true' : 'false', pick: () => set({ range: r[0] }) }));
+    const CH = [['c1', 'DNS server 198.51.100.2 with DNS over TLS', 'DNS 伺服器 198.51.100.2（DNS over TLS）', '17:40'], ['c2', '5 GHz channel 36 to 44', '5 GHz 頻道 36 改做 44', '17:12'], ['c3', 'Port forward 8443 to NAS', '端口轉發 8443 去 NAS', '16:03']];
+    const changes = CH.map(c => {
+      const un = undone.includes(c[0]);
+      return {
+        text: T(c[1], c[2]), time: c[3] + ' · Pat', cls: un ? 't1 struck' : 't1', undoCls: canWrite && !un ? 'btn t sm' : 'btn t sm dis', undo: () => { if (canWrite && !un) set({ undone: undone.concat([c[0]]), note: T('Undid ' + c[1], '已復原 ' + c[2]) }); },
+        checked: sel.includes(c[0]) ? 'true' : 'false', cbCls: sel.includes(c[0]) ? 'cb2 on' : 'cb2', selLabel: T('Select change at ', '揀選變更 ') + c[3], toggle: () => set({ sel: toggleIn(sel, c[0]) }),
+        menuOpen: rowMenu === c[0], more: () => set({ rowMenu: rowMenu === c[0] ? '' : c[0] }), mA: () => set({ rowMenu: '', note: T('Copied details.', '已複製詳情。') }), mB: () => set({ rowMenu: '' }), mC: () => set({ rowMenu: '', note: T('Exported 1 change.', '已匯出 1 項變更。') })
+      };
+    });
+    const selN = sel.length;
+    const lockDefs = mkLocks({ hero: T('the status card', '狀態卡片'), chart: T('the traffic chart', '流量圖'), cpu: T('CPU', 'CPU'), mem: T('memory', '記憶體'), temp: T('temperature', '溫度'), devsT: T('devices', '裝置'), recent: T('recent changes', '最近變更') });
+    const tips = mkTips({
+      hero: [T('status card', '狀態卡片'), T('Overall router health, uptime and latency.', '路由器整體健康、運行時間同延遲。')],
+      chart: [T('traffic chart', '流量圖'), T('Live download speed. Pick a time range below.', '即時下載速度，喺下面揀時間範圍。')],
+      cpu: [T('CPU', 'CPU'), T('Average load over the last minute.', '最近一分鐘平均負載。')],
+      mem: [T('memory', '記憶體'), T('Memory in use on the router.', '路由器使用中嘅記憶體。')],
+      temp: [T('temperature', '溫度'), T('CPU temperature. Fan speeds up above 70.', 'CPU 溫度，高於 70 風扇會加速。')],
+      devsT: [T('devices', '裝置'), T('Devices connected now, wired and Wi-Fi.', '而家連接嘅裝置，有線同 Wi-Fi。')],
+      recent: [T('recent changes', '最近變更'), T('The last writes to the router. Applied ones can be undone.', '最近寫入路由器嘅變更，已套用嘅可以復原。')]
+    });
+    const bg = base(T('Overview', '概覽'), [], pend.length);
+    return Object.assign(bg, {
+      ph: phoneChrome('overview', [T('Overview', '概覽'), T('Devices', '裝置'), 'Wi-Fi'], T('Overview', '概覽')),
+      tips, lk: lockDefs.lk, cardCls: lockDefs.cardCls, shapeA, shapeB, wavePath: wavy(340, 11), qas, noteOn: !!note, note, chart, ranges, changes,
+      hasPending: pend.length > 0, pendCount: pend.length,
+      selectAll: () => set({ sel: CH.map(c => c[0]) }), hasSel: selN > 0, selText: selN + T(' selected', ' 項已揀選'), bulkCls: canWrite ? 'btn t sm' : 'btn t sm dis', bulkA: () => { if (canWrite) set({ undone: undone.concat(sel), sel: [] }); }, clearSel: () => set({ sel: [] }),
+      t: {
+        title: T('Overview', '概覽'), hero: T('Status', '狀態'), fw: firmware === 'merlin' ? 'Merlin 388.8_4' : T('Stock 388.24198', '原廠 388.24198'), headline: T('All good at home', '屋企一切正常'),
+        uptime: T('Uptime', '運行時間'), latency: T('Latency', '延遲'), devs: T('Devices', '裝置'), health: T('Health', '健康'), healthAlt: T('Router health 98 percent', '路由器健康 98%'),
+        qa: T('Quick actions', '快速操作'), chart: T('Traffic', '流量'), down: T('Download', '下載'), up: T('Upload', '上載'), chartAlt: T('Live download chart', '即時下載圖'), range: T('Time range', '時間範圍'),
+        cpu: 'CPU', cpuSub: T('4 cores, 1.8 GHz', '4 核心，1.8 GHz'), mem: T('Memory', '記憶體'), memSub: T('420 of 1024 MB', '1024 MB 用咗 420'), temp: T('Temperature', '溫度'), tempSub: T('Fan at 32 percent', '風扇 32%'), devsT: T('Devices', '裝置'),
+        recent: T('Recent changes', '最近變更'), recentTitle: T('Recent changes', '最近變更'), selectAll: T('Select all', '全選'), undo: T('Undo', '復原'), rowMenu: T('More actions for this change', '呢項變更嘅更多動作'), mA: T('Copy details', '複製詳情'), mB: T('Open in history', '喺歷史打開'), mC: T('Export this change', '匯出呢項變更'),
+        bulk: T('Bulk actions', '批量操作'), bulkA: T('Undo selected', '復原所選'), clear: T('Clear', '清除'), review: pend.length ? T('Review changes', '檢視變更') : T('Change history', '變更記錄')
+      }
+    });
+
+  }
+}
+</script>
+</body>
+</html>

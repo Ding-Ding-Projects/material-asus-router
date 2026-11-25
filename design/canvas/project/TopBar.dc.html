@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Top bar</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="theme.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,100..1000&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}.tabbtn{border:0;background:none;font:inherit;color:inherit;padding:0;height:40px;cursor:pointer}.tab{padding-right:6px}.seg button[aria-pressed=true]{background:var(--surf);color:var(--text);box-shadow:var(--e1)}.hit{position:relative}</style>
+</helmet>
+<header class="mx topbar" aria-label="{{title}}" style="--accent:{{accent}};--dark:{{darkNum}}">
+  <div class="tabs">
+    <div class="tablist" role="tablist" aria-label="{{t.tabsLabel}}">
+      <sc-for list="{{tabs}}" as="tb" hint-placeholder-count="3">
+        <div class="{{tb.cls}}">
+          <button class="tabbtn" role="tab" aria-selected="{{tb.sel}}" onClick="{{tb.pick}}">{{tb.label}}</button>
+          <button class="x" aria-label="{{tb.closeLabel}}" onClick="{{tb.close}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+        </div>
+      </sc-for>
+      <button class="tab new" aria-label="{{t.newTab}}" title="{{t.newTab}}" onClick="{{addTab}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+    </div>
+    <div class="tabend">
+      <span class="pill"><span class="dot live"></span><b>RT-AX86U</b><span class="mono" style="font-weight:500">198.51.100.1</span></span>
+      <span class="pill p">{{t.fw}}</span>
+      <span class="pill t" title="{{t.updateTip}}">
+        <svg width="40" height="12" viewBox="0 0 40 12" aria-hidden="true">
+          <path d="M0 6H40" stroke="currentColor" stroke-opacity=".3" stroke-width="3" stroke-linecap="round"/>
+          <svg x="0" y="0" width="24" height="12" overflow="hidden"><path class="wavy" d="M0 6 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>
+        </svg>
+        {{t.update}}
+      </span>
+    </div>
+  </div>
+  <div class="bar">
+    <label class="search">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input aria-label="{{t.searchLabel}}" placeholder="{{t.placeholder}}" class="{{inputCls}}">
+      <sc-if value="{{rxOn}}" hint-placeholder-val="{{ false }}"><span class="tag good mono">{{t.rxState}}</span></sc-if>
+      <button class="rxbtn" aria-pressed="{{rxPressed}}" aria-label="{{t.rx}}" title="{{t.rx}}" onClick="{{toggleRx}}">.*</button>
+    </label>
+    <div class="seg" role="group" aria-label="{{t.langLabel}}">
+      <sc-for list="{{langs}}" as="lg" hint-placeholder-count="3">
+        <button aria-pressed="{{lg.pressed}}" onClick="{{lg.pick}}">{{lg.label}}</button>
+      </sc-for>
+    </div>
+    <a class="icb" href="Notifications.dc.html" aria-label="{{t.bell}}" title="{{t.bell}}">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 17V11a6 6 0 0 1 12 0v6l2 2H4z"/><path d="M10 21h4"/></svg>
+      <span class="dotb">4</span>
+    </a>
+    <div class="hit">
+      <button class="icb" aria-label="{{t.dim}}" title="{{t.dim}}" aria-expanded="{{dimOpen}}" onClick="{{toggleDim}}">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11h18"/><path d="M4.5 11v6.5a1.5 1.5 0 0 0 1.5 1.5h12a1.5 1.5 0 0 0 1.5-1.5V11"/><path d="M7 11c0-3 2.2-5.5 5-5.5S17 8 17 11"/><path d="M9 3c0 1 1 1 1 2M13 3c0 1 1 1 1 2"/></svg>
+      </button>
+      <sc-if value="{{dimOpen}}" hint-placeholder-val="{{ false }}"><div class="tip" role="status" style="top:50px;right:0;width:240px">{{t.dimMsg}}</div></sc-if>
+    </div>
+    <button class="icb" aria-label="{{t.lockLabel}}" aria-pressed="{{lockPressed}}" title="{{t.lockLabel}}" onClick="{{toggleLock}}" style="{{lockStyle}}">
+      <sc-if value="{{locked}}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11h14v10H5z"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></sc-if>
+      <sc-if value="{{unlocked}}" hint-placeholder-val="{{ true }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11h14v10H5z"/><path d="M8 11V7a4 4 0 0 1 7.5-2"/></svg></sc-if>
+    </button>
+    <div class="hit">
+      <button class="icb" aria-label="{{t.export}}" title="{{t.export}}" aria-haspopup="menu" aria-expanded="{{menuOpen}}" onClick="{{toggleMenu}}">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5"/><path d="M4 19h16"/></svg>
+      </button>
+      <sc-if value="{{menuOpen}}" hint-placeholder-val="{{ false }}">
+        <div class="menu" role="menu" style="top:50px;right:0">
+          <sc-for list="{{exports}}" as="ex" hint-placeholder-count="4">
+            <button class="mi" role="menuitem" onClick="{{ex.pick}}">{{ex.label}}</button>
+          </sc-for>
+        </div>
+      </sc-if>
+    </div>
+    <button class="avatar" aria-label="{{t.account}}" title="{{t.account}}" style="border:0;cursor:pointer">PA</button>
+  </div>
+  <div class="prov">
+    <span>{{t.version}}</span>
+    <span>{{t.updated}}</span>
+    <span class="mono">{{t.source}}</span>
+    <span>{{t.signed}}</span>
+    <sc-if value="{{hasExported}}" hint-placeholder-val="{{ false }}"><span class="tag good">{{t.exported}}</span></sc-if>
+  </div>
+</header>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"title":{"editor":"string","default":"Overview","section":"Content"},"tabs":{"editor":"string","default":"Overview,Devices,Wi-Fi","section":"Content"},"active":{"editor":"number","default":0,"section":"Content"},"accent":{"editor":"color","default":"#4f5bd5","options":["#4f5bd5","#00897b","#d81b60","#f4511e","#7c4dff"],"section":"Look"},"dark":{"editor":"boolean","default":false,"section":"Look"},"lang":{"editor":"enum","options":["en","yue","both"],"default":"en","section":"Language"},"role":{"editor":"enum","options":["owner","operator","viewer"],"default":"owner","section":"Router"},"firmware":{"editor":"enum","options":["merlin","stock"],"default":"merlin","section":"Router"},"$preview":{"width":1152,"height":170}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const p = this.props;
+    const s = this.state || {};
+    const baseLang = p.lang ?? 'en';
+    const lang = s.lov && s.lov.base === baseLang ? s.lov.v : baseLang;
+    const role = p.role ?? 'owner';
+    const firmware = p.firmware ?? 'merlin';
+    const accent = p.accent || '#4f5bd5';
+    const dark = p.dark === true || p.dark === 'true' || p.dark === 1 || p.dark === '1';
+    const T = (en, yue) => lang === 'en' ? en : lang === 'yue' ? yue : en + ' · ' + yue;
+    const tabsKey = String(p.tabs ?? 'Overview');
+    const st = s.tabsFrom === tabsKey ? s : {};
+    const baseTabs = tabsKey.split(',').map(x => x.trim()).filter(Boolean);
+    const tabList = st.tabs || baseTabs;
+    const act = Math.max(0, Math.min(st.act ?? (Number(p.active) || 0), tabList.length - 1));
+    const setTabs = (tabs, a) => this.setState({ tabsFrom: tabsKey, tabs, act: a });
+    const tabs = tabList.map((label, i) => ({
+      label,
+      cls: i === act ? 'tab on' : 'tab',
+      sel: i === act ? 'true' : 'false',
+      closeLabel: T('Close tab ', '閂閉分頁 ') + label,
+      pick: () => setTabs(tabList, i),
+      close: () => { const nt = tabList.filter((_, j) => j !== i); setTabs(nt, Math.min(act > i ? act - 1 : act, Math.max(nt.length - 1, 0))); }
+    }));
+    const locked = role === 'viewer' ? true : !!s.locked;
+    const rxOn = !!s.rx;
+    const menuOpen = !!s.menu;
+    const exportsRaw = [['CSV', 'Export view as CSV', '匯出成 CSV'], ['JSON', 'Export view as JSON', '匯出成 JSON'], ['PDF', 'Print or save as PDF', '列印或者儲存成 PDF'], ['LINK', 'Copy link to this view', '複製呢個畫面嘅連結']];
+    const langOpts = [['en', 'EN'], ['yue', '粵'], ['both', T('Both', '兩者').split(' · ')[0] === 'Both' ? 'Both' : '雙語']];
+    return {
+      accent, darkNum: dark ? 1 : 0, title: p.title || 'Overview', tabs,
+      addTab: () => setTabs(tabList.concat([T('New tab', '新分頁').split(' · ')[0]]), tabList.length),
+      langs: langOpts.map(o => ({ label: o[1], pressed: lang === o[0] ? 'true' : 'false', pick: () => { this.setState({ lov: { base: baseLang, v: o[0] } }); if (typeof p.onLang === 'function') p.onLang(o[0]); } })),
+      rxOn, rxPressed: rxOn ? 'true' : 'false', toggleRx: () => this.setState({ rx: !rxOn }),
+      inputCls: rxOn ? 'mono' : '',
+      dimOpen: !!s.dim, toggleDim: () => this.setState({ dim: !s.dim, menu: false }),
+      locked, unlocked: !locked, lockPressed: locked ? 'true' : 'false',
+      lockStyle: role === 'viewer' ? 'opacity:.5;cursor:not-allowed' : (locked ? 'background:var(--tertiary-c);color:var(--on-tertiary-c)' : ''),
+      toggleLock: () => { if (role !== 'viewer') this.setState({ locked: !s.locked }); },
+      menuOpen, toggleMenu: () => this.setState({ menu: !menuOpen, dim: false }),
+      exports: exportsRaw.map(e => ({ label: T(e[1], e[2]), pick: () => this.setState({ menu: false, exported: e[0] }) })),
+      hasExported: !!s.exported,
+      t: {
+        tabsLabel: T('Workspace tabs', '工作區分頁'),
+        newTab: T('New tab', '新分頁'),
+        fw: firmware === 'merlin' ? 'Asuswrt-Merlin 388.8_4' : T('Stock ASUS 388.24198', '原廠 ASUS 388.24198'),
+        update: T('Update coming soon', '更新即將推出'),
+        updateTip: T('A newer app build is being prepared. It is not published yet.', '新版本準備緊，仲未發佈。'),
+        searchLabel: T('Search the router app', '搜尋路由器應用程式'),
+        placeholder: rxOn ? '^(Pixel|iPhone|MacBook)-.*' : T('Search settings, devices, actions', '搵設定、裝置、動作'),
+        rx: T('Regex builder', '正則表達式產生器'),
+        rxState: T('regex · 3 matches', '正則 · 3 個符合'),
+        langLabel: T('Language mode', '語言模式'),
+        bell: T('Notifications, 4 unread', '通知，4 則未讀'),
+        dim: T('Dim sum surprise', '點心驚喜'),
+        dimMsg: T('Surprise! A fresh steamer of har gow just arrived. Nothing on your router changed.', '驚喜！一籠熱辣辣嘅蝦餃嚟咗，路由器冇任何改動。'),
+        lockLabel: role === 'viewer' ? T('Read-only role: edits are locked', '唯讀角色：編輯已鎖定') : (locked ? T('Unlock this page for editing', '解鎖呢頁嚟編輯') : T('Lock this page against edits', '鎖定呢頁防止修改')),
+        export: T('Export this view', '匯出呢個畫面'),
+        account: T('Pat, ', 'Pat，') + (role === 'owner' ? T('Owner', '擁有人') : role === 'operator' ? T('Operator', '操作員') : T('Viewer', '檢視者')),
+        version: T('Version 0.1.0', '版本 0.1.0'),
+        updated: T('updated 25 Nov 2026 17:40 HKT', '2026 年 11 月 25 日 17:40 更新'),
+        source: T('source a1b2c3d', '來源 a1b2c3d'),
+        signed: T('Signed in as Pat · ', '以 Pat 登入 · ') + (role === 'owner' ? T('Owner', '擁有人') : role === 'operator' ? T('Operator', '操作員') : T('Viewer, read only', '檢視者（唯讀）')),
+        exported: T('Exported ', '已匯出 ') + (s.exported || '')
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

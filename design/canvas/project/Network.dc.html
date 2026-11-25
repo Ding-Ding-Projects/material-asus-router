@@ -1,0 +1,578 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Network</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="theme.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,100..1000&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.card.ov{overflow:visible}
+.cbw{width:44px;height:44px;border:0;background:none;display:grid;place-items:center;flex:none;padding:0}
+.cb2{width:22px;height:22px;border-radius:7px;border:2px solid var(--sub);display:grid;place-items:center;color:var(--on-primary)}
+.cb2 svg{opacity:0}
+.cb2.on{background:var(--primary);border-color:var(--primary)}
+.cb2.on svg{opacity:1}
+.lockedcard{outline:3px solid var(--primary);outline-offset:-3px}
+.tilehead{display:flex;align-items:center;gap:4px}
+.tilehead .k{flex:1}
+.tilehead .h2{flex:1}
+.legend{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub)}
+.legend i{width:12px;height:12px;border-radius:6px;display:inline-block}
+.pos{position:relative}
+.onp{background:color-mix(in srgb,var(--on-primary) 18%,transparent);color:var(--on-primary)}
+.struck{text-decoration:line-through;opacity:.6}
+.dis{opacity:.5;cursor:not-allowed}
+.field:disabled{opacity:.55}
+.rng{width:100%;accent-color:var(--primary);height:44px;margin:0}
+.btn.f.on{box-shadow:0 0 0 3px color-mix(in srgb,var(--primary) 35%,transparent)}
+.hero .btn.t{background:color-mix(in srgb,var(--on-primary) 20%,transparent);color:var(--on-primary)}
+.hero .btn.o{border-color:color-mix(in srgb,var(--on-primary) 50%,transparent);color:var(--on-primary)}
+.hero .info,.hero .lock{background:color-mix(in srgb,var(--on-primary) 16%,transparent);color:var(--on-primary)}
+.hero .sw{border-color:var(--on-primary);background:transparent}
+.hero .sw i{background:var(--on-primary)}
+.hero .sw.on{background:var(--on-primary);border-color:var(--on-primary)}
+.hero .sw.on i{background:var(--primary)}
+.hero .seg{background:color-mix(in srgb,var(--on-primary) 18%,transparent)}
+.hero .seg button{color:color-mix(in srgb,var(--on-primary) 85%,transparent)}
+.hero .seg button[aria-pressed=true]{background:var(--on-primary);color:var(--primary)}
+.hero .field{background:color-mix(in srgb,var(--on-primary) 14%,transparent);border-color:color-mix(in srgb,var(--on-primary) 40%,transparent);color:var(--on-primary)}
+.hero .muted{color:color-mix(in srgb,var(--on-primary) 82%,transparent)}
+.hero .chip{background:color-mix(in srgb,var(--on-primary) 16%,transparent);color:var(--on-primary);border-color:transparent}
+.hero .chip.on{background:var(--on-primary);color:var(--primary)}
+.hero .rng{accent-color:var(--on-primary)}
+.hero .tag{background:color-mix(in srgb,var(--on-primary) 18%,transparent);color:var(--on-primary)}
+.hero .meter{background:color-mix(in srgb,var(--on-primary) 24%,transparent)}
+.hero .meter i{background:var(--on-primary)}
+.hero .icb{color:var(--on-primary)}
+.fld{display:flex;flex-direction:column;gap:6px;min-width:0}
+.fld label{font-size:13px;font-weight:700;color:var(--sub)}
+.hero .fld label{color:inherit;opacity:.85}
+.grow2{flex:2 1 260px;min-width:0}
+.herogrid{display:flex;flex-wrap:wrap;gap:24px 44px;align-items:flex-end;position:relative;margin-top:6px}
+.herostat .big{font-size:50px}
+.prow{display:grid;grid-template-columns:44px 56px minmax(130px,1.2fr) 74px 96px minmax(170px,1.6fr) 44px;gap:8px;align-items:center;padding:6px 10px 6px 0;border-top:1px solid var(--line);position:relative}
+.prow.hd{border-top:0;font-size:12.5px;font-weight:750;color:var(--sub);letter-spacing:.3px;padding-top:0;padding-bottom:2px}
+.rrow{display:grid;grid-template-columns:44px minmax(140px,1.2fr) minmax(150px,1fr) 120px 44px;gap:8px;align-items:center;padding:6px 10px 6px 0;border-top:1px solid var(--line);position:relative}
+.rrow.hd{border-top:0;font-size:12.5px;font-weight:750;color:var(--sub);letter-spacing:.3px;padding-top:0;padding-bottom:2px}
+.glassbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-radius:22px;padding:8px 8px 8px 20px}
+.lat{display:flex;align-items:center;gap:10px;font-size:13px}
+.lat .meter{flex:1;height:8px}
+.lat b{width:110px;font-weight:650}
+.lat span{width:50px;text-align:right;color:var(--sub)}
+.flow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-weight:650}
+.sheetx{width:min(680px,100%);position:sticky;top:24px}
+</style>
+</helmet>
+<div class="mx shell {{motionCls}}" style="position:relative;--accent:{{accent}};--dark:{{darkNum}}">
+  <div class="railwrap">
+    <dc-import name="Rail" page="internet" lang="{{lang}}" role="{{role}}" firmware="{{firmware}}" pending="{{pendCount}}" accent="{{accent}}" dark="{{dark}}" hint-size="288px,900px"></dc-import>
+  </div>
+  <div class="main">
+    <dc-import name="TopBar" title="{{t.title}}" lang="{{lang}}" role="{{role}}" firmware="{{firmware}}" tabs="{{tabsStr}}" active="0" accent="{{accent}}" dark="{{dark}}" hint-size="1152px,170px"></dc-import>
+    <main class="page">
+
+      <section class="rise" aria-label="{{t.title}}">
+        <div class="cols" style="align-items:flex-end;gap:16px">
+          <div class="grow" style="min-width:260px">
+            <h1 class="disp s">{{t.title}}</h1>
+            <p class="lede">{{t.lede}}</p>
+          </div>
+          <div class="seg" role="group" aria-label="{{t.viewLabel}}">
+            <sc-for list="{{views}}" as="vw" hint-placeholder-count="4"><button aria-pressed="{{vw.pressed}}" onClick="{{vw.pick}}">{{vw.label}}</button></sc-for>
+          </div>
+        </div>
+        <sc-if value="{{viewer}}" hint-placeholder-val="{{ false }}"><div class="tag warn" style="margin-top:12px">{{readOnlyNote}}</div></sc-if>
+      </section>
+
+      <sc-if value="{{showInternet}}" hint-placeholder-val="{{ true }}">
+      <div class="dash">
+        <section class="card hero span2 rise" aria-label="{{t.heroLabel}}" style="min-height:0">
+          <svg class="deco a" viewBox="0 0 200 200" aria-hidden="true" style="right:-60px;top:-70px;width:320px;height:320px"><path d="{{bigD}}"/></svg>
+          <svg class="deco b" viewBox="0 0 200 200" aria-hidden="true" style="right:220px;bottom:-120px;width:240px;height:240px"><path d="{{blobD}}"/></svg>
+          <div class="cookie" style="position:absolute;right:48px;top:40px;width:112px;height:112px;color:var(--tertiary-c)" aria-hidden="true"><svg viewBox="0 0 200 200"><path d="{{cookieD}}"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="var(--on-tertiary-c)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:54px;height:54px;fill:none"><path d="M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18 M3 12h18 M12 3c3 3 3 15 0 18 M12 3c-3 3-3 15 0 18"/></svg></div>
+          <div class="tilehead" style="position:relative;max-width:calc(100% - 150px)"><span class="k">{{t.tInternet}}</span><button class="info" aria-label="{{tips.inet.label}}" aria-expanded="{{tips.inet.on}}" onClick="{{tips.inet.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.inet.label}}" aria-pressed="{{lk.inet.pressed}}" onClick="{{lk.inet.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.inet.d}}"/></svg></button></div>
+          <sc-if value="{{tips.inet.on}}" hint-placeholder-val="{{ false }}"><div class="tip" role="status" style="top:50px;right:170px">{{tips.inet.text}}</div></sc-if>
+          <h2 class="disp" style="position:relative;font-size:56px">{{t.connected}}</h2>
+          <div class="cols" style="position:relative;gap:8px"><span class="tag">WAN 203.0.113.42</span><span class="tag">{{t.gateway}} 203.0.113.1</span><span class="tag">{{connTagText}}</span><span class="tag">IPv6 2001:db8:4a::1</span></div>
+          <div class="herogrid">
+            <div class="herostat"><div class="k">{{t.up}}</div><div class="big">12<small>d</small> 4<small>h</small></div></div>
+            <div class="herostat"><div class="k">{{t.latency}}</div><div class="big">4<small>ms</small></div></div>
+            <div class="herostat"><div class="k">{{t.down}}</div><div class="big">{{speed.down}}<small>Mbps</small></div></div>
+            <div class="herostat"><div class="k">{{t.upl}}</div><div class="big">{{speed.up}}<small>Mbps</small></div></div>
+          </div>
+          <div style="position:relative">
+            <svg width="100%" height="24" viewBox="0 0 600 24" preserveAspectRatio="none" role="img" aria-label="{{speed.alt}}" style="display:block;max-width:560px">
+              <path d="M0 12H600" stroke="currentColor" stroke-opacity=".3" stroke-width="6" stroke-linecap="round" fill="none"/>
+              <svg x="0" y="0" width="{{speed.wave}}" height="24" overflow="hidden"><path class="wavy" d="M0 12 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/></svg>
+            </svg>
+          </div>
+          <div class="cols" style="position:relative;margin-top:4px">
+            <button class="btn t" onClick="{{runTest}}">{{testLabel}}</button>
+            <button class="btn o" onClick="{{renew}}">{{renewLabel}}</button>
+            <sc-if value="{{tested}}" hint-placeholder-val="{{ false }}"><span class="tag">{{t.testedAt}}</span></sc-if>
+          </div>
+        </section>
+
+        <section class="card rise {{cardCls.conn}}" aria-label="{{t.tConn}}">
+          <div class="tilehead"><h2 class="h2">{{t.tConn}}</h2><button class="info" aria-label="{{tips.conn.label}}" aria-expanded="{{tips.conn.on}}" onClick="{{tips.conn.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.conn.label}}" aria-pressed="{{lk.conn.pressed}}" onClick="{{lk.conn.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.conn.d}}"/></svg></button></div>
+          <sc-if value="{{tips.conn.on}}" hint-placeholder-val="{{ false }}"><div class="tip" role="status" style="top:54px;right:16px">{{tips.conn.text}}</div></sc-if>
+          <div class="seg" role="group" aria-label="{{t.tConn}}" style="align-self:flex-start;flex-wrap:wrap">
+            <sc-for list="{{conns}}" as="cn" hint-placeholder-count="3"><button aria-pressed="{{cn.pressed}}" onClick="{{cn.pick}}">{{cn.label}}</button></sc-for>
+          </div>
+          <sc-if value="{{isDhcp}}" hint-placeholder-val="{{ true }}"><div class="muted">{{t.dhcpNote}}</div><div class="cols"><span class="tag good">{{t.leaseLeft}}</span></div></sc-if>
+          <sc-if value="{{isPppoe}}" hint-placeholder-val="{{ false }}">
+            <div class="fld"><label for="pp-u">{{t.pppUser}}</label><input id="pp-u" class="field mono" value="pat.home@isp.example" onInput="{{noop}}"></div>
+            <div class="fld"><label for="pp-p">{{t.pppPw}}</label><input id="pp-p" class="field" type="password" value="providerpassword" onInput="{{noop}}"></div>
+            <div class="fld"><label for="pp-v">VLAN ID</label><input id="pp-v" class="field mono" value="" placeholder="{{t.optionalW}}" onInput="{{noop}}"></div>
+          </sc-if>
+          <sc-if value="{{isStatic}}" hint-placeholder-val="{{ false }}">
+            <div class="fld"><label for="st-i">{{t.ipAddr}}</label><input id="st-i" class="field mono" value="203.0.113.42" onInput="{{noop}}"></div>
+            <div class="fld"><label for="st-m">{{t.mask}}</label><input id="st-m" class="field mono" value="255.255.255.0" onInput="{{noop}}"></div>
+            <div class="fld"><label for="st-g">{{t.gateway}}</label><input id="st-g" class="field mono" value="203.0.113.1" onInput="{{noop}}"></div>
+          </sc-if>
+        </section>
+      </div>
+
+      <div class="dash">
+        <section class="card span2 rise {{cardCls.dns}}" aria-label="{{t.tDns}}">
+          <div class="tilehead"><h2 class="h2">{{t.tDns}}</h2><button class="info" aria-label="{{tips.dns.label}}" aria-expanded="{{tips.dns.on}}" onClick="{{tips.dns.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.dns.label}}" aria-pressed="{{lk.dns.pressed}}" onClick="{{lk.dns.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.dns.d}}"/></svg></button></div>
+          <sc-if value="{{tips.dns.on}}" hint-placeholder-val="{{ false }}"><div class="tip" role="status" style="top:54px;right:16px">{{tips.dns.text}}</div></sc-if>
+          <div class="muted">{{t.dnsLede}}</div>
+          <div class="cols" style="gap:8px" role="group" aria-label="{{t.tDns}}">
+            <sc-for list="{{dnsChips}}" as="dc" hint-placeholder-count="5"><button class="{{dc.cls}}" aria-pressed="{{dc.pressed}}" onClick="{{dc.pick}}">{{dc.label}}</button></sc-for>
+          </div>
+          <sc-if value="{{dnsCustom}}" hint-placeholder-val="{{ false }}">
+            <div class="cols"><div class="fld" style="flex:1 1 200px"><label for="dn-1">{{t.primary}}</label><input id="dn-1" class="field mono" value="198.51.100.2" onInput="{{noop}}"></div><div class="fld" style="flex:1 1 200px"><label for="dn-2">{{t.secondary}}</label><input id="dn-2" class="field mono" value="9.9.9.9" onInput="{{noop}}"></div></div>
+          </sc-if>
+          <div class="row"><div class="grow"><div class="t1">{{dnsNow.name}}</div><div class="t2 mono">{{dnsNow.addrs}}</div></div>
+            <div class="grow"><div class="t1">{{t.dot}}</div><div class="t2">{{t.dotSub}}</div></div>
+            <button class="{{dotCls}}" role="switch" aria-checked="{{dotChecked}}" aria-label="{{t.dot}}" onClick="{{toggleDot}}"><i></i></button></div>
+          <div class="k" style="margin-top:4px">{{t.latencyTitle}}</div>
+          <sc-for list="{{lats}}" as="lt" hint-placeholder-count="5"><div class="lat"><b>{{lt.name}}</b><div class="meter"><i style="{{lt.style}}"></i></div><span>{{lt.ms}}</span></div></sc-for>
+        </section>
+
+        <section class="card rise {{cardCls.ddns}}" aria-label="{{t.tDdns}}">
+          <div class="tilehead"><h2 class="h2">{{t.tDdns}}</h2><button class="info" aria-label="{{tips.ddns.label}}" aria-expanded="{{tips.ddns.on}}" onClick="{{tips.ddns.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.ddns.label}}" aria-pressed="{{lk.ddns.pressed}}" onClick="{{lk.ddns.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.ddns.d}}"/></svg></button></div>
+          <sc-if value="{{tips.ddns.on}}" hint-placeholder-val="{{ false }}"><div class="tip" role="status" style="top:54px;right:16px">{{tips.ddns.text}}</div></sc-if>
+          <div class="row" style="border:0;padding-top:0"><div class="grow"><div class="t1">{{t.ddnsOn}}</div><div class="t2">{{t.ddnsSub}}</div></div><button class="{{ddnsCls}}" role="switch" aria-checked="{{ddnsChecked}}" aria-label="{{t.ddnsOn}}" onClick="{{toggleDdns}}"><i></i></button></div>
+          <div class="cols" role="group" aria-label="{{t.provider}}"><sc-for list="{{providers}}" as="pv" hint-placeholder-count="3"><button class="{{pv.cls}}" aria-pressed="{{pv.pressed}}" onClick="{{pv.pick}}">{{pv.label}}</button></sc-for></div>
+          <div class="fld"><label for="dd-h">{{t.hostname}}</label><input id="dd-h" class="field mono" value="{{ddnsHost}}" onInput="{{onHost}}"></div>
+          <div class="cols"><span class="{{ddnsTagCls}}">{{ddnsTag}}</span><span class="area-note">{{t.ddnsLast}}</span></div>
+        </section>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{showLan}}" hint-placeholder-val="{{ true }}">
+      <div class="dash">
+        <section class="card rise {{cardCls.lan}}" aria-label="{{t.tLan}}">
+          <div class="tilehead"><h2 class="h2">{{t.tLan}}</h2><button class="info" aria-label="{{tips.lan.label}}" aria-expanded="{{tips.lan.on}}" onClick="{{tips.lan.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.lan.label}}" aria-pressed="{{lk.lan.pressed}}" onClick="{{lk.lan.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.lan.d}}"/></svg></button></div>
+          <sc-if value="{{tips.lan.on}}" hint-placeholder-val="{{ false }}"><div class="tip" role="status" style="top:54px;right:16px">{{tips.lan.text}}</div></sc-if>
+          <div class="fld"><label for="lan-ip">{{t.routerAddr}}</label><input id="lan-ip" class="field mono" value="{{lanIp}}" onInput="{{onLanIp}}"></div>
+          <div class="fld"><label for="lan-m">{{t.mask}}</label><input id="lan-m" class="field mono" value="255.255.255.0" onInput="{{noop}}"></div>
+          <sc-if value="{{lanChanged}}" hint-placeholder-val="{{ true }}">
+            <div class="card" role="alert" style="background:var(--warn-c);box-shadow:none;border-radius:24px;gap:10px;padding:18px 20px">
+              <div class="cols" style="flex-wrap:nowrap"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none"><path d="M12 9v4 M12 17h.01 M10.3 3.9L2.5 17.5A2 2 0 0 0 4.2 20.5h15.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><b>{{t.guardTitle}}</b></div>
+              <div class="muted" style="color:inherit">{{t.guardBody}}</div>
+              <div class="row" style="border:0;padding:0"><button class="cbw" role="checkbox" aria-checked="{{ackChecked}}" aria-label="{{t.guardAck}}" onClick="{{toggleAck}}"><span class="{{ackCls}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></button><div class="grow t1">{{t.guardAck}}</div></div>
+              <div class="cols"><span class="tag">{{t.rollback}}</span><button class="btn o sm" onClick="{{resetLan}}">{{t.keepOld}}</button></div>
+            </div>
+          </sc-if>
+          <sc-if value="{{lanSame}}" hint-placeholder-val="{{ false }}"><div class="tag good" style="align-self:flex-start">{{t.lanOk}}</div></sc-if>
+        </section>
+
+        <section class="card span2 rise {{cardCls.dhcp}}" aria-label="{{t.tDhcp}}">
+          <div class="tilehead"><h2 class="h2">{{t.tDhcp}}</h2><button class="info" aria-label="{{tips.dhcp.label}}" aria-expanded="{{tips.dhcp.on}}" onClick="{{tips.dhcp.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.dhcp.label}}" aria-pressed="{{lk.dhcp.pressed}}" onClick="{{lk.dhcp.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.dhcp.d}}"/></svg></button></div>
+          <sc-if value="{{tips.dhcp.on}}" hint-placeholder-val="{{ false }}"><div class="tip" role="status" style="top:54px;right:16px">{{tips.dhcp.text}}</div></sc-if>
+          <div class="row" style="border:0;padding-top:0"><div class="grow"><div class="t1">{{t.dhcpOn}}</div><div class="t2">{{poolText}}</div></div><button class="{{dhcpCls}}" role="switch" aria-checked="{{dhcpChecked}}" aria-label="{{t.dhcpOn}}" onClick="{{toggleDhcp}}"><i></i></button></div>
+          <svg viewBox="0 0 600 96" width="100%" role="img" aria-label="{{space.alt}}" style="display:block">
+            <rect x="0" y="34" width="600" height="22" rx="11" style="fill:var(--surf-high)"/>
+            <rect x="{{space.rx}}" y="34" width="{{space.rw}}" height="22" rx="4" style="fill:var(--secondary-c)"/>
+            <rect x="{{space.px}}" y="30" width="{{space.pw}}" height="30" rx="8" style="fill:var(--primary)"/>
+            <sc-for list="{{space.ticks}}" as="tk" hint-placeholder-count="6"><line x1="{{tk.x}}" y1="64" x2="{{tk.x}}" y2="70" style="stroke:var(--sub);stroke-width:1.5"/><text x="{{tk.x}}" y="86" text-anchor="middle" font-size="12" style="fill:var(--sub);font-family:inherit">{{tk.label}}</text></sc-for>
+            <sc-for list="{{space.pins}}" as="pn" hint-placeholder-count="4"><path d="{{pn.d}}" style="fill:var(--tertiary)"/></sc-for>
+            <text x="{{space.routerX}}" y="13" font-size="12" font-weight="700" style="fill:var(--text);font-family:inherit">{{t.routerShort}}</text>
+            <text x="{{space.poolX}}" y="13" text-anchor="middle" font-size="12" font-weight="800" style="fill:var(--primary);font-family:inherit">{{space.poolLabel}}</text>
+          </svg>
+          <div class="legend" style="gap:16px;flex-wrap:wrap"><span class="legend"><i style="background:var(--primary)"></i>{{t.legPool}}</span><span class="legend"><i style="background:var(--secondary-c)"></i>{{t.legStatic}}</span><span class="legend"><i style="background:var(--tertiary)"></i>{{t.legRes}}</span></div>
+          <div class="cols" style="gap:20px">
+            <div class="fld" style="flex:1 1 220px"><label for="pool-a">{{t.poolStart}}: <b>198.51.100.{{poolStart}}</b></label><input id="pool-a" class="rng" type="range" min="2" max="253" step="1" value="{{poolStart}}" onInput="{{onStart}}"></div>
+            <div class="fld" style="flex:1 1 220px"><label for="pool-b">{{t.poolEnd}}: <b>198.51.100.{{poolEnd}}</b></label><input id="pool-b" class="rng" type="range" min="3" max="254" step="1" value="{{poolEnd}}" onInput="{{onEnd}}"></div>
+          </div>
+          <div class="cols"><span class="k">{{t.leaseTime}}</span>
+            <div class="seg" role="group" aria-label="{{t.leaseTime}}"><sc-for list="{{leases}}" as="ls" hint-placeholder-count="4"><button aria-pressed="{{ls.pressed}}" onClick="{{ls.pick}}">{{ls.label}}</button></sc-for></div></div>
+        </section>
+      </div>
+
+      <section class="card ov rise {{cardCls.res}}" aria-label="{{t.tRes}}">
+        <div class="tilehead"><h2 class="h2">{{t.tRes}}</h2><button class="info" aria-label="{{tips.res.label}}" aria-expanded="{{tips.res.on}}" onClick="{{tips.res.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.res.label}}" aria-pressed="{{lk.res.pressed}}" onClick="{{lk.res.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.res.d}}"/></svg></button></div>
+        <sc-if value="{{tips.res.on}}" hint-placeholder-val="{{ false }}"><div class="tip" role="status" style="top:54px;right:16px">{{tips.res.text}}</div></sc-if>
+        <div class="cols"><span class="muted grow">{{t.resLede}}</span><button class="btn t sm" onClick="{{addRes}}">{{t.addRes}}</button></div>
+        <sc-if value="{{hasResSel}}" hint-placeholder-val="{{ false }}"><div class="glass glassbar" role="region" aria-label="{{t.bulk}}"><b style="flex:1;min-width:120px">{{resSelText}}</b><button class="{{bulkCls}}" onClick="{{delResSel}}">{{t.removeSel}}</button><button class="btn o sm" onClick="{{clearResSel}}">{{t.clear}}</button></div></sc-if>
+        <div role="table" aria-label="{{t.tRes}}">
+          <div class="rrow hd" role="row"><button class="cbw" role="checkbox" aria-checked="{{resAllChecked}}" aria-label="{{t.selectAll}}" onClick="{{toggleResAll}}"><span class="{{resAllCls}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></button><span>{{t.cName}}</span><span>MAC</span><span>{{t.cIp}}</span><span></span></div>
+          <sc-for list="{{resRows}}" as="rr" hint-placeholder-count="4">
+            <div class="rrow" role="row">
+              <button class="cbw" role="checkbox" aria-checked="{{rr.checked}}" aria-label="{{rr.selLabel}}" onClick="{{rr.toggle}}"><span class="{{rr.cbCls}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></button>
+              <div><div class="t1">{{rr.name}}</div><sc-if value="{{rr.isNew}}" hint-placeholder-val="{{ false }}"><span class="tag warn">{{t.newTag}}</span></sc-if></div>
+              <div class="mono" style="font-size:13.5px">{{rr.mac}}</div>
+              <div class="mono">{{rr.ip}}</div>
+              <button class="info" aria-label="{{t.rowMenu}}" aria-haspopup="menu" aria-expanded="{{rr.menuOpen}}" onClick="{{rr.more}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg></button>
+              <sc-if value="{{rr.menuOpen}}" hint-placeholder-val="{{ false }}"><div class="menu" role="menu" style="right:8px;top:50px"><button class="mi" role="menuitem" onClick="{{rr.more}}">{{t.mEdit}}</button><button class="mi" role="menuitem" onClick="{{rr.more}}">{{t.mCopy}}</button><button class="mi" role="menuitem" onClick="{{rr.remove}}" style="color:var(--bad)">{{t.mRemove}}</button></div></sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+      </sc-if>
+
+      <sc-if value="{{showFwd}}" hint-placeholder-val="{{ true }}">
+      <section class="card ov rise {{cardCls.fwd}}" aria-label="{{t.tFwd}}">
+        <div class="tilehead"><h2 class="h2">{{t.tFwd}}</h2><button class="info" aria-label="{{tips.fwd.label}}" aria-expanded="{{tips.fwd.on}}" onClick="{{tips.fwd.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.fwd.label}}" aria-pressed="{{lk.fwd.pressed}}" onClick="{{lk.fwd.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.fwd.d}}"/></svg></button></div>
+        <sc-if value="{{tips.fwd.on}}" hint-placeholder-val="{{ false }}"><div class="tip" role="status" style="top:54px;right:16px">{{tips.fwd.text}}</div></sc-if>
+        <div class="cols"><span class="muted grow">{{t.fwdLede}}</span><button class="btn f" onClick="{{openSheet}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>{{t.addRule}}</button></div>
+        <sc-if value="{{hasRuleSel}}" hint-placeholder-val="{{ false }}"><div class="glass glassbar" role="region" aria-label="{{t.bulk}}"><b style="flex:1;min-width:120px">{{ruleSelText}}</b><button class="{{bulkCls}}" onClick="{{enableSel}}">{{t.enable}}</button><button class="{{bulkCls}}" onClick="{{disableSel}}">{{t.disable}}</button><button class="{{bulkCls}}" onClick="{{delRuleSel}}">{{t.removeSel}}</button><button class="btn o sm" onClick="{{clearRuleSel}}">{{t.clear}}</button></div></sc-if>
+        <div role="table" aria-label="{{t.tFwd}}">
+          <div class="prow hd" role="row"><button class="cbw" role="checkbox" aria-checked="{{ruleAllChecked}}" aria-label="{{t.selectAll}}" onClick="{{toggleRuleAll}}"><span class="{{ruleAllCls}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></button><span>{{t.cOn}}</span><span>{{t.cName}}</span><span>{{t.cProto}}</span><span>{{t.cExt}}</span><span>{{t.cTarget}}</span><span></span></div>
+          <sc-for list="{{ruleRows}}" as="ru" hint-placeholder-count="4">
+            <div class="prow" role="row">
+              <button class="cbw" role="checkbox" aria-checked="{{ru.checked}}" aria-label="{{ru.selLabel}}" onClick="{{ru.toggle}}"><span class="{{ru.cbCls}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></button>
+              <button class="{{ru.swCls}}" role="switch" aria-checked="{{ru.on}}" aria-label="{{ru.onLabel}}" onClick="{{ru.flip}}"><i></i></button>
+              <div><div class="t1">{{ru.name}}</div><sc-if value="{{ru.isNew}}" hint-placeholder-val="{{ false }}"><span class="tag warn">{{t.newTag}}</span></sc-if></div>
+              <div><span class="tag">{{ru.proto}}</span></div>
+              <div class="mono">{{ru.ext}}</div>
+              <div><div class="mono" style="font-size:13.5px">{{ru.target}}</div><div class="area-note">{{ru.device}}</div></div>
+              <button class="info" aria-label="{{t.rowMenu}}" aria-haspopup="menu" aria-expanded="{{ru.menuOpen}}" onClick="{{ru.more}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg></button>
+              <sc-if value="{{ru.menuOpen}}" hint-placeholder-val="{{ false }}"><div class="menu" role="menu" style="right:8px;top:50px"><button class="mi" role="menuitem" onClick="{{ru.more}}">{{t.mEdit}}</button><button class="mi" role="menuitem" onClick="{{ru.more}}">{{t.mTest}}</button><button class="mi" role="menuitem" onClick="{{ru.remove}}" style="color:var(--bad)">{{t.mRemove}}</button></div></sc-if>
+            </div>
+          </sc-for>
+        </div>
+        <sc-if value="{{noRules}}" hint-placeholder-val="{{ false }}"><div class="muted" style="text-align:center;padding:20px">{{t.noRules}}</div></sc-if>
+      </section>
+      </sc-if>
+
+</main>
+    <sc-if value="{{showDock}}" hint-placeholder-val="{{ true }}">
+      <div class="dock" role="region" aria-label="{{t.dockLabel}}" style="margin:0 24px 20px">
+        <b>{{t.dockText}}</b>
+        <span class="mono" style="opacity:.8;font-size:13px">{{dockNames}}</span>
+        <button class="btn t sm" onClick="{{discard}}">{{t.discard}}</button>
+        <a class="btn f" href="Changes.dc.html">{{t.review}}</a>
+      </div>
+    </sc-if>
+  </div>
+  <sc-if value="{{sheetOpen}}" hint-placeholder-val="{{ false }}">
+    <div class="scrim" style="padding-top:60px">
+      <div class="sheet sheetx" role="dialog" aria-modal="true" aria-label="{{t.addRule}}">
+        <div class="cols" style="flex-wrap:nowrap"><h2 class="h2 grow" style="font-size:28px">{{t.addRule}}</h2><button class="icb" aria-label="{{t.cancel}}" onClick="{{closeSheet}}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+        <div class="flow" aria-label="{{form.flow}}"><span class="tag">{{t.internet}}</span><span aria-hidden="true">→</span><span class="tag">203.0.113.42:{{form.ext}}</span><span aria-hidden="true">→</span><span class="tag good">{{form.targetName}} {{form.ip}}:{{form.int}}</span><span class="tag">{{form.proto}}</span></div>
+        <div class="fld"><label for="f-name">{{t.cName}}</label><input id="f-name" class="field" value="{{form.name}}" onInput="{{onFName}}"></div>
+        <div class="cols"><span class="k">{{t.cProto}}</span><div class="seg" role="group" aria-label="{{t.cProto}}"><sc-for list="{{protos}}" as="pr" hint-placeholder-count="3"><button aria-pressed="{{pr.pressed}}" onClick="{{pr.pick}}">{{pr.label}}</button></sc-for></div></div>
+        <div class="cols" style="align-items:flex-start">
+          <div class="fld" style="flex:1 1 180px"><label for="f-ext">{{t.extPort}}</label><input id="f-ext" class="field mono" value="{{form.ext}}" onInput="{{onFExt}}"><sc-if value="{{form.extBad}}" hint-placeholder-val="{{ false }}"><span class="tag bad">{{t.portBad}}</span></sc-if><sc-if value="{{form.extDup}}" hint-placeholder-val="{{ false }}"><span class="tag warn">{{t.portDup}}</span></sc-if></div>
+          <div class="fld" style="flex:1 1 180px"><label for="f-int">{{t.intPort}}</label><input id="f-int" class="field mono" value="{{form.int}}" onInput="{{onFInt}}"><sc-if value="{{form.intBad}}" hint-placeholder-val="{{ false }}"><span class="tag bad">{{t.portBad}}</span></sc-if></div>
+        </div>
+        <div class="k">{{t.targetDev}}</div>
+        <div class="cols" style="gap:8px" role="group" aria-label="{{t.targetDev}}"><sc-for list="{{targets}}" as="tg" hint-placeholder-count="4"><button class="{{tg.cls}}" aria-pressed="{{tg.pressed}}" onClick="{{tg.pick}}">{{tg.label}} <span class="mono" style="font-weight:500">{{tg.ip}}</span></button></sc-for></div>
+        <div class="row" style="border:0"><div class="grow"><div class="t1">{{t.restrict}}</div><div class="t2">{{t.restrictSub}}</div></div><button class="{{restrictCls}}" role="switch" aria-checked="{{restrictChecked}}" aria-label="{{t.restrict}}" onClick="{{toggleRestrict}}"><i></i></button></div>
+        <div class="cols"><span class="sp"></span><button class="btn t" onClick="{{closeSheet}}">{{t.cancel}}</button><button class="{{saveCls}}" onClick="{{saveRule}}">{{t.queueIt}}</button></div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#4f5bd5","options":["#4f5bd5","#00897b","#d81b60","#f4511e","#7c4dff"],"section":"Look"},"dark":{"editor":"boolean","default":false,"section":"Look"},"motion":{"editor":"enum","options":["calm","standard","expressive"],"default":"expressive","section":"Look"},"firmware":{"editor":"enum","options":["merlin","stock"],"default":"merlin","section":"Router"},"role":{"editor":"enum","options":["owner","operator","viewer"],"default":"owner","section":"Router"},"lang":{"editor":"enum","options":["en","yue","both"],"default":"en","section":"Language"},"$preview":{"width":1440,"height":2650}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const p = this.props;
+    const s = this.state || {};
+    const lang = s.langOv || p.lang || 'en';
+    const role = p.role || 'owner';
+    const firmware = p.firmware || 'merlin';
+    const motion = p.motion || 'expressive';
+    const accent = s.accentOv || p.accent || '#4f5bd5';
+    const pd = p.dark === true || p.dark === 'true' || p.dark === 1 || p.dark === '1';
+    const dark = s.darkOv !== undefined ? s.darkOv : pd;
+    const T = (en, yue) => lang === 'en' ? en : lang === 'yue' ? yue : en + ' · ' + yue;
+    const TF = (en, yue, ...a) => T(en.replace(/%([0-9])/g, (m, i) => a[i - 1]), yue.replace(/%([0-9])/g, (m, i) => a[i - 1]));
+    const canWrite = role !== 'viewer';
+    const set = (o) => this.setState(o);
+    const toggleIn = (a, v) => a.includes(v) ? a.filter(x => x !== v) : a.concat([v]);
+    const locks = s.locks || [];
+    const tip = s.tip || '';
+    const f1 = (n) => Math.round(n * 10) / 10;
+    const can = (id) => canWrite && !locks.includes(id);
+    const mkCards = (defs) => {
+      const lk = {}, tips = {}, cardCls = {};
+      Object.keys(defs).forEach(id => {
+        const d = defs[id];
+        const on = locks.includes(id);
+        lk[id] = {
+          d: on ? 'M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4' : 'M5 11h14v10H5z M8 11V7a4 4 0 0 1 7.5-2',
+          pressed: on ? 'true' : 'false',
+          label: (on ? T('Unlock ', '解鎖 ') : T('Lock ', '鎖定 ')) + d[0] + T(' card', ' 卡片'),
+          toggle: () => set({ locks: toggleIn(locks, id) })
+        };
+        cardCls[id] = on ? 'lockedcard' : '';
+        tips[id] = { on: tip === id, text: d[1], label: T('About this card: ', '關於呢張卡片：') + d[0], toggle: () => set({ tip: tip === id ? '' : id }) };
+      });
+      return { lk, tips, cardCls };
+    };
+    const dockT = (n) => ({
+      dockLabel: T('Pending changes', '待套用變更'),
+      dockText: n + (n === 1 ? T(' change waiting', ' 項變更等緊') : T(' changes waiting', ' 項變更等緊')),
+      discard: T('Discard queue', '放棄排隊'),
+      review: T('Review ' + n + (n === 1 ? ' change' : ' changes'), '檢視 ' + n + ' 項變更')
+    });
+    const baseOut = (n) => ({
+      accent, dark, darkNum: dark ? 1 : 0, lang, role, firmware,
+      motionCls: motion === 'calm' ? 'calm' : motion === 'standard' ? 'std' : '',
+      viewer: !canWrite, pendCount: n, showDock: canWrite && n > 0,
+      readOnlyNote: T('Read-only role: you can look but not change anything.', '唯讀角色：只可以睇，唔可以改動。')
+    });
+    const qrPath = (seed, size) => {
+      let h = 2166136261;
+      for (let i = 0; i < seed.length; i++) { h ^= seed.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
+      const rnd = () => { h = (Math.imul(h, 1664525) + 1013904223) >>> 0; return h / 4294967296; };
+      let d = '';
+      const finder = (x, y) => x < 8 && y < 8 || x >= size - 8 && y < 8 || x < 8 && y >= size - 8;
+      const fcell = (x, y) => {
+        const ox = x >= size - 8 ? x - (size - 7) : x, oy = y >= size - 8 ? y - (size - 7) : y;
+        if (ox < 0 || oy < 0 || ox > 6 || oy > 6) return false;
+        const e = Math.max(Math.abs(ox - 3), Math.abs(oy - 3));
+        return e === 3 || e <= 1;
+      };
+      for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
+        const on = finder(x, y) ? fcell(x, y) : rnd() > 0.52;
+        if (on) d += 'M' + x + ' ' + y + 'h1v1h-1z';
+      }
+      return d;
+    };
+    const COOKIE = 'M194 100L193.4 104.1L191.8 108L189.2 111.7L186.1 115.2L182.6 118.3L179.2 121.2L176.2 124L173.7 126.8L172.1 129.8L171.1 133.2L170.8 136.9L171 141L171.4 145.5L171.6 150.1L171.4 154.8L170.6 159.2L168.9 163.2L166.5 166.5L163.2 168.9L159.2 170.6L154.8 171.4L150.1 171.6L145.5 171.4L141 171L136.9 170.8L133.2 171.1L129.8 172.1L126.8 173.7L124 176.2L121.2 179.2L118.3 182.6L115.2 186.1L111.7 189.2L108 191.8L104.1 193.4L100 194L95.9 193.4L92 191.8L88.3 189.2L84.8 186.1L81.7 182.6L78.8 179.2L76 176.2L73.2 173.7L70.2 172.1L66.8 171.1L63.1 170.8L59 171L54.5 171.4L49.9 171.6L45.2 171.4L40.8 170.6L36.8 168.9L33.5 166.5L31.1 163.2L29.4 159.2L28.6 154.8L28.4 150.1L28.6 145.5L29 141L29.2 136.9L28.9 133.2L27.9 129.8L26.3 126.8L23.8 124L20.8 121.2L17.4 118.3L13.9 115.2L10.8 111.7L8.2 108L6.6 104.1L6 100L6.6 95.9L8.2 92L10.8 88.3L13.9 84.8L17.4 81.7L20.8 78.8L23.8 76L26.3 73.2L27.9 70.2L28.9 66.8L29.2 63.1L29 59L28.6 54.5L28.4 49.9L28.6 45.2L29.4 40.8L31.1 36.8L33.5 33.5L36.8 31.1L40.8 29.4L45.2 28.6L49.9 28.4L54.5 28.6L59 29L63.1 29.2L66.8 28.9L70.2 27.9L73.2 26.3L76 23.8L78.8 20.8L81.7 17.4L84.8 13.9L88.3 10.8L92 8.2L95.9 6.6L100 6L104.1 6.6L108 8.2L111.7 10.8L115.2 13.9L118.3 17.4L121.2 20.8L124 23.8L126.8 26.3L129.8 27.9L133.2 28.9L136.9 29.2L141 29L145.5 28.6L150.1 28.4L154.8 28.6L159.2 29.4L163.2 31.1L166.5 33.5L168.9 36.8L170.6 40.8L171.4 45.2L171.6 49.9L171.4 54.5L171 59L170.8 63.1L171.1 66.8L172.1 70.2L173.7 73.2L176.2 76L179.2 78.8L182.6 81.7L186.1 84.8L189.2 88.3L191.8 92L193.4 95.9L194 100Z';
+    const BIG = 'M195 100L194.1 104.1L191.4 108L187.6 111.5L183.2 114.7L178.9 117.5L175.5 120.2L173.5 123.2L172.9 126.5L173.6 130.5L175.2 135L177 140.1L178.4 145.3L178.7 150.2L177.7 154.4L175.1 157.6L171.2 159.7L166.2 160.7L160.8 160.8L155.5 160.6L150.8 160.6L147.1 161.3L144.2 163.2L142.2 166.3L140.8 170.6L139.3 175.6L137.6 180.7L135.3 185.3L132.3 188.8L128.6 190.6L124.3 190.6L119.7 189L115.2 186.2L110.9 183L107 179.9L103.4 177.8L100 177L96.6 177.8L93 179.9L89.1 183L84.8 186.2L80.3 189L75.7 190.6L71.4 190.6L67.7 188.8L64.7 185.3L62.4 180.7L60.7 175.6L59.3 170.6L57.8 166.3L55.8 163.2L52.9 161.3L49.2 160.6L44.5 160.6L39.2 160.8L33.8 160.7L28.8 159.7L24.9 157.6L22.3 154.4L21.3 150.2L21.6 145.3L23 140.1L24.8 135L26.4 130.5L27.1 126.5L26.5 123.2L24.5 120.2L21.1 117.5L16.8 114.7L12.4 111.5L8.6 108L5.9 104.1L5 100L5.9 95.9L8.6 92L12.4 88.5L16.8 85.3L21.1 82.5L24.5 79.8L26.5 76.8L27.1 73.5L26.4 69.5L24.8 65L23 59.9L21.6 54.7L21.3 49.8L22.3 45.6L24.9 42.4L28.8 40.3L33.8 39.3L39.2 39.2L44.5 39.4L49.2 39.4L52.9 38.7L55.8 36.8L57.8 33.7L59.2 29.4L60.7 24.4L62.4 19.3L64.7 14.7L67.7 11.2L71.4 9.4L75.7 9.4L80.3 11L84.8 13.8L89.1 17L93 20.1L96.6 22.2L100 23L103.4 22.2L107 20.1L110.9 17L115.2 13.8L119.7 11L124.3 9.4L128.6 9.4L132.3 11.2L135.3 14.7L137.6 19.3L139.3 24.4L140.8 29.4L142.2 33.7L144.2 36.8L147.1 38.7L150.8 39.4L155.5 39.4L160.8 39.2L166.2 39.3L171.2 40.3L175.1 42.4L177.7 45.6L178.7 49.8L178.4 54.7L177 59.9L175.2 65L173.6 69.5L172.9 73.5L173.5 76.8L175.5 79.8L178.9 82.5L183.2 85.3L187.6 88.5L191.4 92L194.1 95.9L195 100Z';
+    const BLOB = 'M182.8 100C183.5 121 178.9 152.8 165.1 165.1C151.3 177.3 121.3 174 100 173.6C78.7 173.2 50.4 174.7 37.5 162.5C24.7 150.2 23.2 121.3 22.7 100C22.3 78.7 22.1 46.9 34.9 34.9C47.8 23 79 27.6 100 28.2C121 28.9 147.4 26.9 161.2 38.8C175 50.8 182.1 79 182.8 100Z';
+    const B = { conn: 'dhcp', dns: 'isp', dot: false, ddns: true, prov: 'asus', host: 'home-pat.asuscomm.example', lanIp: '198.51.100.1', pStart: 100, pEnd: 199, dhcp: true, lease: '24h' };
+    const INIT = { dns: 'cf', dot: true };
+    const v = (k) => s[k] !== undefined ? s[k] : (INIT[k] !== undefined ? INIT[k] : B[k]);
+    const view = s.view || 'all';
+    const menu = s.menu || '';
+    const BASE_RULES = [
+      { id: 'r1', name: 'Plex', proto: 'TCP', ext: 32400, ip: '198.51.100.20', int: 32400, on: true },
+      { id: 'r2', name: 'Minecraft', proto: 'TCP', ext: 25565, ip: '198.51.100.103', int: 25565, on: true },
+      { id: 'r3', name: 'SSH to NAS', proto: 'TCP', ext: 2222, ip: '198.51.100.20', int: 22, on: false },
+      { id: 'r4', name: 'HTTPS', proto: 'TCP', ext: 443, ip: '198.51.100.20', int: 443, on: true }
+    ];
+    const BASE_RES = [
+      { id: 'a1', name: 'NAS', mac: '00:11:32:AA:5C:07', ip: '198.51.100.20' },
+      { id: 'a2', name: 'Desktop PC', mac: '2C:F0:5D:3E:90:11', ip: '198.51.100.103' },
+      { id: 'a3', name: 'Printer', mac: '3C:D9:2B:A1:6E:75', ip: '198.51.100.150' },
+      { id: 'a4', name: "Pat's MacBook Air", mac: 'A4:83:E7:1C:52:9D', ip: '198.51.100.101' }
+    ];
+    const rulesOn = s.rulesOn || {};
+    const delRules = s.delRules || [];
+    const newRules = s.newRules || [];
+    const ruleSel = s.ruleSel || [];
+    const delRes = s.delRes || [];
+    const newRes = s.newRes || [];
+    const resSel = s.resSel || [];
+    const form = s.form || { name: 'Web server', proto: 'TCP', ext: '8443', ip: '198.51.100.20', int: '443', targetName: 'NAS', restrict: false };
+    const DEVN = { '198.51.100.20': 'NAS', '198.51.100.103': 'Desktop PC', '198.51.100.110': 'Living room TV', '198.51.100.101': "Pat's MacBook Air", '198.51.100.150': 'Printer' };
+    const ruleList = BASE_RULES.filter(r => !delRules.includes(r.id)).map(r => Object.assign({}, r, { on: rulesOn[r.id] !== undefined ? rulesOn[r.id] : r.on })).concat(newRules.map(r => Object.assign({}, r, { on: rulesOn[r.id] !== undefined ? rulesOn[r.id] : r.on, isNew: true })));
+    const resList = BASE_RES.filter(r => !delRes.includes(r.id)).concat(newRes.map(r => Object.assign({}, r, { isNew: true })));
+    const canN = can('fwd');
+
+    const dnsDefs = [
+      ['isp', T('Provider (automatic)', '供應商（自動）'), '203.0.113.2 · 203.0.113.3', 14],
+      ['cf', 'Cloudflare', '1.1.1.1 · 1.0.0.1', 6],
+      ['google', 'Google', '8.8.8.8 · 8.8.4.4', 9],
+      ['quad9', 'Quad9', '9.9.9.9 · 149.112.112.112', 11],
+      ['custom', T('Custom', '自訂'), '198.51.100.2 · 9.9.9.9', 3]
+    ];
+    const dns = v('dns');
+    const dnsNow = dnsDefs.find(x => x[0] === dns);
+    const dnsChips = dnsDefs.map(x => ({ label: x[1], cls: 'chip' + (dns === x[0] ? ' on' : ''), pressed: dns === x[0] ? 'true' : 'false', pick: () => { if (can('dns')) set({ dns: x[0] }); } }));
+    const lats = dnsDefs.map(x => ({ name: x[1], style: 'width:' + Math.min(100, x[3] * 5) + '%;' + (x[0] === dns ? '' : 'background:var(--sub);opacity:.5'), ms: x[3] + ' ms' }));
+    const conn = v('conn');
+    const connNames = { dhcp: T('Automatic IP (DHCP)', '自動 IP（DHCP）'), pppoe: 'PPPoE', static: T('Static IP', '固定 IP') };
+    const conns = ['dhcp', 'pppoe', 'static'].map(id => ({ label: connNames[id], pressed: conn === id ? 'true' : 'false', pick: () => { if (can('conn')) set({ conn: id }); } }));
+    const prov = v('prov');
+    const provDefs = [['asus', 'ASUS DDNS'], ['noip', 'No-IP'], ['custom', T('Custom', '自訂')]];
+    const providers = provDefs.map(([id, label]) => ({ label, cls: 'chip' + (prov === id ? ' on' : ''), pressed: prov === id ? 'true' : 'false', pick: () => { if (can('ddns')) set({ prov: id }); } }));
+    const ddnsOn = v('ddns');
+    const dot = v('dot'), dhcpOn = v('dhcp');
+    const lanIp = v('lanIp');
+    const ipOk = /^(25[0-5]|2[0-4]\d|1?\d?\d)(\.(25[0-5]|2[0-4]\d|1?\d?\d)){3}$/.test(lanIp);
+    const lanChanged = lanIp !== B.lanIp;
+    const lanAck = !!s.lanAck;
+    let pStart = v('pStart'), pEnd = v('pEnd');
+    if (pStart >= pEnd) pStart = pEnd - 1;
+    const leaseDefs = [['1h', '1 h'], ['12h', '12 h'], ['24h', '24 h'], ['7d', '7 d']];
+    const leases = leaseDefs.map(([id, label]) => ({ label, pressed: v('lease') === id ? 'true' : 'false', pick: () => { if (can('dhcp')) set({ lease: id }); } }));
+    // speed test
+    const tested = !!s.tested;
+    const speed = { down: tested ? 918 : 892, up: tested ? 43 : 41, wave: tested ? 560 : 520, alt: TF('Download %1 Mbps', '下載 %1 Mbps', tested ? 918 : 892) };
+
+    // address space bar
+    const X = (n) => f1(n / 254 * 600);
+    const reservedIps = resList.map(r => Number(r.ip.split('.')[3]));
+    const tickDefs = [1, 50, 100, 150, 200, 254];
+    const space = {
+      rx: X(2), rw: f1(X(99) - X(2)), px: X(pStart), pw: Math.max(6, f1(X(pEnd) - X(pStart))),
+      ticks: tickDefs.map(n => ({ x: X(n), label: '.' + n })),
+      pins: reservedIps.map(n => ({ d: 'M' + X(n) + ' 31 l-5 -9 h10z' })),
+      routerX: 0, poolX: f1((X(pStart) + X(pEnd)) / 2), poolLabel: dhcpOn ? ('.' + pStart + ' – .' + pEnd) : T('DHCP off', 'DHCP 已關'),
+      alt: TF('Address space of 198.51.100.0/24. DHCP pool from %1 to %2.', '198.51.100.0/24 地址空間，DHCP 範圍由 %1 至 %2。', pStart, pEnd)
+    };
+
+    // reservations rows
+    const resRows = resList.map(r => {
+      const on = resSel.includes(r.id);
+      return {
+        name: r.name, mac: r.mac, ip: r.ip, isNew: !!r.isNew,
+        checked: on ? 'true' : 'false', cbCls: 'cb2' + (on ? ' on' : ''), selLabel: T('Select ', '揀選 ') + r.name,
+        toggle: () => set({ resSel: toggleIn(resSel, r.id) }),
+        menuOpen: menu === r.id, more: () => set({ menu: menu === r.id ? '' : r.id }),
+        remove: () => { if (can('res')) { if (r.isNew) set({ newRes: newRes.filter(x => x.id !== r.id), menu: '' }); else set({ delRes: delRes.concat([r.id]), menu: '' }); } }
+      };
+    });
+    const resAll = resList.length > 0 && resList.every(r => resSel.includes(r.id));
+    const nextIp = () => { let n = 21; while (reservedIps.includes(n)) n++; return n; };
+    const ruleRows = ruleList.map(r => {
+      const on = ruleSel.includes(r.id);
+      return {
+        name: r.name, proto: r.proto, ext: String(r.ext), target: r.ip + ':' + r.int, device: DEVN[r.ip] || T('Custom address', '自訂地址'), isNew: !!r.isNew,
+        checked: on ? 'true' : 'false', cbCls: 'cb2' + (on ? ' on' : ''), selLabel: T('Select rule ', '揀選規則 ') + r.name,
+        toggle: () => set({ ruleSel: toggleIn(ruleSel, r.id) }),
+        swCls: 'sw' + (r.on ? ' on' : ''), on: r.on ? 'true' : 'false', onLabel: r.name, flip: () => { if (canN) set({ rulesOn: Object.assign({}, rulesOn, { [r.id]: !r.on }) }); },
+        menuOpen: menu === r.id, more: () => set({ menu: menu === r.id ? '' : r.id }),
+        remove: () => { if (canN) { if (r.isNew) set({ newRules: newRules.filter(x => x.id !== r.id), menu: '' }); else set({ delRules: delRules.concat([r.id]), menu: '' }); } }
+      };
+    });
+    const ruleAll = ruleList.length > 0 && ruleList.every(r => ruleSel.includes(r.id));
+    const bulkOn = (val) => () => { if (canN && ruleSel.length) { const o = Object.assign({}, rulesOn); ruleSel.forEach(id => { o[id] = val; }); set({ rulesOn: o, ruleSel: [] }); } };
+
+    // add-rule form
+    const portOk = (p) => /^\d+$/.test(String(p)) && Number(p) >= 1 && Number(p) <= 65535;
+    const protoNow = form.proto;
+    const dupExt = ruleList.some(r => String(r.ext) === String(form.ext) && (r.proto === protoNow || r.proto === 'TCP/UDP' || protoNow === 'TCP/UDP'));
+    const formValid = portOk(form.ext) && portOk(form.int) && !dupExt && form.name.trim().length > 0;
+    const targetDefs = [['NAS', '198.51.100.20'], ['Desktop PC', '198.51.100.103'], ['Living room TV', '198.51.100.110']];
+    const setForm = (o) => set({ form: Object.assign({}, form, o) });
+    const targets = targetDefs.map(([n, ip]) => ({ label: n, ip, cls: 'chip' + (form.ip === ip ? ' on' : ''), pressed: form.ip === ip ? 'true' : 'false', pick: () => setForm({ ip, targetName: n }) }));
+    const protos = ['TCP', 'UDP', 'TCP/UDP'].map(p => ({ label: p === 'TCP/UDP' ? T('Both', '兩者') : p, pressed: protoNow === p ? 'true' : 'false', pick: () => setForm({ proto: p }) }));
+    const formV = { name: form.name, proto: protoNow, ext: form.ext, int: form.int, ip: form.ip, targetName: form.targetName, extBad: !portOk(form.ext), extDup: portOk(form.ext) && dupExt, intBad: !portOk(form.int), flow: T('Traffic path', '流量路徑') };
+    const saveRule = () => { if (canN && formValid) set({ newRules: newRules.concat([{ id: 'n' + (newRules.length + 1) + form.ext, name: form.name.trim(), proto: protoNow, ext: Number(form.ext), ip: form.ip, int: Number(form.int), on: true }]), sheetOpen: false, form: { name: 'Web server', proto: 'TCP', ext: '8443', ip: '198.51.100.20', int: '443', targetName: 'NAS', restrict: false } }); };
+
+    const cards = mkCards({
+      inet: [T('internet status', '互聯網狀態'), T('Live link state from the router. Speed tests use your own line and take about 20 seconds.', '路由器嘅即時連線狀態。速度測試用你自己條線，大約 20 秒。')],
+      conn: [T('connection type', '連線類型'), T('Most home lines use automatic IP. Change this only if your provider asks.', '大部分家用線路都用自動 IP，除非供應商要求先好更改。')],
+      dns: [T('DNS', 'DNS'), T('DNS turns names into addresses. A faster resolver makes pages start sooner.', 'DNS 將名稱轉成地址，較快嘅解析器令網頁更快開始載入。')],
+      ddns: [T('dynamic DNS', '動態 DNS'), T('Keeps a name pointing at your home even when the provider changes your address.', '就算供應商更改你嘅地址，名稱都會一直指向你屋企。')],
+      lan: [T('local network', '區域網絡'), T('The address of the router on your home network. Changing it disconnects everything for a minute.', '路由器喺屋企網絡嘅地址，更改後所有裝置會斷線一分鐘。')],
+      dhcp: [T('DHCP', 'DHCP'), T('DHCP hands addresses to devices. Keep the pool away from reserved addresses.', 'DHCP 負責派地址俾裝置，範圍要避開保留地址。')],
+      res: [T('reservations', '保留地址'), T('A reserved device always gets the same address, which port forwarding needs.', '保留咗嘅裝置永遠攞到同一個地址，端口轉發需要。')],
+      fwd: [T('port forwarding', '端口轉發'), T('Sends traffic arriving on a port to one device at home. Only open what you need.', '將到達某端口嘅流量轉去屋企一部裝置，只開啟需要嘅端口。')]
+    });
+
+    // pending
+    const pends = [];
+    if (v('conn') !== B.conn) pends.push(TF('Connection type %1', '連線類型 %1', connNames[v('conn')]));
+    if (v('dns') !== B.dns) pends.push(TF('DNS to %1', 'DNS 改用 %1', dnsNow[1]));
+    if (v('dot') !== B.dot) pends.push(v('dot') ? T('DNS over TLS on', '開啟 DNS over TLS') : T('DNS over TLS off', '關閉 DNS over TLS'));
+    if (v('ddns') !== B.ddns) pends.push(v('ddns') ? T('Dynamic DNS on', '開啟動態 DNS') : T('Dynamic DNS off', '關閉動態 DNS'));
+    if (v('prov') !== B.prov) pends.push(T('DDNS provider changed', '更改 DDNS 供應商'));
+    if (v('host') !== B.host) pends.push(T('DDNS host name changed', '更改 DDNS 主機名稱'));
+    if (lanChanged && ipOk) pends.push(TF('Router address to %1', '路由器地址改做 %1', lanIp));
+    if (v('dhcp') !== B.dhcp) pends.push(v('dhcp') ? T('DHCP on', '開啟 DHCP') : T('DHCP off', '關閉 DHCP'));
+    if (pStart !== B.pStart || pEnd !== B.pEnd) pends.push(TF('DHCP range .%1 to .%2', 'DHCP 範圍 .%1 至 .%2', pStart, pEnd));
+    if (v('lease') !== B.lease) pends.push(T('Lease time changed', '更改租約時間'));
+    delRules.forEach(id => pends.push(TF('Remove rule %1', '移除規則 %1', BASE_RULES.find(r => r.id === id).name)));
+    newRules.forEach(r => pends.push(TF('Add rule %1 (port %2)', '新增規則 %1（端口 %2）', r.name, r.ext)));
+    BASE_RULES.forEach(r => { if (rulesOn[r.id] !== undefined && rulesOn[r.id] !== r.on && !delRules.includes(r.id)) pends.push(rulesOn[r.id] ? TF('Enable rule %1', '啟用規則 %1', r.name) : TF('Disable rule %1', '停用規則 %1', r.name)); });
+    delRes.forEach(id => pends.push(TF('Release reservation %1', '釋放保留 %1', BASE_RES.find(r => r.id === id).name)));
+    newRes.forEach(r => pends.push(TF('Reserve %1', '保留 %1', r.ip)));
+    const dockNames = pends.slice(0, 2).join(', ') + (pends.length > 2 ? ' +' + (pends.length - 2) : '');
+    const discardAll = () => set({ conn: B.conn, dns: B.dns, dot: B.dot, ddns: B.ddns, prov: B.prov, host: B.host, lanIp: B.lanIp, pStart: B.pStart, pEnd: B.pEnd, dhcp: B.dhcp, lease: B.lease, rulesOn: {}, delRules: [], newRules: [], delRes: [], newRes: [], lanAck: false });
+    const viewDefs = [['all', T('Everything', '全部')], ['internet', T('Internet', '互聯網')], ['lan', T('Local network', '區域網絡')], ['fwd', T('Port forwarding', '端口轉發')]];
+    const views = viewDefs.map(([id, label]) => ({ label, pressed: view === id ? 'true' : 'false', pick: () => set({ view: id }) }));
+    return Object.assign(baseOut(pends.length), {
+      cookieD: COOKIE, bigD: BIG, blobD: BLOB,
+      tabsStr: [T('Internet', '互聯網'), T('Local network', '區域網絡'), T('Port forwarding', '端口轉發')].join(','),
+      lk: cards.lk, tips: cards.tips, cardCls: cards.cardCls,
+      views, showInternet: view === 'all' || view === 'internet', showLan: view === 'all' || view === 'lan', showFwd: view === 'all' || view === 'fwd',
+      speed, tested, testLabel: tested ? T('Run again', '再測試') : T('Run speed test', '做速度測試'), runTest: () => set({ tested: true }),
+      renew: () => set({ renewed: true }), renewLabel: s.renewed ? T('Lease renewed', '已更新租約') : T('Renew lease', '更新租約'),
+      connTagText: conn === 'dhcp' ? T('Automatic IP', '自動 IP') : conn === 'pppoe' ? 'PPPoE' : T('Static IP', '固定 IP'),
+      conns, isDhcp: conn === 'dhcp', isPppoe: conn === 'pppoe', isStatic: conn === 'static', noop: () => {},
+      dnsChips, dnsNow: { name: dnsNow[1], addrs: dnsNow[2] }, dnsCustom: dns === 'custom', lats,
+      dotCls: 'sw' + (dot ? ' on' : ''), dotChecked: dot ? 'true' : 'false', toggleDot: () => { if (can('dns')) set({ dot: !dot }); },
+      providers, ddnsCls: 'sw' + (ddnsOn ? ' on' : ''), ddnsChecked: ddnsOn ? 'true' : 'false', toggleDdns: () => { if (can('ddns')) set({ ddns: !ddnsOn }); },
+      ddnsHost: v('host'), onHost: (e) => { if (can('ddns')) set({ host: e.target.value }); },
+      ddnsTag: ddnsOn ? T('Registered, updated 2 h ago', '已登記，2 小時前更新') : T('Not updating', '冇更新'), ddnsTagCls: ddnsOn ? 'tag good' : 'tag',
+      lanIp, onLanIp: (e) => { if (can('lan')) set({ lanIp: e.target.value, lanAck: false }); },
+      lanChanged, lanSame: !lanChanged, ackChecked: lanAck ? 'true' : 'false', ackCls: 'cb2' + (lanAck ? ' on' : ''), toggleAck: () => set({ lanAck: !lanAck }), resetLan: () => set({ lanIp: B.lanIp, lanAck: false }),
+      dhcpCls: 'sw' + (dhcpOn ? ' on' : ''), dhcpChecked: dhcpOn ? 'true' : 'false', toggleDhcp: () => { if (can('dhcp')) set({ dhcp: !dhcpOn }); },
+      poolText: dhcpOn ? TF('%1 addresses · 37 leases in use', '%1 個地址 · 37 個租約使用中', pEnd - pStart + 1) : T('DHCP is off. Devices need fixed addresses.', 'DHCP 已關，裝置需要固定地址。'),
+      poolStart: pStart, poolEnd: pEnd,
+      onStart: (e) => { if (can('dhcp')) set({ pStart: Math.max(2, Math.min(253, Number(e.target.value) || 2)) }); }, onEnd: (e) => { if (can('dhcp')) set({ pEnd: Math.max(3, Math.min(254, Number(e.target.value) || 3)) }); },
+      space, leases,
+      resRows, hasResSel: resSel.length > 0, resSelText: resSel.length + T(' selected', ' 項已選'), clearResSel: () => set({ resSel: [] }),
+      resAllChecked: resAll ? 'true' : 'false', resAllCls: 'cb2' + (resAll ? ' on' : ''), toggleResAll: () => set({ resSel: resAll ? [] : resList.map(r => r.id) }),
+      delResSel: () => { if (can('res') && resSel.length) set({ delRes: delRes.concat(resSel.filter(id => BASE_RES.some(b => b.id === id) && !delRes.includes(id))), newRes: newRes.filter(r => !resSel.includes(r.id)), resSel: [] }); },
+      addRes: () => { if (can('res')) { const n = nextIp(); set({ newRes: newRes.concat([{ id: 'x' + n, name: T('New device', '新裝置'), mac: '9E:4A:11:D7:5F:2A', ip: '198.51.100.' + n }]) }); } },
+      bulkCls: 'btn t sm' + (canN ? '' : ' dis'),
+      ruleRows, noRules: ruleList.length === 0, hasRuleSel: ruleSel.length > 0, ruleSelText: ruleSel.length + T(' selected', ' 項已選'), clearRuleSel: () => set({ ruleSel: [] }),
+      ruleAllChecked: ruleAll ? 'true' : 'false', ruleAllCls: 'cb2' + (ruleAll ? ' on' : ''), toggleRuleAll: () => set({ ruleSel: ruleAll ? [] : ruleList.map(r => r.id) }),
+      enableSel: bulkOn(true), disableSel: bulkOn(false),
+      delRuleSel: () => { if (canN && ruleSel.length) set({ delRules: delRules.concat(ruleSel.filter(id => BASE_RULES.some(b => b.id === id) && !delRules.includes(id))), newRules: newRules.filter(r => !ruleSel.includes(r.id)), ruleSel: [] }); },
+      sheetOpen: !!s.sheetOpen, openSheet: () => { if (canN) set({ sheetOpen: true }); }, closeSheet: () => set({ sheetOpen: false }),
+      form: formV, targets, protos,
+      onFName: (e) => setForm({ name: e.target.value }), onFExt: (e) => setForm({ ext: e.target.value }), onFInt: (e) => setForm({ int: e.target.value }),
+      restrictCls: 'sw' + (form.restrict ? ' on' : ''), restrictChecked: form.restrict ? 'true' : 'false', toggleRestrict: () => setForm({ restrict: !form.restrict }),
+      saveCls: 'btn f' + (formValid && canN ? '' : ' dis'), saveRule,
+      dockNames, discard: discardAll,
+      t: Object.assign(dockT(pends.length), {
+        title: T('Internet and local network', '互聯網同區域網絡'),
+        lede: T('See the link state, pick DNS, plan the address space and open ports for a single device. Risky changes ask for confirmation first.', '睇連線狀態、揀 DNS、規劃地址空間同為單一裝置開放端口。有風險嘅更改會先要求確認。'),
+        viewLabel: T('Show section', '顯示部分'),
+        heroLabel: T('Internet status', '互聯網狀態'), tInternet: T('Internet', '互聯網'), connected: T('Connected', '已連線'), gateway: T('Gateway', '閘道'),
+        up: T('Uptime', '運作時間'), latency: T('Latency', '延遲'), down: T('Download', '下載'), upl: T('Upload', '上傳'), testedAt: T('Tested just now', '啱啱測試'),
+        tConn: T('Connection type', '連線類型'), dhcpNote: T('The provider assigns the address automatically. Nothing to enter.', '供應商自動分配地址，唔使輸入。'), leaseLeft: T('Lease ends in 5 h 12 min', '租約 5 小時 12 分鐘後屆滿'),
+        pppUser: T('PPPoE user name', 'PPPoE 使用者名稱'), pppPw: T('PPPoE password', 'PPPoE 密碼'), optionalW: T('Optional', '選填'),
+        ipAddr: T('IP address', 'IP 地址'), mask: T('Subnet mask', '子網遮罩'),
+        tDns: T('DNS servers', 'DNS 伺服器'), dnsLede: T('Pick a preset or enter your own. The router asks the selected resolver for every lookup.', '揀預設或自行輸入，路由器每次查詢都會問揀咗嘅解析器。'),
+        primary: T('Primary', '主要'), secondary: T('Secondary', '次要'), dot: 'DNS over TLS', dotSub: T('Encrypts lookups so your provider cannot read them.', '加密查詢，供應商睇唔到內容。'),
+        latencyTitle: T('Measured response time', '實測回應時間'),
+        tDdns: T('Dynamic DNS', '動態 DNS'), ddnsOn: T('Keep a name pointing at home', '令名稱一直指向屋企'), ddnsSub: T('Updates when the address changes', '地址改變時自動更新'),
+        provider: T('Provider', '供應商'), hostname: T('Host name', '主機名稱'), ddnsLast: T('Last check 12 min ago', '12 分鐘前檢查'),
+        tLan: T('Local network', '區域網絡'), routerAddr: T('Router address', '路由器地址'),
+        guardTitle: T('This change disconnects everything', '呢項更改會令所有裝置斷線'),
+        guardBody: T('Devices get new addresses and the app reconnects to the new router address. If it cannot reach it within 2 minutes, the router rolls back by itself.', '裝置會攞新地址，應用程式會重新連去新嘅路由器地址。如果 2 分鐘內連唔到，路由器會自動還原。'),
+        guardAck: T('I understand and have a way to reconnect', '我明白，而且有辦法重新連線'), rollback: T('Automatic rollback in 120 s', '120 秒後自動還原'), keepOld: T('Keep 198.51.100.1', '保留 198.51.100.1'), lanOk: T('Address unchanged', '地址冇改'),
+        tDhcp: T('DHCP range', 'DHCP 範圍'), dhcpOn: T('DHCP server', 'DHCP 伺服器'), routerShort: T('Router', '路由器'),
+        legPool: T('DHCP pool', 'DHCP 範圍'), legStatic: T('Fixed addresses', '固定地址'), legRes: T('Reserved', '已保留'),
+        poolStart: T('Pool start', '範圍開始'), poolEnd: T('Pool end', '範圍結束'), leaseTime: T('Lease time', '租約時間'),
+        tRes: T('Address reservations', '保留地址'), resLede: T('A reserved device always gets the same address.', '保留咗嘅裝置永遠攞到同一個地址。'), addRes: T('Reserve an address', '新增保留'),
+        cName: T('Name', '名稱'), cIp: T('Address', '地址'), cOn: T('On', '啟用'), cProto: T('Protocol', '協定'), cExt: T('Port', '端口'), cTarget: T('Goes to', '轉去'),
+        newTag: T('New', '新增'), mEdit: T('Edit', '編輯'), mCopy: T('Copy', '複製'), mRemove: T('Remove', '移除'), mTest: T('Test from outside', '由外面測試'),
+        bulk: T('Bulk actions', '批量操作'), clear: T('Clear', '清除'), removeSel: T('Remove selected', '移除所選'), enable: T('Enable', '啟用'), disable: T('Disable', '停用'),
+        selectAll: T('Select all', '全選'), rowMenu: T('Row actions', '列操作'),
+        tFwd: T('Port forwarding', '端口轉發'), fwdLede: T('Open a port to one device at home. Fewer rules mean a smaller attack surface.', '為屋企一部裝置開放一個端口，規則愈少愈安全。'),
+        addRule: T('Add rule', '新增規則'), noRules: T('No rules yet.', '暫時冇規則。'),
+        cancel: T('Cancel', '取消'), internet: T('Internet', '互聯網'), extPort: T('External port', '外部端口'), intPort: T('Internal port', '內部端口'),
+        portBad: T('Enter a port from 1 to 65535', '請輸入 1 至 65535 嘅端口'), portDup: T('A rule already uses this port', '已有規則使用呢個端口'),
+        targetDev: T('Forward to', '轉發到'), restrict: T('Only allow some source addresses', '只准許指定來源地址'), restrictSub: T('Recommended for admin ports.', '管理端口建議開啟。'),
+        queueIt: T('Add to queue', '加入排隊')
+      })
+    });
+  }
+}
+</script>
+</body>
+</html>
+

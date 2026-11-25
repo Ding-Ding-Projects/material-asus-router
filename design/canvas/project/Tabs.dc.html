@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>New tab catalog and workspace tabs</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="theme.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,100..1000&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.onp{background:color-mix(in srgb,var(--on-primary) 18%,transparent);color:var(--on-primary)}
+.card.ov{overflow:visible}
+.cbw{width:44px;height:44px;border:0;background:none;display:grid;place-items:center;flex:none;padding:0}
+.cb2{width:22px;height:22px;border-radius:7px;border:2px solid var(--sub);display:grid;place-items:center;color:var(--on-primary)}
+.cb2 svg{opacity:0}
+.cb2.on{background:var(--primary);border-color:var(--primary)}
+.cb2.on svg{opacity:1}
+.struck{text-decoration:line-through;opacity:.6}
+.lockedcard{outline:3px solid var(--primary);outline-offset:-3px}
+.tilehead{display:flex;align-items:center;gap:4px}
+.tilehead .k,.tilehead .h2{flex:1}
+.legend{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub)}
+.legend i{width:12px;height:12px;border-radius:6px;display:inline-block}
+.pos{position:relative}
+.dis{opacity:.5;cursor:not-allowed}
+.rng{width:100%;min-width:120px;height:44px;accent-color:var(--primary);margin:0}
+.lbl{font-size:12.5px;font-weight:750;color:var(--sub);letter-spacing:.3px}
+.sel{height:44px;border-radius:14px;border:1.5px solid var(--line);background:var(--surf);color:var(--text);font:inherit;font-size:14px;padding:0 12px}
+.kbd{font:700 12px ui-monospace,Consolas,monospace;padding:3px 8px;border-radius:8px;background:var(--surf-high);color:var(--text)}
+.sw[aria-pressed=true]{background:var(--primary);border-color:var(--primary)}
+.sw[aria-pressed=true] i{left:26px;top:2px;width:24px;height:24px;border-radius:12px;background:#fff}
+.seg button[aria-pressed=true],.seg .on{background:var(--surf);color:var(--text);box-shadow:var(--e1)}
+.chip[aria-pressed=true]{background:var(--secondary-c);color:var(--on-secondary-c);border-color:transparent}
+.rowbtn{display:flex;align-items:center;gap:14px;padding:12px 0;border:0;border-top:1px solid var(--line);background:none;color:var(--text);text-align:left;font:inherit;width:100%;min-height:44px}
+.main{position:relative}
+.scrim{z-index:40}
+.scrim .sheet{position:sticky;top:72px;width:min(980px,100%);max-height:none}
+.wstrip{display:flex;align-items:flex-end;gap:4px;padding:10px 12px 0;border-radius:24px 24px 0 0;background:var(--surf-high);flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin}
+.wtab{display:flex;align-items:center;gap:8px;height:42px;padding:0 6px 0 14px;border-radius:14px 14px 0 0;border:0;background:transparent;color:var(--sub);font:650 13.5px var(--font);white-space:nowrap;flex:none}
+.wtab[aria-selected=true]{background:var(--surf);color:var(--text)}
+.wtab .x{width:28px;height:28px;border-radius:14px;display:grid;place-items:center;background:transparent;border:0;color:inherit;padding:0}
+.wtab .x:hover{background:var(--surf-high)}
+.wbody{padding:16px;border-radius:0 0 24px 24px;background:var(--surf);border:1px solid var(--line);border-top:0}
+.rt{display:flex;align-items:center;gap:14px;padding:12px 0;border-top:1px solid var(--line);flex-wrap:wrap}
+.rt:first-of-type{border-top:0}
+.catgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px;max-height:350px;overflow-y:auto;padding:2px}
+.dest{display:flex;align-items:center;gap:12px;min-height:56px;padding:6px 12px;border:1.5px solid var(--line);border-radius:18px;background:var(--surf);color:var(--text);font:inherit;text-align:left;position:relative}
+.dest:hover{background:var(--surf-high)}
+.dest.isopen{border-color:var(--primary);background:var(--primary-c);color:var(--on-primary-c)}
+.dest .ico{width:36px;height:36px;flex:none;color:var(--primary);display:inline-grid;place-items:center}
+.dest.isopen .ico{color:var(--on-primary-c)}
+.dest .ico svg:first-child{grid-area:1/1;width:100%;height:100%;fill:currentColor;opacity:.18}
+.dest .ico svg:last-child{grid-area:1/1;width:18px;height:18px;opacity:1}
+.dest .nm{flex:1;min-width:0;font-weight:650;font-size:14px;line-height:1.25}
+.dest .gp{display:block;font-size:11.5px;font-weight:600;opacity:.72}
+.rxpanel{display:flex;flex-direction:column;gap:10px;padding:14px;border-radius:20px;background:var(--surf-low);border:1px solid var(--line)}
+.hl{background:color-mix(in srgb,var(--warn) 45%,transparent);border-radius:4px}
+.allgrid{display:flex;flex-wrap:wrap;gap:6px;max-height:210px;overflow-y:auto}
+.ochip{display:inline-flex;align-items:center;gap:4px;height:36px;padding:0 4px 0 12px;border-radius:12px;background:var(--surf-high);font-size:13px;font-weight:650}
+.ochip button{width:28px;height:28px;border:0;border-radius:14px;background:transparent;color:var(--sub);display:grid;place-items:center;padding:0}
+</style>
+</helmet>
+<div class="mx shell {{motionCls}}" style="--accent:{{accent}};--dark:{{darkNum}}">
+  <div class="railwrap"><dc-import name="Rail" page="toolbox" lang="{{lang}}" role="{{role}}" firmware="{{firmware}}" pending="{{pendCount}}" accent="{{accent}}" dark="{{dark}}" hint-size="288px,900px"></dc-import></div>
+  <div class="main">
+    <dc-import name="TopBar" title="{{t.title}}" lang="{{lang}}" role="{{role}}" firmware="{{firmware}}" tabs="{{tabsStr}}" active="1" accent="{{accent}}" dark="{{dark}}" hint-size="1152px,170px"></dc-import>
+    <main class="page">
+
+      <section class="card hero rise" aria-label="{{t.heroLabel}}" style="min-height:220px">
+        <svg class="deco a" viewBox="0 0 200 200" aria-hidden="true" style="right:-70px;top:-85px;width:330px;height:330px"><path d="M195 100L194.1 104.1L191.4 108L187.6 111.5L183.2 114.7L178.9 117.5L175.5 120.2L173.5 123.2L172.9 126.5L173.6 130.5L175.2 135L177 140.1L178.4 145.3L178.7 150.2L177.7 154.4L175.1 157.6L171.2 159.7L166.2 160.7L160.8 160.8L155.5 160.6L150.8 160.6L147.1 161.3L144.2 163.2L142.2 166.3L140.8 170.6L139.3 175.6L137.6 180.7L135.3 185.3L132.3 188.8L128.6 190.6L124.3 190.6L119.7 189L115.2 186.2L110.9 183L107 179.9L103.4 177.8L100 177L96.6 177.8L93 179.9L89.1 183L84.8 186.2L80.3 189L75.7 190.6L71.4 190.6L67.7 188.8L64.7 185.3L62.4 180.7L60.7 175.6L59.3 170.6L57.8 166.3L55.8 163.2L52.9 161.3L49.2 160.6L44.5 160.6L39.2 160.8L33.8 160.7L28.8 159.7L24.9 157.6L22.3 154.4L21.3 150.2L21.6 145.3L23 140.1L24.8 135L26.4 130.5L27.1 126.5L26.5 123.2L24.5 120.2L21.1 117.5L16.8 114.7L12.4 111.5L8.6 108L5.9 104.1L5 100L5.9 95.9L8.6 92L12.4 88.5L16.8 85.3L21.1 82.5L24.5 79.8L26.5 76.8L27.1 73.5L26.4 69.5L24.8 65L23 59.9L21.6 54.7L21.3 49.8L22.3 45.6L24.9 42.4L28.8 40.3L33.8 39.3L39.2 39.2L44.5 39.4L49.2 39.4L52.9 38.7L55.8 36.8L57.8 33.7L59.2 29.4L60.7 24.4L62.4 19.3L64.7 14.7L67.7 11.2L71.4 9.4L75.7 9.4L80.3 11L84.8 13.8L89.1 17L93 20.1L96.6 22.2L100 23L103.4 22.2L107 20.1L110.9 17L115.2 13.8L119.7 11L124.3 9.4L128.6 9.4L132.3 11.2L135.3 14.7L137.6 19.3L139.3 24.4L140.8 29.4L142.2 33.7L144.2 36.8L147.1 38.7L150.8 39.4L155.5 39.4L160.8 39.2L166.2 39.3L171.2 40.3L175.1 42.4L177.7 45.6L178.7 49.8L178.4 54.7L177 59.9L175.2 65L173.6 69.5L172.9 73.5L173.5 76.8L175.5 79.8L178.9 82.5L183.2 85.3L187.6 88.5L191.4 92L194.1 95.9L195 100Z"/></svg>
+        <svg class="deco b" viewBox="0 0 200 200" aria-hidden="true" style="right:290px;bottom:-125px;width:250px;height:250px"><path d="M182.8 100C183.5 121 178.9 152.8 165.1 165.1C151.3 177.3 121.3 174 100 173.6C78.7 173.2 50.4 174.7 37.5 162.5C24.7 150.2 23.2 121.3 22.7 100C22.3 78.7 22.1 46.9 34.9 34.9C47.8 23 79 27.6 100 28.2C121 28.9 147.4 26.9 161.2 38.8C175 50.8 182.1 79 182.8 100Z"/></svg>
+        <div class="cookie" style="position:absolute;right:66px;top:42px;width:124px;height:124px;color:var(--tertiary-c)" aria-hidden="true"><svg viewBox="0 0 200 200"><path d="M194 100L193.4 104.1L191.8 108L189.2 111.7L186.1 115.2L182.6 118.3L179.2 121.2L176.2 124L173.7 126.8L172.1 129.8L171.1 133.2L170.8 136.9L171 141L171.4 145.5L171.6 150.1L171.4 154.8L170.6 159.2L168.9 163.2L166.5 166.5L163.2 168.9L159.2 170.6L154.8 171.4L150.1 171.6L145.5 171.4L141 171L136.9 170.8L133.2 171.1L129.8 172.1L126.8 173.7L124 176.2L121.2 179.2L118.3 182.6L115.2 186.1L111.7 189.2L108 191.8L104.1 193.4L100 194L95.9 193.4L92 191.8L88.3 189.2L84.8 186.1L81.7 182.6L78.8 179.2L76 176.2L73.2 173.7L70.2 172.1L66.8 171.1L63.1 170.8L59 171L54.5 171.4L49.9 171.6L45.2 171.4L40.8 170.6L36.8 168.9L33.5 166.5L31.1 163.2L29.4 159.2L28.6 154.8L28.4 150.1L28.6 145.5L29 141L29.2 136.9L28.9 133.2L27.9 129.8L26.3 126.8L23.8 124L20.8 121.2L17.4 118.3L13.9 115.2L10.8 111.7L8.2 108L6.6 104.1L6 100L6.6 95.9L8.2 92L10.8 88.3L13.9 84.8L17.4 81.7L20.8 78.8L23.8 76L26.3 73.2L27.9 70.2L28.9 66.8L29.2 63.1L29 59L28.6 54.5L28.4 49.9L28.6 45.2L29.4 40.8L31.1 36.8L33.5 33.5L36.8 31.1L40.8 29.4L45.2 28.6L49.9 28.4L54.5 28.6L59 29L63.1 29.2L66.8 28.9L70.2 27.9L73.2 26.3L76 23.8L78.8 20.8L81.7 17.4L84.8 13.9L88.3 10.8L92 8.2L95.9 6.6L100 6L104.1 6.6L108 8.2L111.7 10.8L115.2 13.9L118.3 17.4L121.2 20.8L124 23.8L126.8 26.3L129.8 27.9L133.2 28.9L136.9 29.2L141 29L145.5 28.6L150.1 28.4L154.8 28.6L159.2 29.4L163.2 31.1L166.5 33.5L168.9 36.8L170.6 40.8L171.4 45.2L171.6 49.9L171.4 54.5L171 59L170.8 63.1L171.1 66.8L172.1 70.2L173.7 73.2L176.2 76L179.2 78.8L182.6 81.7L186.1 84.8L189.2 88.3L191.8 92L193.4 95.9L194 100Z"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--on-tertiary-c)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:52px;height:52px;grid-area:1/1;fill:none"><path d="{{d.plus}}"/></svg></div>
+        <div style="position:relative;display:flex;flex-wrap:wrap;gap:8px"><span class="tag onp">{{openCount}}</span><span class="tag onp">{{t.chipWs}}</span><span class="tag onp">{{t.chipDest}}</span></div>
+        <h1 class="disp" style="position:relative;max-width:16ch">{{t.headline}}</h1>
+        <p class="lede" style="position:relative;color:color-mix(in srgb,var(--on-primary) 86%,transparent)">{{t.lede}}</p>
+        <div class="cols" style="position:relative;margin-top:4px">
+          <button class="btn sm" style="background:var(--surf);color:var(--text)" onClick="{{openDlg}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>{{t.newTab}}</button>
+          <button class="btn sm" style="background:color-mix(in srgb,var(--on-primary) 18%,transparent);color:inherit" onClick="{{openEvery}}">{{t.openEvery}}</button>
+        </div>
+      </section>
+
+      <div class="dash">
+        <section class="card span2 ov rise {{cc.strip}}" aria-label="{{t.stripTitle}}">
+          <div class="tilehead"><h2 class="h2">{{t.stripTitle}}</h2>
+  <button class="info" aria-label="{{tips.strip.label}}" aria-expanded="{{tips.strip.on}}" onClick="{{tips.strip.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button>
+  <button class="lock" aria-label="{{lk.strip.label}}" aria-pressed="{{lk.strip.pressed}}" onClick="{{lk.strip.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.strip.d}}"/></svg></button>
+</div>
+<sc-if value="{{tips.strip.on}}" hint-placeholder-val="{{ false }}"><div class="tip" role="tooltip" style="top:52px;right:16px">{{tips.strip.text}}</div></sc-if>
+          <div class="muted">{{t.stripSub}}</div>
+          <div>
+            <div class="wstrip" role="tablist" aria-label="{{t.stripTitle}}">
+              <sc-for list="{{strip}}" as="w" hint-placeholder-count="6"><div class="wtab" role="tab" aria-selected="{{w.sel}}"><button style="all:unset;cursor:pointer;display:flex;align-items:center;gap:8px;min-height:40px" onClick="{{w.focus}}">{{w.name}}</button><button class="x" aria-label="{{w.closeLabel}}" onClick="{{w.close}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div></sc-for>
+              <button class="wtab" style="padding:0 10px;font-size:20px" aria-label="{{t.newTab}}" onClick="{{openDlg}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+              <button class="wtab" onClick="{{toggleAll}}" aria-expanded="{{allOpenList}}">{{moreText}}</button>
+            </div>
+            <div class="wbody"><div class="t1">{{activeName}}</div><div class="muted">{{t.activeSub}}</div></div>
+          </div>
+          <sc-if value="{{showAll}}" hint-placeholder-val="{{ false }}">
+            <div class="cols"><b class="t1 grow">{{t.allOpen}}</b><button class="btn o sm" onClick="{{closeOthers}}">{{t.closeOthers}}</button></div>
+            <div class="allgrid" role="list"><sc-for list="{{allOpen}}" as="o" hint-placeholder-count="12"><span class="ochip" role="listitem"><button style="all:unset;cursor:pointer;min-height:36px" onClick="{{o.focus}}">{{o.name}}</button><button aria-label="{{o.closeLabel}}" onClick="{{o.close}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></span></sc-for></div>
+          </sc-if>
+          <div class="cols"><b class="t1">{{t.recent}}</b>
+            <sc-for list="{{closed}}" as="c" hint-placeholder-count="3"><button class="chip" onClick="{{c.restore}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.5-5.8 M20 4v5h-5"/></svg>{{c.name}}</button></sc-for>
+            <sc-if value="{{noClosed}}" hint-placeholder-val="{{ false }}"><span class="muted">{{t.noClosed}}</span></sc-if>
+            <span class="sp"></span><button class="btn t sm {{restoreDis}}" onClick="{{restoreLast}}">{{t.restoreLast}}</button></div>
+        </section>
+
+        <section class="card ov rise {{cc.ws}}" aria-label="{{t.wsTitle}}">
+          <div class="tilehead"><h2 class="h2">{{t.wsTitle}}</h2>
+  <button class="info" aria-label="{{tips.ws.label}}" aria-expanded="{{tips.ws.on}}" onClick="{{tips.ws.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button>
+  <button class="lock" aria-label="{{lk.ws.label}}" aria-pressed="{{lk.ws.pressed}}" onClick="{{lk.ws.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.ws.d}}"/></svg></button>
+</div>
+<sc-if value="{{tips.ws.on}}" hint-placeholder-val="{{ false }}"><div class="tip" role="tooltip" style="top:52px;right:16px">{{tips.ws.text}}</div></sc-if>
+          <div class="muted">{{t.wsSub}}</div>
+          <sc-for list="{{routers}}" as="r" hint-placeholder-count="3">
+            <div class="rt"><span class="cookie" style="width:44px;height:44px;color:{{r.color}}" aria-hidden="true"><svg viewBox="0 0 200 200"><path d="M194 100L193.4 104.1L191.8 108L189.2 111.7L186.1 115.2L182.6 118.3L179.2 121.2L176.2 124L173.7 126.8L172.1 129.8L171.1 133.2L170.8 136.9L171 141L171.4 145.5L171.6 150.1L171.4 154.8L170.6 159.2L168.9 163.2L166.5 166.5L163.2 168.9L159.2 170.6L154.8 171.4L150.1 171.6L145.5 171.4L141 171L136.9 170.8L133.2 171.1L129.8 172.1L126.8 173.7L124 176.2L121.2 179.2L118.3 182.6L115.2 186.1L111.7 189.2L108 191.8L104.1 193.4L100 194L95.9 193.4L92 191.8L88.3 189.2L84.8 186.1L81.7 182.6L78.8 179.2L76 176.2L73.2 173.7L70.2 172.1L66.8 171.1L63.1 170.8L59 171L54.5 171.4L49.9 171.6L45.2 171.4L40.8 170.6L36.8 168.9L33.5 166.5L31.1 163.2L29.4 159.2L28.6 154.8L28.4 150.1L28.6 145.5L29 141L29.2 136.9L28.9 133.2L27.9 129.8L26.3 126.8L23.8 124L20.8 121.2L17.4 118.3L13.9 115.2L10.8 111.7L8.2 108L6.6 104.1L6 100L6.6 95.9L8.2 92L10.8 88.3L13.9 84.8L17.4 81.7L20.8 78.8L23.8 76L26.3 73.2L27.9 70.2L28.9 66.8L29.2 63.1L29 59L28.6 54.5L28.4 49.9L28.6 45.2L29.4 40.8L31.1 36.8L33.5 33.5L36.8 31.1L40.8 29.4L45.2 28.6L49.9 28.4L54.5 28.6L59 29L63.1 29.2L66.8 28.9L70.2 27.9L73.2 26.3L76 23.8L78.8 20.8L81.7 17.4L84.8 13.9L88.3 10.8L92 8.2L95.9 6.6L100 6L104.1 6.6L108 8.2L111.7 10.8L115.2 13.9L118.3 17.4L121.2 20.8L124 23.8L126.8 26.3L129.8 27.9L133.2 28.9L136.9 29.2L141 29L145.5 28.6L150.1 28.4L154.8 28.6L159.2 29.4L163.2 31.1L166.5 33.5L168.9 36.8L170.6 40.8L171.4 45.2L171.6 49.9L171.4 54.5L171 59L170.8 63.1L171.1 66.8L172.1 70.2L173.7 73.2L176.2 76L179.2 78.8L182.6 81.7L186.1 84.8L189.2 88.3L191.8 92L193.4 95.9L194 100Z"/></svg><svg style="color:#fff" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9a15 15 0 0 1 20 0 M5 12.5a10 10 0 0 1 14 0 M8.5 16a5 5 0 0 1 7 0 M12 19.5h.01"/></svg></span>
+              <div class="grow" style="min-width:140px"><div class="t1">{{r.name}}</div><div class="t2">{{r.sub}}</div></div>
+              <span class="tag {{r.tagCls}}">{{r.tag}}</span>
+              <button class="btn t sm" onClick="{{r.open}}">{{r.btn}}</button></div>
+          </sc-for>
+          <sc-if value="{{wsMsg}}" hint-placeholder-val="{{ false }}"><div class="tag good" role="status" style="align-self:flex-start">{{wsMsgText}}</div></sc-if>
+          <div class="area-note">{{t.wsNote}}</div>
+        </section>
+      </div>
+
+      <section class="card ov rise {{cc.manage}}" aria-label="{{t.manageTitle}}">
+        <div class="cols"><div class="grow" style="min-width:220px"><div class="tilehead"><h2 class="h2">{{t.manageTitle}}</h2>
+  <button class="info" aria-label="{{tips.manage.label}}" aria-expanded="{{tips.manage.on}}" onClick="{{tips.manage.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button>
+  <button class="lock" aria-label="{{lk.manage.label}}" aria-pressed="{{lk.manage.pressed}}" onClick="{{lk.manage.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.manage.d}}"/></svg></button>
+</div>
+<sc-if value="{{tips.manage.on}}" hint-placeholder-val="{{ false }}"><div class="tip" role="tooltip" style="top:52px;right:16px">{{tips.manage.text}}</div></sc-if><div class="muted">{{t.manageSub}}</div></div>
+          <button class="btn o sm" onClick="{{selectAllTabs}}">{{t.selectAll}}</button></div>
+        <sc-if value="{{hasSel}}" hint-placeholder-val="{{ false }}"><div class="glass" role="region" aria-label="{{t.bulk}}" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-radius:22px;padding:8px 8px 8px 20px"><b style="flex:1;min-width:140px">{{selText}}</b><button class="btn t sm" onClick="{{bulkPin}}">{{t.pin}}</button><button class="btn t sm" onClick="{{bulkClose}}">{{t.closeSel}}</button><button class="btn o sm" onClick="{{clearSel}}">{{t.clear}}</button></div></sc-if>
+        <div style="max-height:360px;overflow-y:auto">
+          <sc-for list="{{manage}}" as="m" hint-placeholder-count="8">
+            <div class="row pos">
+              <button class="cbw" role="checkbox" aria-checked="{{m.checked}}" aria-label="{{m.selLabel}}" onClick="{{m.toggle}}"><span class="{{m.cbCls}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></button>
+              <span class="cookie" style="width:36px;height:36px;color:var(--primary-c)" aria-hidden="true"><svg viewBox="0 0 200 200"><path d="M194 100L193.4 104.1L191.8 108L189.2 111.7L186.1 115.2L182.6 118.3L179.2 121.2L176.2 124L173.7 126.8L172.1 129.8L171.1 133.2L170.8 136.9L171 141L171.4 145.5L171.6 150.1L171.4 154.8L170.6 159.2L168.9 163.2L166.5 166.5L163.2 168.9L159.2 170.6L154.8 171.4L150.1 171.6L145.5 171.4L141 171L136.9 170.8L133.2 171.1L129.8 172.1L126.8 173.7L124 176.2L121.2 179.2L118.3 182.6L115.2 186.1L111.7 189.2L108 191.8L104.1 193.4L100 194L95.9 193.4L92 191.8L88.3 189.2L84.8 186.1L81.7 182.6L78.8 179.2L76 176.2L73.2 173.7L70.2 172.1L66.8 171.1L63.1 170.8L59 171L54.5 171.4L49.9 171.6L45.2 171.4L40.8 170.6L36.8 168.9L33.5 166.5L31.1 163.2L29.4 159.2L28.6 154.8L28.4 150.1L28.6 145.5L29 141L29.2 136.9L28.9 133.2L27.9 129.8L26.3 126.8L23.8 124L20.8 121.2L17.4 118.3L13.9 115.2L10.8 111.7L8.2 108L6.6 104.1L6 100L6.6 95.9L8.2 92L10.8 88.3L13.9 84.8L17.4 81.7L20.8 78.8L23.8 76L26.3 73.2L27.9 70.2L28.9 66.8L29.2 63.1L29 59L28.6 54.5L28.4 49.9L28.6 45.2L29.4 40.8L31.1 36.8L33.5 33.5L36.8 31.1L40.8 29.4L45.2 28.6L49.9 28.4L54.5 28.6L59 29L63.1 29.2L66.8 28.9L70.2 27.9L73.2 26.3L76 23.8L78.8 20.8L81.7 17.4L84.8 13.9L88.3 10.8L92 8.2L95.9 6.6L100 6L104.1 6.6L108 8.2L111.7 10.8L115.2 13.9L118.3 17.4L121.2 20.8L124 23.8L126.8 26.3L129.8 27.9L133.2 28.9L136.9 29.2L141 29L145.5 28.6L150.1 28.4L154.8 28.6L159.2 29.4L163.2 31.1L166.5 33.5L168.9 36.8L170.6 40.8L171.4 45.2L171.6 49.9L171.4 54.5L171 59L170.8 63.1L171.1 66.8L172.1 70.2L173.7 73.2L176.2 76L179.2 78.8L182.6 81.7L186.1 84.8L189.2 88.3L191.8 92L193.4 95.9L194 100Z"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="var(--on-primary-c)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;grid-area:1/1;fill:none"><path d="{{m.d}}"/></svg></span>
+              <div class="grow"><div class="t1">{{m.name}}</div><div class="t2">{{m.group}}</div></div>
+              <sc-if value="{{m.pinned}}" hint-placeholder-val="{{ false }}"><span class="tag">{{t.pinned}}</span></sc-if>
+              <button class="info" aria-label="{{t.rowMenu}}" aria-haspopup="menu" aria-expanded="{{m.menuOpen}}" onClick="{{m.more}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg></button>
+              <sc-if value="{{m.menuOpen}}" hint-placeholder-val="{{ false }}"><div class="menu" role="menu" style="right:0;top:50px"><button class="mi" role="menuitem" onClick="{{m.pin}}">{{m.pinLabel}}</button><button class="mi" role="menuitem" onClick="{{m.focus}}">{{t.focusTab}}</button><button class="mi" role="menuitem" onClick="{{m.close}}">{{t.closeTab}}</button></div></sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+    </main>
+    <sc-if value="{{dlg}}" hint-placeholder-val="{{ true }}">
+      <div class="scrim" role="presentation"><div class="sheet" role="dialog" aria-modal="true" aria-label="{{t.dlgTitle}}">
+        <div class="cols"><div class="grow"><h2 class="h2" style="font-size:26px">{{t.dlgTitle}}</h2><div class="muted">{{t.dlgSub}}</div></div><button class="icb" aria-label="{{t.close}}" onClick="{{closeDlg}}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+        <div class="cols">
+          <div class="search" style="flex:1 1 300px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 19a8 8 0 1 1 0-16 8 8 0 0 1 0 16z M21 21l-4.3-4.3"/></svg><input type="text" value="{{q}}" onInput="{{onQ}}" placeholder="{{t.searchPh}}" aria-label="{{t.searchPh}}"><button class="rxbtn" aria-pressed="{{rxP}}" aria-label="{{t.rxLabel}}" aria-expanded="{{rxP}}" onClick="{{toggleRx}}">.*</button></div>
+          <span class="tag">{{resultText}}</span>
+        </div>
+        <sc-if value="{{rx}}" hint-placeholder-val="{{ false }}">
+          <div class="rxpanel" role="group" aria-label="{{t.rxLabel}}">
+            <div class="cols"><b class="t1">{{t.rxLabel}}</b><span class="tag {{rxCls}}">{{rxMsg}}</span><span class="sp"></span>
+              <button class="chip" aria-pressed="{{flagI}}" onClick="{{toggleI}}"><span class="mono">i</span> {{t.ignoreCase}}</button></div>
+            <div class="cols"><label class="lbl" for="rxp">{{t.pattern}}</label><input id="rxp" class="field mono" style="flex:1;height:44px;min-width:220px" value="{{q}}" onInput="{{onQ}}"><span class="mono lbl">{{rxShown}}</span></div>
+            <div class="cols"><span class="lbl">{{t.insert}}</span><sc-for list="{{tokens}}" as="k" hint-placeholder-count="6"><button class="chip mono" onClick="{{k.add}}" title="{{k.tip}}" aria-label="{{k.tip}}">{{k.label}}</button></sc-for></div>
+            <div class="area-note">{{rxExplain}}</div>
+          </div>
+        </sc-if>
+        <div class="cols" role="group" aria-label="{{t.filters}}"><sc-for list="{{groups}}" as="g" hint-placeholder-count="5"><button class="chip" aria-pressed="{{g.pressed}}" onClick="{{g.pick}}">{{g.label}}<span class="badge" style="height:18px;min-width:18px;font-size:11px">{{g.n}}</span></button></sc-for></div>
+        <div class="catgrid" role="listbox" aria-label="{{t.dlgTitle}}">
+          <sc-for list="{{items}}" as="i" hint-placeholder-count="12"><button class="{{i.cls}}" role="option" aria-selected="{{i.isOpen}}" onClick="{{i.pick}}"><span class="ico"><svg viewBox="0 0 200 200" aria-hidden="true"><path d="M194 100L193.4 104.1L191.8 108L189.2 111.7L186.1 115.2L182.6 118.3L179.2 121.2L176.2 124L173.7 126.8L172.1 129.8L171.1 133.2L170.8 136.9L171 141L171.4 145.5L171.6 150.1L171.4 154.8L170.6 159.2L168.9 163.2L166.5 166.5L163.2 168.9L159.2 170.6L154.8 171.4L150.1 171.6L145.5 171.4L141 171L136.9 170.8L133.2 171.1L129.8 172.1L126.8 173.7L124 176.2L121.2 179.2L118.3 182.6L115.2 186.1L111.7 189.2L108 191.8L104.1 193.4L100 194L95.9 193.4L92 191.8L88.3 189.2L84.8 186.1L81.7 182.6L78.8 179.2L76 176.2L73.2 173.7L70.2 172.1L66.8 171.1L63.1 170.8L59 171L54.5 171.4L49.9 171.6L45.2 171.4L40.8 170.6L36.8 168.9L33.5 166.5L31.1 163.2L29.4 159.2L28.6 154.8L28.4 150.1L28.6 145.5L29 141L29.2 136.9L28.9 133.2L27.9 129.8L26.3 126.8L23.8 124L20.8 121.2L17.4 118.3L13.9 115.2L10.8 111.7L8.2 108L6.6 104.1L6 100L6.6 95.9L8.2 92L10.8 88.3L13.9 84.8L17.4 81.7L20.8 78.8L23.8 76L26.3 73.2L27.9 70.2L28.9 66.8L29.2 63.1L29 59L28.6 54.5L28.4 49.9L28.6 45.2L29.4 40.8L31.1 36.8L33.5 33.5L36.8 31.1L40.8 29.4L45.2 28.6L49.9 28.4L54.5 28.6L59 29L63.1 29.2L66.8 28.9L70.2 27.9L73.2 26.3L76 23.8L78.8 20.8L81.7 17.4L84.8 13.9L88.3 10.8L92 8.2L95.9 6.6L100 6L104.1 6.6L108 8.2L111.7 10.8L115.2 13.9L118.3 17.4L121.2 20.8L124 23.8L126.8 26.3L129.8 27.9L133.2 28.9L136.9 29.2L141 29L145.5 28.6L150.1 28.4L154.8 28.6L159.2 29.4L163.2 31.1L166.5 33.5L168.9 36.8L170.6 40.8L171.4 45.2L171.6 49.9L171.4 54.5L171 59L170.8 63.1L171.1 66.8L172.1 70.2L173.7 73.2L176.2 76L179.2 78.8L182.6 81.7L186.1 84.8L189.2 88.3L191.8 92L193.4 95.9L194 100Z"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{i.d}}"/></svg></span><span class="nm">{{i.name}}<span class="gp">{{i.group}}</span></span><sc-if value="{{i.isOpen}}" hint-placeholder-val="{{ false }}"><span aria-label="{{t.alreadyOpen}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></sc-if></button></sc-for>
+          <sc-if value="{{noItems}}" hint-placeholder-val="{{ false }}"><div class="muted" style="grid-column:1/-1;padding:28px;text-align:center">{{t.noMatch}}</div></sc-if>
+        </div>
+        <div class="cols"><span class="area-note">{{t.dlgKeys}}</span><span class="sp"></span><button class="btn t sm" onClick="{{openAllShown}}">{{t.openShown}}</button><button class="btn f sm" onClick="{{closeDlg}}">{{t.done}}</button></div>
+      </div></div>
+    </sc-if>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#4f5bd5","options":["#4f5bd5","#00897b","#d81b60","#f4511e","#7c4dff"],"section":"Look"},"dark":{"editor":"boolean","default":false,"section":"Look"},"motion":{"editor":"enum","options":["calm","standard","expressive"],"default":"expressive","section":"Look"},"firmware":{"editor":"enum","options":["merlin","stock"],"default":"merlin","section":"Router"},"role":{"editor":"enum","options":["owner","operator","viewer"],"default":"owner","section":"Router"},"lang":{"editor":"enum","options":["en","yue","both"],"default":"en","section":"Language"},"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const p = this.props;
+    const s = this.state || {};
+    const lang = p.lang ?? 'en';
+    const role = p.role ?? 'owner';
+    const firmware = p.firmware ?? 'merlin';
+    const motion = p.motion ?? 'expressive';
+    const accent = p.accent || '#4f5bd5';
+    const dark = p.dark === true || p.dark === 'true' || p.dark === 1 || p.dark === '1';
+    const T = (en, yue) => lang === 'en' ? en : lang === 'yue' ? yue : en + ' · ' + yue;
+    const canWrite = role !== 'viewer';
+    const set = (o) => this.setState(o);
+    const tg = (arr, v) => arr.includes(v) ? arr.filter(x => x !== v) : arr.concat([v]);
+    const num = (e, d) => { const v = e && e.target ? parseFloat(e.target.value) : NaN; return isNaN(v) ? d : v; };
+    const txt = (e) => e && e.target ? String(e.target.value) : '';
+    const locks = s.locks || [];
+    const tipOn = s.tip || '';
+    const mk = (defs) => {
+      const lk = {}, tips = {}, cc = {};
+      Object.keys(defs).forEach(id => {
+        const on = locks.includes(id);
+        lk[id] = { d: on ? 'M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4' : 'M5 11h14v10H5z M8 11V7a4 4 0 0 1 7.5-2', pressed: on ? 'true' : 'false',
+          label: (on ? T('Unlock ', '解鎖 ') : T('Lock ', '鎖定 ')) + defs[id][0], toggle: () => set({ locks: tg(locks, id) }) };
+        tips[id] = { label: T('About ', '關於 ') + defs[id][0], text: defs[id][1], on: tipOn === id, toggle: () => set({ tip: tipOn === id ? '' : id }) };
+        cc[id] = on ? 'lockedcard' : '';
+      });
+      return { lk, tips, cc };
+    };
+    const base = (tabs) => ({ accent, dark, darkNum: dark ? 1 : 0, lang, role, firmware, motionCls: motion === 'calm' ? 'calm' : motion === 'standard' ? 'std' : '', pendCount: 2, viewer: !canWrite, tabsStr: tabs.map(x => x.replace(/,/g, ' ')).join(',') });
+    const D = { bell: 'M6 9a6 6 0 0 1 12 0c0 6 2 7 2 8H4c0-1 2-2 2-8 M10 20a2 2 0 0 0 4 0', check: 'M5 12.5l4.5 4.5L19 7.5', x: 'M6 6l12 12M18 6L6 18', warn: 'M12 4l9 16H3z M12 10v4 M12 17.5h.01',
+      info: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z M12 11v5 M12 8h.01', shield: 'M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z', wifi: 'M2 9a15 15 0 0 1 20 0 M5 12.5a10 10 0 0 1 14 0 M8.5 16a5 5 0 0 1 7 0 M12 19.5h.01',
+      dl: 'M12 4v11M7 10l5 5 5-5M4 19h16', ul: 'M12 20V9M7 14l5-5 5 5M4 5h16', lock: 'M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4', search: 'M11 19a8 8 0 1 1 0-16 8 8 0 0 1 0 16z M21 21l-4.3-4.3', trash: 'M4 7h16 M9 7V4h6v3 M6 7l1 13h10l1-13',
+      clock: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z M12 7v5l3 2', play: 'M7 5l12 7-12 7z', refresh: 'M20 12a8 8 0 1 1-2.5-5.8 M20 4v5h-5', device: 'M4 5h16v11H4z M8 20h8 M12 16v4', bolt: 'M13 3L5 14h6l-1 7 8-11h-6z',
+      globe: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z M3 12h18 M12 3c3 3 3 15 0 18 M12 3c-3 3-3 15 0 18', palette: 'M12 3a9 9 0 1 0 0 18c1.5 0 2-1 1.5-2-.6-1.2.2-2.5 1.5-2.5H17a4 4 0 0 0 4-4c0-5-4-9.5-9-9.5z', key: 'M15 8a4 4 0 1 1-3.5 6L4 21v-3l2-2v-2l2-1 3.5-3.5A4 4 0 0 1 15 8z',
+      plus: 'M12 5v14M5 12h14', copy: 'M9 9h11v11H9z M5 15V4h11', up: 'M6 15l6-6 6 6', down: 'M6 9l6 6 6-6', eye: 'M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z', mic: 'M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3z M5 11a7 7 0 0 0 14 0 M12 18v3',
+      sound: 'M4 9v6h4l5 4V5L8 9z M16 9a4 4 0 0 1 0 6 M18.5 6.5a8 8 0 0 1 0 11', moon: 'M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5z', box: 'M3 8l9-5 9 5v8l-9 5-9-5z M3 8l9 5 9-5 M12 13v8',
+      gear: 'M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.4-2.4 1a7 7 0 0 0-2-1.2L14 3h-4l-.5 2.7a7 7 0 0 0-2 1.2l-2.4-1-2 3.4 2 1.5A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.5 2 3.4 2.4-1a7 7 0 0 0 2 1.2L10 21h4l.5-2.7a7 7 0 0 0 2-1.2l2.4 1 2-3.4-2-1.5c.1-.4.1-.8.1-1.2z',
+      list: 'M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01', tool: 'M14 6a4 4 0 0 0 5 5l-9 9-4-4 9-9a4 4 0 0 0-1-1z', route: 'M6 19a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M18 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M9 16h5a3 3 0 0 0 0-6h-4a3 3 0 0 1 0-6h4', menu: 'M4 7h16M4 12h16M4 17h16', ticket: 'M3 9a2 2 0 0 0 0 6v3h18v-3a2 2 0 0 1 0-6V6H3z M13 6v12', user: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z M4 21c1-4 4-6 8-6s7 2 8 6' };
+
+
+    const defs = {
+      strip: [T('workspace tabs', '工作區分頁'), T('One tab per page, tool or destination. Reselecting something already open focuses its tab instead of adding another.', '每個頁面、工具或目的地一個分頁。再次揀已經打開嘅項目只會跳去佢嘅分頁，唔會重複開。')],
+      ws: [T('router workspaces', '路由器工作區'), T('Each router gets exactly one workspace tab, keyed by its identity.', '每部路由器只有一個工作區分頁，以路由器身份識別。')],
+      manage: [T('open tabs', '已開分頁'), T('Pin, focus or close any tab. Closed tabs can be restored.', '可以釘選、跳轉或者關閉任何分頁，關閉咗嘅分頁可以還原。')]
+    };
+    const { lk, tips, cc } = mk(defs);
+
+    // ---- catalog ----
+    const G = { page: T('Pages', '頁面'), setting: T('Settings', '設定'), tool: T('Tools', '工具'), action: T('Actions', '動作') };
+    const DESTS = [
+      ['overview', 'page', T('Overview', '概覽'), D.gauge || 'M4 17a8 8 0 1 1 16 0 M12 17l4-5'], ['devices', 'page', T('Devices', '裝置'), D.device], ['wifi', 'page', 'Wi-Fi', D.wifi], ['aimesh', 'page', 'AiMesh', D.route],
+      ['internet', 'page', T('Internet', '網絡連線'), D.globe], ['lan', 'page', T('Local network', '區域網絡'), D.box], ['pf', 'page', T('Port forwarding', '端口轉發'), D.ul], ['fw', 'page', T('Firewall', '防火牆'), D.shield],
+      ['qos', 'page', T('Traffic priority', '流量優先'), D.bolt], ['vpn', 'page', 'VPN', D.lock], ['parental', 'page', T('Parental controls', '家長監護'), D.user], ['usb', 'page', T('USB and storage', 'USB 同儲存'), D.box],
+      ['logs', 'page', T('Logs', '記錄'), D.list], ['nettools', 'page', T('Network tools', '網絡工具'), D.tool], ['jobs', 'page', T('Scheduled jobs', '排程工作'), D.clock], ['firmware', 'page', T('Firmware', '韌體'), D.dl],
+      ['system', 'page', T('System', '系統'), D.gear], ['maint', 'page', T('Maintenance', '維護'), D.tool], ['backup', 'page', T('Backup and restore', '備份同還原'), D.refresh], ['merlin', 'page', T('Merlin extras', 'Merlin 擴充'), D.plus],
+      ['advanced', 'page', T('Advanced', '進階'), D.list], ['history', 'page', T('Change history', '變更記錄'), D.clock],
+      ['appearance', 'setting', T('Appearance and motion', '外觀同動態'), D.palette], ['language', 'setting', T('Language', '語言'), D.globe], ['notif', 'setting', T('Notifications', '通知'), D.bell], ['locks', 'setting', T('Locks and recovery', '鎖同復原'), D.lock],
+      ['auth', 'setting', T('Authenticator', '驗證器'), D.key], ['dname', 'setting', T('Display name', '顯示名稱'), D.user], ['sounds', 'setting', T('Action sounds', '動作音效'), D.sound], ['access', 'setting', T('Accessibility', '無障礙'), D.eye],
+      ['ping', 'tool', 'Ping', D.route], ['trace', 'tool', 'Traceroute', D.route], ['lookup', 'tool', T('Name lookup', '域名查詢'), D.search], ['speed', 'tool', T('Speed test', '速度測試'), D.bolt],
+      ['wol', 'tool', T('Wake on LAN', '網絡喚醒'), D.bolt], ['capture', 'tool', T('Packet capture', '封包擷取'), D.box], ['regex', 'tool', T('Regex builder', '正則表達式生成器'), D.search],
+      ['restartwifi', 'action', T('Restart Wi-Fi radios', '重啟 Wi-Fi 無線電'), D.refresh], ['reboot', 'action', T('Reboot router (two keys)', '重啟路由器（雙重確認）'), D.refresh], ['export', 'action', T('Export settings', '匯出設定'), D.dl],
+      ['import', 'action', T('Import settings', '匯入設定'), D.ul], ['palette', 'action', T('Open command palette', '開啟指令面板'), D.search], ['guest', 'action', T('Toggle guest Wi-Fi', '切換訪客 Wi-Fi'), D.wifi]
+    ];
+    const initClosed = ['wol', 'capture', 'import'];
+    const open = s.open || DESTS.map(c => c[0]).filter(id => !initClosed.includes(id));
+    const pinned = s.pinned || ['overview'];
+    const closed = s.closed || initClosed;
+    const active = s.active || 'overview';
+    const sel = s.sel || [];
+    const mmenu = s.mmenu || '';
+    const dlgOpen = s.dlg !== false;
+    const q = s.q || '';
+    const rx = !!s.rx;
+    const flagI = s.flagI !== false;
+    const grp = s.grp || 'all';
+    const showAll = !!s.showAll;
+    const nameOf = (id) => DESTS.find(c => c[0] === id)[2];
+    const byId = (id) => DESTS.find(c => c[0] === id);
+
+    let re = null, rxBad = false;
+    if (rx && q) { try { re = new RegExp(q, flagI ? 'i' : ''); } catch (err) { rxBad = true; } }
+    const match = (c) => { if (!q) return true; const hay = c[2] + ' ' + G[c[1]]; if (rx) return re ? re.test(hay) : false; return hay.toLowerCase().includes(q.toLowerCase()); };
+    const shown = DESTS.filter(c => match(c) && (grp === 'all' || c[1] === grp));
+    const openIt = (id) => { if (open.includes(id)) set({ active: id, wsMsg: '' }); else set({ open: open.concat([id]), active: id, closed: closed.filter(x => x !== id) }); };
+    const closeIt = (id) => { const rest = open.filter(x => x !== id); set({ open: rest, closed: [id].concat(closed.filter(x => x !== id)).slice(0, 8), active: active === id ? (rest[0] || '') : active, sel: sel.filter(x => x !== id) }); };
+    const items = shown.map(c => ({ d: c[3], name: c[2], group: G[c[1]], isOpen: open.includes(c[0]), cls: 'dest' + (open.includes(c[0]) ? ' isopen' : ''), pick: () => openIt(c[0]) }));
+    const groups = [['all', T('All', '全部'), DESTS.length]].concat(Object.keys(G).map(k => [k, G[k], DESTS.filter(c => c[1] === k).length])).map(([id, label, n]) => ({ label, n, pressed: grp === id ? 'true' : 'false', pick: () => set({ grp: id }) }));
+    const tokens = [['\\w+', T('A word', '一個字')], ['\\d+', T('Digits', '數字')], ['.*', T('Anything', '任何字元')], ['^', T('Start of text', '開頭')], ['$', T('End of text', '結尾')], ['(a|b)', T('Either or', '二選一')]].map(([label, tip]) => ({ label, tip, add: () => set({ q: q + label, rx: true }) }));
+    const rxMsg = rxBad ? T('Pattern is not valid', '表達式無效') : q ? shown.length + T(' matches', ' 項符合') : T('Type a pattern', '輸入表達式');
+
+    // ---- strip ----
+    const stripIds = open.slice(0, 6);
+    const strip = stripIds.map(id => ({ name: nameOf(id), sel: active === id ? 'true' : 'false', focus: () => set({ active: id }), closeLabel: T('Close ', '關閉 ') + nameOf(id), close: () => closeIt(id) }));
+    const rest = open.length - stripIds.length;
+    const allOpen = open.map(id => ({ name: nameOf(id), focus: () => set({ active: id, showAll: false }), closeLabel: T('Close ', '關閉 ') + nameOf(id), close: () => closeIt(id) }));
+    const closedList = closed.slice(0, 4).map(id => ({ name: nameOf(id), restore: () => openIt(id) }));
+
+    // ---- router workspaces ----
+    const RT = [['home', 'Home RT-AX86U', '198.51.100.1', 'var(--primary)'], ['office', 'Office RT-AC68U', '198.51.100.2', 'var(--tertiary)'], ['cabin', 'Cabin ZenWiFi XD4', '198.51.100.3', '#8a5a00']];
+    const wsOpen = s.wsOpen || ['home'];
+    const wsMsg = s.wsMsg || '';
+    const routers = RT.map(([id, name, ip, color]) => {
+      const isO = wsOpen.includes(id);
+      return { name, sub: ip, color, tag: isO ? T('Tab open', '分頁已開') : T('No tab', '未開分頁'), tagCls: isO ? 'good' : '', btn: isO ? T('Focus tab', '跳去分頁') : T('Open', '開啟'),
+        open: () => isO ? set({ wsMsg: T('Focused the existing tab for ', '已跳去現有分頁：') + name }) : set({ wsOpen: wsOpen.concat([id]), wsMsg: T('Opened a new tab for ', '已開新分頁：') + name }) };
+    });
+
+    // ---- manage list ----
+    const manage = open.map(id => { const c = byId(id); const on = sel.includes(id), pn = pinned.includes(id); return {
+      name: c[2], group: G[c[1]], d: c[3], pinned: pn, checked: on ? 'true' : 'false', cbCls: 'cb2' + (on ? ' on' : ''), selLabel: T('Select tab ', '揀選分頁 ') + c[2],
+      menuOpen: mmenu === id, pinLabel: pn ? T('Unpin tab', '取消釘選') : T('Pin tab', '釘選分頁'),
+      toggle: () => set({ sel: tg(sel, id) }), more: () => set({ mmenu: mmenu === id ? '' : id }), pin: () => set({ pinned: tg(pinned, id), mmenu: '' }), focus: () => set({ active: id, mmenu: '' }), close: () => { closeIt(id); } }; });
+
+    const t = {
+      title: T('New tab and workspaces', '新分頁同工作區'), heroLabel: T('Tabs summary', '分頁摘要'),
+      chipWs: T('One tab per router', '每部路由器一個分頁'), chipDest: T(DESTS.length + ' destinations in the catalog', '目錄入面有 ' + DESTS.length + ' 個目的地'),
+      headline: T('Everything one click away', '一撳即達'),
+      lede: T('Every page, setting, tool and action lives in the New tab catalog. Open as many as you like, close what you do not need, and bring it all back with one click.', '所有頁面、設定、工具同動作都喺「新分頁」目錄入面。想開幾多就開幾多，唔需要就關，一撳就可以全部還原。'),
+      newTab: T('New tab', '新分頁'), openEvery: T('Open every tab', '開啟所有分頁'),
+      stripTitle: T('Workspace tabs', '工作區分頁'), stripSub: T('Tabs are never opened behind your back. Use New tab or the catalog.', '分頁唔會喺你唔知情下自動開啟，請用「新分頁」或者目錄。'),
+      activeSub: T('This is the page you are looking at. Reselecting a tab never creates a duplicate.', '呢個係你而家睇緊嘅頁面，再次揀同一分頁唔會重複建立。'),
+      allOpen: T('All open tabs', '全部已開分頁'), closeOthers: T('Close all except active', '關閉除目前以外嘅分頁'),
+      recent: T('Recently closed', '最近關閉'), noClosed: T('Nothing closed yet', '暫時冇關閉嘅分頁'), restoreLast: T('Restore last closed', '還原最後關閉'),
+      wsTitle: T('Router workspaces', '路由器工作區'), wsSub: T('Open the same router twice and you land on its existing tab.', '重複開同一部路由器，會跳去佢現有嘅分頁。'), wsNote: T('Not in the real app yet: workspace tabs synced across devices.', '真實應用程式未有：跨裝置同步工作區分頁。'),
+      manageTitle: T('Manage open tabs', '管理已開分頁'), manageSub: T('Select several tabs to pin or close them together.', '揀多個分頁一次過釘選或者關閉。'),
+      selectAll: T('Select all', '全選'), bulk: T('Bulk actions', '批量操作'), pin: T('Pin', '釘選'), closeSel: T('Close selected', '關閉所選'), clear: T('Clear', '清除'),
+      pinned: T('Pinned', '已釘選'), rowMenu: T('Tab actions', '分頁操作'), focusTab: T('Focus tab', '跳去分頁'), closeTab: T('Close tab', '關閉分頁'),
+      dlgTitle: T('New tab', '新分頁'), dlgSub: T('Every page, setting, tool and action, in one list.', '所有頁面、設定、工具同動作，集中喺一個清單。'),
+      close: T('Close dialog', '關閉對話框'), searchPh: T('Search pages, settings, tools and actions', '搜尋頁面、設定、工具同動作'), rxLabel: T('Regex builder', '正則表達式生成器'),
+      ignoreCase: T('Ignore case', '忽略大細楷'), pattern: T('Pattern', '表達式'), insert: T('Insert', '插入'), filters: T('Filter by kind', '按類別篩選'),
+      alreadyOpen: T('Already open', '已開啟'), noMatch: T('Nothing matches this search.', '冇符合呢個搜尋嘅項目。'), dlgKeys: T('Enter opens the highlighted item. Esc closes this dialog.', '按 Enter 開啟已標示項目，按 Esc 關閉對話框。'),
+      openShown: T('Open all shown', '開啟所有顯示項目'), done: T('Done', '完成')
+    };
+    const sw = (re ? '/' + q + '/' + (flagI ? 'i' : '') : '');
+    const rxExplain = rxBad ? T('The pattern has an unclosed group or a bad escape.', '表達式有未關閉嘅括號或者錯誤嘅跳脫字元。') : q ? T('Matches names or kinds that fit the pattern. Insert tokens above to build it step by step.', '符合名稱或者類別嘅表達式。可以用上面嘅符號逐步組合。') : T('Start typing, or insert a token. The list filters as you build.', '開始輸入或者插入符號，清單會隨著組合即時篩選。');
+
+    return Object.assign(base([T('Overview', '概覽'), T('New tab', '新分頁'), T('Settings', '設定')]), {
+      lk, tips, cc, t, d: D, openCount: open.length + T(' tabs open', ' 個分頁已開'), openDlg: () => set({ dlg: true }), closeDlg: () => set({ dlg: false }), dlg: dlgOpen,
+      openEvery: () => set({ open: DESTS.map(c => c[0]), closed: [] }),
+      strip, activeName: active ? nameOf(active) : T('No tab selected', '未揀分頁'), moreText: rest > 0 ? '+' + rest + T(' more', ' 個更多') : T('All tabs', '全部分頁'), toggleAll: () => set({ showAll: !showAll }), showAll, allOpenList: showAll ? 'true' : 'false',
+      allOpen, closeOthers: () => set({ open: active ? [active] : [], closed: open.filter(x => x !== active).slice(0, 8) }),
+      closed: closedList, noClosed: closedList.length === 0, restoreDis: closed.length ? '' : 'dis', restoreLast: () => { if (closed.length) openIt(closed[0]); },
+      routers, wsMsg: !!wsMsg, wsMsgText: wsMsg,
+      manage, hasSel: sel.length > 0, selText: sel.length + T(' selected', ' 項已選'), selectAllTabs: () => set({ sel: open.slice() }), clearSel: () => set({ sel: [] }),
+      bulkPin: () => set({ pinned: pinned.concat(sel.filter(x => !pinned.includes(x))), sel: [] }),
+      bulkClose: () => { const rest2 = open.filter(x => !sel.includes(x)); set({ open: rest2, closed: sel.concat(closed).slice(0, 8), active: sel.includes(active) ? (rest2[0] || '') : active, sel: [] }); },
+      q, onQ: (e) => set({ q: txt(e) }), rx, rxP: rx ? 'true' : 'false', toggleRx: () => set({ rx: !rx }), flagI: flagI ? 'true' : 'false', toggleI: () => set({ flagI: !flagI }),
+      rxCls: rxBad ? 'bad' : 'good', rxMsg, rxShown: sw, rxExplain, tokens, groups, items, noItems: items.length === 0,
+      resultText: shown.length + T(' of ', ' / ') + DESTS.length, openAllShown: () => set({ open: open.concat(shown.map(c => c[0]).filter(id => !open.includes(id))) })
+    });
+  }
+}
+</script>
+</body>
+</html>

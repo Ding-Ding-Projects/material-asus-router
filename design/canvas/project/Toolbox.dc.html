@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Toolbox</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="theme.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,100..1000&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.card.ov{overflow:visible}
+.onp{background:color-mix(in srgb,var(--on-primary) 18%,transparent);color:var(--on-primary)}
+.cbw{width:44px;height:44px;border:0;background:none;display:grid;place-items:center;flex:none;padding:0}
+.cb2{width:22px;height:22px;border-radius:7px;border:2px solid var(--sub);display:grid;place-items:center;color:var(--on-primary)}
+.cb2 svg{opacity:0}.cb2.on{background:var(--primary);border-color:var(--primary)}.cb2.on svg{opacity:1}
+.lockedcard{outline:3px solid var(--primary);outline-offset:-3px}
+.tilehead{display:flex;align-items:center;gap:4px}.tilehead .k{flex:1}
+.pos{position:relative}
+.legend{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub)}
+.legend i{width:12px;height:12px;border-radius:6px;display:inline-block}
+.hero h1{position:relative;max-width:16ch}
+.herogrid{display:flex;flex-wrap:wrap;gap:24px 44px;align-items:flex-end;position:relative;margin-top:8px}
+.herostat .big{font-size:52px}
+pre.code{margin:0;padding:16px 18px;border-radius:20px;background:var(--surf-low);color:var(--text);font:13px/1.55 ui-monospace,'Cascadia Code',Consolas,monospace;overflow:auto;white-space:pre;max-height:300px}
+textarea.field{height:auto;padding:14px 16px;line-height:1.5;resize:vertical;width:100%;font-family:ui-monospace,'Cascadia Code',Consolas,monospace;font-size:13.5px}
+.dis{opacity:.5;cursor:not-allowed}
+.tile{display:flex;flex-direction:column;gap:8px;align-items:flex-start;text-align:left;border:0;border-radius:28px;padding:18px;background:var(--surf);box-shadow:var(--e1);color:var(--text);min-height:112px;font:inherit}
+.tile.on{background:var(--primary-c);color:var(--on-primary-c)}
+.tile b{font-size:15px}.tile span.s{font-size:12.5px;opacity:.75}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.drop{border:2.5px dashed var(--line);border-radius:28px;padding:26px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;background:var(--surf-low);color:var(--sub)}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;align-items:start}
+.tb{display:flex;gap:4px;flex-wrap:wrap;padding:6px;border-radius:22px;background:var(--surf-high)}
+.tb button{width:44px;height:44px;border-radius:14px;border:0;background:transparent;color:var(--text);display:grid;place-items:center;font:800 16px var(--font)}
+.tb button[aria-pressed=true]{background:var(--primary);color:var(--on-primary)}
+.sw2{width:36px;height:36px;border-radius:18px;border:3px solid var(--surf);box-shadow:0 0 0 2px var(--line);padding:0}
+.sw2[aria-pressed=true]{box-shadow:0 0 0 3px var(--text)}
+.chat{display:flex;flex-direction:column;gap:8px}
+.msg{max-width:84%;padding:10px 14px;border-radius:20px;font-size:14px;line-height:1.45}
+.msg.me{align-self:flex-end;background:var(--primary);color:var(--on-primary);border-radius:20px 20px 6px 20px}
+.msg.ai{align-self:flex-start;background:var(--surf-high);border-radius:20px 20px 20px 6px}
+.canvas{border-radius:24px;background:var(--surf-low);overflow:hidden;border:1px solid var(--line)}
+.canvas svg{display:block;width:100%;height:auto}
+.dnav2{display:flex;flex-direction:column;gap:6px}
+.nbtn{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:12px 16px;border-radius:20px;border:0;background:var(--surf-low);color:var(--text);text-align:left;font:inherit}
+.nbtn.on{background:var(--secondary-c);color:var(--on-secondary-c)}
+.treerow{display:flex;align-items:center;gap:10px;height:40px;padding:0 12px;border-radius:12px;background:var(--surf-low);font:13px ui-monospace,Consolas,monospace}
+</style>
+</helmet>
+<div class="mx shell {{motionCls}}" style="--accent:{{accent}};--dark:{{darkNum}}">
+  <div class="railwrap"><dc-import name="Rail" page="toolbox" lang="{{lang}}" role="{{role}}" firmware="{{firmware}}" pending="{{pendCount}}" accent="{{accent}}" dark="{{dark}}" hint-size="288px,900px"></dc-import></div>
+  <div class="main">
+    <dc-import name="TopBar" title="{{t.title}}" lang="{{lang}}" role="{{role}}" firmware="{{firmware}}" tabs="{{tabsStr}}" active="0" accent="{{accent}}" dark="{{dark}}" hint-size="1152px,170px"></dc-import>
+    <main class="page">
+      <section class="card hero rise" aria-label="{{t.heroLabel}}">
+        <svg class="deco a" viewBox="0 0 200 200" aria-hidden="true" style="right:-50px;top:-80px;width:320px;height:320px"><path d="M182.8 100C183.5 121 178.9 152.8 165.1 165.1C151.3 177.3 121.3 174 100 173.6C78.7 173.2 50.4 174.7 37.5 162.5C24.7 150.2 23.2 121.3 22.7 100C22.3 78.7 22.1 46.9 34.9 34.9C47.8 23 79 27.6 100 28.2C121 28.9 147.4 26.9 161.2 38.8C175 50.8 182.1 79 182.8 100Z"/></svg><svg class="deco b" viewBox="0 0 200 200" aria-hidden="true" style="right:220px;bottom:-100px;width:220px;height:220px"><path d="M192 100C192.2 117.6 168.7 138.8 153.3 153.3C138 167.9 117.3 187.8 100 187.4C82.7 187 64.6 165.3 49.3 150.7C33.9 136.2 8.9 117.8 8 100C7.1 82.2 28.7 58.9 44.1 44.1C59.4 29.2 82 10.1 100 10.8C118 11.4 136.7 33.1 152 48C167.4 62.8 191.8 82.4 192 100Z"/></svg><div class="cookie" style="position:absolute;right:48px;top:36px;width:124px;height:124px;color:var(--tertiary-c)" aria-hidden="true"><svg viewBox="0 0 200 200"><path d="M192.4 100.0L191.7 104.8L189.7 109.4L186.9 113.8L183.9 117.8L181.3 121.8L179.5 125.8L178.6 130.2L178.4 134.9L178.4 140.0L178.1 145.1L177.0 150.0L174.8 154.3L171.4 157.8L167.0 160.4L162.2 162.2L157.4 163.8L153.0 165.4L149.1 167.6L145.9 170.6L142.9 174.3L140.0 178.4L136.7 182.4L132.9 185.7L128.6 187.9L123.8 188.7L118.8 188.2L113.8 186.9L109.0 185.3L104.4 184.1L100.0 183.6L95.6 184.1L91.0 185.3L86.2 186.9L81.2 188.2L76.2 188.7L71.4 187.9L67.1 185.7L63.3 182.4L60.0 178.4L57.1 174.3L54.1 170.6L50.9 167.6L47.0 165.4L42.6 163.8L37.8 162.2L33.0 160.4L28.6 157.8L25.2 154.3L23.0 150.0L21.9 145.1L21.6 140.0L21.6 134.9L21.4 130.2L20.5 125.8L18.7 121.8L16.1 117.8L13.1 113.8L10.3 109.4L8.3 104.8L7.6 100.0L8.3 95.2L10.3 90.6L13.1 86.2L16.1 82.2L18.7 78.2L20.5 74.2L21.4 69.8L21.6 65.1L21.6 60.0L21.9 54.9L23.0 50.0L25.2 45.7L28.6 42.2L33.0 39.6L37.8 37.8L42.6 36.2L47.0 34.6L50.9 32.4L54.1 29.4L57.1 25.7L60.0 21.6L63.3 17.6L67.1 14.3L71.4 12.1L76.2 11.3L81.2 11.8L86.2 13.1L91.0 14.7L95.6 15.9L100.0 16.4L104.4 15.9L109.0 14.7L113.8 13.1L118.8 11.8L123.8 11.3L128.6 12.1L132.9 14.3L136.7 17.6L140.0 21.6L142.9 25.7L145.9 29.4L149.1 32.4L153.0 34.6L157.4 36.2L162.2 37.8L167.0 39.6L171.4 42.2L174.8 45.7L177.0 50.0L178.1 54.9L178.4 60.0L178.4 65.1L178.6 69.8L179.5 74.2L181.3 78.2L183.9 82.2L186.9 86.2L189.7 90.6L191.7 95.2L192.4 100.0Z"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="var(--on-tertiary-c)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:58px;height:58px;grid-area:1/1;fill:none"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.5-.7-.7-2.5z"/></svg></div>
+        <div style="position:relative;display:flex;flex-wrap:wrap;gap:8px"><span class="tag onp">{{t.local}}</span><span class="tag onp">{{t.provTag}}</span></div>
+        <h1 class="disp">{{t.headline}}</h1>
+        <p class="lede" style="position:relative;color:color-mix(in srgb,var(--on-primary) 86%,transparent)">{{t.lede}}</p>
+      </section>
+
+      <div class="tiles" role="group" aria-label="{{t.tilesLabel}}">
+        <sc-for list="{{tiles}}" as="tl" hint-placeholder-count="8">
+          <button class="{{tl.cls}}" aria-pressed="{{tl.pressed}}" onClick="{{tl.pick}}">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{tl.d}}"/></svg>
+            <b>{{tl.name}}</b><span class="s">{{tl.sub}}</span>
+          </button>
+        </sc-for>
+      </div>
+
+      <section class="card ov rise {{cc.panel}}" aria-label="{{tool.name}}">
+        <div class="tilehead"><span class="k">{{tool.name}}</span><button class="info" aria-label="{{tp.panel.label}}" onClick="{{tp.panel.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.panel.label}}" aria-pressed="{{lk.panel.pressed}}" onClick="{{lk.panel.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.panel.d}}"/></svg></button></div><sc-if value="{{tp.panel.on}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:52px;right:16px">{{tp.panel.text}}</div></sc-if>
+        <div class="muted">{{tool.sub}}</div>
+
+        <sc-if value="{{isConvert}}" hint-placeholder-val="{{ true }}">
+          <div class="two">
+            <div style="display:flex;flex-direction:column;gap:14px">
+              <div class="drop"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M4 16v4h16v-4"/></svg><b style="color:var(--text)">{{t.dropHere}}</b><span>{{t.dropSub}}</span><button class="btn t sm" onClick="{{addFile}}">{{t.browse}}</button></div>
+              <div class="k">{{t.convertTo}}</div>
+              <div class="seg" role="group" aria-label="{{t.convertTo}}"><sc-for list="{{targets}}" as="g" hint-placeholder-count="5"><button aria-pressed="{{g.pressed}}" onClick="{{g.pick}}">{{g.label}}</button></sc-for></div>
+              <div class="muted">{{t.convLocal}}</div>
+            </div>
+            <div>
+              <sc-for list="{{queue}}" as="q" hint-placeholder-count="4">
+                <div class="row">
+                  <div class="grow"><div class="t1">{{q.name}}</div><div class="t2">{{q.sub}}</div><div class="meter" style="margin-top:8px" role="progressbar" aria-valuenow="{{q.pct}}" aria-valuemin="0" aria-valuemax="100" aria-label="{{q.name}}"><i style="width:{{q.pct}}%"></i></div></div>
+                  <span class="{{q.tag}}">{{q.state}}</span>
+                </div>
+              </sc-for>
+              <div class="cols" style="margin-top:10px"><button class="btn f sm" onClick="{{startAll}}">{{t.startAll}}</button><button class="btn o sm">{{t.clearDone}}</button></div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{isB64}}" hint-placeholder-val="{{ false }}">
+          <div class="cols"><div class="seg" role="group" aria-label="{{t.mode}}"><button aria-pressed="{{encOn}}" onClick="{{setEnc}}">{{t.encode}}</button><button aria-pressed="{{decOn}}" onClick="{{setDec}}">{{t.decode}}</button></div>
+            <button class="{{urlCls}}" aria-pressed="{{urlOn}}" onClick="{{toggleUrl}}">{{t.urlSafe}}</button>
+            <button class="chip" onClick="{{b64Sample}}">{{t.sample}}</button><button class="chip">{{t.fromFile}}</button><button class="chip">{{t.toImage}}</button></div>
+          <div class="two">
+            <div><div class="k" style="margin-bottom:8px">{{t.input}}</div><textarea class="field" rows="6" aria-label="{{t.input}}" onInput="{{onB64}}">{{b64In}}</textarea></div>
+            <div><div class="k" style="margin-bottom:8px">{{t.output}} · {{b64Meta}}</div><pre class="code" tabindex="0" style="min-height:150px;white-space:pre-wrap;word-break:break-all">{{b64Out}}</pre><div class="cols" style="margin-top:10px"><button class="btn t sm" onClick="{{copyB64}}">{{t.copy}}</button><span class="tag good">{{b64Status}}</span></div></div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{isTypes}}" hint-placeholder-val="{{ false }}">
+          <div class="cols"><div class="seg" role="group" aria-label="{{t.language}}"><sc-for list="{{langsQ}}" as="lq" hint-placeholder-count="6"><button aria-pressed="{{lq.pressed}}" onClick="{{lq.pick}}">{{lq.label}}</button></sc-for></div><span class="tag {{jsonTag}}">{{jsonState}}</span></div>
+          <div class="two">
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div class="k">{{t.jsonSrc}}</div>
+              <textarea class="field" rows="7" aria-label="{{t.jsonSrc}}" onInput="{{onJson}}">{{json}}</textarea>
+              <div class="k">{{t.guiEdit}}</div>
+              <sc-for list="{{fields}}" as="fd" hint-placeholder-count="5"><div class="treerow"><b>{{fd.key}}</b><span class="sp"></span><span class="tag">{{fd.type}}</span><span style="color:var(--sub)">{{fd.sample}}</span></div></sc-for>
+            </div>
+            <div><div class="k" style="margin-bottom:8px">{{t.generated}} · {{langName}}</div><pre class="code" tabindex="0" style="max-height:420px">{{typesOut}}</pre><div class="cols" style="margin-top:10px"><button class="btn t sm">{{t.copy}}</button><button class="btn o sm">{{t.saveFile}}</button></div></div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{isNotes}}" hint-placeholder-val="{{ false }}">
+          <div class="docgrid2">
+            <div class="two">
+              <div class="dnav2">
+                <sc-for list="{{notes}}" as="n" hint-placeholder-count="3"><button class="{{n.cls}}" aria-pressed="{{n.pressed}}" onClick="{{n.pick}}"><span class="t1">{{n.title}}</span><span class="t2">{{n.sub}}</span></button></sc-for>
+                <button class="btn t sm" style="align-self:flex-start;margin-top:6px">{{t.newNote}}</button>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:10px">
+                <div class="tb" role="toolbar" aria-label="{{t.format}}"><sc-for list="{{fmtBtns}}" as="fb" hint-placeholder-count="6"><button aria-label="{{fb.label}}" title="{{fb.label}}" aria-pressed="{{fb.pressed}}" onClick="{{fb.pick}}" style="{{fb.style}}">{{fb.glyph}}</button></sc-for></div>
+                <div class="card tone" style="min-height:200px;gap:8px"><h3 class="h2">{{note.title}}</h3><div style="{{noteStyle}}">{{note.body}}</div><ul class="muted" style="margin:0;padding-left:20px"><li>{{t.noteA}}</li><li>{{t.noteB}}</li></ul></div>
+                <div class="cols"><span class="tag good">{{t.autosaved}}</span><span class="muted">{{t.words}}</span><span class="sp"></span><button class="btn o sm">{{t.exportMd}}</button></div>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{isDraw}}" hint-placeholder-val="{{ false }}">
+          <div class="cols">
+            <div class="tb" role="toolbar" aria-label="{{t.tools}}"><sc-for list="{{drawTools}}" as="dt" hint-placeholder-count="6"><button aria-label="{{dt.label}}" title="{{dt.label}}" aria-pressed="{{dt.pressed}}" onClick="{{dt.pick}}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{dt.d}}"/></svg></button></sc-for></div>
+            <div class="cols" role="group" aria-label="{{t.colour}}"><sc-for list="{{swatches}}" as="sw" hint-placeholder-count="4"><button class="sw2" aria-label="{{sw.label}}" aria-pressed="{{sw.pressed}}" onClick="{{sw.pick}}" style="background:{{sw.color}}"></button></sc-for></div>
+            <span class="sp"></span><button class="btn t sm">{{t.undo}}</button><button class="btn f sm">{{t.savePng}}</button>
+          </div>
+          <div class="canvas">
+            <svg viewBox="0 0 640 300" role="img" aria-label="{{t.drawAlt}}">
+              <rect width="640" height="300" fill="var(--surf)"/>
+              <rect x="20" y="20" width="150" height="260" rx="16" fill="var(--surf-high)"/>
+              <rect x="190" y="20" width="430" height="52" rx="14" fill="var(--primary-c)"/>
+              <rect x="190" y="88" width="205" height="110" rx="18" fill="var(--secondary-c)"/>
+              <rect x="415" y="88" width="205" height="110" rx="18" fill="var(--tertiary-c)"/>
+              <rect x="190" y="214" width="430" height="66" rx="18" fill="var(--surf-low)"/>
+              <path d="M200 112h90M200 134h130M425 112h70M425 134h110" stroke="var(--sub)" stroke-width="6" stroke-linecap="round"/>
+              <rect x="410" y="82" width="216" height="122" rx="22" fill="none" stroke="{{ink}}" stroke-width="{{inkW}}"/>
+              <path d="M520 20 C 560 40 560 60 520 80" fill="none" stroke="{{ink}}" stroke-width="{{inkW}}" stroke-linecap="round"/>
+              <path d="M300 250 L 360 160" stroke="{{ink}}" stroke-width="{{inkW}}" stroke-linecap="round"/><path d="M360 160 l-4 16 M360 160 l-14 8" stroke="{{ink}}" stroke-width="{{inkW}}" stroke-linecap="round"/>
+              <text x="215" y="268" font-family="Roboto Flex, sans-serif" font-size="18" font-weight="700" fill="{{ink}}">{{t.callout}}</text>
+              <rect x="30" y="180" width="130" height="30" rx="8" fill="var(--text)" opacity=".55"/>
+            </svg>
+          </div>
+          <div class="area-note">{{drawStatus}}</div>
+        </sc-if>
+
+        <sc-if value="{{isEditors}}" hint-placeholder-val="{{ false }}">
+          <div class="two">
+            <div>
+              <sc-for list="{{editors}}" as="ed" hint-placeholder-count="3">
+                <div class="row"><span class="cookie" style="width:44px;height:44px;color:var(--secondary-c)"><svg viewBox="0 0 200 200"><path d="M192.4 100.0L191.9 104.8L190.4 109.5L188.3 114.0L185.6 118.2L182.9 122.2L180.3 126.1L178.1 130.0L176.5 134.0L175.2 138.3L174.3 142.9L173.4 147.7L172.3 152.5L170.7 157.2L168.4 161.6L165.3 165.3L161.6 168.4L157.2 170.7L152.5 172.3L147.7 173.4L142.9 174.3L138.3 175.2L134.0 176.5L130.0 178.1L126.1 180.3L122.2 182.9L118.2 185.6L114.0 188.3L109.5 190.4L104.8 191.9L100.0 192.4L95.2 191.9L90.5 190.4L86.0 188.3L81.8 185.6L77.8 182.9L73.9 180.3L70.0 178.1L66.0 176.5L61.7 175.2L57.1 174.3L52.3 173.4L47.5 172.3L42.8 170.7L38.4 168.4L34.7 165.3L31.6 161.6L29.3 157.2L27.7 152.5L26.6 147.7L25.7 142.9L24.8 138.3L23.5 134.0L21.9 130.0L19.7 126.1L17.1 122.2L14.4 118.2L11.7 114.0L9.6 109.5L8.1 104.8L7.6 100.0L8.1 95.2L9.6 90.5L11.7 86.0L14.4 81.8L17.1 77.8L19.7 73.9L21.9 70.0L23.5 66.0L24.8 61.7L25.7 57.1L26.6 52.3L27.7 47.5L29.3 42.8L31.6 38.4L34.7 34.7L38.4 31.6L42.8 29.3L47.5 27.7L52.3 26.6L57.1 25.7L61.7 24.8L66.0 23.5L70.0 21.9L73.9 19.7L77.8 17.1L81.8 14.4L86.0 11.7L90.5 9.6L95.2 8.1L100.0 7.6L104.8 8.1L109.5 9.6L114.0 11.7L118.2 14.4L122.2 17.1L126.1 19.7L130.0 21.9L134.0 23.5L138.3 24.8L142.9 25.7L147.7 26.6L152.5 27.7L157.2 29.3L161.6 31.6L165.3 34.7L168.4 38.4L170.7 42.8L172.3 47.5L173.4 52.3L174.3 57.1L175.2 61.7L176.5 66.0L178.1 70.0L180.3 73.9L182.9 77.8L185.6 81.8L188.3 86.0L190.4 90.5L191.9 95.2L192.4 100.0Z"/></svg><span style="font-weight:800;color:var(--on-secondary-c)">{{ed.mark}}</span></span><div class="grow"><div class="t1">{{ed.name}}</div><div class="t2">{{ed.sub}}</div></div><span class="{{ed.tag}}">{{ed.state}}</span><button class="{{ed.btn}}" onClick="{{ed.open}}">{{t.open}}</button></div>
+              </sc-for>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div class="k">{{t.handoffCmd}}</div>
+              <pre class="code" tabindex="0">code --goto "%APPDATA%\MaterialAsusRouter\router-profile.yaml:12:3"
+code --diff running.cfg backup-2026-11-25.cfg</pre>
+              <div class="row"><div class="grow"><div class="t1">{{t.watch}}</div><div class="t2">{{t.watchSub}}</div></div><button class="sw on" role="switch" aria-checked="true" aria-label="{{t.watch}}"><i></i></button></div>
+              <div class="tag good" style="align-self:flex-start">{{edStatus}}</div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{isOllama}}" hint-placeholder-val="{{ false }}">
+          <div class="cols"><span class="tag good"><span class="dot live"></span>{{t.ollamaUp}}</span><span class="tag">{{t.vram}}</span><span class="sp"></span><button class="btn t sm">{{t.settingsBtn}}</button></div>
+          <div class="two">
+            <div>
+              <sc-for list="{{models}}" as="m" hint-placeholder-count="3">
+                <div class="row pos"><div class="grow"><div class="t1">{{m.name}}</div><div class="t2">{{m.sub}}</div></div><span class="tag">{{m.size}}</span><button class="icb" aria-label="{{m.moreLabel}}" aria-haspopup="menu" aria-expanded="{{m.menuOpen}}" onClick="{{m.more}}"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg></button>
+                  <sc-if value="{{m.menuOpen}}" hint-placeholder-val="{{ false }}"><div class="menu" role="menu" style="right:20px;top:44px"><button class="mi" role="menuitem" onClick="{{m.useIt}}">{{t.useChat}}</button><button class="mi" role="menuitem">{{t.copyName}}</button><button class="mi" role="menuitem" onClick="{{m.del}}">{{t.remove}}</button></div></sc-if></div>
+              </sc-for>
+              <div class="cols" style="margin-top:12px"><input class="field" aria-label="{{t.pullName}}" placeholder="{{t.pullName}}" style="flex:1;min-width:160px"><button class="btn f sm" onClick="{{pull}}">{{t.pull}}</button></div>
+              <sc-if value="{{pulling}}" hint-placeholder-val="{{ false }}"><svg width="100%" height="20" viewBox="0 0 340 20" preserveAspectRatio="none" role="img" aria-label="{{t.pulling}}" style="margin-top:10px"><path d="M0 10H340" stroke="var(--surf-high)" stroke-width="6" stroke-linecap="round" fill="none"/><svg x="0" y="0" width="190" height="20" overflow="hidden"><path class="wavy" d="M0 10 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0" fill="none" stroke="var(--primary)" stroke-width="6" stroke-linecap="round"/></svg></svg><div class="area-note">{{t.pulling}}</div></sc-if>
+            </div>
+            <div class="card tone" style="gap:10px">
+              <div class="k">{{t.chatTest}} · {{activeModel}}</div>
+              <div class="chat"><sc-for list="{{chat}}" as="c" hint-placeholder-count="3"><div class="{{c.cls}}">{{c.text}}</div></sc-for></div>
+              <div class="cols"><input class="field" aria-label="{{t.ask}}" placeholder="{{t.ask}}" style="flex:1;min-width:160px"><button class="btn f sm" onClick="{{send}}">{{t.send}}</button></div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{isDisks}}" hint-placeholder-val="{{ false }}">
+          <div class="cols"><span class="k">{{t.hostOs}}</span><div class="seg" role="group" aria-label="{{t.hostOs}}"><button aria-pressed="{{winOn}}" onClick="{{setWin}}">Windows</button><button aria-pressed="{{otherOn}}" onClick="{{setOther}}">{{t.otherOs}}</button></div></div>
+          <sc-if value="{{isWin}}" hint-placeholder-val="{{ true }}">
+            <div class="two">
+              <div>
+                <sc-for list="{{disks}}" as="dk" hint-placeholder-count="3"><div class="row"><div class="grow"><div class="t1 mono" style="font-size:14px">{{dk.name}}</div><div class="t2">{{dk.sub}}</div></div><span class="{{dk.tag}}">{{dk.state}}</span></div></sc-for>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:10px">
+                <div class="bgroup" role="group" aria-label="{{t.diskActions}}"><sc-for list="{{diskActs}}" as="da" hint-placeholder-count="6"><button class="btn sm" onClick="{{da.pick}}">{{da.label}}</button></sc-for></div>
+                <div class="tag good" style="align-self:flex-start">{{diskStatus}}</div>
+                <div class="area-note">{{t.diskNote}}</div>
+              </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{isOther}}" hint-placeholder-val="{{ false }}">
+            <div class="card sec" style="flex-direction:row;align-items:center;gap:16px"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8v5M12 16.5h.01M12 3l9 16H3z"/></svg><div class="grow"><div class="t1">{{t.needsWin}}</div><div class="t2" style="color:inherit;opacity:.8">{{t.needsWinSub}}</div></div><button class="btn t sm dis" disabled>{{t.openDisks}}</button></div>
+          </sc-if>
+        </sc-if>
+      </section>
+
+      <footer class="prov" style="padding:0 4px"><span>{{t.prov1}}</span><span>{{t.prov2}}</span></footer>
+
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#4f5bd5","options":["#4f5bd5","#00897b","#d81b60","#f4511e","#7c4dff"],"section":"Look"},"dark":{"editor":"boolean","default":false,"section":"Look"},"motion":{"editor":"enum","options":["calm","standard","expressive"],"default":"expressive","section":"Look"},"firmware":{"editor":"enum","options":["merlin","stock"],"default":"merlin","section":"Router"},"role":{"editor":"enum","options":["owner","operator","viewer"],"default":"owner","section":"Router"},"lang":{"editor":"enum","options":["en","yue","both"],"default":"en","section":"Language"},"$preview":{"width":1440,"height":1500}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const p=this.props,s=this.state||{};
+    const lang=p.lang??'en',role=p.role??'owner',firmware=p.firmware??'merlin',motion=p.motion??'expressive';
+    const accent=p.accent||'#4f5bd5';
+    const dark=p.dark===true||p.dark==='true'||p.dark===1||p.dark==='1';
+    const T=(en,yue)=>lang==='en'?en:lang==='yue'?yue:en+' · '+yue;
+    const canWrite=role!=='viewer';
+    const set=(o)=>this.setState(o);
+    const base={accent,dark,darkNum:dark?1:0,lang,role,firmware,motionCls:motion==='calm'?'calm':motion==='standard'?'std':'',pendCount:2};
+    const tp={},lk={},cc={};
+    const LKO='M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4',LKU='M5 11h14v10H5z M8 11V7a4 4 0 0 1 7.5-2';
+    const locks=s.locks||[];
+    const card=(id,en,yue)=>{const on=s.tip===id,l=locks.includes(id);
+      tp[id]={on,text:T(en,yue),label:T('About this card','關於呢張卡'),toggle:()=>set({tip:on?'':id})};
+      lk[id]={pressed:l?'true':'false',d:l?LKO:LKU,label:l?T('Unlock card','解鎖卡片'):T('Lock card','鎖定卡片'),toggle:()=>set({locks:l?locks.filter(x=>x!==id):locks.concat([id])})};
+      cc[id]=l?'lockedcard':'';};
+    const toggleIn=(arr,v)=>arr.includes(v)?arr.filter(x=>x!==v):arr.concat([v]);
+    const tabsStr=[T('Convert','轉換'),T('Base64','Base64'),T('Types','型別'),T('Notes','筆記'),T('Draw','繪圖'),T('Editors','編輯器'),T('Ollama','Ollama'),T('Disks','磁碟')].join(',');
+    const toolId=s.tool||'convert';
+    const TL=[
+      ['convert',T('File converter','檔案轉換'),T('Images, audio, documents. Runs on this PC.','圖片、音訊、文件，喺本機執行'),'M4 7h13l-3-3 M20 17H7l3 3',T('Convert files locally. Nothing is uploaded.','喺本機轉換檔案，唔會上傳。')],
+      ['b64',T('Base64 toolkit','Base64 工具'),T('Text, files and images both ways','文字、檔案、圖片雙向轉換'),'M8 6l-6 6 6 6 M16 6l6 6-6 6',T('Encode and decode text, files and data URIs.','編碼同解碼文字、檔案同 data URI。')],
+      ['types',T('Type generator','型別產生器'),T('JSON to typed code, six languages','JSON 轉六種語言嘅型別'),'M4 5h16 M4 12h10 M4 19h16',T('Paste JSON and get typed models, powered by quicktype.','貼上 JSON 即得型別模型，由 quicktype 驅動。')],
+      ['notes',T('Notes','筆記'),T('Rich text, saved with your profile','富文字，隨設定檔儲存'),'M5 4h14v16H5z M9 9h6 M9 13h6',T('Keep rich-text notes about your network.','記低網絡相關嘅富文字筆記。')],
+      ['draw',T('Annotate','標註'),T('Mark up a capture and share it','喺截圖上標註再分享'),'M4 20l4-1 11-11-3-3L5 16z',T('Draw arrows, boxes and callouts on a screenshot.','喺截圖上畫箭咀、方框同標註。')],
+      ['editors',T('External editors','外部編輯器'),T('VS Code and others','VS Code 同其他編輯器'),'M9 18l-6-6 6-6 M15 6l6 6-6 6',T('Open router files in your own editor and reload on save.','用你自己嘅編輯器打開路由器檔案，儲存後自動重載。')],
+      ['ollama',T('Ollama models','Ollama 模型'),T('Local models, pull and chat test','本地模型、下載同對話測試'),'M12 3a7 7 0 0 1 7 7v3a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3v-3a7 7 0 0 1 7-7z M9 11h.01 M15 11h.01',T('Manage local Ollama models and try them in chat.','管理本地 Ollama 模型並喺對話入面試用。')],
+      ['disks',T('Virtual disks','虛擬磁碟'),T('VHD and VHDX on Windows','Windows 上嘅 VHD 同 VHDX'),'M4 8h16v8H4z M7 12h.01 M11 12h6',T('Create, attach and resize virtual disks. Windows only.','建立、掛載同調整虛擬磁碟，只限 Windows。')]
+    ];
+    const tiles=TL.map(([id,name,sub,d])=>({name,sub,d,cls:'tile'+(toolId===id?' on':''),pressed:toolId===id?'true':'false',pick:()=>set({tool:id})}));
+    const cur=TL.find(x=>x[0]===toolId);
+    card('panel',cur[4],cur[4]);
+    // convert
+    const tgt=s.target||'PNG',TG=['PNG','JPG','WebP','PDF','MP3','YAML'];
+    const prog=s.prog??64;
+    const targets=TG.map(g=>({label:g,pressed:tgt===g?'true':'false',pick:()=>set({target:g})}));
+    const queue=[['router-diagram.svg',tgt,100,'tag good',T('Done','完成')],['logo-source.heic','JPG',100,'tag good',T('Done','完成')],['speedtest-history.csv','XLSX',prog,'tag warn',prog>=100?T('Done','完成'):T('Converting','轉換中')],['intro-voice.m4a','MP3',0,'tag',T('Waiting','等緊')]].map(([n,to,pct,tag,state])=>({name:n,sub:'→ '+to+' · '+T('local engine','本機引擎'),pct,tag:pct>=100?'tag good':tag,state:pct>=100?T('Done','完成'):state}));
+    // base64
+    const mode=s.mode||'enc',urlSafe=!!s.urlSafe,b64In=s.b64in??'Hello from 198.51.100.1, signal -48 dBm';
+    let b64Out='',ok=true;
+    try{ if(mode==='enc'){b64Out=btoa(unescape(encodeURIComponent(b64In)));} else {b64Out=decodeURIComponent(escape(atob(b64In.replace(/-/g,'+').replace(/_/g,'/'))));} }catch(e){ok=false;b64Out=T('Not valid Base64 input.','唔係有效嘅 Base64 輸入。');}
+    if(ok&&mode==='enc'&&urlSafe)b64Out=b64Out.replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+    // types
+    const qid=s.ql||'ts';
+    const QL=[['ts','TypeScript'],['cs','C#'],['py','Python'],['rs','Rust'],['go','Go'],['sw','Swift']];
+    const QO={
+      ts:'export interface Device {\n  name: string;\n  ip: string;\n  online: boolean;\n  rssi: number;\n  tags: string[];\n}',
+      cs:'public class Device\n{\n    [JsonPropertyName("name")]   public string Name { get; set; }\n    [JsonPropertyName("ip")]     public string Ip { get; set; }\n    [JsonPropertyName("online")] public bool Online { get; set; }\n    [JsonPropertyName("rssi")]   public long Rssi { get; set; }\n    [JsonPropertyName("tags")]   public List<string> Tags { get; set; }\n}',
+      py:'@dataclass\nclass Device:\n    name: str\n    ip: str\n    online: bool\n    rssi: int\n    tags: List[str]\n\n    @staticmethod\n    def from_dict(obj: Any) -> "Device":\n        return Device(obj["name"], obj["ip"], obj["online"], obj["rssi"], obj["tags"])',
+      rs:'#[derive(Serialize, Deserialize)]\npub struct Device {\n    name: String,\n    ip: String,\n    online: bool,\n    rssi: i64,\n    tags: Vec<String>,\n}',
+      go:'type Device struct {\n\tName   string   `json:"name"`\n\tIP     string   `json:"ip"`\n\tOnline bool     `json:"online"`\n\tRssi   int64    `json:"rssi"`\n\tTags   []string `json:"tags"`\n}',
+      sw:'struct Device: Codable {\n    let name: String\n    let ip: String\n    let online: Bool\n    let rssi: Int\n    let tags: [String]\n}'
+    };
+    const jsonDef='{\n  "name": "Pat laptop",\n  "ip": "198.51.100.101",\n  "online": true,\n  "rssi": -48,\n  "tags": ["work", "5GHz"]\n}';
+    const json=s.json??jsonDef;
+    let jsonOk=true;try{JSON.parse(json)}catch(e){jsonOk=false}
+    const fields=[['name','string','"Pat laptop"'],['ip','string','"198.51.100.101"'],['online','boolean','true'],['rssi','integer','-48'],['tags','string[]','2 items']].map(([key,type,sample])=>({key,type,sample}));
+    // notes
+    const noteId=s.note||'n1',fmtOn=s.fmtOn||['b'];
+    const NT={n1:{title:T('Router move checklist','搬路由器清單'),sub:T('Edited today','今日編輯'),body:T('Move the router to the living room shelf, then re-run the Wi-Fi survey and compare 5 GHz signal at the desk.','將路由器搬去客廳架，再做一次 Wi-Fi 勘測，比較書枱嘅 5 GHz 訊號。')},
+      n2:{title:T('ISP contact','寬頻商聯絡'),sub:T('Last week','上星期'),body:T('Plan 1 Gbps down, 500 Mbps up. Ticket number kept in the password manager.','計劃 1 Gbps 下載、500 Mbps 上傳，工單編號放咗喺密碼管理器。')},
+      n3:{title:T('Guest Wi-Fi rules','訪客 Wi-Fi 規則'),sub:T('12 Nov','11月12日'),body:T('Guests get 20 Mbps, no access to 198.51.100.20, network closes at midnight.','訪客限速 20 Mbps，唔可以連 198.51.100.20，午夜自動關閉。')}};
+    const notes=Object.keys(NT).map(k=>({title:NT[k].title,sub:NT[k].sub,cls:'nbtn'+(k===noteId?' on':''),pressed:k===noteId?'true':'false',pick:()=>set({note:k})}));
+    const FB=[['b','B',T('Bold','粗體')],['i','I',T('Italic','斜體')],['u','U',T('Underline','底線')],['l','•',T('Bullet list','項目符號')],['k','↗',T('Link','連結')],['h','H',T('Heading','標題')]];
+    const fmtBtns=FB.map(([id,glyph,label])=>({glyph,label,pressed:fmtOn.includes(id)?'true':'false',style:id==='b'?'font-weight:800':id==='i'?'font-style:italic':id==='u'?'text-decoration:underline':'',pick:()=>set({fmtOn:toggleIn(fmtOn,id)})}));
+    const noteStyle='font-size:15px;line-height:1.55;'+(fmtOn.includes('b')?'font-weight:800;':'')+(fmtOn.includes('i')?'font-style:italic;':'')+(fmtOn.includes('u')?'text-decoration:underline;':'');
+    // draw
+    const dtool=s.dtool||'arrow',dcol=s.dcol||'#d81b60';
+    const DT=[['select',T('Select','選取'),'M5 3l14 8-6 2-2 6z'],['arrow',T('Arrow','箭咀'),'M5 19L19 5 M10 5h9v9'],['box',T('Rectangle','方框'),'M4 6h16v12H4z'],['pen',T('Pen','畫筆'),'M4 20l4-1 11-11-3-3L5 16z'],['text',T('Text','文字'),'M5 6h14 M12 6v13'],['blur',T('Blur sensitive area','模糊敏感位置'),'M4 12h16 M6 8h12 M6 16h12']];
+    const drawTools=DT.map(([id,label,d])=>({label,d,pressed:dtool===id?'true':'false',pick:()=>set({dtool:id})}));
+    const swatches=[['#d81b60',T('Pink','粉紅')],['#00897b',T('Teal','青綠')],['#f4511e',T('Orange','橙色')],['#4f5bd5',T('Indigo','靛藍')]].map(([color,label])=>({color,label,pressed:dcol===color?'true':'false',pick:()=>set({dcol:color})}));
+    // editors
+    const edDone=s.edDone||'';
+    const EDS=[['VS','Visual Studio Code','1.95.3 · '+T('found in PATH','喺 PATH 搵到'),'tag good',T('Ready','就緒'),'btn f sm'],['N+','Notepad++','8.7.1 · '+T('found','已搵到'),'tag good',T('Ready','就緒'),'btn t sm'],['ST','Sublime Text',T('Not installed','未安裝'),'tag warn',T('Missing','未有'),'btn o sm dis']];
+    const editors=EDS.map(([mark,name,sub,tag,state,btn])=>({mark,name,sub,tag,state,btn,open:()=>{if(canWrite&&!btn.includes('dis'))set({edDone:name})}}));
+    const edStatus=edDone?T('Opened router-profile.yaml in '+edDone,'已用 '+edDone+' 打開 router-profile.yaml'):T('Nothing opened yet','仲未打開');
+    // ollama
+    const gone=s.mgone||[],menu=s.mmenu||'',active=s.active||'llama3.2:3b',pulling=!!s.pulling,chatMsgs=s.chat||[];
+    const MD=[['llama3.2:3b','2.0 GB',T('Q4_K_M · general chat · loaded','Q4_K_M · 一般對話 · 已載入')],['qwen2.5-coder:7b','4.7 GB',T('Q4_K_M · code help','Q4_K_M · 程式協助')],['nomic-embed-text','274 MB',T('Embeddings for log search','日誌搜尋用嘅向量')]].filter(x=>!gone.includes(x[0]));
+    const models=MD.map(([name,size,sub])=>({name,size,sub,menuOpen:menu===name,moreLabel:T('More for ','更多：')+name,more:()=>set({mmenu:menu===name?'':name}),useIt:()=>set({active:name,mmenu:''}),del:()=>{if(canWrite)set({mgone:gone.concat([name]),mmenu:''})}}));
+    const chat=[{cls:'msg me',text:T('Summarise the last hour of the router log.','幫我撮要最近一個鐘嘅路由器日誌。')},{cls:'msg ai',text:T('14 DHCP renewals, 2 failed SSH logins from 198.51.100.77 and one Wi-Fi roam for Alex phone. Nothing needs action.','14 次 DHCP 續約、2 次來自 198.51.100.77 嘅 SSH 登入失敗，以及 Alex 部手機一次 Wi-Fi 漫遊，暫時冇需要處理。')}].concat(chatMsgs);
+    // disks
+    const os=s.os||'win',dstat=s.dstat||T('Ready','準備好');
+    const disks=[['D:\\VMs\\nas-test.vhdx',T('Dynamic · 40 GB max · 6.2 GB used','動態 · 最大 40 GB · 已用 6.2 GB'),'tag good',T('Attached as E:','已掛載為 E:')],['D:\\VMs\\backup-store.vhd',T('Fixed · 128 GB','固定 · 128 GB'),'tag',T('Detached','已卸載')],['D:\\ISO\\openwrt-23.05.iso',T('Read-only image · 9 MB','唯讀映像 · 9 MB'),'tag',T('Not mounted','未掛載')]].map(([name,sub,tag,state])=>({name,sub,tag,state}));
+    const diskActs=[T('Create','建立'),T('Attach','掛載'),T('Detach','卸載'),T('Resize','調整大小'),T('Convert','轉換'),T('Mount ISO','掛載 ISO')].map(label=>({label,pick:()=>{if(canWrite)set({dstat:label+T(' requested. Needs a Windows prompt to confirm.',' 已要求，需要 Windows 提示確認。')})}}));
+    return {...base,tp,lk,cc,tiles,tabsStr,targets,queue,langsQ:QL.map(([id,label])=>({label,pressed:qid===id?'true':'false',pick:()=>set({ql:id})})),fields,notes,fmtBtns,noteStyle,note:NT[noteId],drawTools,swatches,editors,edStatus,models,chat,disks,diskActs,
+      tool:{name:cur[1],sub:cur[2]},isConvert:toolId==='convert',isB64:toolId==='b64',isTypes:toolId==='types',isNotes:toolId==='notes',isDraw:toolId==='draw',isEditors:toolId==='editors',isOllama:toolId==='ollama',isDisks:toolId==='disks',
+      addFile:()=>set({prog:Math.min(100,(s.prog??64)+10)}),startAll:()=>set({prog:100}),
+      encOn:mode==='enc'?'true':'false',decOn:mode==='dec'?'true':'false',setEnc:()=>set({mode:'enc'}),setDec:()=>set({mode:'dec'}),urlOn:urlSafe?'true':'false',urlCls:'chip'+(urlSafe?' on':''),toggleUrl:()=>set({urlSafe:!urlSafe}),
+      b64In,b64Out,b64Meta:b64Out.length+T(' characters',' 個字元'),b64Status:ok?T('Valid','有效'):T('Check input','請檢查輸入'),onB64:(e)=>set({b64in:e&&e.target?e.target.value:''}),b64Sample:()=>set({b64in:mode==='enc'?'SSID: Home-5G / key hint: see password manager':'SGVsbG8gUGF0IQ=='}),copyB64:()=>{},
+      json,onJson:(e)=>set({json:e&&e.target?e.target.value:''}),jsonState:jsonOk?T('Valid JSON','JSON 有效'):T('Invalid JSON','JSON 無效'),jsonTag:jsonOk?'good':'bad',langName:QL.find(x=>x[0]===qid)[1],typesOut:jsonOk?QO[qid]:T('// Fix the JSON to generate types','// 修正 JSON 先可以產生型別'),
+      drawStatus:T('Tool: '+(DT.find(x=>x[0]===dtool)[1])+' · colour '+dcol+' · captures stay on this device','工具：'+(DT.find(x=>x[0]===dtool)[1])+' · 顏色 '+dcol+' · 截圖只留喺本機'),ink:dcol,inkW:dtool==='pen'?5:3,
+      activeModel:active,pulling,pull:()=>set({pulling:!pulling}),send:()=>set({chat:chatMsgs.concat([{cls:'msg me',text:T('Which clients use the most 2.4 GHz airtime?','邊啲裝置用最多 2.4 GHz 空中時間？')},{cls:'msg ai',text:T('The smart plugs and the old printer use 61% of 2.4 GHz airtime. Consider moving them to the IoT network.','智能插座同舊打印機佔 2.4 GHz 空中時間嘅 61%，建議搬去 IoT 網絡。')}])}),
+      isWin:os==='win',isOther:os!=='win',winOn:os==='win'?'true':'false',otherOn:os!=='win'?'true':'false',setWin:()=>set({os:'win'}),setOther:()=>set({os:'other'}),diskStatus:dstat,
+      t:{title:T('Toolbox','工具箱'),heroLabel:T('Toolbox summary','工具箱摘要'),local:T('Everything runs locally','全部喺本機執行'),provTag:T('Version 0.9.0 · updated 2026-11-25 17:10','版本 0.9.0 · 更新於 2026-11-25 17:10'),headline:T('Eight tools, zero uploads','八件工具，零上傳'),lede:T('Convert files, decode data, generate types, write notes, mark up captures, hand files to your editor, test local AI models and manage virtual disks without leaving the app.','轉檔、解碼、產生型別、寫筆記、截圖標註、交俾編輯器、測試本地 AI 模型同管理虛擬磁碟，全部喺程式入面完成。'),tilesLabel:T('Tools','工具'),
+        dropHere:T('Drop files to convert','拖放檔案嚟轉換'),dropSub:T('Up to 50 files · images, audio, documents, data','最多 50 個檔案 · 圖片、音訊、文件、資料'),browse:T('Browse files','瀏覽檔案'),convertTo:T('Convert to','轉換成'),convLocal:T('Conversion uses the engine on this PC. Originals are never changed.','轉換用本機引擎，原檔唔會被改動。'),startAll:T('Start all','全部開始'),clearDone:T('Clear finished','清除已完成'),
+        mode:T('Mode','模式'),encode:T('Encode','編碼'),decode:T('Decode','解碼'),urlSafe:'URL-safe',sample:T('Insert sample','插入範例'),fromFile:T('From file','由檔案'),toImage:T('To image','轉圖片'),input:T('Input','輸入'),output:T('Output','輸出'),copy:T('Copy','複製'),
+        language:T('Language','語言'),jsonSrc:T('JSON source','JSON 原始碼'),guiEdit:T('Visual editor','視覺化編輯'),generated:T('Generated','已產生'),saveFile:T('Save file','儲存檔案'),
+        newNote:T('New note','新增筆記'),format:T('Formatting','格式'),noteA:T('Photograph the node positions','影低節點擺放位置'),noteB:T('Update the mesh map afterwards','之後更新 Mesh 地圖'),autosaved:T('Autosaved 17:09','已自動儲存 17:09'),words:T('42 words','42 字'),exportMd:T('Export as Markdown','匯出成 Markdown'),
+        tools:T('Drawing tools','繪圖工具'),colour:T('Colour','顏色'),undo:T('Undo','復原'),savePng:T('Save PNG','儲存 PNG'),drawAlt:T('Annotated screenshot of the overview page','總覽頁面嘅標註截圖'),callout:T('Check this card first','先睇呢張卡'),
+        open:T('Open','打開'),handoffCmd:T('Hand-off command','交接指令'),watch:T('Reload when the file is saved','儲存檔案後自動重載'),watchSub:T('Changes are validated before they are sent to the router','送去路由器之前會先驗證變更'),
+        ollamaUp:T('Ollama running on 127.0.0.1:11434','Ollama 運行中 127.0.0.1:11434'),vram:T('GPU memory 8 GB','GPU 記憶體 8 GB'),settingsBtn:T('Ollama settings','Ollama 設定'),useChat:T('Use in chat','用嚟對話'),copyName:T('Copy name','複製名稱'),remove:T('Remove model','移除模型'),pullName:T('Model name, for example gemma3:4b','模型名稱，例如 gemma3:4b'),pull:T('Pull','下載'),pulling:T('Pulling gemma3:4b, 3.3 GB, 48%','下載緊 gemma3:4b，3.3 GB，48%'),chatTest:T('Chat test','對話測試'),ask:T('Ask the model','問模型'),send:T('Send','傳送'),
+        hostOs:T('Host system','主機系統'),otherOs:T('macOS or Linux','macOS 或 Linux'),diskActions:T('Disk actions','磁碟操作'),diskNote:T('Actions run through the Windows virtual disk service and need a Windows confirmation.','操作經 Windows 虛擬磁碟服務執行，需要 Windows 確認。'),needsWin:T('Virtual disk manager needs Windows','虛擬磁碟管理需要 Windows'),needsWinSub:T('VHD and VHDX files are managed by Windows. Open this app on a Windows PC to use this tool.','VHD 同 VHDX 由 Windows 管理，請喺 Windows 電腦打開呢個程式使用。'),openDisks:T('Open disk manager','打開磁碟管理'),
+        prov1:T('Material Asus Router 0.9.0 (design preview)','Material Asus Router 0.9.0（設計預覽）'),prov2:T('Updated 2026-11-25 17:10 +08:00','更新於 2026-11-25 17:10 +08:00')}};
+
+  }
+}
+</script>
+</body>
+</html>

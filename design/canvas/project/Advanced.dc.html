@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Advanced and Merlin</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="theme.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,100..1000&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}
+.card.ov{overflow:visible}
+.cbw{width:44px;height:44px;border:0;background:none;display:grid;place-items:center;flex:none;padding:0}
+.cb2{width:22px;height:22px;border-radius:7px;border:2px solid var(--sub);display:grid;place-items:center;color:var(--on-primary)}
+.cb2 svg{opacity:0}.cb2.on{background:var(--primary);border-color:var(--primary)}.cb2.on svg{opacity:1}
+.lockedcard{outline:3px solid var(--primary);outline-offset:-3px}
+.pos{position:relative}
+.tilehead{display:flex;align-items:center;gap:4px}.tilehead .k{flex:1}
+.legend{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub)}.legend i{width:12px;height:12px;border-radius:6px;display:inline-block}
+.struck{text-decoration:line-through;opacity:.6}
+.onp{background:color-mix(in srgb,var(--on-primary) 18%,transparent);color:var(--on-primary)}
+.inp{height:48px;border-radius:24px;border:1.5px solid var(--line);background:var(--surf);padding:0 18px;font:inherit;font-size:15px;color:var(--text);min-width:0}
+.code{font-family:ui-monospace,'Cascadia Code',Consolas,monospace;font-size:13px;line-height:1.6}
+.scroll{overflow:auto;max-height:340px;scrollbar-width:thin}
+.dt{overflow-x:auto;border-radius:24px;background:var(--surf-low)}
+.dt .r{display:grid;grid-template-columns:var(--cols);gap:12px;align-items:center;padding:8px 18px;border-top:1px solid var(--line);min-width:var(--mw,760px);font-size:14.5px;position:relative}
+.dt .r.h{border-top:0;font-size:12.5px;font-weight:750;color:var(--sub);letter-spacing:.3px;padding-top:12px;padding-bottom:12px}
+.dt .r>*{min-width:0}
+.dis{opacity:.5;cursor:not-allowed}
+.glassbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-radius:22px;padding:8px 8px 8px 20px}
+.spin{animation:spin 8s linear infinite;transform-origin:center}@keyframes spin{to{transform:rotate(360deg)}}
+.calm .spin,.std .spin{animation:none}@media (prefers-reduced-motion:reduce){.spin{animation:none}}
+.clip{position:absolute;inset:0;overflow:hidden;border-radius:32px;pointer-events:none}
+.card.hero>:not(.clip):not(.tip){position:relative}
+.shell{position:relative}
+.dt .pos{display:block;position:relative}
+.scrim{padding-top:300px;z-index:40}
+</style>
+</helmet>
+<div class="mx shell {{motionCls}}" style="--accent:{{accent}};--dark:{{darkNum}}"><div class="railwrap"><dc-import name="Rail" page="advanced" lang="{{lang}}" role="{{role}}" firmware="{{firmware}}" pending="{{pendCount}}" accent="{{accent}}" dark="{{dark}}" hint-size="288px,900px"></dc-import></div><div class="main"><dc-import name="TopBar" title="{{t.title}}" lang="{{lang}}" role="{{role}}" firmware="{{firmware}}" tabs="{{tabsStr}}" active="0" accent="{{accent}}" dark="{{dark}}" hint-size="1152px,170px"></dc-import>
+<main class="page">
+
+  <section class="card hero ov rise {{cardCls.hero}}" aria-label="{{t.hero}}">
+    <div class="clip" aria-hidden="true">
+      <svg class="deco a spin" viewBox="0 0 200 200" style="right:-70px;top:-80px;width:330px;height:330px"><path d="{{shapeA}}"/></svg>
+      <svg class="deco b" viewBox="0 0 200 200" style="left:48%;bottom:-120px;width:230px;height:230px"><path d="{{shapeB}}"/></svg>
+    </div>
+    <div class="tilehead"><span class="k" style="opacity:1">{{t.hero}}</span><button class="info" aria-label="{{tips.hero.label}}" aria-expanded="{{tips.hero.on}}" onClick="{{tips.hero.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.hero.label}}" aria-pressed="{{lk.hero.pressed}}" style="{{lk.hero.style}}" onClick="{{lk.hero.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11h14v10H5z"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></button></div><sc-if value="{{tips.hero.on}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:52px;right:16px">{{tips.hero.text}}</div></sc-if>
+    <div style="display:flex;flex-wrap:wrap;gap:8px">
+      <span class="tag onp"><span class="dot live" style="background:var(--on-primary)"></span>{{t.fwTag}}</span>
+      <span class="tag onp">{{t.sampleTag}}</span>
+    </div>
+    <h1 class="disp s" style="max-width:20ch">{{t.headline}}</h1>
+    <p class="lede" style="color:color-mix(in srgb,var(--on-primary) 86%,transparent)">{{t.lede}}</p>
+    <div style="display:flex;flex-wrap:wrap;gap:24px 48px;margin-top:6px">
+      <div><div class="k">{{t.statValues}}</div><div class="big" style="font-size:56px">{{counts.total}}</div></div>
+      <div><div class="k">{{t.statShown}}</div><div class="big" style="font-size:56px">{{counts.shown}}</div></div>
+      <div><div class="k">{{t.statSecret}}</div><div class="big" style="font-size:56px">{{counts.secret}}</div></div>
+      <div><div class="k">{{t.statPending}}</div><div class="big" style="font-size:56px">{{counts.pending}}</div></div>
+    </div>
+  </section>
+
+  <section class="card ov rise {{cardCls.values}}" aria-label="{{t.values}}">
+    <div class="tilehead"><span class="k" style="opacity:1">{{t.values}}</span><button class="info" aria-label="{{tips.values.label}}" aria-expanded="{{tips.values.on}}" onClick="{{tips.values.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.values.label}}" aria-pressed="{{lk.values.pressed}}" style="{{lk.values.style}}" onClick="{{lk.values.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11h14v10H5z"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></button></div><sc-if value="{{tips.values.on}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:52px;right:16px">{{tips.values.text}}</div></sc-if>
+    <div class="cols">
+      <h2 class="h2 grow">{{t.valuesTitle}}</h2>
+      <button class="btn o sm" onClick="{{selectAll}}">{{t.selectAll}}</button>
+      <button class="btn t sm" onClick="{{exportRows}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M4 19h16"/></svg>{{t.exportRows}}</button>
+    </div>
+    <div class="cols" style="align-items:stretch">
+      <label class="search" style="flex:1 1 380px;background:var(--surf-high)">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14z"/><path d="M20 20l-3.5-3.5"/></svg>
+        <input aria-label="{{t.searchLabel}}" placeholder="{{t.searchPh}}" value="{{q}}" onInput="{{onQ}}" class="{{inputCls}}">
+        <sc-if value="{{rxOn}}" hint-placeholder-val="{{ false }}"><span class="{{rxTagCls}}">{{rxTag}}</span></sc-if>
+        <button class="rxbtn" aria-pressed="{{rxPressed}}" aria-label="{{t.rxBtn}}" title="{{t.rxBtn}}" onClick="{{toggleRx}}">.*</button>
+      </label>
+      <div class="cols" role="group" aria-label="{{t.areaLabel}}" style="gap:6px">
+        <sc-for list="{{areas}}" as="ar" hint-placeholder-count="6"><button class="{{ar.cls}}" aria-pressed="{{ar.pressed}}" onClick="{{ar.pick}}">{{ar.label}} <b>{{ar.count}}</b></button></sc-for>
+      </div>
+    </div>
+    <sc-if value="{{rxOn}}" hint-placeholder-val="{{ false }}">
+      <div class="card tone" style="border-radius:22px;padding:14px 18px;flex-direction:row;flex-wrap:wrap;align-items:center;gap:10px">
+        <span class="k">{{t.rxMini}}</span>
+        <div class="cols" style="gap:6px">
+          <sc-for list="{{rxPresets}}" as="rp" hint-placeholder-count="4"><button class="chip mono" onClick="{{rp.pick}}" title="{{rp.title}}">{{rp.tok}}</button></sc-for>
+        </div>
+        <span class="t2" style="margin:0">{{t.rxHint}}</span>
+      </div>
+    </sc-if>
+    <sc-if value="{{hasSel}}" hint-placeholder-val="{{ false }}"><div class="glass glassbar" role="region" aria-label="{{t.bulk}}"><b style="flex:1;min-width:120px">{{selText}}</b><button class="{{bulkCls}}" onClick="{{bulkA}}">{{t.bulkA}}</button><button class="btn o sm" onClick="{{clearSel}}">{{t.clear}}</button></div></sc-if>
+    <sc-if value="{{noteOn}}" hint-placeholder-val="{{ false }}"><div class="tag good" style="align-self:flex-start">{{note}}</div></sc-if>
+    <div class="dt scroll" style="--cols:48px 1.5fr 1.2fr 110px 120px 130px 56px;--mw:960px;max-height:620px" role="table" aria-label="{{t.values}}">
+      <div class="r h" role="row"><span></span><span>{{t.cLabel}}</span><span>{{t.cValue}}</span><span>{{t.cArea}}</span><span>{{t.cSource}}</span><span>{{t.cEdit}}</span><span></span></div>
+      <sc-for list="{{rows}}" as="v" hint-placeholder-count="8">
+        <div class="r" role="row">
+          <button class="cbw" role="checkbox" aria-checked="{{v.checked}}" aria-label="{{v.selLabel}}" onClick="{{v.toggle}}"><span class="{{v.cbCls}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></button>
+          <span><span class="t1" style="display:block">{{v.label}}</span><span class="t2 mono" style="display:block">{{v.key}}</span></span>
+          <span style="display:flex;align-items:center;gap:6px;min-width:0"><span class="mono" style="font-weight:650;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{v.shown}}</span><sc-if value="{{v.isSecret}}" hint-placeholder-val="{{ false }}"><button class="info" aria-label="{{v.revealLabel}}" aria-pressed="{{v.revealed}}" onClick="{{v.reveal}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><path d="M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6"/></svg></button></sc-if></span>
+          <span><span class="tag">{{v.area}}</span></span>
+          <span><span class="{{v.srcCls}}">{{v.src}}</span></span>
+          <span style="display:flex;gap:6px;align-items:center"><button class="{{v.editCls}}" onClick="{{v.edit}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>{{t.edit}}</button><sc-if value="{{v.isPending}}" hint-placeholder-val="{{ false }}"><span class="tag warn">{{t.pendingTag}}</span></sc-if></span>
+          <span class="pos"><button class="info" aria-label="{{t.rowMenu}}" aria-haspopup="menu" aria-expanded="{{v.menuOpen}}" onClick="{{v.more}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="5" r="1.8" fill="currentColor"/><circle cx="12" cy="12" r="1.8" fill="currentColor"/><circle cx="12" cy="19" r="1.8" fill="currentColor"/></svg></button><sc-if value="{{v.menuOpen}}" hint-placeholder-val="{{ false }}"><div class="menu" role="menu" style="right:8px;top:54px"><button class="mi" role="menuitem" onClick="{{v.mA}}">{{t.mA}}</button><button class="mi" role="menuitem" onClick="{{v.mB}}">{{t.mB}}</button><button class="mi" role="menuitem" onClick="{{v.mC}}">{{t.mC}}</button></div></sc-if></span>
+        </div>
+      </sc-for>
+      <sc-if value="{{noRows}}" hint-placeholder-val="{{ false }}"><div class="muted" style="padding:28px;text-align:center">{{t.noRows}}</div></sc-if>
+    </div>
+    <div class="area-note">{{t.tableNote}}</div>
+  </section>
+
+  <section class="card ov rise {{cardCls.merlin}}" aria-label="{{t.merlin}}">
+    <div class="tilehead"><span class="k" style="opacity:1">{{t.merlin}}</span><button class="info" aria-label="{{tips.merlin.label}}" aria-expanded="{{tips.merlin.on}}" onClick="{{tips.merlin.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.merlin.label}}" aria-pressed="{{lk.merlin.pressed}}" style="{{lk.merlin.style}}" onClick="{{lk.merlin.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11h14v10H5z"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></button></div><sc-if value="{{tips.merlin.on}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:52px;right:16px">{{tips.merlin.text}}</div></sc-if>
+    <div class="cols">
+      <span class="cookie" style="width:52px;height:52px;color:var(--tertiary-c)"><svg viewBox="0 0 200 200" aria-hidden="true"><path d="{{shapeC}}"/></svg><span style="color:var(--on-tertiary-c)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/></svg></span></span>
+      <h2 class="h2 grow">{{t.merlinTitle}}</h2>
+      <sc-if value="{{isMerlin}}" hint-placeholder-val="{{ true }}"><span class="tag good">{{t.merlinOn}}</span></sc-if>
+      <sc-if value="{{isStock}}" hint-placeholder-val="{{ false }}"><span class="tag warn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11h14v10H5z"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>{{t.merlinLocked}}</span></sc-if>
+    </div>
+    <sc-if value="{{isStock}}" hint-placeholder-val="{{ false }}">
+      <div class="card tone" style="background:var(--warn-c);border-radius:24px;flex-direction:row;gap:16px;align-items:center;flex-wrap:wrap">
+        <span class="cookie" style="width:72px;height:72px;color:var(--surf)"><svg viewBox="0 0 200 200" aria-hidden="true"><path d="{{shapeA}}"/></svg><span style="color:var(--text)"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11h14v10H5z"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span></span>
+        <div class="grow" style="min-width:260px"><div class="t1" style="font-size:18px">{{t.lockWhy}}</div><div class="t2">{{t.lockFix}}</div></div>
+        <button class="btn t" onClick="{{noteMerlin}}">{{t.learn}}</button>
+      </div>
+    </sc-if>
+    <div style="{{panelStyle}}" aria-disabled="{{panelDisabled}}">
+      <div class="seg" role="group" aria-label="{{t.merlinTabs}}" style="align-self:flex-start">
+        <sc-for list="{{xtabs}}" as="xt" hint-placeholder-count="4"><button aria-pressed="{{xt.pressed}}" onClick="{{xt.pick}}">{{xt.label}}</button></sc-for>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start;margin-top:14px">
+        <div style="flex:1 1 380px;min-width:0">
+          <div class="tl">
+            <sc-for list="{{xrows}}" as="x" hint-placeholder-count="4">
+              <div class="row pos">
+                <span class="cookie" style="width:44px;height:44px;color:var(--secondary-c)"><svg viewBox="0 0 200 200" aria-hidden="true"><path d="{{shapeC}}"/></svg><span style="color:var(--on-secondary-c)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{x.icon}}"/></svg></span></span>
+                <div class="grow"><div class="t1">{{x.title}}</div><div class="t2 mono">{{x.sub}}</div></div>
+                <span class="{{x.tagCls}}">{{x.tag}}</span>
+                <button class="{{x.actCls}}" onClick="{{x.act}}">{{x.actLabel}}</button>
+                <button class="info" aria-label="{{t.rowMenu}}" aria-haspopup="menu" aria-expanded="{{x.menuOpen}}" onClick="{{x.more}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="5" r="1.8" fill="currentColor"/><circle cx="12" cy="12" r="1.8" fill="currentColor"/><circle cx="12" cy="19" r="1.8" fill="currentColor"/></svg></button><sc-if value="{{x.menuOpen}}" hint-placeholder-val="{{ false }}"><div class="menu" role="menu" style="right:8px;top:54px"><button class="mi" role="menuitem" onClick="{{x.mA}}">{{t.mA}}</button><button class="mi" role="menuitem" onClick="{{x.mB}}">{{t.mB}}</button><button class="mi" role="menuitem" onClick="{{x.mC}}">{{t.mC}}</button></div></sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <sc-if value="{{showEditor}}" hint-placeholder-val="{{ true }}">
+          <div style="flex:1 1 420px;min-width:0">
+            <div class="cols" style="margin-bottom:8px"><span class="k grow">{{t.editorFor}} <b class="mono">{{scriptName}}</b></span><span class="tag">{{t.previewOnly}}</span></div>
+            <div class="code scroll" style="background:var(--text);color:var(--bg);border-radius:20px;padding:14px 0;max-height:260px" role="region" aria-label="{{t.editorLabel}}">
+              <sc-for list="{{codeLines}}" as="cl" hint-placeholder-count="8"><div style="display:flex;gap:14px;padding:0 16px"><span style="opacity:.45;min-width:22px;text-align:right">{{cl.n}}</span><span style="white-space:pre;{{cl.style}}">{{cl.text}}</span></div></sc-for>
+            </div>
+            <div class="cols" style="margin-top:12px">
+              <button class="{{runCls}}" onClick="{{runScript}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4l13 8-13 8z"/></svg>{{t.runScript}}</button>
+              <button class="btn t sm {{saveDis}}" onClick="{{saveScript}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h12l4 4v14H5z"/><path d="M8 3v6h8V3"/><path d="M8 21v-7h8v7"/></svg>{{t.saveScript}}</button>
+              <span class="area-note">{{t.editorNote}}</span>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </section>
+</main>
+<sc-if value="{{showDock}}" hint-placeholder-val="{{ false }}">
+  <div class="dock" role="region" aria-label="{{t.dockLabel}}" style="margin:0 24px 20px">
+    <b>{{t.dockText}}</b>
+    <span class="mono" style="opacity:.8;font-size:13px">{{dockNames}}</span>
+    <button class="btn t sm" onClick="{{discardPend}}">{{t.discard}}</button>
+    <a class="btn f" href="Changes.dc.html">{{t.review}}</a>
+  </div>
+</sc-if>
+</div>
+<sc-if value="{{editOpen}}" hint-placeholder-val="{{ false }}">
+  <div class="scrim" role="presentation">
+    <div class="sheet" role="dialog" aria-modal="true" aria-label="{{t.sheetTitle}}" style="gap:14px">
+      <div class="cols"><h2 class="h2 grow">{{t.sheetTitle}}</h2><button class="info" aria-label="{{t.close}}" onClick="{{closeEdit}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+      <div><div class="t1" style="font-size:18px">{{ed.label}}</div><div class="t2 mono">{{ed.key}}</div></div>
+      <div class="cols">
+        <span class="tag mono">{{t.current}}: {{ed.oldShown}}</span>
+        <sc-if value="{{ed.isBool}}" hint-placeholder-val="{{ false }}">
+          <div class="seg" role="group" aria-label="{{t.newValue}}"><button aria-pressed="{{ed.offP}}" onClick="{{ed.setOff}}">{{t.off}}</button><button aria-pressed="{{ed.onP}}" onClick="{{ed.setOn}}">{{t.on}}</button></div>
+        </sc-if>
+        <sc-if value="{{ed.isText}}" hint-placeholder-val="{{ true }}">
+          <input class="inp mono" style="flex:1 1 220px" type="{{ed.inputType}}" aria-label="{{t.newValue}}" aria-invalid="{{ed.bad}}" value="{{ed.draft}}" onInput="{{ed.onDraft}}">
+        </sc-if>
+      </div>
+      <div class="{{ed.valCls}}" style="align-self:flex-start" role="status">{{ed.valText}}</div>
+      <div class="k">{{t.previewDiff}}</div>
+      <div class="code" style="background:var(--surf-low);border-radius:18px;padding:12px 16px;word-break:break-all">
+        <div style="color:var(--bad)">- {{ed.key}}={{ed.oldShown}}</div>
+        <div style="color:var(--good)">+ {{ed.key}}={{ed.newShown}}</div>
+      </div>
+      <div class="area-note">{{ed.note}}</div>
+      <div class="cols" style="justify-content:flex-end">
+        <button class="btn o" onClick="{{closeEdit}}">{{t.cancel}}</button>
+        <button class="{{ed.addCls}}" onClick="{{ed.add}}">{{t.addPending}}</button>
+      </div>
+    </div>
+  </div>
+</sc-if>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#4f5bd5","options":["#4f5bd5","#00897b","#d81b60","#f4511e","#7c4dff"],"section":"Look"},"dark":{"editor":"boolean","default":false,"section":"Look"},"motion":{"editor":"enum","options":["calm","standard","expressive"],"default":"expressive","section":"Look"},"firmware":{"editor":"enum","options":["merlin","stock"],"default":"merlin","section":"Router"},"role":{"editor":"enum","options":["owner","operator","viewer"],"default":"owner","section":"Router"},"lang":{"editor":"enum","options":["en","yue","both"],"default":"en","section":"Language"},"$preview":{"width":1440,"height":2400}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const p = this.props; const s = this.state || {};
+    const lang0 = p.lang ?? 'en'; const lang = (s.lov && s.lov.base === lang0) ? s.lov.v : lang0; const role = p.role ?? 'owner'; const firmware = p.firmware ?? 'merlin'; const motion = p.motion ?? 'expressive';
+    const accent = p.accent || '#4f5bd5';
+    const dark = p.dark === true || p.dark === 'true' || p.dark === 1 || p.dark === '1';
+    const T = (en, yue) => lang === 'en' ? en : lang === 'yue' ? yue : en + ' · ' + yue;
+    const canWrite = role !== 'viewer';
+    const set = (o) => this.setState(o);
+    const toggleIn = (a, v) => a.includes(v) ? a.filter(x => x !== v) : a.concat([v]);
+    const IC = {"check":"M5 12.5l4.5 4.5L19 7.5","info":"M12 11v6M12 7.5h.01","lock":"M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4","search":"M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14z M20 20l-3.5-3.5","play":"M7 4l13 8-13 8z","stop":"M6 6h12v12H6z","restart":"M20 12a8 8 0 1 1-2.6-5.9 M20 4v5h-5","copy":"M9 9h11v11H9z M5 15V5h10","logs":"M6 3h9l4 4v14H6z M14 3v5h5 M9 13h7 M9 17h7","trash":"M4 7h16 M9 7V4h6v3 M6 7l1 13h10l1-13","edit":"M12 20h9 M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z","plus":"M12 5v14M5 12h14","down":"M12 4v11M7 10l5 5 5-5M4 19h16","up":"M12 20V9M7 14l5-5 5 5M4 5h16","filter":"M3 5h18l-7 8v6l-4 2v-8z","eye":"M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6","eyeoff":"M3 3l18 18 M10.6 6.2A9.6 9.6 0 0 1 12 6c6 0 10 6 10 6a17 17 0 0 1-3.2 3.7 M6.3 7.7A17 17 0 0 0 2 12s4 6 10 6a9.6 9.6 0 0 0 3.4-.6","undo":"M9 14L4 9l5-5 M4 9h10a6 6 0 0 1 0 12h-3","warn":"M12 3l10 18H2z M12 10v5 M12 18h.01","x":"M6 6l12 12M18 6L6 18","wifi":"M2 9a15 15 0 0 1 20 0 M5 12.5a10 10 0 0 1 14 0 M8.5 16a5 5 0 0 1 7 0 M12 19.5h.01","server":"M3 4h18v6H3z M3 14h18v6H3z M7 7h.01 M7 17h.01","usb":"M12 3v13 M9 6l3-3 3 3 M12 12l-4-3v4 M12 14l4-3 M6 16h4v4H6z M16 8h3v3h-3z","pi":"M5 6h14v12H5z M9 10h6v4H9z M2 9h3 M2 15h3 M19 9h3 M19 15h3","vm":"M4 5h16v11H4z M2 20h20 M9 16v4 M15 16v4","docker":"M3 13h18c0 4-3 7-8 7s-8-3-8-7z M6 13V9h3v4 M10 13V9h3v4 M14 13V9h3v4 M10 9V6h3v3","term":"M3 5h18v14H3z M7 10l3 2-3 2 M12 15h5","globe":"M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18 M3 12h18 M12 3c3 3 3 15 0 18 M12 3c-3 3-3 15 0 18","shield":"M12 3l8 3v6c0 5-3.5 8-8 9c-4.5-1-8-4-8-9V6z","clock":"M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18 M12 7v5l3 2","bolt":"M13 3L5 14h6l-1 7 8-11h-6z","chev":"M6 9l6 6 6-6","chevr":"M9 6l6 6-6 6","bell":"M6 17V11a6 6 0 0 1 12 0v6l2 2H4z M10 21h4","home":"M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z","gear":"M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6 M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.4-2.3 1a7 7 0 0 0-2-1.2L14.3 3h-4l-.4 2.7a7 7 0 0 0-2 1.2l-2.3-1-2 3.4 2 1.5A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.5 2 3.4 2.3-1a7 7 0 0 0 2 1.2l.4 2.7h4l.4-2.7a7 7 0 0 0 2-1.2l2.3 1 2-3.4-2-1.5c.1-.4.1-.8.1-1.2z","devices":"M4 6h12v9H4z M2 18h16 M19 9h3v9h-3z","menu":"M4 6h16M4 12h16M4 18h16","spark":"M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z","code":"M8 6l-5 6 5 6 M16 6l5 6-5 6 M14 4l-4 16","sliders":"M4 7h10 M18 7h2 M4 17h2 M10 17h10 M16 5v4 M8 15v4","history":"M3 12a9 9 0 1 0 3-6.7 M3 4v5h5 M12 8v4l3 2","mic":"M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z M5 11a7 7 0 0 0 14 0 M12 18v3","sound":"M4 9h4l5-4v14l-5-4H4z M16 9a4 4 0 0 1 0 6 M18.5 6.5a8 8 0 0 1 0 11","palette":"M12 3a9 9 0 1 0 0 18c1.5 0 2-1 1.5-2s0-2.5 1.5-2.5H17a4 4 0 0 0 4-4C21 6.5 17 3 12 3z M7.5 11h.01 M10 7.5h.01 M14.5 7.5h.01","user":"M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8 M4 21c0-4 3.6-7 8-7s8 3 8 7","family":"M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6 M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6 M17 8a2.5 2.5 0 1 1 0 5 M17.5 14.2c2.3.4 3.5 2.4 3.5 5.8","backup":"M12 16V4 M7 9l5-5 5 5 M4 15v5h16v-5","route":"M6 4a2 2 0 1 0 0 4 2 2 0 0 0 0-4z M18 16a2 2 0 1 0 0 4 2 2 0 0 0 0-4z M8 6h6a3 3 0 0 1 0 6H10a3 3 0 0 0 0 6h6","box":"M3 8h18v12H3z M8 8V5h8v3 M3 13h18","link":"M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1 M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1","disk":"M3 14l3-8h12l3 8v5H3z M3 14h18 M17 17h.01","chip":"M7 7h10v10H7z M9 3v4 M15 3v4 M9 17v4 M15 17v4 M3 9h4 M3 15h4 M17 9h4 M17 15h4","pause":"M8 5v14 M16 5v14","flag":"M5 21V4 M5 4h12l-2 4 2 4H5","tag":"M3 12V4h8l10 10-8 8z M7 8h.01","help":"M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18 M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7 M12 17h.01","chart":"M5 20v-6 M12 20V6 M19 20v-10","moon":"M20 14A8 8 0 1 1 10 4a6.5 6.5 0 0 0 10 10z","grid":"M4 4h7v7H4z M13 4h7v7h-7z M4 13h7v7H4z M13 13h7v7h-7z","lan":"M9 3h6v5H9z M3 16h6v5H3z M15 16h6v5h-6z M12 8v4 M6 16v-4h12v4","mesh":"M12 3a2.2 2.2 0 1 0 0 4.4A2.2 2.2 0 0 0 12 3z M5 16a2.2 2.2 0 1 0 0 4.4A2.2 2.2 0 0 0 5 16z M19 16a2.2 2.2 0 1 0 0 4.4A2.2 2.2 0 0 0 19 16z M11 7l-5 9 M13 7l5 9 M7.2 18.2h9.6","fwd":"M3 12h14 M12 6l6 6-6 6 M21 4v16","wrench":"M15 4a5 5 0 0 0-4.5 6.8L4 17.3 6.7 20l6.5-6.5A5 5 0 0 0 20 9l-3 3-3-1-1-3z","save":"M5 3h12l4 4v14H5z M8 3v6h8V3 M8 21v-7h8v7"};
+    const tipSel = s.tip || ''; const locksOn = s.locks || [];
+    const mkTips = (defs) => { const o = {}; Object.keys(defs).forEach(k => { o[k] = { on: tipSel === k, text: defs[k][1], label: T('About: ', '關於：') + defs[k][0], toggle: () => set({ tip: tipSel === k ? '' : k }) }; }); return o; };
+    const mkLocks = (defs) => { const lk = {}, cardCls = {}; Object.keys(defs).forEach(k => { const on = !canWrite || locksOn.includes(k); lk[k] = { pressed: on ? 'true' : 'false', label: (on ? T('Unlock ', '解鎖 ') : T('Lock ', '鎖定 ')) + defs[k], toggle: () => { if (canWrite) set({ locks: toggleIn(locksOn, k) }); }, style: on ? 'background:var(--tertiary-c);color:var(--on-tertiary-c)' : '' }; cardCls[k] = on ? 'lockedcard' : ''; }); return { lk, cardCls }; };
+    const wavy = (len, y) => { let d = 'M0 ' + y; for (let i = 0; i < Math.ceil(len / 16) + 2; i++) d += ' q4 -6 8 0 t8 0'; return d; };
+    const line = (vals, w, h, pad, lo, hi) => { const mn = lo ?? Math.min(...vals), mx = hi ?? Math.max(...vals); const sp = (mx - mn) || 1; return vals.map((v, i) => { const x = pad + (w - 2 * pad) * i / Math.max(vals.length - 1, 1); const y = h - pad - (h - 2 * pad) * (v - mn) / sp; return (i ? 'L' : 'M') + x.toFixed(1) + ' ' + y.toFixed(1); }).join(' '); };
+    const cookieP = (r, a, n) => { let d = ''; for (let i = 0; i <= 120; i++) { const th = i * Math.PI * 2 / 120; const rr = r + a * Math.cos(n * th); d += (i ? 'L' : 'M') + (100 + rr * Math.cos(th)).toFixed(1) + ' ' + (100 + rr * Math.sin(th)).toFixed(1); } return d + 'Z'; };
+    const base = (title, tabs, pendN) => ({ accent, dark, darkNum: dark ? 1 : 0, lang, role, firmware, motionCls: motion === 'calm' ? 'calm' : motion === 'standard' ? 'std' : '', pendCount: pendN, tabsStr: tabs.join(','), viewer: !canWrite });
+    const shapeA = cookieP(78, 11, 10), shapeB = cookieP(66, 16, 4), shapeC = cookieP(80, 9, 8);
+    const isMerlin = firmware === 'merlin';
+    const q = s.q || ''; const rxOn = !!s.rx; const area = s.area || 'all';
+    const sel = s.sel || []; const reveal = s.reveal || []; const pend = s.pend || [];
+    const rowMenu = s.rowMenu || ''; const editId = s.edit || ''; const note = s.note || '';
+    const xtab = s.xtab || 'scripts'; const scriptIdx = s.script ?? 1;
+    const MASK = '●●●●●●●●';
+    const V = [
+      ['wl1_ssid', 'Wi-Fi name, 5 GHz', 'Wi-Fi 名稱，5 GHz', 'AX86U-5G', 'Wi-Fi', 'text'],
+      ['wl0_ssid', 'Wi-Fi name, 2.4 GHz', 'Wi-Fi 名稱，2.4 GHz', 'AX86U-2G', 'Wi-Fi', 'text'],
+      ['wl1_wpa_psk', 'Wi-Fi password, 5 GHz', 'Wi-Fi 密碼，5 GHz', 'correct-horse-battery', 'Wi-Fi', 'secret'],
+      ['wl0_wpa_psk', 'Wi-Fi password, 2.4 GHz', 'Wi-Fi 密碼，2.4 GHz', 'staple-orbit-lantern', 'Wi-Fi', 'secret'],
+      ['wl1_chanspec', '5 GHz channel and width', '5 GHz 頻道同頻寬', '36/80', 'Wi-Fi', 'text'],
+      ['wl0_chanspec', '2.4 GHz channel', '2.4 GHz 頻道', '6', 'Wi-Fi', 'text'],
+      ['wl1_auth_mode_x', 'Wireless security mode', '無線保安模式', 'WPA2/WPA3', 'Wi-Fi', 'text'],
+      ['lan_ipaddr', 'Router address', '路由器地址', '198.51.100.1', 'Network', 'text'],
+      ['dhcp_start', 'DHCP pool start', 'DHCP 範圍開始', '198.51.100.100', 'Network', 'text'],
+      ['dhcp_end', 'DHCP pool end', 'DHCP 範圍結束', '198.51.100.199', 'Network', 'text'],
+      ['dhcp_dns1_x', 'DNS server given to devices', '派俾裝置嘅 DNS 伺服器', '198.51.100.1', 'Network', 'text'],
+      ['dnspriv_enable', 'DNS over TLS', 'DNS over TLS', '0', 'Network', 'bool'],
+      ['wan0_proto', 'Internet connection type', '互聯網連線類型', 'dhcp', 'Network', 'text'],
+      ['wan0_mtu', 'WAN MTU', 'WAN MTU', '1500', 'Network', 'text'],
+      ['qos_enable', 'Traffic priority (QoS)', '流量優先次序 (QoS)', '1', 'Network', 'bool'],
+      ['http_passwd', 'Router admin password', '路由器管理密碼', 'Pat-demo-pass-17', 'Security', 'secret'],
+      ['misc_http_x', 'Remote access from the internet', '由互聯網遙距存取', '0', 'Security', 'bool'],
+      ['fw_enable_x', 'Firewall', '防火牆', '1', 'Security', 'bool'],
+      ['sshd_enable', 'SSH access', 'SSH 存取', '0', 'Security', 'bool'],
+      ['vpn_server1_key', 'VPN server pre-shared key', 'VPN 伺服器預共享金鑰', 'psk-demo-4c9a1e', 'Security', 'secret'],
+      ['ntp_server0', 'Time server', '時間伺服器', 'pool.ntp.org', 'System', 'text'],
+      ['time_zone', 'Time zone', '時區', 'HKT-8', 'System', 'text'],
+      ['log_ipaddr', 'Send logs to', '傳送記錄去', '198.51.100.20', 'System', 'text'],
+      ['firmware_check_enable', 'Firmware auto update check', '韌體自動更新檢查', '0', 'System', 'bool'],
+      ['jffs2_scripts_enable', 'Custom scripts on /jffs', '/jffs 自訂腳本', '1', 'Merlin', 'bool', true],
+      ['jffs2_on', 'JFFS partition enabled', 'JFFS 分區已啟用', '1', 'Merlin', 'bool', true],
+      ['custom_clientlist', 'Client friendly names', '裝置自訂名稱', 'Pat-Laptop, Alex-Phone', 'Merlin', 'text', true]
+    ].map(a => ({ key: a[0], en: a[1], yue: a[2], val: a[3], area: a[4], kind: a[5], merlinOnly: !!a[6] }));
+    const pendOf = (k) => pend.find(p => p.key === k);
+    const areaCounts = {}; V.forEach(v => { areaCounts[v.area] = (areaCounts[v.area] || 0) + 1; });
+    let reBad = false, re = null;
+    if (rxOn && q) { try { re = new RegExp(q, 'i'); } catch (e) { reBad = true; } }
+    const textOf = (v) => v.en + ' ' + v.yue + ' ' + v.key + ' ' + (v.kind === 'secret' ? '' : v.val);
+    const rowsSrc = V.filter(v => (area === 'all' || v.area === area) && (!q || (rxOn ? (re ? re.test(textOf(v)) : false) : textOf(v).toLowerCase().includes(q.toLowerCase()))));
+    const stockLocked = (v) => v.merlinOnly && !isMerlin;
+    const fmtVal = (v, raw) => v.kind === 'bool' ? (raw === '1' ? T('On', '開') : T('Off', '關')) : raw;
+    const rows = rowsSrc.map(v => {
+      const pv = pendOf(v.key); const cur = pv ? pv.val : v.val; const shown = v.kind === 'secret' ? (reveal.includes(v.key) && canWrite ? cur : MASK) : fmtVal(v, cur);
+      const lockedRow = stockLocked(v) || !canWrite;
+      return {
+        label: T(v.en, v.yue), key: v.key, shown, area: v.area, isSecret: v.kind === 'secret', revealed: reveal.includes(v.key) ? 'true' : 'false',
+        revealLabel: (reveal.includes(v.key) ? T('Hide ', '隱藏 ') : T('Show ', '顯示 ')) + T(v.en, v.yue), reveal: () => { if (canWrite) set({ reveal: toggleIn(reveal, v.key) }); },
+        src: v.merlinOnly ? T('Merlin only', '只限 Merlin') : T('Stock + Merlin', '原廠同 Merlin'), srcCls: v.merlinOnly ? (isMerlin ? 'tag good' : 'tag warn') : 'tag',
+        editCls: lockedRow ? 'btn t sm dis' : 'btn t sm', edit: () => { if (!lockedRow) set({ edit: v.key, draft: undefined }); }, isPending: !!pv,
+        checked: sel.includes(v.key) ? 'true' : 'false', cbCls: sel.includes(v.key) ? 'cb2 on' : 'cb2', selLabel: T('Select ', '揀選 ') + T(v.en, v.yue), toggle: () => set({ sel: toggleIn(sel, v.key) }),
+        menuOpen: rowMenu === v.key, more: () => set({ rowMenu: rowMenu === v.key ? '' : v.key }),
+        mA: () => set({ rowMenu: '', note: T('Copied ' + v.key, '已複製 ' + v.key) }), mB: () => set({ rowMenu: '', pend: pend.filter(p => p.key !== v.key), note: T('Reset ' + v.key + ' to its saved value.', '已將 ' + v.key + ' 重設做已儲存嘅數值。') }), mC: () => set({ rowMenu: '', note: T('History for ' + v.key + ': 2 changes in 30 days.', v.key + ' 嘅歷史：30 日內有 2 次變更。') })
+      };
+    });
+    // edit sheet
+    const ev = V.find(v => v.key === editId);
+    let ed = { label: '', key: '', oldShown: '', newShown: '', isBool: false, isText: true, inputType: 'text', bad: 'false', draft: '', valCls: 'tag good', valText: '', note: '', addCls: 'btn f', offP: 'false', onP: 'false', onDraft: () => {}, setOff: () => {}, setOn: () => {}, add: () => {} };
+    if (ev) {
+      const pv = pendOf(ev.key); const saved = ev.val; const start = pv ? pv.val : saved;
+      const draft = s.draft ?? start;
+      let msg = T('Looks valid', '睇落有效'), bad = false;
+      if (draft === '') { bad = true; msg = T('A value is required', '必須填寫數值'); }
+      else if (/^(lan_ipaddr|dhcp_start|dhcp_end|dhcp_dns1_x|log_ipaddr)$/.test(ev.key) && !/^(\d{1,3}\.){3}\d{1,3}$/.test(draft)) { bad = true; msg = T('Enter an IPv4 address like 198.51.100.1', '請輸入 IPv4 地址，例如 198.51.100.1'); }
+      else if (ev.key === 'wl1_chanspec' && !/^(36|40|44|48|149|153|157|161)(\/(20|40|80))?$/.test(draft)) { bad = true; msg = T('Use a channel like 44/80 (allowed: 36 to 48, 149 to 161)', '請用例如 44/80 嘅頻道（允許：36 至 48、149 至 161）'); }
+      else if (ev.key === 'wan0_mtu' && !(/^\d+$/.test(draft) && +draft >= 576 && +draft <= 1500)) { bad = true; msg = T('MTU must be 576 to 1500', 'MTU 必須係 576 至 1500'); }
+      const dim = ev.kind === 'secret' ? MASK : (ev.kind === 'bool' ? draft : draft);
+      const shownNew = ev.kind === 'secret' ? MASK : draft; const shownOld = ev.kind === 'secret' ? MASK : saved;
+      const apply = () => { if (bad || !canWrite) return; set({ pend: pend.filter(p => p.key !== ev.key).concat(draft === saved ? [] : [{ key: ev.key, val: draft }]), edit: '', draft: undefined, note: T('Added ' + ev.key + ' to the pending changes. Nothing is written yet.', '已將 ' + ev.key + ' 加入待寫入變更，仲未寫入。') }); };
+      ed = {
+        label: T(ev.en, ev.yue), key: ev.key, oldShown: ev.kind === 'bool' ? (saved === '1' ? 'on' : 'off') : shownOld, newShown: ev.kind === 'bool' ? (draft === '1' ? 'on' : 'off') : shownNew, isBool: ev.kind === 'bool', isText: ev.kind !== 'bool', inputType: ev.kind === 'secret' ? 'password' : 'text', bad: bad ? 'true' : 'false', draft,
+        valCls: bad ? 'tag bad' : 'tag good', valText: msg, offP: draft === '0' ? 'true' : 'false', onP: draft === '1' ? 'true' : 'false',
+        note: ev.kind === 'secret' ? T('Secrets are never shown in the preview or in the history.', '機密唔會喺預覽或者歷史入面顯示。') : T('The value is only written after you review it on the Change history page.', '要喺變更記錄頁檢視之後先會寫入。'),
+        addCls: bad || !canWrite ? 'btn f dis' : 'btn f', onDraft: (e) => set({ draft: e.target.value }), setOff: () => set({ draft: '0' }), setOn: () => set({ draft: '1' }), add: apply
+      };
+    }
+    const areas = [['all', T('All', '全部')], ['Wi-Fi', 'Wi-Fi'], ['Network', T('Network', '網絡')], ['Security', T('Security', '保安')], ['System', T('System', '系統')], ['Merlin', 'Merlin']].map(a => ({ label: a[1], count: a[0] === 'all' ? V.length : (areaCounts[a[0]] || 0), cls: area === a[0] ? 'chip on' : 'chip', pressed: area === a[0] ? 'true' : 'false', pick: () => set({ area: a[0] }) }));
+    const rxPresets = [['^wl\\d', T('Wi-Fi keys', 'Wi-Fi 鍵')], ['_(psk|passwd|key)$', T('Secrets', '機密')], ['dhcp|lan_', 'DHCP / LAN'], ['_enable', T('Switches', '開關')]].map(a => ({ tok: a[0], title: a[1], pick: () => set({ q: a[0], rx: true }) }));
+    // merlin extras
+    const SCRIPTS = [
+      ['services-start', '/jffs/scripts/services-start', true, 'Boot', [['#!/bin/sh', 'c'], ['# start my services after boot', 'c'], ['sleep 10', ''], ['/jffs/scripts/nightly-report.sh &', ''], ['logger -t services-start "done"', '']]],
+      ['nightly-report.sh', '/jffs/scripts/nightly-report.sh', true, '03:00', [['#!/bin/sh', 'c'], ['# nightly summary for Pat', 'c'], ['TODAY=$(date +%F)', ''], ['up=$(uptime | cut -d, -f1)', ''], ['clients=$(arp -an | wc -l)', ''], ['echo "$TODAY $up clients=$clients" >> /tmp/mnt/NAS/router.log', ''], ['logger -t nightly-report "wrote $TODAY"', '']]],
+      ['post-mount', '/jffs/scripts/post-mount', true, 'USB', [['#!/bin/sh', 'c'], ['# run when a USB disk is mounted', 'c'], ['[ "$1" = "/tmp/mnt/NAS" ] && opkg update', '']]],
+      ['wan-event', '/jffs/scripts/wan-event', false, 'WAN', [['#!/bin/sh', 'c'], ['# disabled: call ddns update on wan up', 'c'], ['[ "$2" = "connected" ] && /sbin/ddns_custom_updated 1', '']]]
+    ];
+    const CRON = [['nightly-report', '0 3 * * *', true], ['backup-nvram', '30 16 * * 1', true], ['clear-cache', '*/30 * * * *', false]];
+    const ENT = [['opkg 2024.11', 'Entware package manager', true], ['nano 8.2', 'Text editor', true], ['htop 3.3', 'Process viewer', false], ['dnsmasq-full', 'Extra DNS features', false]];
+    const ADD = [['amtm 4.4', 'Add-on manager', true], ['Diversion', 'Ad blocking', false], ['scMerlin', 'Service control and status', true], ['YazFi', 'Guest network tools', false]];
+    const mx = { scripts: SCRIPTS.map(a => [a[0], a[1], a[2], a[3]]), cron: CRON.map(a => [a[0], a[1], a[2], '']), entware: ENT.map(a => [a[0], a[1], a[2], '']), addons: ADD.map(a => [a[0], a[1], a[2], '']) }[xtab];
+    const on = s.xon || {};
+    const xrows = mx.map((a, i) => {
+      const id = xtab + i; const st = on[id] ?? a[2];
+      return {
+        title: a[0], sub: a[1], icon: { scripts: IC.code, cron: IC.clock, entware: IC.box, addons: IC.spark }[xtab], tag: xtab === 'entware' ? (st ? T('Installed', '已安裝') : T('Available', '可安裝')) : (st ? T('On', '開') : T('Off', '關')), tagCls: st ? 'tag good' : 'tag',
+        actLabel: xtab === 'entware' ? (st ? T('Remove', '移除') : T('Install', '安裝')) : (st ? T('Turn off', '關閉') : T('Turn on', '開啟')), actCls: isMerlin && canWrite ? 'btn t sm' : 'btn t sm dis',
+        act: () => { if (isMerlin && canWrite) set({ xon: Object.assign({}, on, { [id]: !st }), note: T(a[0] + (st ? ' turned off.' : ' turned on.'), a[0] + (st ? ' 已關閉。' : ' 已開啟。')) }); },
+        menuOpen: rowMenu === id, more: () => set({ rowMenu: rowMenu === id ? '' : id }),
+        mA: () => set({ rowMenu: '', note: T('Copied ' + a[1], '已複製 ' + a[1]) }), mB: () => set({ rowMenu: '', xtab: 'scripts', script: Math.min(i, 3) }), mC: () => set({ rowMenu: '', note: T('Removal needs a preview first.', '移除之前要先預覽。') })
+      };
+    });
+    const scr = SCRIPTS[Math.max(0, Math.min(scriptIdx, SCRIPTS.length - 1))];
+    const xtabs = [['scripts', T('Custom scripts', '自訂腳本')], ['cron', T('Cron jobs', '排程工作')], ['entware', 'Entware'], ['addons', T('Add-ons', '附加元件')]].map(a => ({ label: a[1], pressed: xtab === a[0] ? 'true' : 'false', pick: () => set({ xtab: a[0] }) }));
+    const sc2 = SCRIPTS.map((a, i) => ({ a, i }));
+    const selN = sel.length;
+    const pendN = pend.length;
+    const lockDefs = mkLocks({ hero: T('the summary', '摘要'), values: T('the value table', '數值表'), merlin: T('the Merlin extras', 'Merlin 擴充功能') });
+    const tips = mkTips({
+      hero: [T('summary', '摘要'), T('A demo sample of values. The real router has well over a thousand.', '示範用嘅數值樣本，真正嘅路由器有超過一千個。')],
+      values: [T('value table', '數值表'), T('Friendly label first, raw key second. Secrets stay masked. Editing opens a preview and never writes straight away.', '先顯示友善名稱，再顯示原始鍵。機密會遮蓋，編輯會打開預覽，唔會即刻寫入。')],
+      merlin: [T('Merlin extras', 'Merlin 擴充功能'), T('Scripts, cron jobs, Entware and add-ons exist only on Asuswrt-Merlin. On stock firmware this panel is locked.', '腳本、排程工作、Entware 同附加元件只喺 Asuswrt-Merlin 先有，原廠韌體會鎖住。')]
+    });
+    const bg = base(T('Advanced', '進階'), [T('All values', '全部數值'), T('Merlin extras', 'Merlin 擴充功能'), T('Backup and restore', '備份同還原')], pendN);
+    return Object.assign(bg, {
+      tips, lk: lockDefs.lk, cardCls: lockDefs.cardCls, shapeA, shapeB, shapeC, isMerlin, isStock: !isMerlin,
+      counts: { total: '1,284', shown: rows.length, secret: V.filter(v => v.kind === 'secret').length, pending: pendN },
+      q, onQ: (e) => set({ q: e.target.value }), rxOn, rxPressed: rxOn ? 'true' : 'false', toggleRx: () => set({ rx: !rxOn }), inputCls: rxOn ? 'mono' : '',
+      rxTagCls: reBad ? 'tag bad mono' : 'tag good mono', rxTag: reBad ? T('invalid', '無效') : T('regex · ', '正則 · ') + rows.length, rxPresets,
+      areas, rows, noRows: rows.length === 0,
+      selectAll: () => set({ sel: rowsSrc.map(v => v.key) }), exportRows: () => set({ note: T('Exported ' + (selN || rows.length) + ' values as CSV. Secrets are left out.', '已匯出 ' + (selN || rows.length) + ' 個數值成 CSV，機密已排除。') }),
+      hasSel: selN > 0, selText: selN + T(' selected', ' 項已揀選'), bulkCls: 'btn t sm', bulkA: () => set({ note: T('Copied ' + selN + ' keys.', '已複製 ' + selN + ' 個鍵。') }), clearSel: () => set({ sel: [] }),
+      noteOn: !!note, note, editOpen: !!ev, ed, closeEdit: () => set({ edit: '', draft: undefined }),
+      xtabs, xrows, showEditor: xtab === 'scripts', scriptName: scr[0], codeLines: scr[4].map((l, i) => ({ n: i + 1, text: l[0], style: l[1] === 'c' ? 'opacity:.6' : '' })),
+      panelStyle: isMerlin ? '' : 'opacity:.45;pointer-events:none;filter:grayscale(.6)', panelDisabled: isMerlin ? 'false' : 'true',
+      runCls: isMerlin && canWrite ? 'btn f sm' : 'btn f sm dis', saveDis: isMerlin && canWrite ? '' : 'dis', runScript: () => { if (isMerlin && canWrite) set({ note: T('Ran ' + scr[0] + ': exit code 0 in 0.4 s.', '已執行 ' + scr[0] + '：結束碼 0，用咗 0.4 秒。') }); }, saveScript: () => { if (isMerlin && canWrite) set({ note: T('Script changes also go through a preview first.', '腳本改動同樣要先預覽。') }); },
+      noteMerlin: () => set({ note: T('Switching to Asuswrt-Merlin is done on the Firmware page, with a backup first.', '轉用 Asuswrt-Merlin 要喺韌體頁做，之前會先備份。') }),
+      showDock: pendN > 0, dockNames: pend.map(p => p.key).join(', '), discardPend: () => set({ pend: [], note: T('Pending edits discarded.', '已捨棄待寫入嘅編輯。') }),
+      t: {
+        title: T('Advanced', '進階'), rowMenu: T('More actions', '更多動作'), mA: T('Copy raw key', '複製原始鍵'), mB: T('Reset to saved value', '重設做已儲存數值'), mC: T('Show history', '顯示歷史'),
+        bulk: T('Bulk actions', '批量操作'), bulkA: T('Copy keys', '複製鍵'), clear: T('Clear', '清除'),
+        hero: T('Summary', '摘要'), fwTag: isMerlin ? 'Asuswrt-Merlin 388.8_4' : T('Stock ASUS 388.24198', '原廠 ASUS 388.24198'), sampleTag: T('Demo sample of values', '示範數值樣本'),
+        headline: T('Every value, with a safety net', '每個數值，都有安全網'), lede: T('Search all router settings by friendly name or raw key. Secrets stay masked and every edit goes through a preview first.', '用友善名稱或者原始鍵搜尋所有路由器設定。機密會遮蓋，每次編輯都要先預覽。'),
+        statValues: T('Values on this router', '路由器上嘅數值'), statShown: T('Shown now', '而家顯示'), statSecret: T('Secrets masked', '已遮蓋機密'), statPending: T('Pending edits', '待寫入編輯'),
+        values: T('Value table', '數值表'), valuesTitle: T('All values', '全部數值'), selectAll: T('Select all', '全選'), exportRows: T('Export', '匯出'), searchLabel: T('Search values', '搜尋數值'), searchPh: rxOn ? '^wl\\d_.*' : T('Search by name or raw key', '用名稱或者原始鍵搜尋'), rxBtn: T('Regex builder', '正則表達式產生器'), areaLabel: T('Area filter', '範圍篩選'),
+        rxMini: T('Regex builder', '正則表達式產生器'), rxHint: T('Pick a starting pattern, then refine it in the search box. Matching ignores case.', '揀一個起始表達式，再喺搜尋框修改，比對唔分大細楷。'),
+        cLabel: T('Setting', '設定'), cValue: T('Value', '數值'), cArea: T('Area', '範圍'), cSource: T('Firmware', '韌體'), cEdit: T('Edit', '編輯'), edit: T('Edit', '編輯'), pendingTag: T('Pending', '待寫入'), noRows: T('No values match.', '冇符合嘅數值。'), tableNote: T('Showing a sample of 27 of 1,284 values. The real app loads them all and keeps scrolling smooth.', '顯示 1,284 個數值入面嘅 27 個樣本，真正嘅應用程式會載入全部。'),
+        merlin: T('Merlin extras', 'Merlin 擴充功能'), merlinTitle: T('Merlin extras', 'Merlin 擴充功能'), merlinOn: T('Available on this firmware', '呢個韌體可以用'), merlinLocked: T('Locked on stock firmware', '原廠韌體鎖住'),
+        lockWhy: T('Needs Asuswrt-Merlin. Stock ASUS firmware has no /jffs scripts, cron access or Entware.', '需要 Asuswrt-Merlin。原廠 ASUS 韌體冇 /jffs 腳本、cron 同 Entware。'), lockFix: T('Everything below is read-only here until you switch firmware.', '轉韌體之前，以下內容只可以睇。'), learn: T('How to switch', '點樣轉韌體'),
+        merlinTabs: T('Merlin sections', 'Merlin 分頁'), editorFor: T('Script', '腳本'), previewOnly: T('Preview', '預覽'), editorLabel: T('Script preview', '腳本預覽'), runScript: T('Run now', '即刻執行'), saveScript: T('Save', '儲存'), editorNote: T('Saving also goes through a preview.', '儲存同樣要先預覽。'),
+        sheetTitle: T('Edit value', '編輯數值'), close: T('Close', '關閉'), current: T('Current', '目前'), newValue: T('New value', '新數值'), on: T('On', '開'), off: T('Off', '關'), previewDiff: T('Preview of the write', '寫入預覽'), cancel: T('Cancel', '取消'), addPending: T('Add to pending changes', '加入待寫入變更'),
+        dockLabel: T('Pending changes', '待寫入變更'), dockText: T(pendN + ' edits waiting for review', pendN + ' 項編輯等緊檢視'), discard: T('Discard', '捨棄'), review: T('Review changes', '檢視變更')
+      }
+    });
+
+  }
+}
+</script>
+</body>
+</html>

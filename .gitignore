@@ -1,0 +1,13 @@
+node_modules/
+data/
+dist/
+site/
+coverage/
+.env
+*.log
+desktop/dist/
+desktop/payload/
+evidence/tmp/
+.agents/
+.claude/
+skills-lock.json

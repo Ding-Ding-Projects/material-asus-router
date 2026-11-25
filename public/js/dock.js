@@ -1,0 +1,203 @@
+// Pending changes and the review, apply and guard flow. Every edit in the app
+// lands here first; nothing reaches the router until the person reviews the
+// preview and presses Apply.
+import { api, bus, h, icon, openDialog, t, toast, tt } from "./core.js";
+
+export const app = { me: null, router: null, catalog: null, route: "overview", canWrite: false, notices: [], unseen: 0 };
+
+export function notice(kind, text) {
+  app.notices.unshift({ kind, text, at: new Date() });
+  app.notices.length = Math.min(app.notices.length, 30);
+  app.unseen += 1;
+  bus.emit("notices");
+}
+
+// ---- pending changes -----------------------------------------------------
+
+export const dock = {
+  changes: new Map(), // key -> { id?, key?, label, value, shown }
+  ops: [], // { op: {...}, summary }
+  count() {
+    return this.changes.size + this.ops.length;
+  },
+  has(id) {
+    return this.changes.has(id);
+  },
+  value(id) {
+    return this.changes.get(id)?.value;
+  },
+  setEntry(entry, value) {
+    const original = entry.masked || entry.secret ? "" : entry.value;
+    if (value === original) this.changes.delete(entry.id);
+    else this.changes.set(entry.id, { id: entry.id, label: entry.label, value, shown: entry.secret ? "••••••••" : value });
+    bus.emit("dock");
+  },
+  setRaw(key, value, original, label) {
+    const slot = `raw:${key}`;
+    if (value === original) this.changes.delete(slot);
+    else this.changes.set(slot, { key, label: label ?? { en: key, yue: key }, value, shown: value });
+    bus.emit("dock");
+  },
+  addOp(op, summary) {
+    this.ops.push({ op, summary });
+    bus.emit("dock");
+  },
+  clear() {
+    this.changes.clear();
+    this.ops.length = 0;
+    bus.emit("dock");
+  },
+  toBody() {
+    return {
+      changes: [...this.changes.values()].map((c) => (c.id ? { id: c.id, value: c.value } : { key: c.key, value: c.value })),
+      ops: this.ops.map((o) => o.op),
+    };
+  },
+  lines() {
+    return [...[...this.changes.values()].map((c) => `${tt(c.label)}: ${c.shown}`), ...this.ops.map((o) => o.summary)];
+  },
+};
+
+// The bar at the bottom that shows how many changes are waiting.
+export function renderDock(host) {
+  host.replaceChildren();
+  host.hidden = dock.count() === 0 || !app.canWrite;
+  if (host.hidden) return;
+  const lines = dock.lines();
+  host.append(
+    icon("edit_note"),
+    h("b", {}, t(`${lines.length} change${lines.length === 1 ? "" : "s"} waiting`, `${lines.length} 項改動等緊`), h("span", { class: "muted", style: undefined }, ` ${lines.slice(0, 2).join(" · ")}${lines.length > 2 ? " …" : ""}`)),
+    h("button", { class: "btn o sm", onClick: () => dock.clear() }, t("Discard", "放棄")),
+    h("button", { class: "btn f", onClick: () => reviewPending() }, icon("fact_check", "sm"), t("Review and apply", "檢查同套用")),
+  );
+}
+
+export async function reviewPending() {
+  try {
+    const preview = await api.post("/api/changes/preview", dock.toBody());
+    return runPreview(preview, { clearOnApplied: true });
+  } catch (error) {
+    toast(error.message, "bad");
+  }
+}
+
+// ---- the review dialog ---------------------------------------------------
+
+const STATUS_COPY = {
+  applied: { icon: "check_circle", tag: "good", en: "Applied", yue: "已套用" },
+  "reverted-by-guard": { icon: "history", tag: "warn", en: "Put back by the safety net", yue: "安全機制已還原" },
+  guarded: { icon: "hourglass_top", tag: "warn", en: "Waiting for the router", yue: "等緊路由器" },
+  failed: { icon: "error", tag: "bad", en: "Failed", yue: "失敗" },
+  unreachable: { icon: "wifi_off", tag: "bad", en: "Router not reachable", yue: "路由器連唔到" },
+  applying: { icon: "sync", tag: "", en: "Applying", yue: "套用緊" },
+};
+export const statusCopy = (status) => STATUS_COPY[status] ?? { icon: "help", tag: "", en: status, yue: status };
+
+export function diffRows(items) {
+  return items.map((item) =>
+    h(
+      "div",
+      { class: "diff" },
+      h("div", {}, h("div", { class: "t1" }, tt(item.label)), h("div", { class: "t2 mono" }, item.key, item.secret ? ` · ${t("secret", "機密")}` : "")),
+      h("div", { class: "was" }, item.added ? t("not set", "未設定") : item.old === "" ? t("empty", "空") : item.old),
+      h("div", { class: "arrow" }, icon("arrow_forward", "sm")),
+      h("div", { class: "now" }, item.removed ? t("removed", "移除") : item.new === "" ? t("empty", "空") : item.new),
+    ),
+  );
+}
+
+export function runPreview(preview, { clearOnApplied = false, title } = {}) {
+  let phase = "review";
+  let record = null;
+  let error = null;
+  let started = 0;
+  let timer = null;
+  let verify = true;
+  const lan = preview.items.find((i) => i.key === "lan_ipaddr");
+  const counter = h("span", { class: "countdown" }, "");
+  const tick = () => {
+    const left = Math.max(0, preview.guard.seconds - Math.floor((Date.now() - started) / 1000));
+    counter.textContent = `${left}s`;
+  };
+
+  const apply = async (render) => {
+    phase = "applying";
+    started = Date.now();
+    render();
+    if (preview.guard.armed) timer = setInterval(tick, 500);
+    try {
+      record = await api.post("/api/changes/apply", { previewId: preview.id, verifyHost: lan && verify ? lan.new : undefined });
+      while (record.status === "guarded" || record.status === "applying") {
+        phase = "waiting";
+        render();
+        await new Promise((r) => setTimeout(r, 1500));
+        record = await api.get(`/api/changes/history/${record.id}`);
+      }
+      phase = "done";
+      notice(record.status === "applied" ? "good" : "warn", `${tt({ en: statusCopy(record.status).en, yue: statusCopy(record.status).yue })}: ${preview.items.map((i) => tt(i.label)).join(", ")}`);
+      if (record.status === "applied" && clearOnApplied) dock.clear();
+      bus.emit("changed");
+    } catch (e) {
+      error = e;
+      phase = "error";
+    } finally {
+      clearInterval(timer);
+    }
+    render();
+  };
+
+  return openDialog(
+    (close, render) => {
+      const heading = title ?? t("Review changes", "檢查改動");
+      if (phase === "review")
+        return [
+          h("h2", { class: "h2" }, heading),
+          h("div", {}, diffRows(preview.items)),
+          preview.restarts.length ? h("div", { class: "muted" }, t("The router will restart: ", "路由器會重啟："), preview.restarts.join(", ")) : null,
+          preview.guard.armed
+            ? h("div", { class: "note" }, icon("shield"), h("div", {}, t(`Safety net on. If this app cannot reach the router ${preview.guard.seconds} seconds after the change, the router puts the old settings back by itself.`, `已開啟安全機制。改動後 ${preview.guard.seconds} 秒，如果呢個程式連唔到路由器，路由器會自動還原舊設定。`)))
+            : h("div", { class: "note" }, icon("bolt"), h("div", {}, t("Low risk. This applies straight away and can be undone from Change history.", "風險低。會即時套用，亦可以喺「變更記錄」還原。"))),
+          lan
+            ? h("label", { class: "row" }, h("input", { type: "checkbox", checked: true, onChange: (e) => (verify = e.target.checked) }), h("span", {}, t(`Look for the router at its new address, ${lan.new}, afterwards`, `改動後去新地址 ${lan.new} 搵路由器`)))
+            : null,
+          h("div", { class: "actions" }, h("button", { class: "btn o", onClick: () => close(false) }, t("Cancel", "取消")), h("button", { class: "btn f", onClick: () => apply(render) }, icon("check", "sm"), t("Apply", "套用"))),
+        ];
+      if (phase === "applying")
+        return [
+          h("h2", { class: "h2" }, t("Applying…", "套用緊…")),
+          h("div", { class: "row" }, h("div", { class: "spin" }), h("div", { class: "grow" }, t("Writing the settings, then opening a fresh connection to check the router still answers.", "寫入設定，之後會開新連線確認路由器仲有回應。"))),
+          preview.guard.armed ? h("div", { class: "card tone" }, h("div", { class: "k" }, t("Safety net countdown", "安全機制倒數")), counter) : null,
+        ];
+      if (phase === "waiting")
+        return [
+          h("h2", { class: "h2" }, t("The router is not answering", "路由器冇回應")),
+          h("div", { class: "note warn" }, icon("hourglass_top"), h("div", {}, t("The change may have cut the connection. The router's own safety timer will put the old settings back. This page keeps checking.", "改動可能令連線中斷。路由器自己嘅安全計時器會還原舊設定，呢頁會不斷檢查。"))),
+          h("div", { class: "row" }, h("div", { class: "spin" }), t("Waiting for the router to come back…", "等路由器返嚟…")),
+        ];
+      if (phase === "error")
+        return [h("h2", { class: "h2" }, t("Could not apply", "套用唔到")), h("div", { class: "note bad" }, icon("error"), h("div", {}, error.message)), h("div", { class: "actions" }, h("button", { class: "btn f", onClick: () => close(false) }, t("Close", "關閉")))];
+      const copy = statusCopy(record.status);
+      return [
+        h("h2", { class: "h2" }, h("span", { class: `tag ${copy.tag}` }, icon(copy.icon, "sm"), t(copy.en, copy.yue))),
+        record.status === "applied"
+          ? h("div", { class: "note" }, icon("check_circle"), h("div", {}, t("The router has the new settings and still answers.", "路由器已經用緊新設定，而且有回應。")))
+          : record.status === "reverted-by-guard"
+            ? h("div", { class: "note warn" }, icon("history"), h("div", {}, t("The router could not be reached after the change, so its safety net restored the old settings. Nothing was lost.", "改動後連唔到路由器，所以安全機制已還原舊設定，冇嘢有損失。")))
+            : h("div", { class: "note bad" }, icon("error"), h("div", {}, record.note ?? t("Something did not go as planned. Check the router.", "有啲嘢未如預期，請檢查路由器。"))),
+        record.differs ? h("div", { class: "muted" }, t("The router stored slightly different values than asked for (it adjusts some settings itself).", "路由器儲存咗少少唔同嘅值（有啲設定佢會自己調整）。")) : null,
+        h("div", {}, diffRows(preview.items)),
+        h("div", { class: "actions" }, record.canUndo ? h("button", { class: "btn t", onClick: () => (close(true), undoChange(record.id)) }, icon("undo", "sm"), t("Undo", "還原")) : null, h("button", { class: "btn f", onClick: () => close(true) }, t("Done", "完成"))),
+      ];
+    },
+    { label: t("Review changes", "檢查改動") },
+  );
+}
+
+export async function undoChange(id) {
+  try {
+    const preview = await api.post(`/api/changes/${id}/undo`);
+    return runPreview(preview, { title: t("Undo this change", "還原呢項改動") });
+  } catch (error) {
+    toast(error.message, "bad");
+  }
+}

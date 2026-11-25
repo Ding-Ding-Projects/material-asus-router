@@ -1,0 +1,26 @@
+services:
+  asus-router:
+    image: ghcr.io/ding-ding-projects/material-asus-router:${ROUTER_APP_TAG:-latest}
+    container_name: material-asus-router
+    ports:
+      - "${ROUTER_APP_PORT:-8790}:8790"
+    environment:
+      DEMO: ${ROUTER_APP_DEMO:-0}
+    volumes:
+      - router-data:/data
+    restart: unless-stopped
+    stop_grace_period: 20s
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8790/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+volumes:
+  router-data:

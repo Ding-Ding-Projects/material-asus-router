@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Change history</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="theme.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,100..1000&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}
+.card.ov{overflow:visible}
+.cbw{width:44px;height:44px;border:0;background:none;display:grid;place-items:center;flex:none;padding:0}
+.cb2{width:22px;height:22px;border-radius:7px;border:2px solid var(--sub);display:grid;place-items:center;color:var(--on-primary)}
+.cb2 svg{opacity:0}.cb2.on{background:var(--primary);border-color:var(--primary)}.cb2.on svg{opacity:1}
+.lockedcard{outline:3px solid var(--primary);outline-offset:-3px}
+.pos{position:relative}
+.tilehead{display:flex;align-items:center;gap:4px}.tilehead .k{flex:1}
+.legend{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub)}.legend i{width:12px;height:12px;border-radius:6px;display:inline-block}
+.struck{text-decoration:line-through;opacity:.6}
+.onp{background:color-mix(in srgb,var(--on-primary) 18%,transparent);color:var(--on-primary)}
+.inp{height:48px;border-radius:24px;border:1.5px solid var(--line);background:var(--surf);padding:0 18px;font:inherit;font-size:15px;color:var(--text);min-width:0}
+.code{font-family:ui-monospace,'Cascadia Code',Consolas,monospace;font-size:13px;line-height:1.6}
+.scroll{overflow:auto;max-height:340px;scrollbar-width:thin}
+.dt{overflow-x:auto;border-radius:24px;background:var(--surf-low)}
+.dt .r{display:grid;grid-template-columns:var(--cols);gap:12px;align-items:center;padding:8px 18px;border-top:1px solid var(--line);min-width:var(--mw,760px);font-size:14.5px;position:relative}
+.dt .r.h{border-top:0;font-size:12.5px;font-weight:750;color:var(--sub);letter-spacing:.3px;padding-top:12px;padding-bottom:12px}
+.dt .r>*{min-width:0}
+.dis{opacity:.5;cursor:not-allowed}
+.glassbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-radius:22px;padding:8px 8px 8px 20px}
+.spin{animation:spin 8s linear infinite;transform-origin:center}@keyframes spin{to{transform:rotate(360deg)}}
+.calm .spin,.std .spin{animation:none}@media (prefers-reduced-motion:reduce){.spin{animation:none}}
+.clip{position:absolute;inset:0;overflow:hidden;border-radius:32px;pointer-events:none}
+.card.hero>:not(.clip):not(.tip){position:relative}
+.steps{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
+.stp{display:flex;align-items:center;gap:10px;height:56px;padding:0 22px 0 9px;border-radius:28px;border:0;background:color-mix(in srgb,var(--on-primary) 16%,transparent);color:var(--on-primary);font-weight:700;font-size:14.5px}
+.stp.on{background:var(--surf);color:var(--text);box-shadow:var(--e2)}
+</style>
+</helmet>
+<div class="mx shell {{motionCls}}" style="--accent:{{accent}};--dark:{{darkNum}}"><div class="railwrap"><dc-import name="Rail" page="changes" lang="{{lang}}" role="{{role}}" firmware="{{firmware}}" pending="{{pendCount}}" accent="{{accent}}" dark="{{dark}}" hint-size="288px,900px"></dc-import></div><div class="main"><dc-import name="TopBar" title="{{t.title}}" lang="{{lang}}" role="{{role}}" firmware="{{firmware}}" tabs="{{tabsStr}}" active="0" accent="{{accent}}" dark="{{dark}}" hint-size="1152px,170px"></dc-import>
+<main class="page">
+
+  <section class="card hero ov rise {{cardCls.pipeline}}" aria-label="{{t.pipeline}}">
+    <div class="clip" aria-hidden="true">
+      <svg class="deco a spin" viewBox="0 0 200 200" style="right:-80px;top:-90px;width:340px;height:340px"><path d="{{shapeA}}"/></svg>
+      <svg class="deco b" viewBox="0 0 200 200" style="left:38%;bottom:-130px;width:250px;height:250px"><path d="{{shapeB}}"/></svg>
+    </div>
+    <div class="tilehead"><span class="k" style="opacity:1">{{t.pipeline}}</span><button class="info" aria-label="{{tips.pipeline.label}}" aria-expanded="{{tips.pipeline.on}}" onClick="{{tips.pipeline.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.pipeline.label}}" aria-pressed="{{lk.pipeline.pressed}}" style="{{lk.pipeline.style}}" onClick="{{lk.pipeline.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11h14v10H5z"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></button></div><sc-if value="{{tips.pipeline.on}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:52px;right:16px">{{tips.pipeline.text}}</div></sc-if>
+    <div style="display:flex;flex-wrap:wrap;gap:8px">
+      <span class="tag onp"><span class="dot live" style="background:var(--on-primary)"></span>{{t.snapTag}}</span>
+      <span class="tag onp">{{t.guardTag}}</span>
+      <span class="tag onp">{{t.roleTag}}</span>
+    </div>
+    <h1 class="disp s" style="max-width:20ch">{{headline}}</h1>
+    <p class="lede" style="color:color-mix(in srgb,var(--on-primary) 86%,transparent)">{{ledeText}}</p>
+    <div class="steps" role="group" aria-label="{{t.stageSwitch}}">
+      <sc-for list="{{steps}}" as="st" hint-placeholder-count="5">
+        <button class="{{st.cls}}" aria-pressed="{{st.pressed}}" onClick="{{st.pick}}">
+          <span class="cookie" style="width:38px;height:38px;color:{{st.col}}"><svg viewBox="0 0 200 200" aria-hidden="true"><path d="{{shapeC}}"/></svg><b style="font-size:14px;color:{{st.numCol}}">{{st.n}}</b></span>
+          <span>{{st.label}}</span>
+        </button>
+      </sc-for>
+    </div>
+  </section>
+
+  <div class="dash">
+    <section class="card ov span2 rise {{cardCls.stage}}" aria-label="{{t.stageCard}}">
+      <div class="tilehead"><span class="k" style="opacity:1">{{t.stage}}</span><button class="info" aria-label="{{tips.stage.label}}" aria-expanded="{{tips.stage.on}}" onClick="{{tips.stage.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.stage.label}}" aria-pressed="{{lk.stage.pressed}}" style="{{lk.stage.style}}" onClick="{{lk.stage.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11h14v10H5z"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></button></div><sc-if value="{{tips.stage.on}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:52px;right:16px">{{tips.stage.text}}</div></sc-if>
+      <div class="cols">
+        <h2 class="h2 grow">{{stageTitle}}</h2>
+        <span class="{{stageTagCls}}">{{stageTag}}</span>
+      </div>
+
+      <sc-if value="{{isPreview}}" hint-placeholder-val="{{ true }}">
+        <p class="muted">{{t.previewLede}}</p>
+        <div class="tl">
+          <sc-for list="{{diffs}}" as="d" hint-placeholder-count="3">
+            <div class="row pos">
+              <button class="cbw" role="checkbox" aria-checked="{{d.checked}}" aria-label="{{d.selLabel}}" onClick="{{d.toggle}}"><span class="{{d.cbCls}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></button>
+              <span class="cookie" style="width:44px;height:44px;color:var(--secondary-c)"><svg viewBox="0 0 200 200" aria-hidden="true"><path d="{{shapeC}}"/></svg><span style="color:var(--on-secondary-c)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{d.icon}}"/></svg></span></span>
+              <div class="grow">
+                <div class="t1">{{d.label}}</div>
+                <div class="t2 mono">{{d.key}}</div>
+                <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;align-items:center">
+                  <span class="tag bad mono" style="text-decoration:line-through">{{d.from}}</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg><span class="tag good mono">{{d.to}}</span>
+                </div>
+              </div>
+              <sc-if value="{{d.risky}}" hint-placeholder-val="{{ false }}"><span class="tag warn">{{t.restartsWifi}}</span></sc-if>
+              <button class="info" aria-label="{{t.rowMenu}}" aria-haspopup="menu" aria-expanded="{{d.menuOpen}}" onClick="{{d.more}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="5" r="1.8" fill="currentColor"/><circle cx="12" cy="12" r="1.8" fill="currentColor"/><circle cx="12" cy="19" r="1.8" fill="currentColor"/></svg></button><sc-if value="{{d.menuOpen}}" hint-placeholder-val="{{ false }}"><div class="menu" role="menu" style="right:8px;top:54px"><button class="mi" role="menuitem" onClick="{{d.mA}}">{{t.mA}}</button><button class="mi" role="menuitem" onClick="{{d.mB}}">{{t.mB}}</button><button class="mi" role="menuitem" onClick="{{d.mC}}">{{t.mC}}</button></div></sc-if>
+            </div>
+          </sc-for>
+        </div>
+        <div class="k">{{t.rawDiff}}</div>
+        <div class="code scroll" style="background:var(--surf-low);border-radius:18px;padding:12px 16px;max-height:200px" role="region" aria-label="{{t.rawDiff}}">
+          <sc-for list="{{diffLines}}" as="ln" hint-placeholder-count="6"><div style="{{ln.style}}">{{ln.text}}</div></sc-for>
+          <sc-if value="{{noDiff}}" hint-placeholder-val="{{ false }}"><div class="muted">{{t.nothingSelected}}</div></sc-if>
+        </div>
+        <div class="cols" style="margin-top:6px">
+          <div class="pos">
+            <div class="split">
+              <button class="{{applyCls}}" onClick="{{applyGuard}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9c-4.5-1-8-4-8-9V6z"/></svg>{{t.applyGuard}}</button>
+              <button class="{{dropCls}}" aria-label="{{t.moreApply}}" aria-haspopup="menu" aria-expanded="{{splitOpen}}" onClick="{{toggleSplit}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+            </div>
+            <sc-if value="{{splitOpen}}" hint-placeholder-val="{{ false }}">
+              <div class="menu" role="menu" style="left:0;top:56px">
+                <button class="mi" role="menuitem" onClick="{{applyGuard}}">{{t.applyGuard}}</button>
+                <button class="mi" role="menuitem" onClick="{{applyNow}}">{{t.applyNow}}</button>
+                <button class="mi" role="menuitem" onClick="{{scheduleIt}}">{{t.schedule}}</button>
+              </div>
+            </sc-if>
+          </div>
+          <button class="btn o" onClick="{{discard}}">{{t.discard}}</button>
+          <span class="area-note">{{t.guardHint}}</span>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{isGuard}}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-wrap:wrap;gap:28px;align-items:center">
+          <div class="plot" style="width:240px;max-width:100%;flex:none">
+            <svg viewBox="-10 -10 220 220" role="img" aria-label="{{ring.alt}}" style="overflow:visible">
+              <path d="{{shapeD}}" fill="var(--secondary-c)" opacity=".7"/>
+              <circle cx="100" cy="100" r="84" fill="none" stroke="var(--surf-high)" stroke-width="10"/>
+              <path d="{{ring.path}}" pathLength="100" fill="none" stroke="var(--primary)" stroke-width="10" stroke-linecap="round" stroke-dasharray="{{ring.dash}}"/>
+            </svg>
+            <div style="position:absolute;inset:0;display:grid;place-items:center;text-align:center">
+              <div><div class="big" style="font-size:76px">{{secLeft}}<small>s</small></div><div class="k">{{t.untilRevert}}</div></div>
+            </div>
+          </div>
+          <div class="grow" style="min-width:260px;display:flex;flex-direction:column;gap:12px">
+            <p class="lede" style="margin:0">{{t.guardLede}}</p>
+            <div class="stack" aria-hidden="true"><i style="flex:{{ring.done}};background:var(--primary)"></i><i style="flex:{{ring.left}};background:var(--surf-high)"></i></div>
+            <div class="cols">
+              <button class="btn f" onClick="{{keepIt}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>{{t.keep}}</button>
+              <button class="btn t" onClick="{{revertNow}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg>{{t.revertNow}}</button>
+              <button class="btn o sm" onClick="{{tick}}">{{t.tick}}</button>
+            </div>
+            <div class="area-note">{{t.tickNote}}</div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{isApplied}}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap">
+          <span class="cookie" style="width:96px;height:96px;color:var(--good-c)"><svg viewBox="0 0 200 200" aria-hidden="true"><path d="{{shapeA}}"/></svg><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="var(--good)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+          <div class="grow"><div class="big">{{appliedCount}}<small>{{t.changesWord}}</small></div><div class="muted">{{t.appliedLede}}</div></div>
+        </div>
+        <div class="tl">
+          <sc-for list="{{appliedRows}}" as="a" hint-placeholder-count="3">
+            <div class="row"><span class="dot"></span><div class="grow"><div class="t1">{{a.label}}</div><div class="t2 mono">{{a.key}} = {{a.to}}</div></div><span class="tag good">{{t.confirmed}}</span></div>
+          </sc-for>
+        </div>
+        <div class="cols"><button class="btn t" onClick="{{undoApplied}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg>{{t.undoAll}}</button><button class="btn o" onClick="{{restartDemo}}">{{t.again}}</button></div>
+      </sc-if>
+
+      <sc-if value="{{isReverted}}" hint-placeholder-val="{{ false }}">
+        <div class="card tone" style="background:var(--warn-c);gap:8px;border-radius:24px">
+          <div class="cols"><span class="tag warn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l10 18H2z"/><path d="M12 10v5"/><path d="M12 18h.01"/></svg>{{t.revertedTag}}</span><span class="t2" style="margin:0">{{t.revertedAt}}</span></div>
+          <div class="t1" style="font-size:18px">{{t.revertedWhy}}</div>
+          <div class="t2">{{t.revertedFix}}</div>
+        </div>
+        <div class="tl">
+          <sc-for list="{{revSteps}}" as="rs" hint-placeholder-count="4">
+            <div class="row"><span class="badge">{{rs.n}}</span><div class="grow"><div class="t1">{{rs.title}}</div><div class="t2 mono">{{rs.time}}</div></div><span class="{{rs.cls}}">{{rs.tag}}</span></div>
+          </sc-for>
+        </div>
+        <div class="cols"><button class="btn f" onClick="{{retry}}">{{t.retry}}</button><button class="btn t" onClick="{{toDiag}}">{{t.diag}}</button></div>
+      </sc-if>
+
+      <sc-if value="{{isFailed}}" hint-placeholder-val="{{ false }}">
+        <div class="card tone" style="background:var(--bad-c);gap:8px;border-radius:24px">
+          <div class="cols"><span class="tag bad"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>{{t.failedTag}}</span><span class="t2" style="margin:0">{{t.failedAt}}</span></div>
+          <div class="t1" style="font-size:18px">{{t.failedReason}}</div>
+          <div class="code" style="background:var(--surf);border-radius:14px;padding:10px 14px;word-break:break-word">{{t.failedRaw}}</div>
+        </div>
+        <div class="k">{{t.recovery}}</div>
+        <div class="tl">
+          <sc-for list="{{recovery}}" as="rc" hint-placeholder-count="3">
+            <div class="row"><span class="badge">{{rc.n}}</span><div class="grow"><div class="t1">{{rc.title}}</div><div class="t2">{{rc.text}}</div></div><button class="btn t sm" onClick="{{rc.pick}}">{{rc.btn}}</button></div>
+          </sc-for>
+        </div>
+      </sc-if>
+      <sc-if value="{{noteOn}}" hint-placeholder-val="{{ false }}"><div class="tag good" style="align-self:flex-start">{{note}}</div></sc-if>
+    </section>
+
+    <section class="card ov rise {{cardCls.safety}}" aria-label="{{t.safety}}">
+      <div class="tilehead"><span class="k" style="opacity:1">{{t.safety}}</span><button class="info" aria-label="{{tips.safety.label}}" aria-expanded="{{tips.safety.on}}" onClick="{{tips.safety.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.safety.label}}" aria-pressed="{{lk.safety.pressed}}" style="{{lk.safety.style}}" onClick="{{lk.safety.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11h14v10H5z"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></button></div><sc-if value="{{tips.safety.on}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:52px;right:16px">{{tips.safety.text}}</div></sc-if>
+      <h2 class="h2">{{t.safetyTitle}}</h2>
+      <div class="k">{{t.guardSecs}}</div>
+      <div class="seg" role="group" aria-label="{{t.guardSecs}}">
+        <sc-for list="{{guardOpts}}" as="g" hint-placeholder-count="3"><button aria-pressed="{{g.pressed}}" onClick="{{g.pick}}">{{g.label}}</button></sc-for>
+      </div>
+      <div class="row" style="border-top:0">
+        <div class="grow"><div class="t1">{{t.autoSnap}}</div><div class="t2">{{t.autoSnapSub}}</div></div>
+        <button class="{{swCls}}" role="switch" aria-checked="{{snapOn}}" aria-label="{{t.autoSnap}}" onClick="{{toggleSnap}}"><i></i></button>
+      </div>
+      <div class="k">{{t.snapshots}}</div>
+      <sc-for list="{{snaps}}" as="sn" hint-placeholder-count="3">
+        <div class="row pos">
+          <span class="cookie" style="width:40px;height:40px;color:var(--tertiary-c)"><svg viewBox="0 0 200 200" aria-hidden="true"><path d="{{shapeC}}"/></svg><span style="color:var(--on-tertiary-c)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4"/><path d="M7 9l5-5 5 5"/><path d="M4 15v5h16v-5"/></svg></span></span>
+          <div class="grow"><div class="t1 mono">{{sn.id}}</div><div class="t2">{{sn.when}} · {{sn.size}}</div></div>
+          <button class="btn o sm" onClick="{{sn.restore}}">{{t.restore}}</button>
+        </div>
+      </sc-for>
+    </section>
+  </div>
+
+  <section class="card ov rise {{cardCls.history}}" aria-label="{{t.history}}">
+    <div class="tilehead"><span class="k" style="opacity:1">{{t.history}}</span><button class="info" aria-label="{{tips.history.label}}" aria-expanded="{{tips.history.on}}" onClick="{{tips.history.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.history.label}}" aria-pressed="{{lk.history.pressed}}" style="{{lk.history.style}}" onClick="{{lk.history.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11h14v10H5z"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></button></div><sc-if value="{{tips.history.on}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:52px;right:16px">{{tips.history.text}}</div></sc-if>
+    <div class="cols">
+      <h2 class="h2 grow">{{t.historyTitle}} <span class="badge" style="vertical-align:middle">{{shownCount}}</span></h2>
+      <div class="seg" role="group" aria-label="{{t.filter}}">
+        <sc-for list="{{filters}}" as="f" hint-placeholder-count="4"><button aria-pressed="{{f.pressed}}" onClick="{{f.pick}}">{{f.label}}</button></sc-for>
+      </div>
+      <label class="search" style="flex:0 1 280px;height:44px;padding-left:14px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14z"/><path d="M20 20l-3.5-3.5"/></svg><input aria-label="{{t.search}}" placeholder="{{t.searchPh}}" value="{{q}}" onInput="{{onQ}}"></label>
+      <button class="btn o sm" onClick="{{selectAll}}">{{t.selectAll}}</button>
+    </div>
+    <sc-if value="{{hasSel}}" hint-placeholder-val="{{ false }}"><div class="glass glassbar" role="region" aria-label="{{t.bulk}}"><b style="flex:1;min-width:120px">{{selText}}</b><button class="{{bulkCls}}" onClick="{{bulkA}}">{{t.bulkA}}</button><button class="btn o sm" onClick="{{clearSel}}">{{t.clear}}</button></div></sc-if>
+    <div class="tl">
+      <sc-for list="{{rows}}" as="h" hint-placeholder-count="6">
+        <div class="row pos">
+          <button class="cbw" role="checkbox" aria-checked="{{h.checked}}" aria-label="{{h.selLabel}}" onClick="{{h.toggle}}"><span class="{{h.cbCls}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></button>
+          <span class="{{h.dotCls}}"></span>
+          <div class="grow"><div class="{{h.cls}}">{{h.text}}</div><div class="t2">{{h.time}} · {{h.who}} · <span class="mono">{{h.id}}</span></div></div>
+          <span class="{{h.tagCls}}">{{h.tag}}</span>
+          <button class="{{h.undoCls}}" onClick="{{h.undo}}">{{h.undoLabel}}</button>
+          <button class="info" aria-label="{{t.rowMenu}}" aria-haspopup="menu" aria-expanded="{{h.menuOpen}}" onClick="{{h.more}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="5" r="1.8" fill="currentColor"/><circle cx="12" cy="12" r="1.8" fill="currentColor"/><circle cx="12" cy="19" r="1.8" fill="currentColor"/></svg></button><sc-if value="{{h.menuOpen}}" hint-placeholder-val="{{ false }}"><div class="menu" role="menu" style="right:8px;top:54px"><button class="mi" role="menuitem" onClick="{{h.mA}}">{{t.mA}}</button><button class="mi" role="menuitem" onClick="{{h.mB}}">{{t.mB}}</button><button class="mi" role="menuitem" onClick="{{h.mC}}">{{t.mC}}</button></div></sc-if>
+        </div>
+      </sc-for>
+      <sc-if value="{{noRows}}" hint-placeholder-val="{{ false }}"><div class="muted" style="padding:24px;text-align:center">{{t.noRows}}</div></sc-if>
+    </div>
+  </section>
+</main>
+<sc-if value="{{showDock}}" hint-placeholder-val="{{ true }}">
+  <div class="dock" role="region" aria-label="{{t.dockLabel}}" style="margin:0 24px 20px">
+    <b>{{t.dockText}}</b>
+    <button class="btn t sm" onClick="{{discard}}">{{t.discard}}</button>
+    <button class="btn f" onClick="{{applyGuard}}">{{t.applyGuard}}</button>
+  </div>
+</sc-if>
+</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#4f5bd5","options":["#4f5bd5","#00897b","#d81b60","#f4511e","#7c4dff"],"section":"Look"},"dark":{"editor":"boolean","default":false,"section":"Look"},"motion":{"editor":"enum","options":["calm","standard","expressive"],"default":"expressive","section":"Look"},"firmware":{"editor":"enum","options":["merlin","stock"],"default":"merlin","section":"Router"},"role":{"editor":"enum","options":["owner","operator","viewer"],"default":"owner","section":"Router"},"lang":{"editor":"enum","options":["en","yue","both"],"default":"en","section":"Language"},"$preview":{"width":1440,"height":2300}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const p = this.props; const s = this.state || {};
+    const lang0 = p.lang ?? 'en'; const lang = (s.lov && s.lov.base === lang0) ? s.lov.v : lang0; const role = p.role ?? 'owner'; const firmware = p.firmware ?? 'merlin'; const motion = p.motion ?? 'expressive';
+    const accent = p.accent || '#4f5bd5';
+    const dark = p.dark === true || p.dark === 'true' || p.dark === 1 || p.dark === '1';
+    const T = (en, yue) => lang === 'en' ? en : lang === 'yue' ? yue : en + ' · ' + yue;
+    const canWrite = role !== 'viewer';
+    const set = (o) => this.setState(o);
+    const toggleIn = (a, v) => a.includes(v) ? a.filter(x => x !== v) : a.concat([v]);
+    const IC = {"check":"M5 12.5l4.5 4.5L19 7.5","info":"M12 11v6M12 7.5h.01","lock":"M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4","search":"M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14z M20 20l-3.5-3.5","play":"M7 4l13 8-13 8z","stop":"M6 6h12v12H6z","restart":"M20 12a8 8 0 1 1-2.6-5.9 M20 4v5h-5","copy":"M9 9h11v11H9z M5 15V5h10","logs":"M6 3h9l4 4v14H6z M14 3v5h5 M9 13h7 M9 17h7","trash":"M4 7h16 M9 7V4h6v3 M6 7l1 13h10l1-13","edit":"M12 20h9 M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z","plus":"M12 5v14M5 12h14","down":"M12 4v11M7 10l5 5 5-5M4 19h16","up":"M12 20V9M7 14l5-5 5 5M4 5h16","filter":"M3 5h18l-7 8v6l-4 2v-8z","eye":"M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6","eyeoff":"M3 3l18 18 M10.6 6.2A9.6 9.6 0 0 1 12 6c6 0 10 6 10 6a17 17 0 0 1-3.2 3.7 M6.3 7.7A17 17 0 0 0 2 12s4 6 10 6a9.6 9.6 0 0 0 3.4-.6","undo":"M9 14L4 9l5-5 M4 9h10a6 6 0 0 1 0 12h-3","warn":"M12 3l10 18H2z M12 10v5 M12 18h.01","x":"M6 6l12 12M18 6L6 18","wifi":"M2 9a15 15 0 0 1 20 0 M5 12.5a10 10 0 0 1 14 0 M8.5 16a5 5 0 0 1 7 0 M12 19.5h.01","server":"M3 4h18v6H3z M3 14h18v6H3z M7 7h.01 M7 17h.01","usb":"M12 3v13 M9 6l3-3 3 3 M12 12l-4-3v4 M12 14l4-3 M6 16h4v4H6z M16 8h3v3h-3z","pi":"M5 6h14v12H5z M9 10h6v4H9z M2 9h3 M2 15h3 M19 9h3 M19 15h3","vm":"M4 5h16v11H4z M2 20h20 M9 16v4 M15 16v4","docker":"M3 13h18c0 4-3 7-8 7s-8-3-8-7z M6 13V9h3v4 M10 13V9h3v4 M14 13V9h3v4 M10 9V6h3v3","term":"M3 5h18v14H3z M7 10l3 2-3 2 M12 15h5","globe":"M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18 M3 12h18 M12 3c3 3 3 15 0 18 M12 3c-3 3-3 15 0 18","shield":"M12 3l8 3v6c0 5-3.5 8-8 9c-4.5-1-8-4-8-9V6z","clock":"M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18 M12 7v5l3 2","bolt":"M13 3L5 14h6l-1 7 8-11h-6z","chev":"M6 9l6 6 6-6","chevr":"M9 6l6 6-6 6","bell":"M6 17V11a6 6 0 0 1 12 0v6l2 2H4z M10 21h4","home":"M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z","gear":"M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6 M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.4-2.3 1a7 7 0 0 0-2-1.2L14.3 3h-4l-.4 2.7a7 7 0 0 0-2 1.2l-2.3-1-2 3.4 2 1.5A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.5 2 3.4 2.3-1a7 7 0 0 0 2 1.2l.4 2.7h4l.4-2.7a7 7 0 0 0 2-1.2l2.3 1 2-3.4-2-1.5c.1-.4.1-.8.1-1.2z","devices":"M4 6h12v9H4z M2 18h16 M19 9h3v9h-3z","menu":"M4 6h16M4 12h16M4 18h16","spark":"M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z","code":"M8 6l-5 6 5 6 M16 6l5 6-5 6 M14 4l-4 16","sliders":"M4 7h10 M18 7h2 M4 17h2 M10 17h10 M16 5v4 M8 15v4","history":"M3 12a9 9 0 1 0 3-6.7 M3 4v5h5 M12 8v4l3 2","mic":"M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z M5 11a7 7 0 0 0 14 0 M12 18v3","sound":"M4 9h4l5-4v14l-5-4H4z M16 9a4 4 0 0 1 0 6 M18.5 6.5a8 8 0 0 1 0 11","palette":"M12 3a9 9 0 1 0 0 18c1.5 0 2-1 1.5-2s0-2.5 1.5-2.5H17a4 4 0 0 0 4-4C21 6.5 17 3 12 3z M7.5 11h.01 M10 7.5h.01 M14.5 7.5h.01","user":"M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8 M4 21c0-4 3.6-7 8-7s8 3 8 7","family":"M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6 M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6 M17 8a2.5 2.5 0 1 1 0 5 M17.5 14.2c2.3.4 3.5 2.4 3.5 5.8","backup":"M12 16V4 M7 9l5-5 5 5 M4 15v5h16v-5","route":"M6 4a2 2 0 1 0 0 4 2 2 0 0 0 0-4z M18 16a2 2 0 1 0 0 4 2 2 0 0 0 0-4z M8 6h6a3 3 0 0 1 0 6H10a3 3 0 0 0 0 6h6","box":"M3 8h18v12H3z M8 8V5h8v3 M3 13h18","link":"M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1 M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1","disk":"M3 14l3-8h12l3 8v5H3z M3 14h18 M17 17h.01","chip":"M7 7h10v10H7z M9 3v4 M15 3v4 M9 17v4 M15 17v4 M3 9h4 M3 15h4 M17 9h4 M17 15h4","pause":"M8 5v14 M16 5v14","flag":"M5 21V4 M5 4h12l-2 4 2 4H5","tag":"M3 12V4h8l10 10-8 8z M7 8h.01","help":"M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18 M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7 M12 17h.01","chart":"M5 20v-6 M12 20V6 M19 20v-10","moon":"M20 14A8 8 0 1 1 10 4a6.5 6.5 0 0 0 10 10z","grid":"M4 4h7v7H4z M13 4h7v7h-7z M4 13h7v7H4z M13 13h7v7h-7z","lan":"M9 3h6v5H9z M3 16h6v5H3z M15 16h6v5h-6z M12 8v4 M6 16v-4h12v4","mesh":"M12 3a2.2 2.2 0 1 0 0 4.4A2.2 2.2 0 0 0 12 3z M5 16a2.2 2.2 0 1 0 0 4.4A2.2 2.2 0 0 0 5 16z M19 16a2.2 2.2 0 1 0 0 4.4A2.2 2.2 0 0 0 19 16z M11 7l-5 9 M13 7l5 9 M7.2 18.2h9.6","fwd":"M3 12h14 M12 6l6 6-6 6 M21 4v16","wrench":"M15 4a5 5 0 0 0-4.5 6.8L4 17.3 6.7 20l6.5-6.5A5 5 0 0 0 20 9l-3 3-3-1-1-3z","save":"M5 3h12l4 4v14H5z M8 3v6h8V3 M8 21v-7h8v7"};
+    const tipSel = s.tip || ''; const locksOn = s.locks || [];
+    const mkTips = (defs) => { const o = {}; Object.keys(defs).forEach(k => { o[k] = { on: tipSel === k, text: defs[k][1], label: T('About: ', '關於：') + defs[k][0], toggle: () => set({ tip: tipSel === k ? '' : k }) }; }); return o; };
+    const mkLocks = (defs) => { const lk = {}, cardCls = {}; Object.keys(defs).forEach(k => { const on = !canWrite || locksOn.includes(k); lk[k] = { pressed: on ? 'true' : 'false', label: (on ? T('Unlock ', '解鎖 ') : T('Lock ', '鎖定 ')) + defs[k], toggle: () => { if (canWrite) set({ locks: toggleIn(locksOn, k) }); }, style: on ? 'background:var(--tertiary-c);color:var(--on-tertiary-c)' : '' }; cardCls[k] = on ? 'lockedcard' : ''; }); return { lk, cardCls }; };
+    const wavy = (len, y) => { let d = 'M0 ' + y; for (let i = 0; i < Math.ceil(len / 16) + 2; i++) d += ' q4 -6 8 0 t8 0'; return d; };
+    const line = (vals, w, h, pad, lo, hi) => { const mn = lo ?? Math.min(...vals), mx = hi ?? Math.max(...vals); const sp = (mx - mn) || 1; return vals.map((v, i) => { const x = pad + (w - 2 * pad) * i / Math.max(vals.length - 1, 1); const y = h - pad - (h - 2 * pad) * (v - mn) / sp; return (i ? 'L' : 'M') + x.toFixed(1) + ' ' + y.toFixed(1); }).join(' '); };
+    const cookieP = (r, a, n) => { let d = ''; for (let i = 0; i <= 120; i++) { const th = i * Math.PI * 2 / 120; const rr = r + a * Math.cos(n * th); d += (i ? 'L' : 'M') + (100 + rr * Math.cos(th)).toFixed(1) + ' ' + (100 + rr * Math.sin(th)).toFixed(1); } return d + 'Z'; };
+    const base = (title, tabs, pendN) => ({ accent, dark, darkNum: dark ? 1 : 0, lang, role, firmware, motionCls: motion === 'calm' ? 'calm' : motion === 'standard' ? 'std' : '', pendCount: pendN, tabsStr: tabs.join(','), viewer: !canWrite });
+    const stage = s.stage || 'preview';
+    const gsec = s.gsec || 60;
+    const sec = Math.max(0, s.sec ?? 41);
+    const inc = s.inc || ['dns', 'chan'];
+    const note = s.note || '';
+    const undone = s.undone || [];
+    const filter = s.filter || 'all';
+    const q = s.q || '';
+    const sel = s.sel || [];
+    const rowMenu = s.rowMenu || '';
+    const snapOn = s.snapOn !== false;
+    const shapeA = cookieP(78, 11, 10), shapeB = cookieP(66, 16, 4), shapeC = cookieP(80, 9, 8), shapeD = cookieP(94, 7, 12);
+
+    const DIFFS = [
+      { id: 'dns', label: T('DNS server with DNS over TLS', 'DNS 伺服器同 DNS over TLS'), key: 'dhcp_dns1_x', from: '198.51.100.1', to: '198.51.100.2 (DoT)', icon: IC.globe, risky: false },
+      { id: 'chan', label: T('5 GHz channel', '5 GHz 頻道'), key: 'wl1_chanspec', from: '36/80', to: '44/80', icon: IC.wifi, risky: true },
+      { id: 'guest', label: T('Guest Wi-Fi turned on', '開咗訪客 Wi-Fi'), key: 'wl0.1_bss_enabled', from: '0', to: '1', icon: IC.family, risky: true }
+    ];
+    const diffs = DIFFS.map(d => ({
+      label: d.label, key: d.key, from: d.from, to: d.to, icon: d.icon, risky: d.risky,
+      checked: inc.includes(d.id) ? 'true' : 'false', cbCls: inc.includes(d.id) ? 'cb2 on' : 'cb2', selLabel: T('Include in write: ', '包括喺寫入入面：') + d.label,
+      toggle: () => { if (canWrite) set({ inc: toggleIn(inc, d.id) }); },
+      menuOpen: rowMenu === 'd' + d.id, more: () => set({ rowMenu: rowMenu === 'd' + d.id ? '' : 'd' + d.id }),
+      mA: () => set({ rowMenu: '', note: T('Copied ' + d.key, '已複製 ' + d.key) }), mB: () => set({ rowMenu: '', note: T('Opened ' + d.key + ' in the full value table', '喺全部數值表入面打開咗 ' + d.key) }), mC: () => set({ rowMenu: '', note: T('Exported 1 change as JSON', '已將 1 項變更匯出成 JSON') })
+    }));
+    const diffLines = [{ text: '@@ nvram @@', style: 'color:var(--sub)' }];
+    DIFFS.filter(d => inc.includes(d.id)).forEach(d => { diffLines.push({ text: '- ' + d.key + '=' + d.from, style: 'color:var(--bad)' }); diffLines.push({ text: '+ ' + d.key + '=' + d.to, style: 'color:var(--good)' }); });
+
+    // wavy circular progress
+    const R = 84, N = 240; let ringD = '';
+    for (let i = 0; i <= N; i++) { const th = -Math.PI / 2 + i * 2 * Math.PI / N; const rr = R + 5 * Math.sin(24 * (i * 2 * Math.PI / N)); ringD += (i ? 'L' : 'M') + (100 + rr * Math.cos(th)).toFixed(1) + ' ' + (100 + rr * Math.sin(th)).toFixed(1); }
+    const rem = Math.round(sec / gsec * 100);
+    const ring = { path: ringD, dash: rem + ' 100', done: 100 - rem, left: rem, alt: T(sec + ' seconds left before the guard reverts', '仲有 ' + sec + ' 秒守衛就會還原') };
+
+    const stageDefs = [['preview', T('Preview diff', '預覽差異')], ['guard', T('Guard countdown', '守衛倒數')], ['applied', T('Applied', '已套用')], ['reverted', T('Reverted by guard', '守衛已還原')], ['failed', T('Failed', '失敗')]];
+    const steps = stageDefs.map((d, i) => ({ n: i + 1, label: d[1], cls: stage === d[0] ? 'stp on' : 'stp', pressed: stage === d[0] ? 'true' : 'false', col: stage === d[0] ? 'var(--primary)' : 'color-mix(in srgb,var(--on-primary) 30%,transparent)', numCol: 'var(--on-primary)', pick: () => set({ stage: d[0], sec: d[0] === 'guard' ? (sec > 0 ? sec : gsec) : sec, splitOpen: false, note: '' }) }));
+    const ledes = {
+      preview: [T('Review ' + inc.length + ' changes before they reach the router', '寫入路由器之前先檢視 ' + inc.length + ' 項變更'), T('Nothing is written yet. Untick a change to leave it out.', '仲未寫入任何嘢，取消剔選就可以排除。')],
+      guard: [T('The guard is watching. Confirm within ' + sec + ' s', '守衛睇緊，請喺 ' + sec + ' 秒內確認'), T('If this app cannot reach the router, the old settings come back by themselves.', '如果呢個應用程式連唔到路由器，舊設定會自動返嚟。')],
+      applied: [T('All changes are live and confirmed', '所有變更已生效並確認'), T('The snapshot stays available so any change can be undone later.', '快照會保留，之後可以隨時復原任何變更。')],
+      reverted: [T('The guard put the old settings back', '守衛已經還原舊設定'), T('Nothing is lost. Review what happened, then try again.', '冇嘢損失。睇返發生咩事，再試一次。')],
+      failed: [T('The router refused the write', '路由器拒絕咗寫入'), T('The router kept its old settings. Pick a recovery step below.', '路由器保留舊設定，請揀下面一個復原步驟。')]
+    };
+    const stTitles = { preview: T('Preview diff', '預覽差異'), guard: T('Guard countdown', '守衛倒數'), applied: T('Applied', '已套用'), reverted: T('Reverted by guard', '守衛已還原'), failed: T('Failed write', '寫入失敗') };
+    const stTags = { preview: ['tag', T('Not written', '未寫入')], guard: ['tag warn', T('Waiting for confirmation', '等緊確認')], applied: ['tag good', T('Confirmed', '已確認')], reverted: ['tag warn', T('Rolled back', '已回復')], failed: ['tag bad', T('Nothing changed', '冇任何改動')] };
+
+    const applyGuard = () => { if (canWrite && inc.length) set({ stage: 'guard', sec: gsec, splitOpen: false, note: '' }); };
+    const H = [
+      ['c-0412', '17:40', 'Pat', 'DNS server 198.51.100.2 with DNS over TLS', 'DNS 伺服器 198.51.100.2（DNS over TLS）', 'applied'],
+      ['c-0411', '17:12', 'Pat', '5 GHz channel 36 to 44', '5 GHz 頻道 36 改做 44', 'applied'],
+      ['c-0410', '16:03', 'Alex', 'Port forward 8443 to NAS 198.51.100.20', '端口轉發 8443 去 NAS 198.51.100.20', 'applied'],
+      ['c-0409', '13:25', 'Pat', 'Guest Wi-Fi schedule 23:00 to 07:00', '訪客 Wi-Fi 排程 23:00 至 07:00', 'reverted'],
+      ['c-0408', '12:48', 'Pat', 'Firmware auto update off', '關閉韌體自動更新', 'applied'],
+      ['c-0407', 'Yesterday 21:30', 'Alex', 'Parental limit for Alex-Phone', 'Alex-Phone 家長限制', 'applied'],
+      ['c-0406', 'Yesterday 18:02', 'Pat', 'WAN MTU 1492', 'WAN MTU 1492', 'failed'],
+      ['c-0405', '22 Nov 09:15', 'Pat', 'Wi-Fi name changed', 'Wi-Fi 名稱已更改', 'applied'],
+      ['c-0404', '21 Nov 20:41', 'Pat', 'Backup restored from snapshot s-0409', '由快照 s-0409 還原備份', 'applied'],
+      ['c-0403', '20 Nov 11:08', 'Alex', 'Merlin script nightly-report.sh enabled', '啟用 Merlin 腳本 nightly-report.sh', 'applied']
+    ];
+    const kindTag = { applied: ['tag good', T('Applied', '已套用'), 'dot'], reverted: ['tag warn', T('Reverted by guard', '守衛已還原'), 'dot'], failed: ['tag bad', T('Failed', '失敗'), 'dot'] };
+    const matches = (h) => (filter === 'all' || h[5] === filter) && (!q || (h[3] + h[4] + h[2] + h[0]).toLowerCase().includes(q.toLowerCase()));
+    const rowsSrc = H.filter(matches);
+    const rows = rowsSrc.map(h => {
+      const un = undone.includes(h[0]); const can = canWrite && h[5] === 'applied' && !un; const k = kindTag[h[5]];
+      return {
+        id: h[0], time: h[1], who: h[2], text: T(h[3], h[4]), cls: un ? 't1 struck' : 't1', tagCls: un ? 'tag' : k[0], tag: un ? T('Undone', '已復原') : k[1], dotCls: 'dot',
+        undoCls: can ? 'btn t sm' : 'btn t sm dis', undoLabel: T('Undo', '復原'), undo: () => { if (can) set({ undone: undone.concat([h[0]]), note: T('Undid ' + h[0] + ' and wrote the old value back.', '已復原 ' + h[0] + '，寫返舊數值。') }); },
+        checked: sel.includes(h[0]) ? 'true' : 'false', cbCls: sel.includes(h[0]) ? 'cb2 on' : 'cb2', selLabel: T('Select change ', '揀選變更 ') + h[0], toggle: () => set({ sel: toggleIn(sel, h[0]) }),
+        menuOpen: rowMenu === h[0], more: () => set({ rowMenu: rowMenu === h[0] ? '' : h[0] }),
+        mA: () => set({ rowMenu: '', note: T('Copied details of ' + h[0], '已複製 ' + h[0] + ' 嘅詳情') }), mB: () => set({ rowMenu: '', stage: 'preview', note: T('Opened ' + h[0] + ' in the diff view', '喺差異檢視打開咗 ' + h[0]) }), mC: () => set({ rowMenu: '', note: T('Exported ' + h[0], '已匯出 ' + h[0]) })
+      };
+    });
+    const selN = sel.length;
+    const counts = { all: H.length, applied: H.filter(h => h[5] === 'applied').length, reverted: H.filter(h => h[5] === 'reverted').length, failed: H.filter(h => h[5] === 'failed').length };
+    const filters = [['all', T('All', '全部')], ['applied', T('Applied', '已套用')], ['reverted', T('Reverted', '已還原')], ['failed', T('Failed', '失敗')]].map(f => ({ label: f[1] + ' ' + counts[f[0]], pressed: filter === f[0] ? 'true' : 'false', pick: () => set({ filter: f[0] }) }));
+    const guardOpts = [30, 60, 120].map(v => ({ label: v + ' s', pressed: gsec === v ? 'true' : 'false', pick: () => { if (canWrite) set({ gsec: v, sec: stage === 'guard' ? v : sec }); } }));
+    const lockDefs = mkLocks({ pipeline: T('the write pipeline', '寫入流程'), stage: T('the stage panel', '階段面板'), safety: T('the safety net', '安全網'), history: T('the history list', '歷史清單') });
+    const tips = mkTips({
+      pipeline: [T('write pipeline', '寫入流程'), T('Every write goes through five stages. Click a stage to preview how it looks.', '每次寫入都經過五個階段，撳一個階段就可以預覽。')],
+      stage: [T('stage panel', '階段面板'), T('Shows the details of the selected stage, with the exact reason and recovery steps when something fails.', '顯示揀咗嘅階段詳情，失敗時會有確實原因同復原步驟。')],
+      safety: [T('safety net', '安全網'), T('The guard waits for you to confirm. A snapshot of the router is saved before every write.', '守衛會等你確認，每次寫入之前都會儲存路由器快照。')],
+      history: [T('history', '歷史'), T('Every write is listed. Applied changes can be undone, reverted and failed ones show why.', '每次寫入都有記錄，已套用嘅可以復原，已還原同失敗嘅會顯示原因。')]
+    });
+    const pendN = stage === 'preview' || stage === 'guard' ? inc.length : 0;
+    const bg = base(T('Change history', '變更記錄'), [T('Review changes', '檢視變更'), T('History', '歷史'), T('Snapshots', '快照')], pendN);
+    return Object.assign(bg, {
+      tips, lk: lockDefs.lk, cardCls: lockDefs.cardCls, shapeA, shapeB, shapeC, shapeD, steps, headline: ledes[stage][0], ledeText: ledes[stage][1],
+      stageTitle: stTitles[stage], stageTagCls: stTags[stage][0], stageTag: stTags[stage][1],
+      isPreview: stage === 'preview', isGuard: stage === 'guard', isApplied: stage === 'applied', isReverted: stage === 'reverted', isFailed: stage === 'failed',
+      diffs, diffLines, noDiff: inc.length === 0,
+      applyCls: canWrite && inc.length ? 'btn f' : 'btn f dis', dropCls: canWrite && inc.length ? 'btn f drop' : 'btn f drop dis', applyGuard,
+      splitOpen: !!s.splitOpen, toggleSplit: () => set({ splitOpen: !s.splitOpen }),
+      applyNow: () => { if (canWrite && inc.length) set({ stage: 'applied', splitOpen: false, note: T('Applied without the guard. The snapshot was still saved.', '冇用守衛直接套用，快照仍然已儲存。') }); },
+      scheduleIt: () => set({ splitOpen: false, note: T('Scheduled for 03:00 tonight with the guard on.', '已排程今晚 03:00 執行，守衛開啟。') }),
+      discard: () => set({ inc: [], splitOpen: false, note: T('Discarded. Nothing was written.', '已捨棄，冇寫入任何嘢。') }),
+      ring, secLeft: sec, keepIt: () => set({ stage: 'applied', note: T('Confirmed. The guard stood down.', '已確認，守衛已經撤銷。') }), revertNow: () => set({ stage: 'reverted', note: '' }),
+      tick: () => { const ns = Math.max(0, sec - 10); set(ns === 0 ? { sec: 0, stage: 'reverted' } : { sec: ns }); },
+      appliedCount: inc.length || 2, appliedRows: DIFFS.filter(d => (inc.length ? inc : ['dns', 'chan']).includes(d.id)).map(d => ({ label: d.label, key: d.key, to: d.to })),
+      undoApplied: () => { if (canWrite) set({ stage: 'preview', note: T('Undid every change in this write.', '已復原今次寫入嘅所有變更。') }); }, restartDemo: () => set({ stage: 'preview', inc: ['dns', 'chan'], sec: gsec, note: '' }),
+      revSteps: [
+        { n: 1, title: T('Snapshot s-0412 saved', '已儲存快照 s-0412'), time: '17:51:04', tag: T('Done', '完成'), cls: 'tag good' },
+        { n: 2, title: T('Wrote 2 values and restarted Wi-Fi', '寫入 2 個數值並重啟 Wi-Fi'), time: '17:51:09', tag: T('Done', '完成'), cls: 'tag good' },
+        { n: 3, title: T('No heartbeat from the router for ' + gsec + ' s', '路由器 ' + gsec + ' 秒冇回應'), time: '17:52:09', tag: T('Timed out', '逾時'), cls: 'tag warn' },
+        { n: 4, title: T('Old values written back from the snapshot', '由快照寫返舊數值'), time: '17:52:11', tag: T('Restored', '已還原'), cls: 'tag good' }
+      ],
+      retry: () => set({ stage: 'preview', sec: gsec, note: '' }), toDiag: () => set({ note: T('Opened diagnostics: Wi-Fi radios came back on channel 36.', '已打開診斷：Wi-Fi 無線電已返回 36 頻道。') }),
+      recovery: [
+        { n: 1, title: T('Retry with 80 MHz width', '用 80 MHz 頻寬重試'), text: T('Keeps channel 44 but avoids the width the router refused.', '保留 44 頻道，避開路由器拒絕嘅頻寬。'), btn: T('Retry', '重試'), pick: () => set({ stage: 'preview', note: T('Width set to 80 MHz in the preview.', '預覽入面已將頻寬設為 80 MHz。') }) },
+        { n: 2, title: T('Restore snapshot s-0412', '還原快照 s-0412'), text: T('Not needed: the router kept its old settings.', '唔需要：路由器已保留舊設定。'), btn: T('Restore', '還原'), pick: () => set({ note: T('Restored s-0412. Nothing was different.', '已還原 s-0412，冇任何分別。') }) },
+        { n: 3, title: T('Copy diagnostic bundle', '複製診斷資料'), text: T('Includes the exact response. Secrets are masked.', '包括確實回應，機密已遮蓋。'), btn: T('Copy', '複製'), pick: () => set({ note: T('Diagnostic bundle copied.', '已複製診斷資料。') }) }
+      ],
+      noteOn: !!note, note, guardOpts, snapOn: snapOn ? 'true' : 'false', swCls: snapOn ? 'sw on' : 'sw', toggleSnap: () => { if (canWrite) set({ snapOn: !snapOn }); },
+      snaps: [['s-0412', '17:51', '84 KB'], ['s-0409', T('21 Nov 20:41', '11 月 21 日 20:41'), '83 KB'], ['s-0401', T('15 Nov 08:02', '11 月 15 日 08:02'), '81 KB']].map(a => ({ id: a[0], when: a[1], size: a[2], restore: () => { if (canWrite) set({ note: T('Snapshot ' + a[0] + ' queued for restore. Review it first.', '快照 ' + a[0] + ' 已排隊還原，請先檢視。') }); } })),
+      filters, q, onQ: (e) => set({ q: e.target.value }), rows, noRows: rows.length === 0, shownCount: rows.length,
+      selectAll: () => set({ sel: rowsSrc.map(h => h[0]) }),
+      hasSel: selN > 0, selText: selN + T(' selected', ' 項已揀選'), bulkCls: canWrite ? 'btn t sm' : 'btn t sm dis', clearSel: () => set({ sel: [] }),
+      bulkA: () => { if (canWrite) set({ undone: undone.concat(sel.filter(id => (H.find(h => h[0] === id) || [])[5] === 'applied' && !undone.includes(id))), sel: [] }); },
+      showDock: stage === 'preview' && inc.length > 0 && canWrite,
+      t: {
+        title: T('Change history', '變更記錄'), rowMenu: T('More actions for this change', '呢項變更嘅更多動作'), mA: T('Copy details', '複製詳情'), mB: T('Open in diff view', '喺差異檢視打開'), mC: T('Export this change', '匯出呢項變更'),
+        bulk: T('Bulk actions', '批量操作'), bulkA: T('Undo selected', '復原所選'), clear: T('Clear', '清除'),
+        pipeline: T('Write pipeline', '寫入流程'), snapTag: T('Snapshot s-0412 ready', '快照 s-0412 已就緒'), guardTag: T('Guard ' + gsec + ' s', '守衛 ' + gsec + ' 秒'), roleTag: canWrite ? T('You can write', '你可以寫入') : T('Read-only role', '唯讀角色'), stageSwitch: T('Pipeline stage', '流程階段'),
+        stageCard: T('Stage details', '階段詳情'), stage: T('Stage details', '階段詳情'), previewLede: T('These values will be written to the router. Untick any you want to leave out.', '呢啲數值會寫入路由器，唔想寫嘅取消剔選。'),
+        restartsWifi: T('Restarts Wi-Fi', '會重啟 Wi-Fi'), rawDiff: T('Raw difference', '原始差異'), nothingSelected: T('No changes selected.', '冇揀選任何變更。'), applyGuard: T('Apply with guard', '用守衛套用'), applyNow: T('Apply without guard', '唔用守衛套用'), schedule: T('Schedule for tonight', '排程今晚'), moreApply: T('More apply options', '更多套用選項'), discard: T('Discard all', '全部捨棄'),
+        guardHint: T('The guard reverts on its own if the router stops answering.', '路由器冇回應嘅話，守衛會自動還原。'),
+        untilRevert: T('until revert', '後還原'), guardLede: T('Stay on this page or press Keep. If nothing is confirmed, the snapshot is written back automatically.', '留喺呢頁或者撳保留。如果冇確認，快照會自動寫返。'), keep: T('Keep changes', '保留變更'), revertNow: T('Revert now', '即刻還原'), tick: T('Simulate 10 s passing', '模擬過咗 10 秒'), tickNote: T('The real app counts down by itself. This button only moves the preview.', '真正嘅應用程式會自己倒數，呢個掣只係移動預覽。'),
+        changesWord: T(' changes live', ' 項變更已生效'), appliedLede: T('The router confirmed every value after restart.', '重啟之後路由器已確認每個數值。'), confirmed: T('Confirmed', '已確認'), undoAll: T('Undo all', '全部復原'), again: T('Start over', '重新開始'),
+        revertedTag: T('Reverted by guard', '守衛已還原'), revertedAt: T('17:52:11 HKT', '17:52:11 香港時間'), revertedWhy: T('No heartbeat for ' + gsec + ' s after the 5 GHz channel changed, so the guard wrote the snapshot back.', '5 GHz 頻道改咗之後 ' + gsec + ' 秒冇回應，守衛已寫返快照。'), revertedFix: T('Likely cause: this device roamed to a different band while Wi-Fi restarted.', '可能原因：Wi-Fi 重啟期間呢部裝置轉咗去另一個頻段。'), retry: T('Review and retry', '檢視並重試'), diag: T('Open diagnostics', '打開診斷'),
+        failedTag: T('Write failed', '寫入失敗'), failedAt: T('17:49:30 HKT', '17:49:30 香港時間'), failedReason: T('The router refused wl1_chanspec: 44/160 is not allowed in this region.', '路由器拒絕 wl1_chanspec：呢個地區唔允許 44/160。'), failedRaw: 'HTTP 400 /start_apply.htm  error="invalid chanspec" key=wl1_chanspec value=44/160', recovery: T('Recovery steps', '復原步驟'),
+        safety: T('Safety net', '安全網'), safetyTitle: T('Guard and snapshots', '守衛同快照'), guardSecs: T('Guard seconds', '守衛秒數'), autoSnap: T('Snapshot before every write', '每次寫入前儲存快照'), autoSnapSub: T('Turning this off removes the undo history for new writes.', '關閉之後新嘅寫入將冇復原記錄。'), snapshots: T('Recent snapshots', '最近快照'), restore: T('Restore', '還原'),
+        history: T('History', '歷史'), historyTitle: T('All changes', '所有變更'), filter: T('Filter history', '篩選歷史'), search: T('Search history', '搜尋歷史'), searchPh: T('Search changes', '搜尋變更'), selectAll: T('Select all', '全選'), noRows: T('No changes match this filter.', '冇變更符合呢個篩選。'),
+        dockLabel: T('Pending changes', '待寫入變更'), dockText: T(inc.length + ' changes ready to write', inc.length + ' 項變更準備寫入')
+      }
+    });
+
+  }
+}
+</script>
+</body>
+</html>

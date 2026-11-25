@@ -1,0 +1,54 @@
+{
+  "v": 3,
+  "createdOnFiles": { "v": 1, "at": "2026-11-25T17:10:00Z" },
+  "title": "Material Asus Router",
+  "launch": { "view": "canvas", "page": "overview" },
+  "pages": [
+    { "id": "setup", "name": "Setup and sign-in" },
+    { "id": "overview", "name": "Overview" },
+    { "id": "devices", "name": "Devices" },
+    { "id": "wifi", "name": "Wi-Fi" },
+    { "id": "network", "name": "Network" },
+    { "id": "security", "name": "Security and VPN" },
+    { "id": "tools", "name": "Tools and logs" },
+    { "id": "changes", "name": "Preview, undo and failure" },
+    { "id": "advanced", "name": "Advanced and Merlin" },
+    { "id": "settings", "name": "Settings and palette" },
+    { "id": "deploy", "name": "Deploy assistant" },
+    { "id": "phone", "name": "Phone boards" }
+  ],
+  "boards": {
+    "Main.dc.html": { "x": 0, "y": 0, "w": 1440, "h": 900, "title": "Overview", "page": "overview", "expand": "fill", "is_interactive": true },
+    "Setup.dc.html": { "x": 0, "y": 0, "w": 1440, "h": 900, "title": "First run: owner, router, host key", "page": "setup", "expand": "fill", "is_interactive": true },
+    "Devices.dc.html": { "x": 0, "y": 0, "w": 1440, "h": 900, "title": "Devices", "page": "devices", "expand": "fill" },
+    "WiFi.dc.html": { "x": 0, "y": 0, "w": 1440, "h": 1000, "title": "Wi-Fi", "page": "wifi", "expand": "fill", "is_interactive": true },
+    "Network.dc.html": { "x": 0, "y": 0, "w": 1440, "h": 1000, "title": "Internet, local network, port forwarding", "page": "network", "expand": "fill" },
+    "Security.dc.html": { "x": 0, "y": 0, "w": 1440, "h": 900, "title": "Firewall, parental controls, VPN", "page": "security", "expand": "fill" },
+    "Tools.dc.html": { "x": 0, "y": 0, "w": 1440, "h": 900, "title": "Network tools and live log", "page": "tools", "expand": "fill" },
+    "Changes.dc.html": { "x": 0, "y": 0, "w": 1440, "h": 900, "title": "Preview, guard, undo, failure", "page": "changes", "expand": "fill", "is_interactive": true },
+    "Advanced.dc.html": { "x": 0, "y": 0, "w": 1440, "h": 900, "title": "Advanced table and Merlin extras", "page": "advanced", "expand": "fill" },
+    "Settings.dc.html": { "x": 0, "y": 0, "w": 1440, "h": 900, "title": "Settings and command palette", "page": "settings", "expand": "fill" },
+    "Deploy.dc.html": { "x": 0, "y": 0, "w": 1440, "h": 900, "title": "Deploy assistant and instances", "page": "deploy", "expand": "fill" },
+    "Phone.dc.html": { "x": 0, "y": 0, "w": 390, "h": 844, "title": "Phone: overview", "page": "phone" },
+    "PhoneWifi.dc.html": { "x": 470, "y": 0, "w": 390, "h": 844, "title": "Phone: Wi-Fi and change sheet", "page": "phone" }
+  },
+  "order": [
+    "Main.dc.html", "Setup.dc.html", "Devices.dc.html", "WiFi.dc.html", "Network.dc.html", "Security.dc.html",
+    "Tools.dc.html", "Changes.dc.html", "Advanced.dc.html", "Settings.dc.html", "Deploy.dc.html", "Phone.dc.html", "PhoneWifi.dc.html"
+  ],
+  "notes": {
+    "s_overview": { "x": 1520, "y": 0, "w": 420, "page": "overview", "fill": "blue", "text": "Overview: router health at a glance. Model, firmware (stock or Merlin, detected), uptime, CPU, memory, temperatures and a live traffic chart. Try: Tweaks > firmware, language, dark, role. Unbuilt in the app yet: live chart data source on a real router." },
+    "s_setup": { "x": 1520, "y": 0, "w": 420, "page": "setup", "fill": "blue", "text": "First run. Step 1 creates the owner (the first account becomes the owner). Step 2 connects the router with a generated key (default) or the router password, typed only here and stored encrypted. Step 3 shows the router's host key fingerprint to approve once. Try the Next and Back buttons." },
+    "s_devices": { "x": 1520, "y": 0, "w": 420, "page": "devices", "fill": "blue", "text": "Devices: who is connected, by name, with signal and band. Row actions: rename, reserve address, block internet, wake. Bulk select runs block and reserve on many at once. Viewers see the list without the actions." },
+    "s_wifi": { "x": 1520, "y": 0, "w": 420, "page": "wifi", "fill": "blue", "text": "Wi-Fi: one card per band plus guest networks. Every edit joins the pending bar at the bottom; nothing reaches the router until Preview and Apply. Try flipping a radio or the guest switch and watch the pending count." },
+    "s_network": { "x": 1520, "y": 0, "w": 420, "page": "network", "fill": "blue", "text": "Internet (connection type, DNS, dynamic DNS), local network (router address, DHCP range, reservations) and port forwarding rules as a readable table. Changing the router address is a network-affecting change and runs under the connection-loss guard." },
+    "s_security": { "x": 1520, "y": 0, "w": 420, "page": "security", "fill": "blue", "text": "Firewall switches, parental controls and the VPN servers (OpenVPN and WireGuard). Models without WireGuard show the control disabled with the reason, never hidden." },
+    "s_tools": { "x": 1520, "y": 0, "w": 420, "page": "tools", "fill": "blue", "text": "Ping, traceroute and name lookup run on the router itself. The live log has plain search plus the adjacent regex builder. Unbuilt in the app yet: the full regex builder parity set." },
+    "s_changes": { "x": 1520, "y": 0, "w": 420, "page": "changes", "fill": "blue", "text": "The write path. Preview lists every change in plain words with the old and new value. Network changes arm a guard on the router that puts the old values back after 90 seconds unless the app can still reach it. History keeps every change with Undo. Try the stage buttons: preview, guarded, applied, reverted, failed." },
+    "s_advanced": { "x": 1520, "y": 0, "w": 420, "page": "advanced", "fill": "blue", "text": "Advanced: every remaining router value in a searchable table, catalogue label first and raw key second. Merlin extras (custom scripts, add-ons, Entware) show disabled with the reason on stock firmware: flip Tweaks > firmware." },
+    "s_settings": { "x": 1520, "y": 0, "w": 420, "page": "settings", "fill": "blue", "text": "App settings: language (English, Cantonese, both), theme, accent, motion, sounds, people and roles. The command palette (Ctrl+Shift+F) reaches every page and action. Unbuilt in the app yet: most of the full feature catalogue; the inventory lists each one." },
+    "s_deploy": { "x": 1520, "y": 0, "w": 420, "page": "deploy", "fill": "blue", "text": "Deploy assistant (desktop companion): one-click Docker hosting here or over SSH, VirtualBox, VMware, USB and Raspberry Pi flashing, plus the instance manager. Design only for now; the companion is not built yet." },
+    "s_phone": { "x": 940, "y": 0, "w": 380, "page": "phone", "fill": "blue", "text": "Phone width (390). The rail becomes a bottom bar, cards stack, the pending changes become a bottom sheet. Nothing that is reachable on desktop is removed here." }
+  },
+  "designSystems": []
+}

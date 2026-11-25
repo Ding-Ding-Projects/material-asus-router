@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>AiMesh and storage</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="theme.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,100..1000&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.card.ov{overflow:visible}
+.onp{background:color-mix(in srgb,var(--on-primary) 18%,transparent);color:var(--on-primary)}
+.cbw{width:44px;height:44px;border:0;background:none;display:grid;place-items:center;flex:none;padding:0}
+.cb2{width:22px;height:22px;border-radius:7px;border:2px solid var(--sub);display:grid;place-items:center;color:var(--on-primary)}
+.cb2 svg{opacity:0}.cb2.on{background:var(--primary);border-color:var(--primary)}.cb2.on svg{opacity:1}
+.lockedcard{outline:3px solid var(--primary);outline-offset:-3px}
+.tilehead{display:flex;align-items:center;gap:4px}.tilehead .k{flex:1}
+.pos{position:relative}
+.legend{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub)}
+.legend i{width:12px;height:12px;border-radius:6px;display:inline-block}
+.hero h1{position:relative;max-width:16ch}
+.herogrid{display:flex;flex-wrap:wrap;gap:24px 44px;align-items:flex-end;position:relative;margin-top:8px}
+.herostat .big{font-size:52px}
+pre.code{margin:0;padding:16px 18px;border-radius:20px;background:var(--surf-low);color:var(--text);font:13px/1.55 ui-monospace,'Cascadia Code',Consolas,monospace;overflow:auto;white-space:pre;max-height:300px}
+textarea.field{height:auto;padding:14px 16px;line-height:1.5;resize:vertical;width:100%;font-family:ui-monospace,'Cascadia Code',Consolas,monospace;font-size:13.5px}
+.dis{opacity:.5;cursor:not-allowed}
+.tile{display:flex;flex-direction:column;gap:8px;align-items:flex-start;text-align:left;border:0;border-radius:28px;padding:18px;background:var(--surf);box-shadow:var(--e1);color:var(--text);min-height:112px;font:inherit}
+.tile.on{background:var(--primary-c);color:var(--on-primary-c)}
+.tile b{font-size:15px}.tile span.s{font-size:12.5px;opacity:.75}
+.topo{position:relative;height:380px;border-radius:28px;background:var(--surf-low);overflow:hidden}
+.topo svg.lines{position:absolute;inset:0;width:100%;height:100%}
+.topo .ln{vector-effect:non-scaling-stroke;fill:none;stroke-linecap:round}
+.node{position:absolute;transform:translate(-50%,-50%);display:flex;align-items:center;gap:10px;min-height:56px;padding:6px 16px 6px 8px;border-radius:30px;border:0;background:var(--surf);color:var(--text);box-shadow:var(--e2);font:inherit;text-align:left}
+.node.on{background:var(--primary);color:var(--on-primary)}
+.node .t1{font-size:14px}.node .t2{font-size:12px;color:inherit;opacity:.78}
+.nico{width:44px;height:44px;border-radius:22px;display:grid;place-items:center;background:var(--tertiary-c);color:var(--on-tertiary-c);flex:none}
+.node.on .nico{background:var(--primary-c);color:var(--on-primary-c)}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;align-items:start}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:8px 18px;font-size:14px}
+.kv dt{color:var(--sub)}.kv dd{margin:0;font-weight:650}
+.legend2{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--sub)}
+</style>
+</helmet>
+<div class="mx shell {{motionCls}}" style="--accent:{{accent}};--dark:{{darkNum}}">
+  <div class="railwrap"><dc-import name="Rail" page="aimesh" lang="{{lang}}" role="{{role}}" firmware="{{firmware}}" pending="{{pendCount}}" accent="{{accent}}" dark="{{dark}}" hint-size="288px,900px"></dc-import></div>
+  <div class="main">
+    <dc-import name="TopBar" title="{{t.title}}" lang="{{lang}}" role="{{role}}" firmware="{{firmware}}" tabs="{{tabsStr}}" active="0" accent="{{accent}}" dark="{{dark}}" hint-size="1152px,170px"></dc-import>
+    <main class="page">
+      <section class="card hero rise" aria-label="{{t.heroLabel}}">
+        <svg class="deco a" viewBox="0 0 200 200" aria-hidden="true" style="right:-50px;top:-80px;width:320px;height:320px"><path d="M182.8 100C183.5 121 178.9 152.8 165.1 165.1C151.3 177.3 121.3 174 100 173.6C78.7 173.2 50.4 174.7 37.5 162.5C24.7 150.2 23.2 121.3 22.7 100C22.3 78.7 22.1 46.9 34.9 34.9C47.8 23 79 27.6 100 28.2C121 28.9 147.4 26.9 161.2 38.8C175 50.8 182.1 79 182.8 100Z"/></svg><svg class="deco b" viewBox="0 0 200 200" aria-hidden="true" style="right:220px;bottom:-100px;width:220px;height:220px"><path d="M192 100C192.2 117.6 168.7 138.8 153.3 153.3C138 167.9 117.3 187.8 100 187.4C82.7 187 64.6 165.3 49.3 150.7C33.9 136.2 8.9 117.8 8 100C7.1 82.2 28.7 58.9 44.1 44.1C59.4 29.2 82 10.1 100 10.8C118 11.4 136.7 33.1 152 48C167.4 62.8 191.8 82.4 192 100Z"/></svg><div class="cookie" style="position:absolute;right:48px;top:36px;width:124px;height:124px;color:var(--tertiary-c)" aria-hidden="true"><svg viewBox="0 0 200 200"><path d="M192.4 100.0L191.7 104.8L189.7 109.4L186.9 113.8L183.9 117.8L181.3 121.8L179.5 125.8L178.6 130.2L178.4 134.9L178.4 140.0L178.1 145.1L177.0 150.0L174.8 154.3L171.4 157.8L167.0 160.4L162.2 162.2L157.4 163.8L153.0 165.4L149.1 167.6L145.9 170.6L142.9 174.3L140.0 178.4L136.7 182.4L132.9 185.7L128.6 187.9L123.8 188.7L118.8 188.2L113.8 186.9L109.0 185.3L104.4 184.1L100.0 183.6L95.6 184.1L91.0 185.3L86.2 186.9L81.2 188.2L76.2 188.7L71.4 187.9L67.1 185.7L63.3 182.4L60.0 178.4L57.1 174.3L54.1 170.6L50.9 167.6L47.0 165.4L42.6 163.8L37.8 162.2L33.0 160.4L28.6 157.8L25.2 154.3L23.0 150.0L21.9 145.1L21.6 140.0L21.6 134.9L21.4 130.2L20.5 125.8L18.7 121.8L16.1 117.8L13.1 113.8L10.3 109.4L8.3 104.8L7.6 100.0L8.3 95.2L10.3 90.6L13.1 86.2L16.1 82.2L18.7 78.2L20.5 74.2L21.4 69.8L21.6 65.1L21.6 60.0L21.9 54.9L23.0 50.0L25.2 45.7L28.6 42.2L33.0 39.6L37.8 37.8L42.6 36.2L47.0 34.6L50.9 32.4L54.1 29.4L57.1 25.7L60.0 21.6L63.3 17.6L67.1 14.3L71.4 12.1L76.2 11.3L81.2 11.8L86.2 13.1L91.0 14.7L95.6 15.9L100.0 16.4L104.4 15.9L109.0 14.7L113.8 13.1L118.8 11.8L123.8 11.3L128.6 12.1L132.9 14.3L136.7 17.6L140.0 21.6L142.9 25.7L145.9 29.4L149.1 32.4L153.0 34.6L157.4 36.2L162.2 37.8L167.0 39.6L171.4 42.2L174.8 45.7L177.0 50.0L178.1 54.9L178.4 60.0L178.4 65.1L178.6 69.8L179.5 74.2L181.3 78.2L183.9 82.2L186.9 86.2L189.7 90.6L191.7 95.2L192.4 100.0Z"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="var(--on-tertiary-c)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:58px;height:58px;grid-area:1/1;fill:none"><path d="M12 5v4 M5 19l7-10 7 10 M3 19h18"/></svg></div>
+        <div style="position:relative;display:flex;flex-wrap:wrap;gap:8px"><span class="tag onp"><span class="dot live" style="background:var(--on-primary)"></span>{{t.allOnline}}</span><span class="tag onp">{{t.fwTag}}</span></div>
+        <h1 class="disp">{{t.headline}}</h1>
+        <p class="lede" style="position:relative;color:color-mix(in srgb,var(--on-primary) 86%,transparent)">{{t.lede}}</p>
+        <div class="herogrid">
+          <div class="herostat"><div class="k">{{t.stNodes}}</div><div class="big">4</div></div>
+          <div class="herostat"><div class="k">{{t.stClients}}</div><div class="big">17</div></div>
+          <div class="herostat"><div class="k">{{t.stBackhaul}}</div><div class="big">80<small>%</small></div></div>
+        </div>
+      </section>
+
+      <div class="dash">
+        <section class="card span2 rise {{cc.map}}" aria-label="{{t.mapTitle}}">
+          <div class="tilehead"><span class="k">{{t.mapTitle}}</span><button class="info" aria-label="{{tp.map.label}}" onClick="{{tp.map.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.map.label}}" aria-pressed="{{lk.map.pressed}}" onClick="{{lk.map.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.map.d}}"/></svg></button></div><sc-if value="{{tp.map.on}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:52px;right:16px">{{tp.map.text}}</div></sc-if>
+          <div class="legend2"><span class="legend"><i style="background:var(--good)"></i>{{t.lgGood}}</span><span class="legend"><i style="background:var(--warn)"></i>{{t.lgWeak}}</span><span>{{t.lgWired}}</span><span>{{t.lgWifi}}</span></div>
+          <div class="topo">
+            <svg class="lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+              <sc-for list="{{links}}" as="lk2" hint-placeholder-count="3"><line class="ln" x1="{{lk2.x1}}" y1="{{lk2.y1}}" x2="{{lk2.x2}}" y2="{{lk2.y2}}" stroke="{{lk2.color}}" stroke-width="{{lk2.w}}" stroke-dasharray="{{lk2.dash}}"/></sc-for>
+            </svg>
+            <sc-for list="{{nodes}}" as="nd" hint-placeholder-count="4">
+              <button class="{{nd.cls}}" style="{{nd.style}}" aria-pressed="{{nd.pressed}}" aria-label="{{nd.label}}" onClick="{{nd.pick}}">
+                <span class="nico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{nd.d}}"/></svg></span>
+                <span><span class="t1" style="display:block">{{nd.name}}</span><span class="t2" style="display:block">{{nd.sub}}</span></span>
+              </button>
+            </sc-for>
+          </div>
+          <div class="cols"><button class="{{addCls}}" onClick="{{addNode}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>{{t.addNode}}</button><button class="btn t sm">{{t.optimise}}</button><span class="sp"></span><span class="area-note">{{addNote}}</span></div>
+        </section>
+
+        <section class="card ter rise {{cc.node}}" aria-label="{{sel.name}}">
+          <div class="tilehead"><span class="k">{{sel.name}}</span><button class="info" aria-label="{{tp.node.label}}" onClick="{{tp.node.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.node.label}}" aria-pressed="{{lk.node.pressed}}" onClick="{{lk.node.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.node.d}}"/></svg></button></div><sc-if value="{{tp.node.on}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:52px;right:16px">{{tp.node.text}}</div></sc-if>
+          <div class="disp s" style="font-size:36px">{{sel.model}}</div>
+          <div class="muted" style="color:inherit;opacity:.85">{{sel.role}}</div>
+          <dl class="kv"><dt>{{t.address}}</dt><dd class="mono">{{sel.ip}}</dd><dt>{{t.firmware}}</dt><dd>{{sel.fw}}</dd><dt>{{t.backhaul}}</dt><dd>{{sel.link}}</dd><dt>{{t.uptime}}</dt><dd>{{sel.up}}</dd><dt>{{t.clients}}</dt><dd>{{sel.clients}}</dd></dl>
+          <div class="k" style="display:flex;justify-content:space-between"><span>{{t.quality}}</span><span>{{sel.q}}%</span></div>
+          <div class="meter" role="progressbar" aria-valuenow="{{sel.q}}" aria-valuemin="0" aria-valuemax="100" aria-label="{{t.quality}}"><i style="width:{{sel.q}}%;background:{{sel.qc}}"></i></div>
+          <div class="area-note" style="color:inherit;opacity:.8">{{sel.tip}}</div>
+          <div class="cols"><button class="{{actCls}}" onClick="{{locate}}">{{t.locate}}</button><button class="{{actCls}}" onClick="{{reboot}}">{{t.reboot}}</button></div>
+          <div class="tag good" style="align-self:flex-start">{{actStatus}}</div>
+        </section>
+      </div>
+
+      <div class="dash">
+        <section class="card span2 ov rise {{cc.cl}}" aria-label="{{t.clTitle}}">
+          <div class="tilehead"><span class="k">{{t.clTitle}}</span><button class="info" aria-label="{{tp.cl.label}}" onClick="{{tp.cl.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.cl.label}}" aria-pressed="{{lk.cl.pressed}}" onClick="{{lk.cl.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.cl.d}}"/></svg></button></div><sc-if value="{{tp.cl.on}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:52px;right:16px">{{tp.cl.text}}</div></sc-if>
+          <sc-if value="{{hasSel}}" hint-placeholder-val="{{ false }}"><div class="glass cols" role="region" aria-label="{{t.bulk}}" style="padding:10px 14px;border-radius:24px"><b>{{selCount}}</b><span class="muted">{{t.moveTo}}</span><sc-for list="{{moveBtns}}" as="mv" hint-placeholder-count="3"><button class="btn t sm" onClick="{{mv.pick}}">{{mv.label}}</button></sc-for><span class="sp"></span><button class="btn o sm" onClick="{{clearSel}}">{{t.clear}}</button></div></sc-if>
+          <div class="stack" role="img" aria-label="{{t.stackAlt}}"><sc-for list="{{stack}}" as="sk" hint-placeholder-count="4"><i style="flex:{{sk.n}};background:{{sk.color}}"></i></sc-for></div>
+          <div class="legend2"><sc-for list="{{stack}}" as="sk2" hint-placeholder-count="4"><span class="legend"><i style="background:{{sk2.color}}"></i>{{sk2.label}} · {{sk2.n}}</span></sc-for></div>
+          <sc-for list="{{clients}}" as="c" hint-placeholder-count="6">
+            <div class="row pos">
+              <button class="cbw" role="checkbox" aria-checked="{{c.checked}}" aria-label="{{c.selLabel}}" onClick="{{c.toggle}}"><span class="{{c.cbCls}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></button>
+              <div class="grow"><div class="t1">{{c.name}}</div><div class="t2 mono">{{c.ip}} · {{c.sig}}</div></div>
+              <span class="tag">{{c.node}}</span>
+              <button class="icb" aria-label="{{c.moreLabel}}" aria-haspopup="menu" aria-expanded="{{c.menuOpen}}" onClick="{{c.more}}"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg></button>
+              <sc-if value="{{c.menuOpen}}" hint-placeholder-val="{{ false }}"><div class="menu" role="menu" style="right:20px;top:46px"><button class="mi" role="menuitem" onClick="{{c.lock}}">{{t.pinNode}}</button><button class="mi" role="menuitem">{{t.rename}}</button><button class="mi" role="menuitem">{{t.block}}</button></div></sc-if>
+            </div>
+          </sc-for>
+        </section>
+
+        <section class="card rise {{cc.usb}}" aria-label="{{t.usbTitle}}">
+          <div class="tilehead"><span class="k">{{t.usbTitle}}</span><button class="info" aria-label="{{tp.usb.label}}" onClick="{{tp.usb.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.usb.label}}" aria-pressed="{{lk.usb.pressed}}" onClick="{{lk.usb.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.usb.d}}"/></svg></button></div><sc-if value="{{tp.usb.on}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:52px;right:16px">{{tp.usb.text}}</div></sc-if>
+          <div class="cols"><span class="cookie" style="width:56px;height:56px;color:var(--secondary-c)" aria-hidden="true"><svg viewBox="0 0 200 200"><path d="M192.4 100.0L191.9 104.8L190.4 109.5L188.3 114.0L185.6 118.2L182.9 122.2L180.3 126.1L178.1 130.0L176.5 134.0L175.2 138.3L174.3 142.9L173.4 147.7L172.3 152.5L170.7 157.2L168.4 161.6L165.3 165.3L161.6 168.4L157.2 170.7L152.5 172.3L147.7 173.4L142.9 174.3L138.3 175.2L134.0 176.5L130.0 178.1L126.1 180.3L122.2 182.9L118.2 185.6L114.0 188.3L109.5 190.4L104.8 191.9L100.0 192.4L95.2 191.9L90.5 190.4L86.0 188.3L81.8 185.6L77.8 182.9L73.9 180.3L70.0 178.1L66.0 176.5L61.7 175.2L57.1 174.3L52.3 173.4L47.5 172.3L42.8 170.7L38.4 168.4L34.7 165.3L31.6 161.6L29.3 157.2L27.7 152.5L26.6 147.7L25.7 142.9L24.8 138.3L23.5 134.0L21.9 130.0L19.7 126.1L17.1 122.2L14.4 118.2L11.7 114.0L9.6 109.5L8.1 104.8L7.6 100.0L8.1 95.2L9.6 90.5L11.7 86.0L14.4 81.8L17.1 77.8L19.7 73.9L21.9 70.0L23.5 66.0L24.8 61.7L25.7 57.1L26.6 52.3L27.7 47.5L29.3 42.8L31.6 38.4L34.7 34.7L38.4 31.6L42.8 29.3L47.5 27.7L52.3 26.6L57.1 25.7L61.7 24.8L66.0 23.5L70.0 21.9L73.9 19.7L77.8 17.1L81.8 14.4L86.0 11.7L90.5 9.6L95.2 8.1L100.0 7.6L104.8 8.1L109.5 9.6L114.0 11.7L118.2 14.4L122.2 17.1L126.1 19.7L130.0 21.9L134.0 23.5L138.3 24.8L142.9 25.7L147.7 26.6L152.5 27.7L157.2 29.3L161.6 31.6L165.3 34.7L168.4 38.4L170.7 42.8L172.3 47.5L173.4 52.3L174.3 57.1L175.2 61.7L176.5 66.0L178.1 70.0L180.3 73.9L182.9 77.8L185.6 81.8L188.3 86.0L190.4 90.5L191.9 95.2L192.4 100.0Z"/></svg><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="var(--on-secondary-c)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="fill:none"><path d="M4 8h16v8H4z M7 12h.01 M11 12h6"/></svg></span><div class="grow"><div class="t1">{{disk.name}}</div><div class="t2">{{disk.sub}}</div></div><span class="{{disk.tag}}">{{disk.state}}</span></div>
+          <div class="big">1.33<small>TB / 2 TB</small></div>
+          <div class="stack" role="img" aria-label="{{t.usageAlt}}"><i style="flex:41;background:var(--primary)"></i><i style="flex:21;background:var(--tertiary)"></i><i style="flex:5;background:var(--warn)"></i><i style="flex:33;background:var(--surf-high)"></i></div>
+          <div class="legend2"><span class="legend"><i style="background:var(--primary)"></i>{{t.media}} 820 GB</span><span class="legend"><i style="background:var(--tertiary)"></i>{{t.backups}} 410 GB</span><span class="legend"><i style="background:var(--warn)"></i>{{t.docsL}} 96 GB</span></div>
+          <div class="k" style="margin-top:6px">{{t.shares}}</div>
+          <sc-for list="{{shares}}" as="sh" hint-placeholder-count="3"><div class="row"><div class="grow"><div class="t1">{{sh.name}}</div><div class="t2">{{sh.sub}}</div></div><button class="{{sh.sw}}" role="switch" aria-checked="{{sh.on}}" aria-label="{{sh.name}}" onClick="{{sh.toggle}}"><i></i></button></div></sc-for>
+          <div class="cols"><button class="{{ejectCls}}" onClick="{{eject}}">{{ejectLabel}}</button><button class="btn o sm">{{t.scan}}</button></div>
+          <div class="area-note">{{usbNote}}</div>
+        </section>
+      </div>
+
+      <footer class="prov" style="padding:0 4px"><span>{{t.prov1}}</span><span>{{t.prov2}}</span></footer>
+
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#4f5bd5","options":["#4f5bd5","#00897b","#d81b60","#f4511e","#7c4dff"],"section":"Look"},"dark":{"editor":"boolean","default":false,"section":"Look"},"motion":{"editor":"enum","options":["calm","standard","expressive"],"default":"expressive","section":"Look"},"firmware":{"editor":"enum","options":["merlin","stock"],"default":"merlin","section":"Router"},"role":{"editor":"enum","options":["owner","operator","viewer"],"default":"owner","section":"Router"},"lang":{"editor":"enum","options":["en","yue","both"],"default":"en","section":"Language"},"$preview":{"width":1440,"height":1300}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const p=this.props,s=this.state||{};
+    const lang=p.lang??'en',role=p.role??'owner',firmware=p.firmware??'merlin',motion=p.motion??'expressive';
+    const accent=p.accent||'#4f5bd5';
+    const dark=p.dark===true||p.dark==='true'||p.dark===1||p.dark==='1';
+    const T=(en,yue)=>lang==='en'?en:lang==='yue'?yue:en+' · '+yue;
+    const canWrite=role!=='viewer';
+    const set=(o)=>this.setState(o);
+    const base={accent,dark,darkNum:dark?1:0,lang,role,firmware,motionCls:motion==='calm'?'calm':motion==='standard'?'std':'',pendCount:2};
+    const tp={},lk={},cc={};
+    const LKO='M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4',LKU='M5 11h14v10H5z M8 11V7a4 4 0 0 1 7.5-2';
+    const locks=s.locks||[];
+    const card=(id,en,yue)=>{const on=s.tip===id,l=locks.includes(id);
+      tp[id]={on,text:T(en,yue),label:T('About this card','關於呢張卡'),toggle:()=>set({tip:on?'':id})};
+      lk[id]={pressed:l?'true':'false',d:l?LKO:LKU,label:l?T('Unlock card','解鎖卡片'):T('Lock card','鎖定卡片'),toggle:()=>set({locks:l?locks.filter(x=>x!==id):locks.concat([id])})};
+      cc[id]=l?'lockedcard':'';};
+    const toggleIn=(arr,v)=>arr.includes(v)?arr.filter(x=>x!==v):arr.concat([v]);
+    const tabsStr=[T('Map','地圖'),T('Nodes','節點'),T('Clients','裝置'),T('Storage','儲存')].join(',');
+    card('map','Tap a node to see its backhaul, firmware and clients. Line colour shows backhaul quality.','撳節點睇回程、韌體同連線裝置，線嘅顏色代表回程品質。');
+    card('node','Details and actions for the selected node.','所選節點嘅詳細資料同操作。');
+    card('cl','Every device in the mesh. Select several to steer them to a node.','網狀網絡入面所有裝置，可揀多部一齊轉去指定節點。');
+    card('usb','The USB disk plugged into the main router, shared over the network.','插喺主路由器嘅 USB 磁碟，經網絡分享。');
+    const nid=s.node||'living',sel=s.sel||[],moved=s.moved||{},rowMenu=s.rowMenu||'',shOn=s.shOn||['media','backups'],ej=!!s.eject,nodeCount=s.nodes??4,acted=s.acted||'';
+    const ND=[
+      ['router','RT-AX86U',T('Main router · root','主路由器 · 根節點'),50,16,'M4 15h16v4H4z M7 12a7 7 0 0 1 10 0 M9.5 9a3.5 3.5 0 0 1 5 0',100,'var(--good)',T('Ethernet to modem, 2.5 GbE','乙太網連接數據機，2.5 GbE'),'198.51.100.1','3004.388.8_2','5d 3h',T('9 clients on this node','此節點 9 部裝置'),'Root node'],
+      ['living','RT-AX58U',T('Living room','客廳'),16,62,'M4 15h16v4H4z M7 12a7 7 0 0 1 10 0',96,'var(--good)',T('Ethernet, 1 Gbps','乙太網，1 Gbps'),'198.51.100.2','3004.388.8_2','5d 3h',T('6 clients on this node','此節點 6 部裝置'),''],
+      ['study','ZenWiFi XD6',T('Study','書房'),50,80,'M4 15h16v4H4z M7 12a7 7 0 0 1 10 0',84,'var(--good)',T('5 GHz wireless, -52 dBm, 1.2 Gbps','5 GHz 無線，-52 dBm，1.2 Gbps'),'198.51.100.3','3.0.0.6.102_5033','2d 11h',T('5 clients on this node','此節點 5 部裝置'),''],
+      ['garage','RT-AC68U',T('Garage','車庫'),84,62,'M4 15h16v4H4z M7 12a7 7 0 0 1 10 0',54,'var(--warn)',T('5 GHz wireless, -71 dBm, 290 Mbps','5 GHz 無線，-71 dBm，290 Mbps'),'198.51.100.4','3004.386.51_0','1d 6h',T('3 clients on this node','此節點 3 部裝置'),'']
+    ].slice(0,nodeCount);
+    const nodes=ND.map(([id,model,sub,x,y,d,q,qc])=>({name:model,sub,d,label:model+', '+sub,cls:'node'+(nid===id?' on':''),pressed:nid===id?'true':'false',style:'left:'+x+'%;top:'+y+'%',pick:()=>set({node:id})}));
+    const root=ND[0];
+    const links=ND.slice(1).map(([id,model,sub,x,y,d,q,qc])=>({x1:root[3],y1:root[4],x2:x,y2:y,color:qc,w:id==='living'?3.2:2.6,dash:id==='living'?'0':'2 1.4'}));
+    const cur=ND.find(n=>n[0]===nid)||ND[1];
+    const sel0={name:cur[1]+' · '+cur[2],model:cur[1],role:cur[2],ip:cur[9],fw:cur[10],link:cur[8],up:cur[11],clients:cur[12].split(' ')[0],q:cur[6],qc:cur[7],tip:cur[6]<60?T('Weak backhaul. Move the node closer or use an Ethernet cable.','回程偏弱，建議搬近啲或者接網線。'):T('Backhaul is healthy.','回程狀態良好。')};
+    const names={router:'RT-AX86U',living:T('Living room','客廳'),study:T('Study','書房'),garage:T('Garage','車庫')};
+    const CL=[['c1','Pat laptop','198.51.100.101','-48 dBm','living'],['c2','Alex phone','198.51.100.134','-57 dBm','study'],['c3',T('Living room TV','客廳電視'),'198.51.100.120','-61 dBm','living'],['c4',T('Garage camera','車庫鏡頭'),'198.51.100.143','-72 dBm','garage'],['c5',T('Office printer','辦公室打印機'),'198.51.100.150','-55 dBm','study'],['c6','NAS','198.51.100.20',T('wired','有線'),'router']];
+    const nodeOf=(id,def)=>moved[id]||def;
+    const clients=CL.map(([id,name,ip,sig,nd])=>{const on=sel.includes(id);return{name,ip,sig,node:names[nodeOf(id,nd)]||names.living,checked:on?'true':'false',selLabel:T('Select ','揀選 ')+name,cbCls:'cb2'+(on?' on':''),menuOpen:rowMenu===id,moreLabel:T('More for ','更多：')+name,toggle:()=>set({sel:toggleIn(sel,id)}),more:()=>set({rowMenu:rowMenu===id?'':id}),lock:()=>set({rowMenu:'',acted:T(name+' pinned to its node',name+' 已固定喺呢個節點')})};});
+    const counts={};CL.forEach(([id,,,,nd])=>{const k=nodeOf(id,nd);counts[k]=(counts[k]||0)+1});
+    const SC={router:'var(--primary)',living:'var(--tertiary)',study:'var(--warn)',garage:'var(--bad)'};
+    const stack=Object.keys(counts).map(k=>({n:counts[k],color:SC[k],label:names[k]}));
+    const moveBtns=['living','study','garage'].slice(0,Math.max(1,nodeCount-1)).map(k=>({label:names[k],pick:()=>{if(canWrite){const m={...moved};sel.forEach(i=>m[i]=k);set({moved:m,sel:[]})}}}));
+    const SH=[['media',T('Media','媒體'),T('SMB and DLNA · guests read only','SMB 同 DLNA · 訪客只讀')],['backups',T('Backups','備份'),T('SMB · Time Machine target','SMB · Time Machine 目標')],['docs',T('Documents','文件'),T('SMB · password required','SMB · 需要密碼')]];
+    const shares=SH.map(([id,name,sub])=>{const on=shOn.includes(id)&&!ej;return{name,sub,on:on?'true':'false',sw:'sw'+(on?' on':''),toggle:()=>{if(canWrite&&!ej)set({shOn:toggleIn(shOn,id)})}};});
+    return {...base,tp,lk,cc,tabsStr,nodes,links,sel:sel0,clients,stack,moveBtns,shares,
+      disk:{name:'WD Elements 2 TB',sub:ej?T('Safe to unplug','可以安全拔除'):T('USB 3.0 · ext4 · 38 C · SMART good','USB 3.0 · ext4 · 38 C · SMART 正常'),tag:ej?'tag':'tag good',state:ej?T('Ejected','已退出'):T('Mounted','已掛載')},
+      actCls:'btn t sm'+(canWrite?'':' dis'),locate:()=>{if(canWrite)set({acted:T('LED blinking on '+cur[1]+' for 30 s','喺 '+cur[1]+' 閃燈 30 秒')})},reboot:()=>{if(canWrite)set({acted:T('Reboot of '+cur[1]+' queued for review','已將重啟 '+cur[1]+' 加入待確認清單')})},actStatus:acted||T('No action taken','未有操作'),
+      addCls:'btn f sm'+(canWrite&&nodeCount<4?'':' dis'),addNode:()=>{},addNote:T('Up to 4 nodes in this demo. Add one from the AiMesh page.','示範最多 4 個節點，可喺 AiMesh 頁面加入。'),
+      hasSel:sel.length>0,selCount:sel.length+T(' selected',' 個已揀'),clearSel:()=>set({sel:[]}),
+      ejectLabel:ej?T('Mount again','重新掛載'):T('Safely remove','安全移除'),ejectCls:'btn '+(ej?'t':'f')+' sm'+(canWrite?'':' dis'),eject:()=>{if(canWrite)set({eject:!ej})},usbNote:ej?T('Shares are paused until the disk is mounted again.','重新掛載之前，分享暫停。'):T('Removing stops all shares first, then unmounts the disk.','移除時會先停止所有分享，再卸載磁碟。'),
+      t:{title:T('AiMesh and storage','AiMesh 同儲存'),heroLabel:T('Mesh summary','網狀網絡摘要'),allOnline:T('All nodes online','所有節點在線'),fwTag:T('Firmware in sync','韌體已同步'),headline:T('One home, one network','成間屋，一個網絡'),lede:T('See how every node connects, how strong each backhaul is and which devices sit where. Plug a drive into the router and share it.','睇清每個節點點連線、每條回程有幾強同邊啲裝置喺邊度。插隻硬碟落路由器就可以分享。'),stNodes:T('Nodes','節點'),stClients:T('Clients','裝置'),stBackhaul:T('Backhaul quality','回程品質'),
+        mapTitle:T('Topology','拓撲'),lgGood:T('Good backhaul','回程良好'),lgWeak:T('Weak backhaul','回程偏弱'),lgWired:T('Solid line: Ethernet','實線：乙太網'),lgWifi:T('Dashed line: wireless','虛線：無線'),addNode:T('Add node','加入節點'),optimise:T('Optimise placement','優化擺位'),
+        address:T('Address','地址'),firmware:T('Firmware','韌體'),backhaul:T('Backhaul','回程'),uptime:T('Uptime','運行時間'),clients:T('Clients','裝置'),quality:T('Backhaul quality','回程品質'),locate:T('Blink LED','閃燈'),reboot:T('Reboot node','重啟節點'),
+        clTitle:T('Clients per node','每個節點嘅裝置'),bulk:T('Bulk actions','批次操作'),moveTo:T('Steer to','轉去'),clear:T('Clear','清除'),stackAlt:T('Clients split across nodes','裝置喺各節點嘅分佈'),pinNode:T('Pin to this node','固定喺呢個節點'),rename:T('Rename','改名'),block:T('Block device','封鎖裝置'),
+        usbTitle:T('USB storage','USB 儲存'),usageAlt:T('Disk usage 1.33 of 2 terabytes','磁碟用量 2 TB 入面用咗 1.33 TB'),media:T('Media','媒體'),backups:T('Backups','備份'),docsL:T('Documents','文件'),shares:T('Network shares','網絡分享'),scan:T('Check disk','檢查磁碟'),
+        prov1:T('Material Asus Router 0.9.0 (design preview)','Material Asus Router 0.9.0（設計預覽）'),prov2:T('Updated 2026-11-25 17:10 +08:00 · LAN 198.51.100.0/24','更新於 2026-11-25 17:10 +08:00 · LAN 198.51.100.0/24')}};
+
+  }
+}
+</script>
+</body>
+</html>

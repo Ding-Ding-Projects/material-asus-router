@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Security and VPN</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="theme.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,100..1000&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.card.ov{overflow:visible}
+.cbw{width:44px;height:44px;border:0;background:none;display:grid;place-items:center;flex:none;padding:0}
+.cb2{width:22px;height:22px;border-radius:7px;border:2px solid var(--sub);display:grid;place-items:center;color:var(--on-primary)}
+.cb2 svg{opacity:0}
+.cb2.on{background:var(--primary);border-color:var(--primary)}
+.cb2.on svg{opacity:1}
+.lockedcard{outline:3px solid var(--primary);outline-offset:-3px}
+.tilehead{display:flex;align-items:center;gap:4px}
+.tilehead .k{flex:1}
+.tilehead .h2{flex:1}
+.legend{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub)}
+.legend i{width:12px;height:12px;border-radius:6px;display:inline-block}
+.pos{position:relative}
+.onp{background:color-mix(in srgb,var(--on-primary) 18%,transparent);color:var(--on-primary)}
+.struck{text-decoration:line-through;opacity:.6}
+.dis{opacity:.5;cursor:not-allowed}
+.field:disabled{opacity:.55}
+.rng{width:100%;accent-color:var(--primary);height:44px;margin:0}
+.btn.f.on{box-shadow:0 0 0 3px color-mix(in srgb,var(--primary) 35%,transparent)}
+.hero .btn.t{background:color-mix(in srgb,var(--on-primary) 20%,transparent);color:var(--on-primary)}
+.hero .btn.o{border-color:color-mix(in srgb,var(--on-primary) 50%,transparent);color:var(--on-primary)}
+.hero .info,.hero .lock{background:color-mix(in srgb,var(--on-primary) 16%,transparent);color:var(--on-primary)}
+.hero .sw{border-color:var(--on-primary);background:transparent}
+.hero .sw i{background:var(--on-primary)}
+.hero .sw.on{background:var(--on-primary);border-color:var(--on-primary)}
+.hero .sw.on i{background:var(--primary)}
+.hero .seg{background:color-mix(in srgb,var(--on-primary) 18%,transparent)}
+.hero .seg button{color:color-mix(in srgb,var(--on-primary) 85%,transparent)}
+.hero .seg button[aria-pressed=true]{background:var(--on-primary);color:var(--primary)}
+.hero .field{background:color-mix(in srgb,var(--on-primary) 14%,transparent);border-color:color-mix(in srgb,var(--on-primary) 40%,transparent);color:var(--on-primary)}
+.hero .muted{color:color-mix(in srgb,var(--on-primary) 82%,transparent)}
+.hero .chip{background:color-mix(in srgb,var(--on-primary) 16%,transparent);color:var(--on-primary);border-color:transparent}
+.hero .chip.on{background:var(--on-primary);color:var(--primary)}
+.hero .rng{accent-color:var(--on-primary)}
+.hero .tag{background:color-mix(in srgb,var(--on-primary) 18%,transparent);color:var(--on-primary)}
+.hero .meter{background:color-mix(in srgb,var(--on-primary) 24%,transparent)}
+.hero .meter i{background:var(--on-primary)}
+.hero .icb{color:var(--on-primary)}
+.fld{display:flex;flex-direction:column;gap:6px;min-width:0}
+.fld label{font-size:13px;font-weight:700;color:var(--sub)}
+.srow{display:flex;align-items:center;gap:14px;padding:12px 0;border-top:1px solid var(--line);position:relative}
+.srow:first-of-type{border-top:0}
+.sico{width:44px;height:44px;border-radius:16px;display:grid;place-items:center;flex:none;background:var(--primary-c);color:var(--on-primary-c)}
+.sico.off{background:var(--surf-high);color:var(--sub)}
+.srow.na{opacity:.75}
+.pgrid{display:flex;flex-direction:column;gap:5px}
+.pline{display:flex;align-items:center;gap:6px}
+.pday{width:88px;font-size:13px;font-weight:700;color:var(--sub);flex:none}
+.pcells{display:flex;gap:3px;flex:1;min-width:0}
+.pcell{flex:1;min-width:0;height:34px;border-radius:7px;border:0;padding:0;background:var(--bad-c);transition:background .15s}
+.pcell.on{background:var(--good);}
+.pcell:focus-visible{outline-offset:1px}
+.phead{display:flex;gap:3px;margin-left:94px;margin-right:104px}
+.phead span{flex:1;font-size:11px;color:var(--sub);text-align:left;min-width:0;overflow:visible;white-space:nowrap}
+.pbtns{display:flex;gap:4px;flex:none;width:98px}
+.pbtns .btn{padding:0 8px;height:34px;font-size:12px;border-radius:12px}
+.prof{display:flex;align-items:center;gap:10px;height:56px;padding:0 18px 0 8px;border-radius:28px;border:1.5px solid var(--line);background:var(--surf);font:700 14.5px var(--font);color:var(--text);text-align:left}
+.prof[aria-pressed=true]{background:var(--secondary-c);color:var(--on-secondary-c);border-color:transparent}
+.avc{width:40px;height:40px;border-radius:20px;display:grid;place-items:center;color:#fff;font-weight:800;flex:none}
+.peer{display:grid;grid-template-columns:44px minmax(130px,1.2fr) minmax(130px,1fr) 120px 44px;gap:8px;align-items:center;padding:6px 6px 6px 0;border-top:1px solid var(--line);position:relative}
+.glassbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-radius:22px;padding:8px 8px 8px 20px}
+.qrbox{background:#fff;border-radius:22px;padding:12px;width:196px;height:196px;flex:none;box-shadow:var(--e2)}
+.qrbox svg{display:block;width:100%;height:100%}
+.reason{display:flex;gap:14px;align-items:flex-start;padding:16px 20px;border-radius:24px;background:var(--warn-c);color:oklch(0.32 0.08 60)}
+.na-card{position:relative}
+</style>
+</helmet>
+<div class="mx shell {{motionCls}}" style="position:relative;--accent:{{accent}};--dark:{{darkNum}}">
+  <div class="railwrap">
+    <dc-import name="Rail" page="firewall" lang="{{lang}}" role="{{role}}" firmware="{{firmware}}" pending="{{pendCount}}" accent="{{accent}}" dark="{{dark}}" hint-size="288px,900px"></dc-import>
+  </div>
+  <div class="main">
+    <dc-import name="TopBar" title="{{t.title}}" lang="{{lang}}" role="{{role}}" firmware="{{firmware}}" tabs="{{tabsStr}}" active="0" accent="{{accent}}" dark="{{dark}}" hint-size="1152px,170px"></dc-import>
+    <main class="page">
+
+      <section class="rise" aria-label="{{t.title}}">
+        <div class="cols" style="align-items:flex-end;gap:16px">
+          <div class="grow" style="min-width:260px">
+            <h1 class="disp s">{{t.title}}</h1>
+            <p class="lede">{{t.lede}}</p>
+          </div>
+        </div>
+        <sc-if value="{{viewer}}" hint-placeholder-val="{{ false }}"><div class="tag warn" style="margin-top:12px">{{readOnlyNote}}</div></sc-if>
+      </section>
+
+      <div class="dash">
+        <section class="card hero rise {{cardCls.shield}}" aria-label="{{t.heroLabel}}" style="min-height:0">
+          <svg class="deco a" viewBox="0 0 200 200" aria-hidden="true" style="right:-60px;top:-70px;width:300px;height:300px"><path d="{{bigD}}"/></svg>
+          <svg class="deco b" viewBox="0 0 200 200" aria-hidden="true" style="left:-60px;bottom:-110px;width:230px;height:230px"><path d="{{blobD}}"/></svg>
+          <div class="tilehead" style="position:relative"><span class="k">{{t.tShield}}</span><button class="info" aria-label="{{tips.shield.label}}" aria-expanded="{{tips.shield.on}}" onClick="{{tips.shield.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.shield.label}}" aria-pressed="{{lk.shield.pressed}}" onClick="{{lk.shield.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.shield.d}}"/></svg></button></div>
+          <sc-if value="{{tips.shield.on}}" hint-placeholder-val="{{ false }}"><div class="tip" role="status" style="top:54px;right:16px">{{tips.shield.text}}</div></sc-if>
+          <div style="display:flex;gap:22px;align-items:center;flex-wrap:wrap;position:relative">
+            <div class="cookie" style="width:120px;height:120px;color:var(--tertiary-c)" aria-hidden="true"><svg viewBox="0 0 200 200"><path d="{{cookieD}}"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="var(--on-tertiary-c)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:58px;height:58px;fill:none"><path d="{{shield.icon}}"/></svg></div>
+            <div style="min-width:200px;flex:1"><h2 class="disp" style="font-size:52px">{{shield.head}}</h2><div class="lede" style="color:color-mix(in srgb,var(--on-primary) 86%,transparent);margin:4px 0 0">{{shield.sub}}</div></div>
+          </div>
+          <div class="cols" style="position:relative;gap:30px;margin-top:6px">
+            <div><div class="k">{{t.blocked}}</div><div class="big" style="font-size:44px">1,284</div></div>
+            <div><div class="k">{{t.openPorts}}</div><div class="big" style="font-size:44px">{{openPorts}}</div></div>
+            <div><div class="k">{{t.protectionsOn}}</div><div class="big" style="font-size:44px">{{onCount}}<small>/ {{totalCount}}</small></div></div>
+          </div>
+          <div class="cols" style="position:relative"><button class="btn t" onClick="{{scan}}">{{scanLabel}}</button><sc-if value="{{scanned}}" hint-placeholder-val="{{ false }}"><span class="tag">{{t.scanOk}}</span></sc-if></div>
+        </section>
+
+        <section class="card rise {{cardCls.blocks}}" aria-label="{{t.tBlocks}}">
+          <div class="tilehead"><h2 class="h2">{{t.tBlocks}}</h2><button class="info" aria-label="{{tips.blocks.label}}" aria-expanded="{{tips.blocks.on}}" onClick="{{tips.blocks.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.blocks.label}}" aria-pressed="{{lk.blocks.pressed}}" onClick="{{lk.blocks.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.blocks.d}}"/></svg></button></div>
+          <sc-if value="{{tips.blocks.on}}" hint-placeholder-val="{{ false }}"><div class="tip" role="status" style="top:54px;right:16px">{{tips.blocks.text}}</div></sc-if>
+          <div class="muted">{{t.blocksSub}}</div>
+          <svg viewBox="0 0 280 130" width="100%" role="img" aria-label="{{t.blocksAlt}}" style="display:block;margin-top:auto">
+            <line class="gridline" x1="0" y1="100" x2="280" y2="100"/><line class="gridline" x1="0" y1="60" x2="280" y2="60"/><line class="gridline" x1="0" y1="20" x2="280" y2="20"/>
+            <sc-for list="{{bars}}" as="br" hint-placeholder-count="7"><rect x="{{br.x}}" y="{{br.y}}" width="26" height="{{br.h}}" rx="8" style="{{br.style}}"/><text x="{{br.tx}}" y="122" text-anchor="middle" font-size="11" style="fill:var(--sub);font-family:inherit">{{br.label}}</text></sc-for>
+          </svg>
+        </section>
+      </div>
+
+      <section class="card ov rise {{cardCls.fw}}" aria-label="{{t.tFw}}">
+        <div class="tilehead"><h2 class="h2">{{t.tFw}}</h2><button class="info" aria-label="{{tips.fw.label}}" aria-expanded="{{tips.fw.on}}" onClick="{{tips.fw.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.fw.label}}" aria-pressed="{{lk.fw.pressed}}" onClick="{{lk.fw.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.fw.d}}"/></svg></button></div>
+        <sc-if value="{{tips.fw.on}}" hint-placeholder-val="{{ false }}"><div class="tip" role="status" style="top:54px;right:16px">{{tips.fw.text}}</div></sc-if>
+        <p class="muted" style="margin:0">{{t.fwLede}}</p>
+        <div>
+          <sc-for list="{{prots}}" as="pr" hint-placeholder-count="7">
+            <div class="{{pr.rowCls}}">
+              <span class="{{pr.icoCls}}"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{pr.d}}"/></svg></span>
+              <div class="grow"><div class="t1">{{pr.label}} <sc-if value="{{pr.tag}}" hint-placeholder-val="{{ false }}"><span class="tag" style="margin-left:6px">{{pr.tagText}}</span></sc-if></div><div class="t2">{{pr.sub}}</div>
+                <sc-if value="{{pr.unavailable}}" hint-placeholder-val="{{ false }}"><div class="tag warn" style="margin-top:6px;height:auto;padding:5px 10px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4"/></svg>{{pr.reason}}</div></sc-if></div>
+              <button class="info" aria-label="{{pr.infoLabel}}" aria-expanded="{{pr.infoOn}}" onClick="{{pr.info}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button>
+              <button class="{{pr.swCls}}" role="switch" aria-checked="{{pr.checked}}" aria-disabled="{{pr.disabled}}" aria-label="{{pr.label}}" onClick="{{pr.toggle}}"><i></i></button>
+              <button class="info" aria-label="{{t.rowMenu}}" aria-haspopup="menu" aria-expanded="{{pr.menuOpen}}" onClick="{{pr.more}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg></button>
+              <sc-if value="{{pr.infoOn}}" hint-placeholder-val="{{ false }}"><div class="tip" role="status" style="right:112px;top:6px">{{pr.help}}</div></sc-if>
+              <sc-if value="{{pr.menuOpen}}" hint-placeholder-val="{{ false }}"><div class="menu" role="menu" style="right:0;top:52px"><button class="mi" role="menuitem" onClick="{{pr.more}}">{{t.mLog}}</button><button class="mi" role="menuitem" onClick="{{pr.reset}}">{{t.mReset}}</button><button class="mi" role="menuitem" onClick="{{pr.more}}">{{t.mLearn}}</button></div></sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <section class="card ov rise {{cardCls.parental}}" aria-label="{{t.tParental}}">
+        <div class="tilehead"><h2 class="h2">{{t.tParental}}</h2><button class="info" aria-label="{{tips.parental.label}}" aria-expanded="{{tips.parental.on}}" onClick="{{tips.parental.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.parental.label}}" aria-pressed="{{lk.parental.pressed}}" onClick="{{lk.parental.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.parental.d}}"/></svg></button></div>
+        <sc-if value="{{tips.parental.on}}" hint-placeholder-val="{{ false }}"><div class="tip" role="status" style="top:54px;right:16px">{{tips.parental.text}}</div></sc-if>
+        <p class="muted" style="margin:0">{{t.parentalLede}}</p>
+        <div class="cols" style="gap:10px" role="group" aria-label="{{t.profiles}}">
+          <sc-for list="{{profiles}}" as="pf" hint-placeholder-count="3">
+            <button class="prof" aria-pressed="{{pf.pressed}}" onClick="{{pf.pick}}"><span class="avc" style="{{pf.avStyle}}">{{pf.initial}}</span><span><span style="display:block">{{pf.name}}</span><span class="area-note" style="display:block;font-weight:500;color:inherit;opacity:.8">{{pf.devices}}</span></span></button>
+          </sc-for>
+        </div>
+        <div class="cols" style="gap:14px;margin-top:4px">
+          <div class="seg" role="group" aria-label="{{t.brush}}">
+            <button aria-pressed="{{brushAllow}}" onClick="{{pickAllow}}"><i class="dot" style="display:inline-block;margin-right:8px"></i>{{t.allowBrush}}</button>
+            <button aria-pressed="{{brushBlock}}" onClick="{{pickBlock}}"><i class="dot" style="display:inline-block;margin-right:8px;background:var(--bad)"></i>{{t.blockBrush}}</button>
+          </div>
+          <div class="bgroup" role="group" aria-label="{{t.presets}}">
+            <sc-for list="{{presets}}" as="ps" hint-placeholder-count="4"><button class="btn sm" onClick="{{ps.apply}}">{{ps.label}}</button></sc-for>
+          </div>
+          <span class="sp"></span>
+          <button class="{{pauseCls}}" aria-pressed="{{pausedStr}}" onClick="{{togglePause}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M8 5v14M16 5v14"/></svg>{{pauseLabel}}</button>
+        </div>
+        <sc-if value="{{paused}}" hint-placeholder-val="{{ false }}"><div class="tag warn" role="status" style="align-self:flex-start">{{t.pausedMsg}}</div></sc-if>
+        <div class="phead" aria-hidden="true"><sc-for list="{{hours}}" as="hr" hint-placeholder-count="24"><span>{{hr.label}}</span></sc-for></div>
+        <div class="pgrid" role="grid" aria-label="{{t.gridLabel}}">
+          <sc-for list="{{days}}" as="dy" hint-placeholder-count="7">
+            <div class="pline" role="row">
+              <span class="pday" role="rowheader">{{dy.name}}</span>
+              <div class="pcells">
+                <sc-for list="{{dy.cells}}" as="ce" hint-placeholder-count="24"><button class="{{ce.cls}}" role="gridcell" aria-pressed="{{ce.on}}" aria-label="{{ce.label}}" onClick="{{ce.pick}}"></button></sc-for>
+              </div>
+              <div class="pbtns"><button class="btn t" aria-label="{{dy.allLabel}}" onClick="{{dy.all}}">{{t.allDay}}</button><button class="btn o" aria-label="{{dy.noneLabel}}" onClick="{{dy.none}}">{{t.noneDay}}</button></div>
+            </div>
+          </sc-for>
+        </div>
+        <div class="cols" style="gap:24px;margin-top:6px">
+          <div><div class="k">{{t.weekHours}}</div><div class="t1" style="font-size:22px">{{weekHours}} h</div></div>
+          <div><div class="k">{{t.bedtime}}</div><div class="t1" style="font-size:22px">{{bedtime}}</div></div>
+          <div class="legend"><i style="background:var(--good)"></i>{{t.legOn}}</div><div class="legend"><i style="background:var(--bad-c)"></i>{{t.legOff}}</div>
+          <span class="sp"></span><span class="area-note">{{t.cellNote}}</span>
+        </div>
+      </section>
+
+      <div class="grid2">
+        <section class="card rise {{cardCls.ovpn}}" aria-label="OpenVPN">
+          <div class="tilehead"><h2 class="h2">OpenVPN</h2><button class="info" aria-label="{{tips.ovpn.label}}" aria-expanded="{{tips.ovpn.on}}" onClick="{{tips.ovpn.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.ovpn.label}}" aria-pressed="{{lk.ovpn.pressed}}" onClick="{{lk.ovpn.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.ovpn.d}}"/></svg></button></div>
+          <sc-if value="{{tips.ovpn.on}}" hint-placeholder-val="{{ false }}"><div class="tip" role="status" style="top:54px;right:16px">{{tips.ovpn.text}}</div></sc-if>
+          <div class="row" style="border:0;padding-top:0"><div class="grow"><div class="t1">{{t.serverOn}}</div><div class="t2">{{ovpnSub}}</div></div><button class="{{ovpnCls}}" role="switch" aria-checked="{{ovpnChecked}}" aria-label="OpenVPN" onClick="{{toggleOvpn}}"><i></i></button></div>
+          <div class="cols"><span class="tag">UDP 1194</span><span class="tag">AES-256-GCM</span><span class="tag good">{{t.ovpnClients}}</span></div>
+          <div class="fld"><label for="ov-p">{{t.port}}</label><input id="ov-p" class="field mono" value="1194" onInput="{{noop}}"></div>
+          <div class="cols"><button class="btn t sm" onClick="{{noop}}">{{t.exportOvpn}}</button><button class="btn o sm" onClick="{{noop}}">{{t.newCert}}</button></div>
+        </section>
+
+        <section class="card rise na-card {{cardCls.wg}}" aria-label="WireGuard">
+          <div class="tilehead"><h2 class="h2">WireGuard</h2><button class="info" aria-label="{{tips.wg.label}}" aria-expanded="{{tips.wg.on}}" onClick="{{tips.wg.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.wg.label}}" aria-pressed="{{lk.wg.pressed}}" onClick="{{lk.wg.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.wg.d}}"/></svg></button></div>
+          <sc-if value="{{tips.wg.on}}" hint-placeholder-val="{{ false }}"><div class="tip" role="status" style="top:54px;right:16px">{{tips.wg.text}}</div></sc-if>
+          <div class="cols" style="gap:10px"><span class="k">{{t.model}}</span>
+            <div class="seg" role="group" aria-label="{{t.model}}"><sc-for list="{{models}}" as="md" hint-placeholder-count="2"><button aria-pressed="{{md.pressed}}" onClick="{{md.pick}}">{{md.label}}</button></sc-for></div></div>
+          <sc-if value="{{wgBlocked}}" hint-placeholder-val="{{ false }}">
+            <div class="reason" role="status">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none"><path d="M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+              <div><b>{{t.wgOff}}</b><div style="font-size:13.5px;margin-top:2px">{{wgReason}}</div><a class="btn t sm" href="Advanced.dc.html" style="margin-top:10px">{{t.seeFirmware}}</a></div>
+            </div>
+          </sc-if>
+          <div class="row" style="border:0;padding-top:0;{{wgDim}}"><div class="grow"><div class="t1">{{t.serverOn}}</div><div class="t2">{{wgSub}}</div></div><button class="{{wgCls}}" role="switch" aria-checked="{{wgChecked}}" aria-disabled="{{wgDisabled}}" aria-label="WireGuard" onClick="{{toggleWg}}"><i></i></button></div>
+          <div style="{{wgDim}}">
+            <sc-if value="{{hasPeerSel}}" hint-placeholder-val="{{ false }}"><div class="glass glassbar" role="region" aria-label="{{t.bulk}}"><b style="flex:1;min-width:100px">{{peerSelText}}</b><button class="btn t sm" onClick="{{revokeSel}}">{{t.revoke}}</button><button class="btn o sm" onClick="{{clearPeerSel}}">{{t.clear}}</button></div></sc-if>
+            <div class="cols" style="margin-bottom:6px"><b class="grow">{{t.peers}}</b><button class="btn t sm" onClick="{{addPeer}}">{{t.addPeer}}</button></div>
+            <sc-for list="{{peerRows}}" as="pe" hint-placeholder-count="3">
+              <div class="peer">
+                <button class="cbw" role="checkbox" aria-checked="{{pe.checked}}" aria-label="{{pe.selLabel}}" onClick="{{pe.toggle}}"><span class="{{pe.cbCls}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></button>
+                <div><div class="t1">{{pe.name}}</div><div class="t2 mono">{{pe.ip}}</div></div>
+                <div><div class="t2">{{pe.shake}}</div><div class="t2">{{pe.xfer}}</div></div>
+                <div class="cols" style="gap:6px"><span class="{{pe.tagCls}}">{{pe.tag}}</span></div>
+                <button class="info" aria-label="{{t.rowMenu}}" aria-haspopup="menu" aria-expanded="{{pe.menuOpen}}" onClick="{{pe.more}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg></button>
+                <sc-if value="{{pe.menuOpen}}" hint-placeholder-val="{{ false }}"><div class="menu" role="menu" style="right:0;top:50px"><button class="mi" role="menuitem" onClick="{{pe.showQr}}">{{t.showQr}}</button><button class="mi" role="menuitem" onClick="{{pe.more}}">{{t.dlConf}}</button><button class="mi" role="menuitem" onClick="{{pe.remove}}" style="color:var(--bad)">{{t.revoke}}</button></div></sc-if>
+              </div>
+            </sc-for>
+          </div>
+          <sc-if value="{{showQr}}" hint-placeholder-val="{{ false }}">
+            <div class="card tone" style="flex-direction:row;gap:18px;align-items:center;flex-wrap:wrap;border-radius:24px">
+              <div class="qrbox"><svg viewBox="-2 -2 29 29" role="img" aria-label="{{qr.alt}}" shape-rendering="crispEdges"><rect x="-2" y="-2" width="29" height="29" fill="#ffffff"/><path d="{{qr.d}}" fill="#14161f"/></svg></div>
+              <div class="grow" style="min-width:180px"><div class="t1">{{qr.name}}</div><div class="t2">{{t.qrNote}}</div><div class="cols" style="margin-top:10px"><button class="btn t sm" onClick="{{closeQr}}">{{t.close}}</button></div></div>
+            </div>
+          </sc-if>
+        </section>
+      </div>
+
+</main>
+    <sc-if value="{{showDock}}" hint-placeholder-val="{{ true }}">
+      <div class="dock" role="region" aria-label="{{t.dockLabel}}" style="margin:0 24px 20px">
+        <b>{{t.dockText}}</b>
+        <span class="mono" style="opacity:.8;font-size:13px">{{dockNames}}</span>
+        <button class="btn t sm" onClick="{{discard}}">{{t.discard}}</button>
+        <a class="btn f" href="Changes.dc.html">{{t.review}}</a>
+      </div>
+    </sc-if>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#4f5bd5","options":["#4f5bd5","#00897b","#d81b60","#f4511e","#7c4dff"],"section":"Look"},"dark":{"editor":"boolean","default":false,"section":"Look"},"motion":{"editor":"enum","options":["calm","standard","expressive"],"default":"expressive","section":"Look"},"firmware":{"editor":"enum","options":["merlin","stock"],"default":"merlin","section":"Router"},"role":{"editor":"enum","options":["owner","operator","viewer"],"default":"owner","section":"Router"},"lang":{"editor":"enum","options":["en","yue","both"],"default":"en","section":"Language"},"$preview":{"width":1440,"height":2600}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const p = this.props;
+    const s = this.state || {};
+    const lang = s.langOv || p.lang || 'en';
+    const role = p.role || 'owner';
+    const firmware = p.firmware || 'merlin';
+    const motion = p.motion || 'expressive';
+    const accent = s.accentOv || p.accent || '#4f5bd5';
+    const pd = p.dark === true || p.dark === 'true' || p.dark === 1 || p.dark === '1';
+    const dark = s.darkOv !== undefined ? s.darkOv : pd;
+    const T = (en, yue) => lang === 'en' ? en : lang === 'yue' ? yue : en + ' · ' + yue;
+    const TF = (en, yue, ...a) => T(en.replace(/%([0-9])/g, (m, i) => a[i - 1]), yue.replace(/%([0-9])/g, (m, i) => a[i - 1]));
+    const canWrite = role !== 'viewer';
+    const set = (o) => this.setState(o);
+    const toggleIn = (a, v) => a.includes(v) ? a.filter(x => x !== v) : a.concat([v]);
+    const locks = s.locks || [];
+    const tip = s.tip || '';
+    const f1 = (n) => Math.round(n * 10) / 10;
+    const can = (id) => canWrite && !locks.includes(id);
+    const mkCards = (defs) => {
+      const lk = {}, tips = {}, cardCls = {};
+      Object.keys(defs).forEach(id => {
+        const d = defs[id];
+        const on = locks.includes(id);
+        lk[id] = {
+          d: on ? 'M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4' : 'M5 11h14v10H5z M8 11V7a4 4 0 0 1 7.5-2',
+          pressed: on ? 'true' : 'false',
+          label: (on ? T('Unlock ', '解鎖 ') : T('Lock ', '鎖定 ')) + d[0] + T(' card', ' 卡片'),
+          toggle: () => set({ locks: toggleIn(locks, id) })
+        };
+        cardCls[id] = on ? 'lockedcard' : '';
+        tips[id] = { on: tip === id, text: d[1], label: T('About this card: ', '關於呢張卡片：') + d[0], toggle: () => set({ tip: tip === id ? '' : id }) };
+      });
+      return { lk, tips, cardCls };
+    };
+    const dockT = (n) => ({
+      dockLabel: T('Pending changes', '待套用變更'),
+      dockText: n + (n === 1 ? T(' change waiting', ' 項變更等緊') : T(' changes waiting', ' 項變更等緊')),
+      discard: T('Discard queue', '放棄排隊'),
+      review: T('Review ' + n + (n === 1 ? ' change' : ' changes'), '檢視 ' + n + ' 項變更')
+    });
+    const baseOut = (n) => ({
+      accent, dark, darkNum: dark ? 1 : 0, lang, role, firmware,
+      motionCls: motion === 'calm' ? 'calm' : motion === 'standard' ? 'std' : '',
+      viewer: !canWrite, pendCount: n, showDock: canWrite && n > 0,
+      readOnlyNote: T('Read-only role: you can look but not change anything.', '唯讀角色：只可以睇，唔可以改動。')
+    });
+    const qrPath = (seed, size) => {
+      let h = 2166136261;
+      for (let i = 0; i < seed.length; i++) { h ^= seed.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
+      const rnd = () => { h = (Math.imul(h, 1664525) + 1013904223) >>> 0; return h / 4294967296; };
+      let d = '';
+      const finder = (x, y) => x < 8 && y < 8 || x >= size - 8 && y < 8 || x < 8 && y >= size - 8;
+      const fcell = (x, y) => {
+        const ox = x >= size - 8 ? x - (size - 7) : x, oy = y >= size - 8 ? y - (size - 7) : y;
+        if (ox < 0 || oy < 0 || ox > 6 || oy > 6) return false;
+        const e = Math.max(Math.abs(ox - 3), Math.abs(oy - 3));
+        return e === 3 || e <= 1;
+      };
+      for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
+        const on = finder(x, y) ? fcell(x, y) : rnd() > 0.52;
+        if (on) d += 'M' + x + ' ' + y + 'h1v1h-1z';
+      }
+      return d;
+    };
+    const COOKIE = 'M194 100L193.4 104.1L191.8 108L189.2 111.7L186.1 115.2L182.6 118.3L179.2 121.2L176.2 124L173.7 126.8L172.1 129.8L171.1 133.2L170.8 136.9L171 141L171.4 145.5L171.6 150.1L171.4 154.8L170.6 159.2L168.9 163.2L166.5 166.5L163.2 168.9L159.2 170.6L154.8 171.4L150.1 171.6L145.5 171.4L141 171L136.9 170.8L133.2 171.1L129.8 172.1L126.8 173.7L124 176.2L121.2 179.2L118.3 182.6L115.2 186.1L111.7 189.2L108 191.8L104.1 193.4L100 194L95.9 193.4L92 191.8L88.3 189.2L84.8 186.1L81.7 182.6L78.8 179.2L76 176.2L73.2 173.7L70.2 172.1L66.8 171.1L63.1 170.8L59 171L54.5 171.4L49.9 171.6L45.2 171.4L40.8 170.6L36.8 168.9L33.5 166.5L31.1 163.2L29.4 159.2L28.6 154.8L28.4 150.1L28.6 145.5L29 141L29.2 136.9L28.9 133.2L27.9 129.8L26.3 126.8L23.8 124L20.8 121.2L17.4 118.3L13.9 115.2L10.8 111.7L8.2 108L6.6 104.1L6 100L6.6 95.9L8.2 92L10.8 88.3L13.9 84.8L17.4 81.7L20.8 78.8L23.8 76L26.3 73.2L27.9 70.2L28.9 66.8L29.2 63.1L29 59L28.6 54.5L28.4 49.9L28.6 45.2L29.4 40.8L31.1 36.8L33.5 33.5L36.8 31.1L40.8 29.4L45.2 28.6L49.9 28.4L54.5 28.6L59 29L63.1 29.2L66.8 28.9L70.2 27.9L73.2 26.3L76 23.8L78.8 20.8L81.7 17.4L84.8 13.9L88.3 10.8L92 8.2L95.9 6.6L100 6L104.1 6.6L108 8.2L111.7 10.8L115.2 13.9L118.3 17.4L121.2 20.8L124 23.8L126.8 26.3L129.8 27.9L133.2 28.9L136.9 29.2L141 29L145.5 28.6L150.1 28.4L154.8 28.6L159.2 29.4L163.2 31.1L166.5 33.5L168.9 36.8L170.6 40.8L171.4 45.2L171.6 49.9L171.4 54.5L171 59L170.8 63.1L171.1 66.8L172.1 70.2L173.7 73.2L176.2 76L179.2 78.8L182.6 81.7L186.1 84.8L189.2 88.3L191.8 92L193.4 95.9L194 100Z';
+    const BIG = 'M195 100L194.1 104.1L191.4 108L187.6 111.5L183.2 114.7L178.9 117.5L175.5 120.2L173.5 123.2L172.9 126.5L173.6 130.5L175.2 135L177 140.1L178.4 145.3L178.7 150.2L177.7 154.4L175.1 157.6L171.2 159.7L166.2 160.7L160.8 160.8L155.5 160.6L150.8 160.6L147.1 161.3L144.2 163.2L142.2 166.3L140.8 170.6L139.3 175.6L137.6 180.7L135.3 185.3L132.3 188.8L128.6 190.6L124.3 190.6L119.7 189L115.2 186.2L110.9 183L107 179.9L103.4 177.8L100 177L96.6 177.8L93 179.9L89.1 183L84.8 186.2L80.3 189L75.7 190.6L71.4 190.6L67.7 188.8L64.7 185.3L62.4 180.7L60.7 175.6L59.3 170.6L57.8 166.3L55.8 163.2L52.9 161.3L49.2 160.6L44.5 160.6L39.2 160.8L33.8 160.7L28.8 159.7L24.9 157.6L22.3 154.4L21.3 150.2L21.6 145.3L23 140.1L24.8 135L26.4 130.5L27.1 126.5L26.5 123.2L24.5 120.2L21.1 117.5L16.8 114.7L12.4 111.5L8.6 108L5.9 104.1L5 100L5.9 95.9L8.6 92L12.4 88.5L16.8 85.3L21.1 82.5L24.5 79.8L26.5 76.8L27.1 73.5L26.4 69.5L24.8 65L23 59.9L21.6 54.7L21.3 49.8L22.3 45.6L24.9 42.4L28.8 40.3L33.8 39.3L39.2 39.2L44.5 39.4L49.2 39.4L52.9 38.7L55.8 36.8L57.8 33.7L59.2 29.4L60.7 24.4L62.4 19.3L64.7 14.7L67.7 11.2L71.4 9.4L75.7 9.4L80.3 11L84.8 13.8L89.1 17L93 20.1L96.6 22.2L100 23L103.4 22.2L107 20.1L110.9 17L115.2 13.8L119.7 11L124.3 9.4L128.6 9.4L132.3 11.2L135.3 14.7L137.6 19.3L139.3 24.4L140.8 29.4L142.2 33.7L144.2 36.8L147.1 38.7L150.8 39.4L155.5 39.4L160.8 39.2L166.2 39.3L171.2 40.3L175.1 42.4L177.7 45.6L178.7 49.8L178.4 54.7L177 59.9L175.2 65L173.6 69.5L172.9 73.5L173.5 76.8L175.5 79.8L178.9 82.5L183.2 85.3L187.6 88.5L191.4 92L194.1 95.9L195 100Z';
+    const BLOB = 'M182.8 100C183.5 121 178.9 152.8 165.1 165.1C151.3 177.3 121.3 174 100 173.6C78.7 173.2 50.4 174.7 37.5 162.5C24.7 150.2 23.2 121.3 22.7 100C22.3 78.7 22.1 46.9 34.9 34.9C47.8 23 79 27.6 100 28.2C121 28.9 147.4 26.9 161.2 38.8C175 50.8 182.1 79 182.8 100Z';
+    const B = { fw: true, dos: true, ping: false, v6: true, mal: true, ips: true, sky: false, ovpn: false, wg: false };
+    const INIT = { ovpn: true };
+    const v = (k) => s[k] !== undefined ? s[k] : (INIT[k] !== undefined ? INIT[k] : B[k]);
+    const menu = s.menu || '';
+    const model = s.model || 'ax86u';
+    const brush = s.brush || 'allow';
+    const prof = s.prof || 'tab';
+    const grids = s.grids || {};
+    const paused = s.paused || [];
+    const peerSel = s.peerSel || [];
+    const delPeers = s.delPeers || [];
+    const newPeers = s.newPeers || [];
+    const qrPeer = s.qrPeer || '';
+    const merlin = firmware === 'merlin';
+    const wgBlocked = model !== 'ax86u' || !merlin;
+    const wgReason = model !== 'ax86u' ? T('The RT-AC68U hardware cannot run the WireGuard kernel module.', 'RT-AC68U 硬件唔能夠運行 WireGuard 內核模組。') : T('Stock firmware has no WireGuard server. Merlin firmware 388.8 adds it.', '原廠韌體冇 WireGuard 伺服器，Merlin 韌體 388.8 先有。');
+
+    // protections
+    const PROT = [
+      ['fw', 'M12 3l8 3v6c0 5-3.5 8-8 9c-4.5-1-8-4-8-9V6z', T('Firewall (SPI)', '防火牆（SPI）'), T('Blocks unsolicited inbound traffic. Leave this on.', '封鎖未經請求嘅入站流量，建議保持開啟。'), '', T('Stateful packet inspection tracks every connection and drops anything that was not asked for.', '狀態封包檢查會追蹤每個連線，並丟棄任何未被要求嘅流量。')],
+      ['dos', 'M13 2L4 14h7l-1 8 9-12h-7z', T('DoS protection', '阻斷服務保護'), T('Drops floods of packets that try to overwhelm the router.', '丟棄試圖癱瘓路由器嘅大量封包。'), '', T('Rate limits SYN, ICMP and UDP floods before they reach the CPU.', '喺封包到達處理器之前，限制 SYN、ICMP 同 UDP 洪水。')],
+      ['ping', 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18 M12 7v5l3 2', T('Answer ping from the internet', '回應來自互聯網嘅 ping'), T('Off is safer. Turn on only while troubleshooting.', '關閉較安全，只有排查問題時先開。'), '', T('When off, outside scanners cannot tell the router is there.', '關閉後，外面嘅掃描器偵測唔到路由器。')],
+      ['v6', 'M3 12h18 M12 3v18', T('Block unsolicited IPv6', '封鎖未經請求嘅 IPv6'), T('Applies the same rule to IPv6 addresses.', '對 IPv6 地址套用同一條規則。'), '', T('Every IPv6 device is reachable by default, so this rule matters.', 'IPv6 裝置預設可以被直接連到，所以呢條規則好重要。')],
+      ['mal', 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18 M9 9l6 6 M15 9l-6 6', T('Malicious site blocking', '惡意網站封鎖'), T('Blocks addresses on a daily updated list.', '封鎖每日更新名單上嘅地址。'), 'daily', T('The list updates at 04:00. Blocked sites show a notice page.', '名單每日 04:00 更新，被封鎖嘅網站會顯示通知頁。')],
+      ['ips', 'M4 17l5-5 4 4 7-8 M16 8h4v4', T('Intrusion prevention', '入侵防禦'), T('Watches traffic in both directions for known attacks.', '雙向監察已知攻擊嘅流量。'), '', T('Uses signature rules. It can slow a 1 Gbps line slightly.', '使用特徵碼規則，1 Gbps 線路可能會稍為變慢。')],
+      ['sky', 'M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4', T('Skynet IP blocklists', 'Skynet IP 封鎖清單'), T('Merlin add-on that blocks whole ranges of hostile addresses.', 'Merlin 擴充功能，封鎖整段惡意地址。'), 'merlin', T('Needs Merlin firmware and a USB drive for its lists.', '需要 Merlin 韌體同 USB 儲存裝置存放名單。')]
+    ];
+    const prots = PROT.map(p => {
+      const id = p[0];
+      const na = id === 'sky' && !merlin;
+      const on = !na && v(id);
+      const edit = can('fw') && !na;
+      return {
+        rowCls: 'srow' + (na ? ' na' : ''), icoCls: 'sico' + (on ? '' : ' off'), d: p[1], label: p[2], sub: p[3], tag: p[4] !== '', tagText: p[4] === 'daily' ? T('Updates daily', '每日更新') : T('Merlin only', '只限 Merlin'),
+        unavailable: na, reason: T('Needs Merlin firmware 388.8 or later.', '需要 Merlin 韌體 388.8 或以上。'),
+        swCls: 'sw' + (on ? ' on' : ''), checked: on ? 'true' : 'false', disabled: edit ? 'false' : 'true',
+        toggle: () => { if (edit) set({ [id]: !on }); },
+        infoLabel: T('About ', '關於 ') + p[2], infoOn: tip === 'p-' + id, info: () => set({ tip: tip === 'p-' + id ? '' : 'p-' + id }), help: p[5],
+        menuOpen: menu === id, more: () => set({ menu: menu === id ? '' : id }), reset: () => { if (edit) set({ [id]: B[id], menu: '' }); }
+      };
+    });
+    const protIds = ['fw', 'dos', 'ping', 'v6', 'mal', 'ips'];
+    const goodIds = ['fw', 'dos', 'v6', 'mal', 'ips'];
+    const onCount = goodIds.filter(id => v(id)).length + (v('ping') ? 0 : 1);
+    const totalCount = 6;
+    const openPorts = 3 + (v('ovpn') ? 1 : 0) + (v('wg') && !wgBlocked ? 1 : 0);
+    const risky = !v('fw') || v('ping') || !v('dos');
+    const shield = onCount === totalCount
+      ? { head: T('Well protected', '保護周全'), sub: T('All six protections are active. Nothing needs your attention.', '六項保護全部啟用，冇需要你處理。'), icon: 'M12 3l8 3v6c0 5-3.5 8-8 9c-4.5-1-8-4-8-9V6z M9 12l2 2 4-4' }
+      : { head: T('Needs a look', '需要檢視'), sub: TF('%1 protection is off or too open. Review the list below.', '%1 項保護未開或太開放，請檢視下面清單。', totalCount - onCount), icon: 'M12 3l8 3v6c0 5-3.5 8-8 9c-4.5-1-8-4-8-9V6z M12 8v4 M12 15.5h.01' };
+    const bd = [38, 61, 24, 92, 47, 18, 66];
+    const dayN = [T('Mon', '一'), T('Tue', '二'), T('Wed', '三'), T('Thu', '四'), T('Fri', '五'), T('Sat', '六'), T('Sun', '日')];
+    const bars = bd.map((n, i) => ({ x: 6 + i * 38.5, tx: f1(19 + i * 38.5), y: f1(100 - n), h: n, style: 'fill:' + (i === 3 ? 'var(--primary)' : 'var(--primary-c)'), label: dayN[i] }));
+
+    // parental
+    const PROFS = [
+      { id: 'tab', name: T('Kids tablet', '小朋友平板'), initial: 'K', col: 'background:var(--tertiary)', devices: T('1 device', '1 部裝置') },
+      { id: 'con', name: T('Game console', '遊戲機'), initial: 'G', col: 'background:#0b7285', devices: T('1 device', '1 部裝置') },
+      { id: 'alx', name: T("Alex's phone", 'Alex 嘅手機'), initial: 'A', col: 'background:#8a5a00', devices: T('1 device', '1 部裝置') }
+    ];
+    const dflt = (id) => {
+      const g = [];
+      for (let d = 0; d < 7; d++) {
+        const row = [];
+        for (let h = 0; h < 24; h++) {
+          let on = 0;
+          if (id === 'tab') on = (d < 4 ? h >= 7 && h < 21 : d === 4 ? h >= 7 && h < 22 : h >= 8 && h < 22) ? 1 : 0;
+          else if (id === 'con') on = (d < 4 ? h >= 18 && h < 20 : h >= 10 && h < 21) ? 1 : 0;
+          else on = (h >= 6 && h < 23) ? 1 : 0;
+          row.push(on);
+        }
+        g.push(row);
+      }
+      return g;
+    };
+    const grid = grids[prof] || dflt(prof);
+    const setGrid = (g) => { if (can('parental')) set({ grids: Object.assign({}, grids, { [prof]: g }) }); };
+    const clone = (g) => g.map(r => r.slice());
+    const bval = brush === 'allow' ? 1 : 0;
+    const dayLong = [T('Monday', '星期一'), T('Tuesday', '星期二'), T('Wednesday', '星期三'), T('Thursday', '星期四'), T('Friday', '星期五'), T('Saturday', '星期六'), T('Sunday', '星期日')];
+    const days = grid.map((row, d) => ({
+      name: dayLong[d],
+      allLabel: T('Allow all day ', '全日允許 ') + dayLong[d], noneLabel: T('Block all day ', '全日封鎖 ') + dayLong[d],
+      all: () => { const g = clone(grid); g[d] = g[d].map(() => 1); setGrid(g); },
+      none: () => { const g = clone(grid); g[d] = g[d].map(() => 0); setGrid(g); },
+      cells: row.map((on, h) => ({
+        cls: 'pcell' + (on ? ' on' : ''), on: on ? 'true' : 'false',
+        label: dayLong[d] + ' ' + (h < 10 ? '0' : '') + h + ':00 ' + (on ? T('allowed', '允許') : T('blocked', '封鎖')),
+        pick: () => { const g = clone(grid); g[d][h] = g[d][h] === bval ? (bval ? 0 : 1) : bval; setGrid(g); }
+      }))
+    }));
+    const hours = [];
+    for (let h = 0; h < 24; h++) hours.push({ label: h % 3 === 0 ? (h < 10 ? '0' : '') + h : '' });
+    const weekHours = grid.reduce((a, r) => a + r.reduce((x, y) => x + y, 0), 0);
+    const lastOn = grid[0].lastIndexOf(1);
+    const bedtime = lastOn < 0 ? T('No access', '冇上網時間') : (lastOn + 1 < 10 ? '0' : '') + (lastOn + 1) + ':00';
+    const mk = (fn) => () => { const g = []; for (let d = 0; d < 7; d++) { const r = []; for (let h = 0; h < 24; h++) r.push(fn(d, h) ? 1 : 0); g.push(r); } setGrid(g); };
+    const presets = [
+      { label: T('School nights', '上學日'), apply: mk((d, h) => d < 5 ? (h >= 7 && h < 21) : (h >= 8 && h < 22)) },
+      { label: T('Weekend free', '週末放寬'), apply: mk((d, h) => d < 5 ? (h >= 15 && h < 20) : (h >= 8 && h < 23)) },
+      { label: T('Always on', '全日開放'), apply: mk(() => true) },
+      { label: T('Always off', '全日封鎖'), apply: mk(() => false) }
+    ];
+    const profiles = PROFS.map(pf => ({ name: pf.name, initial: pf.initial, avStyle: pf.col, devices: pf.devices, pressed: prof === pf.id ? 'true' : 'false', pick: () => set({ prof: pf.id }) }));
+    const isPaused = paused.includes(prof);
+
+    // vpn
+    const BASE_PEERS = [
+      { id: 'w1', name: T("Pat's phone", 'Pat 嘅手機'), ip: '192.0.2.2/32', shake: T('Handshake 2 min ago', '2 分鐘前握手'), xfer: '↓ 84 MB · ↑ 12 MB', on: true },
+      { id: 'w2', name: T("Alex's laptop", 'Alex 嘅手提電腦'), ip: '192.0.2.3/32', shake: T('Handshake 3 days ago', '3 日前握手'), xfer: '↓ 1.2 GB · ↑ 310 MB', on: false },
+      { id: 'w3', name: T('Holiday tablet', '假期平板'), ip: '192.0.2.4/32', shake: T('Never connected', '從未連線'), xfer: '↓ 0 B · ↑ 0 B', on: false }
+    ];
+    const peers = BASE_PEERS.filter(p => !delPeers.includes(p.id)).concat(newPeers.map(p => Object.assign({}, p, { isNew: true })));
+    const peerRows = peers.map(p => {
+      const on = peerSel.includes(p.id);
+      return {
+        name: p.name, ip: p.ip, shake: p.shake, xfer: p.xfer, tag: p.isNew ? T('New', '新增') : p.on ? T('Connected', '已連線') : T('Idle', '閒置'), tagCls: p.isNew ? 'tag warn' : p.on ? 'tag good' : 'tag',
+        checked: on ? 'true' : 'false', cbCls: 'cb2' + (on ? ' on' : ''), selLabel: T('Select peer ', '揀選對等端 ') + p.name, toggle: () => set({ peerSel: toggleIn(peerSel, p.id) }),
+        menuOpen: menu === p.id, more: () => set({ menu: menu === p.id ? '' : p.id }),
+        showQr: () => set({ qrPeer: p.id, menu: '' }),
+        remove: () => { if (can('wg') && !wgBlocked) { if (p.isNew) set({ newPeers: newPeers.filter(x => x.id !== p.id), menu: '' }); else set({ delPeers: delPeers.concat([p.id]), menu: '' }); } }
+      };
+    });
+    const qrP = peers.find(p => p.id === qrPeer);
+    const qr = { d: qrP ? qrPath('[Interface]PrivateKey=demo-' + qrP.id + ';Address=' + qrP.ip + ';[Peer]Endpoint=203.0.113.42:51820', 25) : '', name: qrP ? qrP.name : '', alt: qrP ? T('WireGuard configuration QR code for ', 'WireGuard 設定 QR 碼：') + qrP.name : '' };
+    const wgOn = v('wg') && !wgBlocked;
+    const ovOn = v('ovpn');
+    const cards = mkCards({
+      shield: [T('security summary', '保安摘要'), T('Counts the six protections that matter most. Each one is explained in the list below.', '統計最重要嘅六項保護，每項都喺下面清單有說明。')],
+      blocks: [T('blocked attempts', '已攔截嘗試'), T('Connection attempts from the internet that the firewall dropped, per day.', '防火牆每日丟棄嘅來自互聯網嘅連線嘗試。')],
+      fw: [T('firewall switches', '防火牆開關'), T('These switches change the router firewall. Turning protections off makes the network easier to attack.', '呢啲開關會改變路由器防火牆，關閉保護會令網絡更易受攻擊。')],
+      parental: [T('parental controls', '家長監護'), T('Click a cell to allow or block that hour. The brush decides what a click does. Schedules use the router clock.', '撳一格就可以允許或封鎖嗰個鐘頭，筆刷決定撳落去嘅動作，時間表跟路由器時鐘。')],
+      ovpn: [T('OpenVPN server', 'OpenVPN 伺服器'), T('Lets your phone or laptop reach home from anywhere over an encrypted tunnel.', '令你嘅手機或手提電腦喺任何地方都可以經加密通道返屋企。')],
+      wg: [T('WireGuard server', 'WireGuard 伺服器'), T('A modern, fast VPN. Each device is a peer with its own key and its own address.', '現代化、快速嘅 VPN。每部裝置都係一個有獨立密鑰同地址嘅對等端。')]
+    });
+
+    // pending
+    const pends = [];
+    protIds.concat(['sky']).forEach(id => { if (v(id) !== B[id] && !(id === 'sky' && !merlin)) pends.push(v(id) ? TF('Turn on %1', '開啟 %1', PROT.find(p => p[0] === id)[2]) : TF('Turn off %1', '關閉 %1', PROT.find(p => p[0] === id)[2])); });
+    if (v('ovpn') !== B.ovpn) pends.push(v('ovpn') ? T('OpenVPN server on', '開啟 OpenVPN 伺服器') : T('OpenVPN server off', '關閉 OpenVPN 伺服器'));
+    if (v('wg') !== B.wg && !wgBlocked) pends.push(v('wg') ? T('WireGuard server on', '開啟 WireGuard 伺服器') : T('WireGuard server off', '關閉 WireGuard 伺服器'));
+    Object.keys(grids).forEach(id => { if (JSON.stringify(grids[id]) !== JSON.stringify(dflt(id))) pends.push(TF('Schedule for %1', '時間表：%1', PROFS.find(p => p.id === id).name)); });
+    paused.forEach(id => pends.push(TF('Pause %1', '暫停 %1', PROFS.find(p => p.id === id).name)));
+    delPeers.forEach(id => pends.push(TF('Revoke %1', '撤銷 %1', BASE_PEERS.find(p => p.id === id).name)));
+    newPeers.forEach(p => pends.push(TF('Add peer %1', '新增對等端 %1', p.name)));
+    const dockNames = pends.slice(0, 2).join(', ') + (pends.length > 2 ? ' +' + (pends.length - 2) : '');
+    const discardAll = () => set({ fw: B.fw, dos: B.dos, ping: B.ping, v6: B.v6, mal: B.mal, ips: B.ips, sky: B.sky, ovpn: B.ovpn, wg: B.wg, grids: {}, paused: [], delPeers: [], newPeers: [] });
+    return Object.assign(baseOut(pends.length), {
+      cookieD: COOKIE, bigD: BIG, blobD: BLOB,
+      tabsStr: [T('Security', '保安'), T('Parental', '家長監護'), 'VPN'].join(','),
+      lk: cards.lk, tips: cards.tips, cardCls: cards.cardCls,
+      shield, onCount, totalCount, openPorts, bars, prots,
+      scan: () => set({ scanned: true }), scanned: !!s.scanned, scanLabel: s.scanned ? T('Scan again', '再掃描') : T('Run security scan', '執行保安掃描'),
+      profiles, days, hours, presets, weekHours, bedtime,
+      brushAllow: brush === 'allow' ? 'true' : 'false', brushBlock: brush === 'block' ? 'true' : 'false', pickAllow: () => set({ brush: 'allow' }), pickBlock: () => set({ brush: 'block' }),
+      paused: isPaused, pausedStr: isPaused ? 'true' : 'false', pauseCls: 'btn ' + (isPaused ? 'f' : 'o') + ' sm', pauseLabel: isPaused ? T('Resume internet', '恢復上網') : T('Pause internet for 1 h', '暫停上網 1 小時'),
+      togglePause: () => { if (can('parental')) set({ paused: toggleIn(paused, prof) }); },
+      ovpnCls: 'sw' + (ovOn ? ' on' : ''), ovpnChecked: ovOn ? 'true' : 'false', toggleOvpn: () => { if (can('ovpn')) set({ ovpn: !ovOn }); },
+      ovpnSub: ovOn ? T('Listening on UDP 1194', '正在監聽 UDP 1194') : T('Off. No VPN port is open.', '已關閉，冇開放 VPN 端口。'),
+      noop: () => {},
+      models: [['ax86u', 'RT-AX86U'], ['ac68u', 'RT-AC68U']].map(([id, label]) => ({ label, pressed: model === id ? 'true' : 'false', pick: () => set({ model: id }) })),
+      wgBlocked, wgReason, wgDim: wgBlocked ? 'opacity:.5;pointer-events:none' : '',
+      wgCls: 'sw' + (wgOn ? ' on' : ''), wgChecked: wgOn ? 'true' : 'false', wgDisabled: wgBlocked ? 'true' : 'false', toggleWg: () => { if (can('wg') && !wgBlocked) set({ wg: !v('wg') }); },
+      wgSub: wgBlocked ? T('Unavailable on this router', '呢部路由器未可用') : wgOn ? T('Listening on UDP 51820 · 192.0.2.1/24', '監聽 UDP 51820 · 192.0.2.1/24') : T('Off', '已關閉'),
+      peerRows, hasPeerSel: peerSel.length > 0, peerSelText: peerSel.length + T(' selected', ' 項已選'), clearPeerSel: () => set({ peerSel: [] }),
+      revokeSel: () => { if (can('wg') && !wgBlocked && peerSel.length) set({ delPeers: delPeers.concat(peerSel.filter(id => BASE_PEERS.some(b => b.id === id) && !delPeers.includes(id))), newPeers: newPeers.filter(p => !peerSel.includes(p.id)), peerSel: [] }); },
+      addPeer: () => { if (can('wg') && !wgBlocked) set({ newPeers: newPeers.concat([{ id: 'n' + (newPeers.length + 1), name: T('New peer ', '新對等端 ') + (newPeers.length + 1), ip: '192.0.2.' + (5 + newPeers.length) + '/32', shake: T('Never connected', '從未連線'), xfer: '↓ 0 B · ↑ 0 B', on: false }]) }); },
+      showQr: !!qrP, qr, closeQr: () => set({ qrPeer: '' }),
+      dockNames, discard: discardAll,
+      t: Object.assign(dockT(pends.length), {
+        title: T('Security, parental controls and VPN', '保安、家長監護同 VPN'),
+        lede: T('Keep the firewall strict, give each child a weekly schedule and reach home safely from outside.', '保持防火牆嚴格、為每個小朋友設定每週時間表，同埋安全咁喺外面返屋企。'),
+        heroLabel: T('Security summary', '保安摘要'), tShield: T('Security', '保安'), blocked: T('Blocked this week', '本週已攔截'), openPorts: T('Open ports', '開放端口'), protectionsOn: T('Protections on', '已啟用保護'),
+        scanOk: T('No issues found, scanned just now', '搵唔到問題，啱啱掃描'),
+        tBlocks: T('Blocked attempts', '已攔截嘗試'), blocksSub: T('Per day over the last 7 days', '最近 7 日每日數量'), blocksAlt: T('Blocked attempts: 38, 61, 24, 92, 47, 18 and 66', '已攔截嘗試：38、61、24、92、47、18、66'),
+        tFw: T('Firewall', '防火牆'), fwLede: T('Each switch is a rule on the router. Rows that cannot work on this router stay visible, with the reason.', '每個開關都係路由器上嘅一條規則。呢部路由器做唔到嘅項目會保留顯示，並註明原因。'),
+        rowMenu: T('Row actions', '列操作'), mLog: T('View log', '睇記錄'), mReset: T('Reset to default', '還原預設'), mLearn: T('Learn more', '了解更多'),
+        tParental: T('Parental controls', '家長監護'), parentalLede: T('Pick a profile, then click hours to allow or block internet for that week.', '揀一個檔案，再撳鐘頭格仔，就可以設定該星期嘅上網時間。'),
+        profiles: T('Profiles', '檔案'), brush: T('Brush', '筆刷'), allowBrush: T('Allow', '允許'), blockBrush: T('Block', '封鎖'), presets: T('Presets', '預設'),
+        pausedMsg: T('Internet paused until 18:42 for this profile', '呢個檔案暫停上網至 18:42'),
+        gridLabel: T('Weekly internet schedule', '每週上網時間表'), allDay: T('All', '全日'), noneDay: T('None', '冇'),
+        weekHours: T('Internet hours per week', '每週上網時數'), bedtime: T('Monday bedtime', '星期一就寢時間'), legOn: T('Allowed', '允許'), legOff: T('Blocked', '封鎖'),
+        cellNote: T('Cells are one hour. Use All and None to fill a day.', '每格一個鐘頭，用「全日」同「冇」填滿一日。'),
+        serverOn: T('Server', '伺服器'), port: T('Port', '端口'), ovpnClients: T('2 clients connected', '2 部裝置已連線'), exportOvpn: T('Export .ovpn file', '匯出 .ovpn 檔案'), newCert: T('Create new certificate', '建立新證書'),
+        model: T('Preview model', '預覽型號'), wgOff: T('WireGuard is not available here', 'WireGuard 喺呢度未可用'), seeFirmware: T('See firmware options', '睇韌體選項'),
+        peers: T('Peers', '對等端'), addPeer: T('Add peer', '新增對等端'), revoke: T('Revoke', '撤銷'), clear: T('Clear', '清除'), bulk: T('Bulk actions', '批量操作'),
+        showQr: T('Show QR config', '顯示 QR 設定'), dlConf: T('Download config', '下載設定'), close: T('Close', '關閉'),
+        qrNote: T('Scan this in the WireGuard app. It contains the peer key, so do not share the picture.', '喺 WireGuard 應用程式掃描。入面有對等端密鑰，唔好分享呢張圖。')
+      })
+    });
+  }
+}
+</script>
+</body>
+</html>
+

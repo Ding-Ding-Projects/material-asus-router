@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Network tools and logs</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="theme.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,100..1000&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}
+.card.ov{overflow:visible}
+.cbw{width:44px;height:44px;border:0;background:none;display:grid;place-items:center;flex:none;padding:0}
+.cb2{width:22px;height:22px;border-radius:7px;border:2px solid var(--sub);display:grid;place-items:center;color:var(--on-primary)}
+.cb2 svg{opacity:0}.cb2.on{background:var(--primary);border-color:var(--primary)}.cb2.on svg{opacity:1}
+.lockedcard{outline:3px solid var(--primary);outline-offset:-3px}
+.pos{position:relative}
+.tilehead{display:flex;align-items:center;gap:4px}.tilehead .k{flex:1}
+.legend{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub)}.legend i{width:12px;height:12px;border-radius:6px;display:inline-block}
+.struck{text-decoration:line-through;opacity:.6}
+.onp{background:color-mix(in srgb,var(--on-primary) 18%,transparent);color:var(--on-primary)}
+.inp{height:48px;border-radius:24px;border:1.5px solid var(--line);background:var(--surf);padding:0 18px;font:inherit;font-size:15px;color:var(--text);min-width:0}
+.code{font-family:ui-monospace,'Cascadia Code',Consolas,monospace;font-size:13px;line-height:1.6}
+.scroll{overflow:auto;max-height:340px;scrollbar-width:thin}
+.dt{overflow-x:auto;border-radius:24px;background:var(--surf-low)}
+.dt .r{display:grid;grid-template-columns:var(--cols);gap:12px;align-items:center;padding:8px 18px;border-top:1px solid var(--line);min-width:var(--mw,760px);font-size:14.5px;position:relative}
+.dt .r.h{border-top:0;font-size:12.5px;font-weight:750;color:var(--sub);letter-spacing:.3px;padding-top:12px;padding-bottom:12px}
+.dt .r>*{min-width:0}
+.dis{opacity:.5;cursor:not-allowed}
+.glassbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-radius:22px;padding:8px 8px 8px 20px}
+.spin{animation:spin 8s linear infinite;transform-origin:center}@keyframes spin{to{transform:rotate(360deg)}}
+.calm .spin,.std .spin{animation:none}@media (prefers-reduced-motion:reduce){.spin{animation:none}}
+.clip{position:absolute;inset:0;overflow:hidden;border-radius:32px;pointer-events:none}
+.card.hero>:not(.clip):not(.tip){position:relative}
+</style>
+</helmet>
+<div class="mx shell {{motionCls}}" style="--accent:{{accent}};--dark:{{darkNum}}"><div class="railwrap"><dc-import name="Rail" page="tools" lang="{{lang}}" role="{{role}}" firmware="{{firmware}}" pending="{{pendCount}}" accent="{{accent}}" dark="{{dark}}" hint-size="288px,900px"></dc-import></div><div class="main"><dc-import name="TopBar" title="{{t.title}}" lang="{{lang}}" role="{{role}}" firmware="{{firmware}}" tabs="{{tabsStr}}" active="0" accent="{{accent}}" dark="{{dark}}" hint-size="1152px,170px"></dc-import>
+<main class="page">
+
+  <section class="card hero ov rise {{cardCls.runner}}" aria-label="{{t.runner}}">
+    <div class="clip" aria-hidden="true">
+      <svg class="deco a" viewBox="0 0 200 200" style="right:-70px;top:-80px;width:330px;height:330px"><path d="M194 100L193.4 104.1L191.8 108L189.2 111.7L186.1 115.2L182.6 118.3L179.2 121.2L176.2 124L173.7 126.8L172.1 129.8L171.1 133.2L170.8 136.9L171 141L171.4 145.5L171.6 150.1L171.4 154.8L170.6 159.2L168.9 163.2L166.5 166.5L163.2 168.9L159.2 170.6L154.8 171.4L150.1 171.6L145.5 171.4L141 171L136.9 170.8L133.2 171.1L129.8 172.1L126.8 173.7L124 176.2L121.2 179.2L118.3 182.6L115.2 186.1L111.7 189.2L108 191.8L104.1 193.4L100 194L95.9 193.4L92 191.8L88.3 189.2L84.8 186.1L81.7 182.6L78.8 179.2L76 176.2L73.2 173.7L70.2 172.1L66.8 171.1L63.1 170.8L59 171L54.5 171.4L49.9 171.6L45.2 171.4L40.8 170.6L36.8 168.9L33.5 166.5L31.1 163.2L29.4 159.2L28.6 154.8L28.4 150.1L28.6 145.5L29 141L29.2 136.9L28.9 133.2L27.9 129.8L26.3 126.8L23.8 124L20.8 121.2L17.4 118.3L13.9 115.2L10.8 111.7L8.2 108L6.6 104.1L6 100L6.6 95.9L8.2 92L10.8 88.3L13.9 84.8L17.4 81.7L20.8 78.8L23.8 76L26.3 73.2L27.9 70.2L28.9 66.8L29.2 63.1L29 59L28.6 54.5L28.4 49.9L28.6 45.2L29.4 40.8L31.1 36.8L33.5 33.5L36.8 31.1L40.8 29.4L45.2 28.6L49.9 28.4L54.5 28.6L59 29L63.1 29.2L66.8 28.9L70.2 27.9L73.2 26.3L76 23.8L78.8 20.8L81.7 17.4L84.8 13.9L88.3 10.8L92 8.2L95.9 6.6L100 6L104.1 6.6L108 8.2L111.7 10.8L115.2 13.9L118.3 17.4L121.2 20.8L124 23.8L126.8 26.3L129.8 27.9L133.2 28.9L136.9 29.2L141 29L145.5 28.6L150.1 28.4L154.8 28.6L159.2 29.4L163.2 31.1L166.5 33.5L168.9 36.8L170.6 40.8L171.4 45.2L171.6 49.9L171.4 54.5L171 59L170.8 63.1L171.1 66.8L172.1 70.2L173.7 73.2L176.2 76L179.2 78.8L182.6 81.7L186.1 84.8L189.2 88.3L191.8 92L193.4 95.9L194 100Z"/></svg>
+      <svg class="deco b" viewBox="0 0 200 200" style="left:42%;bottom:-120px;width:240px;height:240px"><path d="M182.8 100C183.5 121 178.9 152.8 165.1 165.1C151.3 177.3 121.3 174 100 173.6C78.7 173.2 50.4 174.7 37.5 162.5C24.7 150.2 23.2 121.3 22.7 100C22.3 78.7 22.1 46.9 34.9 34.9C47.8 23 79 27.6 100 28.2C121 28.9 147.4 26.9 161.2 38.8C175 50.8 182.1 79 182.8 100Z"/></svg>
+    </div>
+    <div class="tilehead"><span class="k" style="opacity:1">{{t.runner}}</span><button class="info" aria-label="{{tips.runner.label}}" aria-expanded="{{tips.runner.on}}" onClick="{{tips.runner.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.runner.label}}" aria-pressed="{{lk.runner.pressed}}" style="{{lk.runner.style}}" onClick="{{lk.runner.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11h14v10H5z"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></button></div><sc-if value="{{tips.runner.on}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:52px;right:16px">{{tips.runner.text}}</div></sc-if>
+    <div style="position:relative;display:flex;flex-wrap:wrap;gap:8px">
+      <span class="tag onp"><span class="dot live" style="background:var(--on-primary)"></span>{{t.fromTag}}</span>
+      <span class="tag onp">{{t.guardTag}}</span>
+      <span class="tag onp">{{t.lastRun}}</span>
+    </div>
+    <h1 class="disp s" style="position:relative;max-width:18ch">{{t.headline}}</h1>
+    <div style="position:relative;display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:6px">
+      <div class="seg" role="group" aria-label="{{t.toolSeg}}" style="background:color-mix(in srgb,var(--on-primary) 20%,transparent)">
+        <sc-for list="{{tools}}" as="tl" hint-placeholder-count="3">
+          <button aria-pressed="{{tl.pressed}}" onClick="{{tl.pick}}" style="{{tl.style}}">{{tl.label}}</button>
+        </sc-for>
+      </div>
+      <input class="inp mono" style="flex:1 1 260px;max-width:420px;background:var(--surf)" aria-label="{{t.targetLabel}}" value="{{draft}}" onInput="{{onDraft}}" placeholder="{{t.targetPh}}">
+      <div class="pos">
+        <div class="split">
+          <button class="btn" style="background:var(--surf);color:var(--text)" onClick="{{run}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4l13 8-13 8z"/></svg>{{t.run}}</button>
+          <button class="btn drop" style="background:var(--surf);color:var(--text)" aria-label="{{t.runMore}}" aria-haspopup="menu" aria-expanded="{{runMenu}}" onClick="{{toggleRunMenu}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+        </div>
+        <sc-if value="{{runMenu}}" hint-placeholder-val="{{ false }}">
+          <div class="menu" role="menu" style="top:56px;right:0">
+            <button class="mi" role="menuitem" onClick="{{run}}">{{t.runOnce}}</button>
+            <button class="mi" role="menuitem" onClick="{{runFive}}">{{t.runFive}}</button>
+            <button class="mi" role="menuitem" onClick="{{saveJob}}">{{t.saveJob}}</button>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+    <div style="position:relative;display:flex;flex-wrap:wrap;gap:8px">
+      <sc-for list="{{presets}}" as="pr" hint-placeholder-count="4">
+        <button class="chip" style="{{pr.style}}" onClick="{{pr.pick}}">{{pr.label}}</button>
+      </sc-for>
+    </div>
+    <div class="herogrid" style="display:flex;flex-wrap:wrap;gap:24px 48px;position:relative;margin-top:10px">
+      <div><div class="k">{{t.avg}}</div><div class="big" style="font-size:56px">{{stats.avg}}<small>ms</small></div></div>
+      <div><div class="k">{{t.minmax}}</div><div class="big" style="font-size:56px">{{stats.min}}<small>/ {{stats.max}} ms</small></div></div>
+      <div><div class="k">{{t.jitter}}</div><div class="big" style="font-size:56px">{{stats.jit}}<small>ms</small></div></div>
+      <div><div class="k">{{t.loss}}</div><div class="big" style="font-size:56px">{{stats.loss}}<small>%</small></div></div>
+      <div style="flex:1 1 280px;max-width:360px;align-self:center">
+        <div class="k" style="display:flex;justify-content:space-between"><span>{{t.quality}}</span><span>{{stats.q}}%</span></div>
+        <svg width="340" height="24" viewBox="0 0 340 24" style="max-width:100%;display:block;margin-top:8px" role="img" aria-label="{{t.qualityAlt}}">
+          <path d="M0 12H340" stroke="currentColor" stroke-opacity=".3" stroke-width="6" stroke-linecap="round" fill="none"/>
+          <svg x="0" y="0" width="{{stats.qw}}" height="24" overflow="hidden"><path class="wavy" d="{{wavePath}}" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/></svg>
+        </svg>
+      </div>
+    </div>
+    <sc-if value="{{noteOn}}" hint-placeholder-val="{{ false }}"><div class="tag onp" style="align-self:flex-start;position:relative">{{note}}</div></sc-if>
+  </section>
+
+  <div class="dash">
+    <section class="card ov span2 rise {{cardCls.map}}" aria-label="{{t.map}}">
+      <div class="tilehead"><span class="k" style="opacity:1">{{t.map}}</span><button class="info" aria-label="{{tips.map.label}}" aria-expanded="{{tips.map.on}}" onClick="{{tips.map.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.map.label}}" aria-pressed="{{lk.map.pressed}}" style="{{lk.map.style}}" onClick="{{lk.map.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11h14v10H5z"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></button></div><sc-if value="{{tips.map.on}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:52px;right:16px">{{tips.map.text}}</div></sc-if>
+      <div class="cols">
+        <h2 class="h2 grow">{{t.mapTitle}}</h2>
+        <span class="legend"><i style="background:var(--good)"></i>{{t.fast}}</span>
+        <span class="legend"><i style="background:var(--warn)"></i>{{t.mid}}</span>
+        <span class="legend"><i style="background:var(--bad)"></i>{{t.slow}}</span>
+      </div>
+      <svg viewBox="0 0 1000 210" style="width:100%;display:block" role="img" aria-label="{{t.mapAlt}}">
+        <sc-for list="{{hops}}" as="h" hint-placeholder-count="6">
+          <path d="{{h.edge}}" fill="none" stroke="{{h.col}}" stroke-width="6" stroke-linecap="round" stroke-opacity=".85"/>
+        </sc-for>
+        <sc-for list="{{hops}}" as="h" hint-placeholder-count="6">
+          <circle cx="{{h.x}}" cy="{{h.y}}" r="22" fill="{{h.fill}}" stroke="var(--surf)" stroke-width="5"/>
+          <text x="{{h.x}}" y="{{h.ty}}" text-anchor="middle" font-size="15" font-weight="800" fill="var(--on-primary)">{{h.n}}</text>
+          <text x="{{h.x}}" y="{{h.ly}}" text-anchor="middle" font-size="14" font-weight="700" fill="var(--text)">{{h.label}}</text>
+          <text x="{{h.x}}" y="{{h.ly2}}" text-anchor="middle" font-size="12.5" fill="var(--sub)">{{h.ms}}</text>
+        </sc-for>
+      </svg>
+      <div class="area-note">{{t.mapNote}}</div>
+    </section>
+
+    <section class="card ov rise {{cardCls.chart}}" aria-label="{{t.chart}}">
+      <div class="tilehead"><span class="k" style="opacity:1">{{t.chart}}</span><button class="info" aria-label="{{tips.chart.label}}" aria-expanded="{{tips.chart.on}}" onClick="{{tips.chart.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.chart.label}}" aria-pressed="{{lk.chart.pressed}}" style="{{lk.chart.style}}" onClick="{{lk.chart.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11h14v10H5z"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></button></div><sc-if value="{{tips.chart.on}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:52px;right:16px">{{tips.chart.text}}</div></sc-if>
+      <div class="plot">
+        <svg viewBox="0 0 600 220" role="img" aria-label="{{t.chartAlt}}">
+          <defs><linearGradient id="lgT" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--primary)" stop-opacity=".38"/><stop offset="1" stop-color="var(--primary)" stop-opacity="0"/></linearGradient></defs>
+          <line class="gridline" x1="0" x2="600" y1="55" y2="55"/><line class="gridline" x1="0" x2="600" y1="110" y2="110"/><line class="gridline" x1="0" x2="600" y1="165" y2="165"/>
+          <path d="{{chart.area}}" fill="url(#lgT)"/>
+          <path d="{{chart.line}}" fill="none" stroke="var(--primary)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="{{chart.avgLine}}" fill="none" stroke="var(--tertiary)" stroke-width="2.5" stroke-dasharray="6 7"/>
+        </svg>
+        <span class="ptwrap" style="left:{{chart.px}}%;top:{{chart.py}}%"><span class="pt live"></span></span>
+      </div>
+      <div class="axis"><span>{{t.oldest}}</span><span>{{t.now}}</span></div>
+      <div class="legend"><i style="background:var(--primary)"></i>{{t.samples}}<i style="background:var(--tertiary);margin-left:10px"></i>{{t.avgline}}</div>
+    </section>
+  </div>
+
+  <section class="card ov rise {{cardCls.result}}" aria-label="{{t.result}}">
+    <div class="tilehead"><span class="k" style="opacity:1">{{t.result}}</span><button class="info" aria-label="{{tips.result.label}}" aria-expanded="{{tips.result.on}}" onClick="{{tips.result.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.result.label}}" aria-pressed="{{lk.result.pressed}}" style="{{lk.result.style}}" onClick="{{lk.result.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11h14v10H5z"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></button></div><sc-if value="{{tips.result.on}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:52px;right:16px">{{tips.result.text}}</div></sc-if>
+    <sc-if value="{{isLookup}}" hint-placeholder-val="{{ false }}">
+      <div class="dt" style="--cols:90px 1.3fr 1.6fr 80px 1fr" role="table" aria-label="{{t.result}}">
+        <div class="r h" role="row"><span>{{t.cType}}</span><span>{{t.cName}}</span><span>{{t.cValue}}</span><span>TTL</span><span>{{t.cFrom}}</span></div>
+        <sc-for list="{{records}}" as="r" hint-placeholder-count="4"><div class="r" role="row"><span><span class="tag">{{r.type}}</span></span><span class="mono">{{r.name}}</span><span class="mono">{{r.value}}</span><span>{{r.ttl}}</span><span>{{r.from}}</span></div></sc-for>
+      </div>
+    </sc-if>
+    <sc-if value="{{notLookup}}" hint-placeholder-val="{{ true }}">
+      <div class="dt" style="--cols:50px 1.2fr 1.2fr 100px 80px 1fr" role="table" aria-label="{{t.result}}">
+        <div class="r h" role="row"><span>#</span><span>{{t.cHost}}</span><span>IP</span><span>{{t.cRtt}}</span><span>{{t.cLoss}}</span><span>{{t.cNote}}</span></div>
+        <sc-for list="{{hops}}" as="h" hint-placeholder-count="6"><div class="r" role="row"><span class="badge">{{h.n}}</span><span>{{h.label}}</span><span class="mono">{{h.ip}}</span><b>{{h.ms}}</b><span>{{h.loss}}</span><span><span class="{{h.tagCls}}">{{h.tag}}</span></span></div></sc-for>
+      </div>
+    </sc-if>
+  </section>
+
+  <section class="card ov rise {{cardCls.console}}" aria-label="{{t.console}}">
+    <div class="tilehead"><span class="k" style="opacity:1">{{t.console}}</span><button class="info" aria-label="{{tips.console.label}}" aria-expanded="{{tips.console.on}}" onClick="{{tips.console.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.console.label}}" aria-pressed="{{lk.console.pressed}}" style="{{lk.console.style}}" onClick="{{lk.console.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11h14v10H5z"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></button></div><sc-if value="{{tips.console.on}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:52px;right:16px">{{tips.console.text}}</div></sc-if>
+    <div class="cols">
+      <h2 class="h2 grow">{{t.consoleTitle}} <span class="badge" style="vertical-align:middle">{{shownCount}}</span></h2>
+      <span class="tag good"><span class="dot live" style="margin-right:2px"></span>{{followText}}</span>
+      <button class="btn o sm" onClick="{{toggleFollow}}" aria-pressed="{{followPressed}}">{{followBtn}}</button>
+      <button class="btn t sm" onClick="{{exportLogs}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M4 19h16"/></svg>{{t.exportLogs}}</button>
+    </div>
+    <div class="cols" role="group" aria-label="{{t.sevLabel}}">
+      <sc-for list="{{sevChips}}" as="sv" hint-placeholder-count="4">
+        <button class="{{sv.cls}}" aria-pressed="{{sv.pressed}}" onClick="{{sv.pick}}"><span class="dot" style="background:{{sv.col}}"></span>{{sv.label}} <b>{{sv.count}}</b></button>
+      </sc-for>
+    </div>
+    <div class="cols" style="align-items:stretch">
+      <label class="search" style="flex:1 1 360px;background:var(--surf-high)">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14z"/><path d="M20 20l-3.5-3.5"/></svg>
+        <input aria-label="{{t.logSearch}}" placeholder="{{t.logPh}}" value="{{q}}" onInput="{{onQ}}">
+        <sc-if value="{{rxOn}}" hint-placeholder-val="{{ true }}"><span class="{{rxTagCls}}">{{rxTag}}</span></sc-if>
+        <button class="rxbtn" aria-pressed="{{rxPressed}}" aria-label="{{t.rxBtn}}" title="{{t.rxBtn}}" onClick="{{toggleRx}}">.*</button>
+      </label>
+    </div>
+    <sc-if value="{{hasSel}}" hint-placeholder-val="{{ false }}"><div class="glass glassbar" role="region" aria-label="{{t.bulk}}"><b style="flex:1;min-width:120px">{{selText}}</b><button class="{{bulkCls}}" onClick="{{bulkA}}">{{t.bulkA}}</button><button class="btn o sm" onClick="{{clearSel}}">{{t.clear}}</button></div></sc-if>
+    <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start">
+      <div style="flex:1 1 560px;min-width:0">
+        <div class="scroll" style="max-height:560px" role="log" aria-label="{{t.console}}">
+          <sc-for list="{{logs}}" as="lg" hint-placeholder-count="8">
+            <div class="row pos" style="padding:6px 0;gap:6px">
+              <button class="cbw" role="checkbox" aria-checked="{{lg.checked}}" aria-label="{{lg.selLabel}}" onClick="{{lg.toggle}}"><span class="{{lg.cbCls}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></button>
+              <span class="mono" style="font-size:12.5px;color:var(--sub);flex:none">{{lg.time}}</span>
+              <span class="{{lg.tagCls}}" style="flex:none;min-width:62px;justify-content:center">{{lg.sev}}</span>
+              <span class="mono" style="font-size:12.5px;font-weight:700;flex:none">{{lg.src}}</span>
+              <span class="grow code" style="font-size:12.5px;word-break:break-word">{{lg.msg}}</span>
+              <button class="info" aria-label="{{t.rowMenu}}" aria-haspopup="menu" aria-expanded="{{lg.menuOpen}}" onClick="{{lg.more}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="5" r="1.8" fill="currentColor"/><circle cx="12" cy="12" r="1.8" fill="currentColor"/><circle cx="12" cy="19" r="1.8" fill="currentColor"/></svg></button><sc-if value="{{lg.menuOpen}}" hint-placeholder-val="{{ false }}"><div class="menu" role="menu" style="right:8px;top:54px"><button class="mi" role="menuitem" onClick="{{lg.mA}}">{{t.mA}}</button><button class="mi" role="menuitem" onClick="{{lg.mB}}">{{t.mB}}</button><button class="mi" role="menuitem" onClick="{{lg.mC}}">{{t.mC}}</button></div></sc-if>
+            </div>
+          </sc-for>
+          <sc-if value="{{noLogs}}" hint-placeholder-val="{{ false }}"><div class="muted" style="padding:28px 8px;text-align:center">{{t.noLogs}}</div></sc-if>
+        </div>
+      </div>
+      <sc-if value="{{rxOn}}" hint-placeholder-val="{{ true }}">
+        <aside class="card tone ov" style="flex:1 1 400px;max-width:480px;border-radius:28px;padding:20px" aria-label="{{t.rxPanel}}">
+          <div class="tilehead"><span class="k" style="opacity:1">{{t.rxPanel}}</span><button class="info" aria-label="{{tips.rx.label}}" aria-expanded="{{tips.rx.on}}" onClick="{{tips.rx.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.rx.label}}" aria-pressed="{{lk.rx.pressed}}" style="{{lk.rx.style}}" onClick="{{lk.rx.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11h14v10H5z"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></button></div>
+          <sc-if value="{{tips.rx.on}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:46px;right:12px">{{tips.rx.text}}</div></sc-if>
+          <label class="t2" for="rxpat">{{t.pattern}}</label>
+          <input id="rxpat" class="field mono" style="height:48px" value="{{pat}}" onInput="{{onPat}}" aria-invalid="{{patBad}}">
+          <div class="cols" role="group" aria-label="{{t.flags}}">
+            <sc-for list="{{flagBtns}}" as="fl" hint-placeholder-count="4">
+              <button class="{{fl.cls}}" aria-pressed="{{fl.pressed}}" onClick="{{fl.pick}}" title="{{fl.title}}"><span class="mono">{{fl.f}}</span> {{fl.label}}</button>
+            </sc-for>
+          </div>
+          <div class="{{valCls}}" style="align-self:flex-start" role="status">{{valText}}</div>
+          <div class="k" style="margin-top:4px">{{t.palette}}</div>
+          <div class="cols" style="gap:6px">
+            <sc-for list="{{palette}}" as="tk" hint-placeholder-count="8">
+              <button class="chip mono" style="height:34px" title="{{tk.title}}" aria-label="{{tk.title}}" onClick="{{tk.pick}}">{{tk.tok}}</button>
+            </sc-for>
+          </div>
+          <div class="k" style="margin-top:4px">{{t.explain}}</div>
+          <div class="scroll" style="max-height:170px;background:var(--surf);border-radius:16px;padding:6px 12px">
+            <sc-for list="{{tree}}" as="nd" hint-placeholder-count="5">
+              <div style="padding:5px 0;padding-left:{{nd.pad}}px;display:flex;gap:10px;align-items:baseline"><span class="mono tag" style="flex:none">{{nd.tok}}</span><span class="t2" style="margin:0">{{nd.desc}}</span></div>
+            </sc-for>
+            <sc-if value="{{noTree}}" hint-placeholder-val="{{ false }}"><div class="t2">{{t.noTree}}</div></sc-if>
+          </div>
+          <label class="t2" for="rxtext">{{t.testText}}</label>
+          <textarea id="rxtext" class="field mono" style="height:84px;padding:10px 14px;resize:vertical;font-size:13px" onInput="{{onText}}">{{testText}}</textarea>
+          <div class="k" style="display:flex;justify-content:space-between"><span>{{t.matches}}</span><span>{{matchCount}}</span></div>
+          <div class="code" style="background:var(--surf);border-radius:16px;padding:10px 14px;white-space:pre-wrap;word-break:break-word" aria-label="{{t.highlight}}">
+            <sc-for list="{{segs}}" as="sg" hint-placeholder-count="5"><span style="{{sg.style}}">{{sg.t}}</span></sc-for>
+          </div>
+          <div class="cols">
+            <button class="btn f sm" onClick="{{applyRx}}">{{t.applyFilter}}</button>
+            <button class="btn o sm" onClick="{{resetRx}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg>{{t.reset}}</button>
+          </div>
+        </aside>
+      </sc-if>
+    </div>
+  </section>
+</main>
+</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#4f5bd5","options":["#4f5bd5","#00897b","#d81b60","#f4511e","#7c4dff"],"section":"Look"},"dark":{"editor":"boolean","default":false,"section":"Look"},"motion":{"editor":"enum","options":["calm","standard","expressive"],"default":"expressive","section":"Look"},"firmware":{"editor":"enum","options":["merlin","stock"],"default":"merlin","section":"Router"},"role":{"editor":"enum","options":["owner","operator","viewer"],"default":"owner","section":"Router"},"lang":{"editor":"enum","options":["en","yue","both"],"default":"en","section":"Language"},"$preview":{"width":1440,"height":2650}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const p = this.props; const s = this.state || {};
+    const lang0 = p.lang ?? 'en'; const lang = (s.lov && s.lov.base === lang0) ? s.lov.v : lang0; const role = p.role ?? 'owner'; const firmware = p.firmware ?? 'merlin'; const motion = p.motion ?? 'expressive';
+    const accent = p.accent || '#4f5bd5';
+    const dark = p.dark === true || p.dark === 'true' || p.dark === 1 || p.dark === '1';
+    const T = (en, yue) => lang === 'en' ? en : lang === 'yue' ? yue : en + ' · ' + yue;
+    const canWrite = role !== 'viewer';
+    const set = (o) => this.setState(o);
+    const toggleIn = (a, v) => a.includes(v) ? a.filter(x => x !== v) : a.concat([v]);
+    const IC = {"check":"M5 12.5l4.5 4.5L19 7.5","info":"M12 11v6M12 7.5h.01","lock":"M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4","search":"M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14z M20 20l-3.5-3.5","play":"M7 4l13 8-13 8z","stop":"M6 6h12v12H6z","restart":"M20 12a8 8 0 1 1-2.6-5.9 M20 4v5h-5","copy":"M9 9h11v11H9z M5 15V5h10","logs":"M6 3h9l4 4v14H6z M14 3v5h5 M9 13h7 M9 17h7","trash":"M4 7h16 M9 7V4h6v3 M6 7l1 13h10l1-13","edit":"M12 20h9 M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z","plus":"M12 5v14M5 12h14","down":"M12 4v11M7 10l5 5 5-5M4 19h16","up":"M12 20V9M7 14l5-5 5 5M4 5h16","filter":"M3 5h18l-7 8v6l-4 2v-8z","eye":"M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6","eyeoff":"M3 3l18 18 M10.6 6.2A9.6 9.6 0 0 1 12 6c6 0 10 6 10 6a17 17 0 0 1-3.2 3.7 M6.3 7.7A17 17 0 0 0 2 12s4 6 10 6a9.6 9.6 0 0 0 3.4-.6","undo":"M9 14L4 9l5-5 M4 9h10a6 6 0 0 1 0 12h-3","warn":"M12 3l10 18H2z M12 10v5 M12 18h.01","x":"M6 6l12 12M18 6L6 18","wifi":"M2 9a15 15 0 0 1 20 0 M5 12.5a10 10 0 0 1 14 0 M8.5 16a5 5 0 0 1 7 0 M12 19.5h.01","server":"M3 4h18v6H3z M3 14h18v6H3z M7 7h.01 M7 17h.01","usb":"M12 3v13 M9 6l3-3 3 3 M12 12l-4-3v4 M12 14l4-3 M6 16h4v4H6z M16 8h3v3h-3z","pi":"M5 6h14v12H5z M9 10h6v4H9z M2 9h3 M2 15h3 M19 9h3 M19 15h3","vm":"M4 5h16v11H4z M2 20h20 M9 16v4 M15 16v4","docker":"M3 13h18c0 4-3 7-8 7s-8-3-8-7z M6 13V9h3v4 M10 13V9h3v4 M14 13V9h3v4 M10 9V6h3v3","term":"M3 5h18v14H3z M7 10l3 2-3 2 M12 15h5","globe":"M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18 M3 12h18 M12 3c3 3 3 15 0 18 M12 3c-3 3-3 15 0 18","shield":"M12 3l8 3v6c0 5-3.5 8-8 9c-4.5-1-8-4-8-9V6z","clock":"M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18 M12 7v5l3 2","bolt":"M13 3L5 14h6l-1 7 8-11h-6z","chev":"M6 9l6 6 6-6","chevr":"M9 6l6 6-6 6","bell":"M6 17V11a6 6 0 0 1 12 0v6l2 2H4z M10 21h4","home":"M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z","gear":"M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6 M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.4-2.3 1a7 7 0 0 0-2-1.2L14.3 3h-4l-.4 2.7a7 7 0 0 0-2 1.2l-2.3-1-2 3.4 2 1.5A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.5 2 3.4 2.3-1a7 7 0 0 0 2 1.2l.4 2.7h4l.4-2.7a7 7 0 0 0 2-1.2l2.3 1 2-3.4-2-1.5c.1-.4.1-.8.1-1.2z","devices":"M4 6h12v9H4z M2 18h16 M19 9h3v9h-3z","menu":"M4 6h16M4 12h16M4 18h16","spark":"M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z","code":"M8 6l-5 6 5 6 M16 6l5 6-5 6 M14 4l-4 16","sliders":"M4 7h10 M18 7h2 M4 17h2 M10 17h10 M16 5v4 M8 15v4","history":"M3 12a9 9 0 1 0 3-6.7 M3 4v5h5 M12 8v4l3 2","mic":"M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z M5 11a7 7 0 0 0 14 0 M12 18v3","sound":"M4 9h4l5-4v14l-5-4H4z M16 9a4 4 0 0 1 0 6 M18.5 6.5a8 8 0 0 1 0 11","palette":"M12 3a9 9 0 1 0 0 18c1.5 0 2-1 1.5-2s0-2.5 1.5-2.5H17a4 4 0 0 0 4-4C21 6.5 17 3 12 3z M7.5 11h.01 M10 7.5h.01 M14.5 7.5h.01","user":"M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8 M4 21c0-4 3.6-7 8-7s8 3 8 7","family":"M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6 M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6 M17 8a2.5 2.5 0 1 1 0 5 M17.5 14.2c2.3.4 3.5 2.4 3.5 5.8","backup":"M12 16V4 M7 9l5-5 5 5 M4 15v5h16v-5","route":"M6 4a2 2 0 1 0 0 4 2 2 0 0 0 0-4z M18 16a2 2 0 1 0 0 4 2 2 0 0 0 0-4z M8 6h6a3 3 0 0 1 0 6H10a3 3 0 0 0 0 6h6","box":"M3 8h18v12H3z M8 8V5h8v3 M3 13h18","link":"M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1 M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1","disk":"M3 14l3-8h12l3 8v5H3z M3 14h18 M17 17h.01","chip":"M7 7h10v10H7z M9 3v4 M15 3v4 M9 17v4 M15 17v4 M3 9h4 M3 15h4 M17 9h4 M17 15h4","pause":"M8 5v14 M16 5v14","flag":"M5 21V4 M5 4h12l-2 4 2 4H5","tag":"M3 12V4h8l10 10-8 8z M7 8h.01","help":"M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18 M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7 M12 17h.01","chart":"M5 20v-6 M12 20V6 M19 20v-10","moon":"M20 14A8 8 0 1 1 10 4a6.5 6.5 0 0 0 10 10z","grid":"M4 4h7v7H4z M13 4h7v7h-7z M4 13h7v7H4z M13 13h7v7h-7z","lan":"M9 3h6v5H9z M3 16h6v5H3z M15 16h6v5h-6z M12 8v4 M6 16v-4h12v4","mesh":"M12 3a2.2 2.2 0 1 0 0 4.4A2.2 2.2 0 0 0 12 3z M5 16a2.2 2.2 0 1 0 0 4.4A2.2 2.2 0 0 0 5 16z M19 16a2.2 2.2 0 1 0 0 4.4A2.2 2.2 0 0 0 19 16z M11 7l-5 9 M13 7l5 9 M7.2 18.2h9.6","fwd":"M3 12h14 M12 6l6 6-6 6 M21 4v16","wrench":"M15 4a5 5 0 0 0-4.5 6.8L4 17.3 6.7 20l6.5-6.5A5 5 0 0 0 20 9l-3 3-3-1-1-3z","save":"M5 3h12l4 4v14H5z M8 3v6h8V3 M8 21v-7h8v7"};
+    const tipSel = s.tip || ''; const locksOn = s.locks || [];
+    const mkTips = (defs) => { const o = {}; Object.keys(defs).forEach(k => { o[k] = { on: tipSel === k, text: defs[k][1], label: T('About: ', '關於：') + defs[k][0], toggle: () => set({ tip: tipSel === k ? '' : k }) }; }); return o; };
+    const mkLocks = (defs) => { const lk = {}, cardCls = {}; Object.keys(defs).forEach(k => { const on = !canWrite || locksOn.includes(k); lk[k] = { pressed: on ? 'true' : 'false', label: (on ? T('Unlock ', '解鎖 ') : T('Lock ', '鎖定 ')) + defs[k], toggle: () => { if (canWrite) set({ locks: toggleIn(locksOn, k) }); }, style: on ? 'background:var(--tertiary-c);color:var(--on-tertiary-c)' : '' }; cardCls[k] = on ? 'lockedcard' : ''; }); return { lk, cardCls }; };
+    const wavy = (len, y) => { let d = 'M0 ' + y; for (let i = 0; i < Math.ceil(len / 16) + 2; i++) d += ' q4 -6 8 0 t8 0'; return d; };
+    const line = (vals, w, h, pad, lo, hi) => { const mn = lo ?? Math.min(...vals), mx = hi ?? Math.max(...vals); const sp = (mx - mn) || 1; return vals.map((v, i) => { const x = pad + (w - 2 * pad) * i / Math.max(vals.length - 1, 1); const y = h - pad - (h - 2 * pad) * (v - mn) / sp; return (i ? 'L' : 'M') + x.toFixed(1) + ' ' + y.toFixed(1); }).join(' '); };
+    const cookieP = (r, a, n) => { let d = ''; for (let i = 0; i <= 120; i++) { const th = i * Math.PI * 2 / 120; const rr = r + a * Math.cos(n * th); d += (i ? 'L' : 'M') + (100 + rr * Math.cos(th)).toFixed(1) + ' ' + (100 + rr * Math.sin(th)).toFixed(1); } return d + 'Z'; };
+    const base = (title, tabs, pendN) => ({ accent, dark, darkNum: dark ? 1 : 0, lang, role, firmware, motionCls: motion === 'calm' ? 'calm' : motion === 'standard' ? 'std' : '', pendCount: pendN, tabsStr: tabs.join(','), viewer: !canWrite });
+    const tool = s.tool || 'ping';
+    const target = s.target || 'dns.example.net';
+    const runN = s.runN || 1;
+    const draft = s.draft ?? target;
+    const note = s.note || '';
+    const hash = (str) => { let h = 2166136261; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; };
+    const rng = (seed) => () => { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed / 4294967296; };
+    const r = rng(hash(target + tool) + runN * 977);
+    const isLan = /^(nas|10\.0\.50)/.test(target);
+    const route = isLan
+      ? [[T('Laptop', '手提電腦'), '198.51.100.10'], [T('Router', '路由器'), '198.51.100.1'], [target.length > 14 ? 'nas.local' : target, /^10\./.test(target) ? target : '198.51.100.20']]
+      : [[T('Laptop', '手提電腦'), '198.51.100.10'], [T('Router', '路由器'), '198.51.100.1'], [T('ISP edge', '寬頻商邊緣'), '203.0.113.1'], [T('Core', '核心'), '203.0.113.9'], [T('Exchange', '交換中心'), '198.51.100.4'], [T('Transit', '轉駁'), '198.51.100.60'], [target, '198.51.100.7']];
+    let acc = 0;
+    const n = route.length;
+    const hopsRaw = route.map((h, i) => {
+      acc += i === 0 ? 0.2 : (isLan ? 0.6 + r() * 1.2 : (i < 3 ? 0.8 + r() * 2 : 2 + r() * 6));
+      const loss = (!isLan && i === 4 && r() > 0.6) ? 2 : 0;
+      return { label: h[0], ip: h[1], ms: acc, loss };
+    });
+    const colOf = (ms) => ms < 6 ? 'var(--good)' : ms < 14 ? 'var(--warn)' : 'var(--bad)';
+    const tagOf = (ms, loss) => loss ? [T('Packet loss', '有封包流失'), 'tag warn'] : ms < 6 ? [T('Fast', '快'), 'tag good'] : ms < 14 ? [T('Normal', '正常'), 'tag'] : [T('Slow hop', '慢跳點'), 'tag warn'];
+    const hops = hopsRaw.map((h, i) => {
+      const x = 70 + i * (860 / (n - 1)); const y = 96 + Math.sin(i * 1.15) * 34;
+      const px = i ? 70 + (i - 1) * (860 / (n - 1)) : 0; const py = i ? 96 + Math.sin((i - 1) * 1.15) * 34 : 0; const mx = (px + x) / 2;
+      const tg = tagOf(h.ms, h.loss);
+      return { n: i + 1, x: x.toFixed(1), y: y.toFixed(1), ty: (y + 5).toFixed(1), ly: (y + 46).toFixed(1), ly2: (y + 64).toFixed(1), label: h.label, ip: h.ip, ms: h.ms.toFixed(1) + ' ms', loss: h.loss + '%', col: colOf(h.ms), fill: 'var(--primary)', tag: tg[0], tagCls: tg[1], edge: i ? 'M' + px.toFixed(1) + ' ' + py.toFixed(1) + ' C' + mx.toFixed(1) + ' ' + py.toFixed(1) + ' ' + mx.toFixed(1) + ' ' + y.toFixed(1) + ' ' + x.toFixed(1) + ' ' + y.toFixed(1) : '' };
+    });
+    const last = hopsRaw[n - 1].ms;
+    const samples = []; for (let i = 0; i < 40; i++) samples.push(Math.max(0.4, last + (r() - 0.5) * last * 0.5 + (i % 13 === 7 ? last * 0.6 : 0)));
+    const sMin = Math.min(...samples), sMax = Math.max(...samples), sAvg = samples.reduce((a, b) => a + b, 0) / samples.length;
+    const jit = samples.slice(1).reduce((a, v, i) => a + Math.abs(v - samples[i]), 0) / (samples.length - 1);
+    const lossPct = hopsRaw.some(h => h.loss) ? 2.5 : 0;
+    const quality = Math.max(40, Math.round(100 - jit * 2 - lossPct * 4 - sAvg * 0.4));
+    const CW = 600, CH = 220, lo = Math.max(0, sMin - 1), hi = sMax + 1;
+    const lineD = line(samples, CW, CH, 16, lo, hi);
+    const avgY = CH - 16 - (CH - 32) * (sAvg - lo) / (hi - lo);
+    const lastY = CH - 16 - (CH - 32) * (samples[samples.length - 1] - lo) / (hi - lo);
+    const chart = { line: lineD, area: lineD + ' L584 204 L16 204 Z', avgLine: 'M16 ' + avgY.toFixed(1) + ' L584 ' + avgY.toFixed(1), px: ((CW - 16) / CW * 100).toFixed(2), py: (lastY / CH * 100).toFixed(2) };
+    const stats = { avg: sAvg.toFixed(1), min: sMin.toFixed(1), max: sMax.toFixed(1), jit: jit.toFixed(1), loss: lossPct.toFixed(1), q: quality, qw: Math.round(334 * quality / 100) };
+    const records = [
+      { type: 'A', name: target, value: '198.51.100.7', ttl: '300', from: '198.51.100.2' },
+      { type: 'AAAA', name: target, value: '2001:db8:10::7', ttl: '300', from: '198.51.100.2' },
+      { type: 'MX', name: target, value: '10 mail.example.net', ttl: '3600', from: '198.51.100.2' },
+      { type: 'TXT', name: target, value: '"v=spf1 -all"', ttl: '3600', from: '198.51.100.2' }
+    ];
+
+    const presetsRaw = [['dns.example.net', 'dns.example.net'], ['nas.local', T('NAS 198.51.100.20', 'NAS 198.51.100.20')], ['198.51.100.7', '198.51.100.7'], ['198.51.100.1', T('Router 198.51.100.1', '路由器 198.51.100.1')]];
+    const presets = presetsRaw.map(a => ({ label: a[1], style: target === a[0] ? 'background:var(--secondary-c);color:var(--on-secondary-c);border-color:transparent' : '', pick: () => set({ target: a[0], draft: a[0], runN: runN + 1 }) }));
+    const toolDefs = [['ping', T('Ping', 'Ping'), 'Ping'], ['trace', T('Traceroute', '追蹤路由'), 'Traceroute'], ['lookup', T('Lookup', 'DNS 查詢'), 'Lookup']];
+    const tools = toolDefs.map(d => ({ label: d[1], pressed: tool === d[0] ? 'true' : 'false', style: tool === d[0] ? '' : 'color:var(--on-primary)', pick: () => set({ tool: d[0] }) }));
+    const run = () => set({ target: (draft || '').trim() || target, runN: runN + 1, runMenu: false, note: '' });
+
+    // regex builder state
+    const pat = s.pat ?? '\\b(?:\\d{1,3}\\.){3}\\d{1,3}\\b';
+    const flags = s.flags ?? 'g';
+    const testText = s.text ?? '17:41:07 dnsmasq-dhcp: DHCPACK(br0) 198.51.100.113 Pixel-9\n17:39:51 kernel: DROP IN=eth0 SRC=203.0.113.88 PROTO=TCP DPT=23\n17:36:20 wlceventd: STA disassoc, reason 8';
+    let patBad = false, patMsg = '';
+    let reTest = null;
+    try { reTest = new RegExp(pat, flags.replace(/[^gimsuy]/g, '')); } catch (e) { patBad = true; patMsg = String(e.message || e).slice(0, 80); }
+    const rxOn = s.rx !== false;
+    const explain = (src) => {
+      const out = []; let depth = 0; let i = 0; const add = (tok, desc) => out.push({ tok, desc, pad: depth * 18 });
+      while (i < src.length) {
+        const c = src[i];
+        if (c === '\\') { const nx = src[i + 1] || ''; const m = { d: ['digit 0-9', '數字 0-9'], w: ['word character', '字母、數字或底線'], s: ['whitespace', '空白'], b: ['word boundary', '字邊界'], D: ['not a digit', '非數字'], W: ['not a word character', '非字元'], S: ['not whitespace', '非空白'], '.': ['literal dot', '句點'], n: ['newline', '換行'] }[nx]; add('\\' + nx, m ? T(m[0], m[1]) : T('escaped "' + nx + '"', '跳脫「' + nx + '」')); i += 2; continue; }
+        if (c === '(') {
+          let tk = '('; let d = T('capture group', '擷取群組');
+          if (src.startsWith('(?:', i)) { tk = '(?:'; d = T('non-capturing group', '非擷取群組'); }
+          else if (src.startsWith('(?<', i) && src[i + 3] !== '=' && src[i + 3] !== '!') { const e = src.indexOf('>', i); if (e > 0) { tk = src.slice(i, e + 1); d = T('named group', '命名群組'); } }
+          else if (src.startsWith('(?=', i) || src.startsWith('(?!', i)) { tk = src.slice(i, i + 3); d = tk[2] === '=' ? T('lookahead', '正向前瞻') : T('negative lookahead', '負向前瞻'); }
+          add(tk, d); depth++; i += tk.length; continue;
+        }
+        if (c === ')') { depth = Math.max(0, depth - 1); add(')', T('end of group', '群組結束')); i++; continue; }
+        if (c === '[') { let e = i + 1; if (src[e] === '^') e++; while (e < src.length && src[e] !== ']') { if (src[e] === '\\') e++; e++; } const tk = src.slice(i, e + 1); const neg = tk[1] === '^'; add(tk, (neg ? T('any character not in ', '唔屬於以下嘅字元 ') : T('any one of ', '以下任何一個 ')) + tk.slice(neg ? 2 : 1, -1)); i = e + 1; continue; }
+        if (c === '{') { const e = src.indexOf('}', i); if (e > 0) { const tk = src.slice(i, e + 1); add(tk, T('repeat ' + tk.slice(1, -1) + ' times', '重複 ' + tk.slice(1, -1) + ' 次')); i = e + 1; continue; } }
+        const simple = { '^': ['start of line', '行首'], '$': ['end of line', '行尾'], '.': ['any character', '任何字元'], '|': ['or', '或者'], '*': ['zero or more', '零個或以上'], '+': ['one or more', '一個或以上'], '?': ['optional or lazy', '可有可無（或者懶惰）'] }[c];
+        if (simple) { add(c, T(simple[0], simple[1])); i++; continue; }
+        let j = i; while (j < src.length && !'\\()[{^$.|*+?'.includes(src[j])) j++; if (j === i) j = i + 1;
+        add(src.slice(i, j), T('literal "' + src.slice(i, j) + '"', '文字「' + src.slice(i, j) + '」')); i = j;
+      }
+      return out.slice(0, 26);
+    };
+    const tree = patBad ? [] : explain(pat);
+    const segs = []; let matchCount = 0;
+    if (reTest) {
+      const re = new RegExp(pat, flags.includes('g') ? flags : flags + 'g'); const txt = testText.slice(0, 2000); let lastI = 0, m, guard = 0;
+      while ((m = re.exec(txt)) && guard++ < 200) {
+        if (m[0] === '') { re.lastIndex++; continue; }
+        if (m.index > lastI) segs.push({ t: txt.slice(lastI, m.index), style: '' });
+        segs.push({ t: m[0], style: 'background:var(--primary-c);color:var(--on-primary-c);border-radius:4px;padding:1px 3px;font-weight:700' });
+        lastI = m.index + m[0].length; matchCount++;
+      }
+      segs.push({ t: txt.slice(lastI), style: '' });
+    } else segs.push({ t: testText, style: '' });
+    const flagDefs = [['g', T('global', '全部'), 'Global'], ['i', T('ignore case', '唔分大細楷'), 'Ignore case'], ['m', T('multiline', '多行'), 'Multiline'], ['s', T('dot all', '點配換行'), 'Dot all']];
+    const flagBtns = flagDefs.map(f => ({ f: f[0], label: f[1], title: f[2], pressed: flags.includes(f[0]) ? 'true' : 'false', cls: flags.includes(f[0]) ? 'chip on' : 'chip', pick: () => set({ flags: flags.includes(f[0]) ? flags.replace(f[0], '') : flags + f[0] }) }));
+    const palDefs = [['\\d', T('Digit', '數字')], ['\\w', T('Word character', '字元')], ['\\s', T('Whitespace', '空白')], ['\\b', T('Word boundary', '字邊界')], ['.', T('Any character', '任何字元')], ['[a-z]', T('Character range', '字元範圍')], ['^', T('Start', '開始')], ['$', T('End', '結尾')], ['*', T('Zero or more', '零個或以上')], ['+', T('One or more', '一個或以上')], ['?', T('Optional', '可選')], ['{2,4}', T('Repeat 2 to 4', '重複 2 至 4 次')], ['(…)', T('Capture group', '擷取群組'), '()'], ['(?:…)', T('Non-capturing group', '非擷取群組'), '(?:)'], ['|', T('Or', '或者')], ['(?<n>…)', T('Named group', '命名群組'), '(?<n>)']];
+    const palette = palDefs.map(d => ({ tok: d[0], title: d[1], pick: () => set({ pat: pat + (d[2] || d[0]) }) }));
+
+    // logs
+    const L = [
+      ['17:41:07', 'info', 'dnsmasq-dhcp', 'DHCPACK(br0) 198.51.100.113 3c:22:fb:aa:01:5e Pixel-9'],
+      ['17:40:52', 'debug', 'httpd', 'GET /appGet.cgi?hook=uptime() from 198.51.100.10 (200)'],
+      ['17:39:51', 'warn', 'kernel', 'DROP IN=eth0 SRC=203.0.113.88 DST=198.51.100.1 PROTO=TCP DPT=23'],
+      ['17:38:30', 'info', 'wlceventd', 'STA 3c:22:fb:aa:01:5e assoc to wl1.0 (5 GHz), RSSI -52'],
+      ['17:36:20', 'warn', 'wlceventd', 'STA a8:5b:78:10:22:cc disassoc, reason 8 (leaving)'],
+      ['17:34:02', 'info', 'ntpd', 'synchronized to 203.0.113.123, stratum 2'],
+      ['17:31:44', 'error', 'httpd', 'login failed for user from 198.51.100.77 (3rd attempt)'],
+      ['17:30:00', 'info', 'crond', 'running /jffs/scripts/nightly-report.sh'],
+      ['17:28:16', 'debug', 'rc_service', 'restart_wireless: nothing to do'],
+      ['17:25:09', 'info', 'dnsmasq', 'reply dns.example.net is 198.51.100.7'],
+      ['17:21:33', 'warn', 'wan', 'DHCP lease renew took 3.2 s (limit 2.0 s)'],
+      ['17:18:47', 'info', 'vpn_server1', 'client Alex-Phone 192.0.2.2 connected'],
+      ['17:15:12', 'error', 'ddns', 'update failed: timeout contacting ddns.example.net'],
+      ['17:12:00', 'info', 'ddns', 'update ok: 203.0.113.55 for home.example.net'],
+      ['17:09:41', 'debug', 'dnsmasq', 'cache size 1500, 212 inserted, 94 evicted'],
+      ['17:05:25', 'info', 'usb', 'NAS-Disk 2 TB mounted at /tmp/mnt/NAS'],
+      ['17:01:58', 'warn', 'kernel', 'CPU temperature 78 C (fan 62 percent)'],
+      ['16:58:20', 'info', 'wlceventd', 'STA 74:db:11:08:9a:20 assoc to wl0.0 (2.4 GHz), RSSI -61'],
+      ['16:52:03', 'error', 'wlceventd', 'DFS radar detected on channel 100, switching to 44'],
+      ['16:49:31', 'info', 'rc_service', 'restart_wireless done in 6.1 s'],
+      ['16:44:12', 'debug', 'httpd', 'session cache: 2 active, 0 expired'],
+      ['16:40:09', 'info', 'dnsmasq-dhcp', 'DHCPREQUEST(br0) 198.51.100.121 b4:0c:25:77:3a:19'],
+      ['16:35:45', 'warn', 'kernel', 'martian source 198.51.100.200 from 198.51.100.1 on br0'],
+      ['16:30:00', 'info', 'crond', 'running /jffs/scripts/backup-nvram.sh'],
+      ['16:20:31', 'info', 'amtm', 'Entware repository is reachable (opkg update ok)'],
+      ['16:11:04', 'error', 'httpd', 'blocked request: invalid token from 198.51.100.10']
+    ].map((a, i) => ({ id: i, time: a[0], sev: a[1], src: a[2], msg: a[3] }));
+    const sevs = [['error', T('Error', '錯誤'), 'var(--bad)'], ['warn', T('Warning', '警告'), 'var(--warn)'], ['info', T('Info', '資訊'), 'var(--primary)'], ['debug', T('Debug', '除錯'), 'var(--sub)']];
+    const sevOn = s.sev || ['error', 'warn', 'info', 'debug'];
+    const q = s.q || '';
+    const sel = s.sel || []; const rowMenu = s.rowMenu ?? -1;
+    const follow = s.follow !== false;
+    let reLog = null; if (rxOn && reTest) { try { reLog = new RegExp(pat, flags.replace(/[gy]/g, '').replace(/[^imsu]/g, '')); } catch (e) { reLog = null; } }
+    const visible = L.filter(l => sevOn.includes(l.sev) && (!q || (l.src + ' ' + l.msg).toLowerCase().includes(q.toLowerCase())) && (!reLog || reLog.test(l.src + ' ' + l.msg)));
+    const sevTag = { error: 'tag bad', warn: 'tag warn', info: 'tag good', debug: 'tag' };
+    const logs = visible.map(l => ({
+      time: l.time, sev: l.sev.toUpperCase(), src: l.src, msg: l.msg, tagCls: sevTag[l.sev],
+      checked: sel.includes(l.id) ? 'true' : 'false', cbCls: sel.includes(l.id) ? 'cb2 on' : 'cb2', selLabel: T('Select log line at ', '揀選記錄行 ') + l.time,
+      toggle: () => set({ sel: toggleIn(sel, l.id) }), menuOpen: rowMenu === l.id, more: () => set({ rowMenu: rowMenu === l.id ? -1 : l.id }),
+      mA: () => set({ rowMenu: -1, note: T('Copied the line from ', '已複製來自 ') + l.src }), mB: () => set({ rowMenu: -1, q: l.src }), mC: () => set({ rowMenu: -1, sev: [l.sev] })
+    }));
+    const selN = sel.length;
+    const lockDefs = mkLocks({ runner: T('the tool runner', '工具執行器'), map: T('the hop map', '跳點地圖'), chart: T('the latency chart', '延遲圖'), result: T('the result table', '結果表'), console: T('the log console', '記錄控制台'), rx: T('the regex builder', '正則表達式產生器') });
+    const tips = mkTips({
+      runner: [T('tool runner', '工具執行器'), T('Runs ping, traceroute or a DNS lookup from the router itself, not from this device. Nothing is changed on the router.', '由路由器自己執行 ping、追蹤路由或者 DNS 查詢，唔係由呢部裝置。路由器唔會有任何改動。')],
+      map: [T('hop map', '跳點地圖'), T('Each circle is one router hop. Line colour shows how long that hop takes.', '每個圓圈代表一個跳點，線條顏色顯示嗰一跳要幾耐。')],
+      chart: [T('latency chart', '延遲圖'), T('The last 40 replies. The dashed line is the average.', '最近 40 個回覆，虛線係平均值。')],
+      result: [T('results', '結果'), T('Per hop round trip time and packet loss, or the DNS records returned.', '每個跳點嘅來回時間同封包流失，或者返回嘅 DNS 記錄。')],
+      console: [T('log console', '記錄控制台'), T('Live system log. Use the severity chips, the plain search, or the regex builder to narrow it down.', '即時系統記錄，可以用嚴重程度、普通搜尋或者正則表達式產生器收窄。')],
+      rx: [T('regex builder', '正則表達式產生器'), T('Build a pattern with the token palette. The explanation tree and the highlighted test text update as you type.', '用符號面板砌出表達式，解釋樹同標示咗嘅測試文字會即時更新。')]
+    });
+    const bg = base(T('Network tools', '網絡工具'), [T('Network tools', '網絡工具'), T('Logs', '記錄'), T('Scheduled jobs', '排程工作')], 2);
+    return Object.assign(bg, {
+      tips, lk: lockDefs.lk, cardCls: lockDefs.cardCls,
+      tools, presets, draft, onDraft: (e) => set({ draft: e.target.value }), run,
+      runMenu: !!s.runMenu, toggleRunMenu: () => set({ runMenu: !s.runMenu }),
+      runFive: () => set({ target: (draft || '').trim() || target, runN: runN + 1, runMenu: false, note: T('Sent 5 pings and kept the median.', '已發送 5 次 ping 並取中位數。') }),
+      saveJob: () => set({ runMenu: false, note: T('Saved as a scheduled job: every hour, ' + tool + ' ' + target, '已儲存做排程工作：每小時 ' + tool + ' ' + target) }),
+      noteOn: !!note, note, stats, wavePath: wavy(360, 12), hops, chart, records,
+      isLookup: tool === 'lookup', notLookup: tool !== 'lookup',
+      shownCount: logs.length, followText: follow ? T('Live', '即時') : T('Paused', '已暫停'), followBtn: follow ? T('Pause', '暫停') : T('Follow', '跟隨'), followPressed: follow ? 'true' : 'false', toggleFollow: () => set({ follow: !follow }),
+      exportLogs: () => set({ note: T('Exported ' + (selN || logs.length) + ' lines as CSV.', '已匯出 ' + (selN || logs.length) + ' 行 CSV。') }),
+      sevChips: sevs.map(v => ({ label: v[1], col: v[2], count: L.filter(l => l.sev === v[0]).length, cls: sevOn.includes(v[0]) ? 'chip on' : 'chip', pressed: sevOn.includes(v[0]) ? 'true' : 'false', pick: () => set({ sev: toggleIn(sevOn, v[0]) }) })),
+      q, onQ: (e) => set({ q: e.target.value }), rxOn, rxPressed: rxOn ? 'true' : 'false', toggleRx: () => set({ rx: !rxOn }),
+      rxTagCls: patBad ? 'tag bad mono' : 'tag good mono', rxTag: patBad ? T('invalid', '無效') : T('regex · ', '正則 · ') + visible.length,
+      hasSel: selN > 0, selText: selN + T(' lines selected', ' 行已揀選'), bulkCls: 'btn t sm', bulkA: () => set({ note: T('Copied ' + selN + ' lines.', '已複製 ' + selN + ' 行。') }), clearSel: () => set({ sel: [] }),
+      logs, noLogs: logs.length === 0,
+      pat, onPat: (e) => set({ pat: e.target.value }), patBad: patBad ? 'true' : 'false', flagBtns, valCls: patBad ? 'tag bad' : 'tag good', valText: patBad ? patMsg : T('Valid pattern · JavaScript engine', '有效表達式 · JavaScript 引擎'),
+      palette, tree, noTree: tree.length === 0, testText, onText: (e) => set({ text: e.target.value }), matchCount, segs,
+      applyRx: () => set({ rx: true, note: T('Log filter now uses the pattern.', '記錄篩選而家用緊呢個表達式。') }), resetRx: () => set({ pat: '\\b(?:\\d{1,3}\\.){3}\\d{1,3}\\b', flags: 'g', text: undefined }),
+      t: {
+        title: T('Network tools', '網絡工具'), rowMenu: T('More actions for this log line', '呢行記錄嘅更多動作'),
+        mA: T('Copy line', '複製呢行'), mB: T('Filter to this source', '只顯示呢個來源'), mC: T('Show only this severity', '只顯示呢個嚴重程度'),
+        bulk: T('Bulk actions', '批量操作'), bulkA: T('Copy selected', '複製所選'), clear: T('Clear', '清除'),
+        runner: T('Tool runner', '工具執行器'), fromTag: T('Runs from the router · 198.51.100.1', '由路由器 198.51.100.1 執行'), guardTag: T('Read-only · no router change', '唯讀 · 唔會改路由器'), lastRun: T('Run #' + runN, '第 ' + runN + ' 次'),
+        headline: tool === 'lookup' ? T('Who is ', '查詢 ') + target : isLan ? T('Local path is healthy', '區域網絡暢通') : T('Internet path looks good', '互聯網路徑良好'),
+        toolSeg: T('Tool', '工具'), targetLabel: T('Target host or address', '目標主機或地址'), targetPh: T('Host name or address', '主機名稱或地址'), run: T('Run', '執行'), runMore: T('More run options', '更多執行選項'), runOnce: T('Run once', '執行一次'), runFive: T('Run 5 times', '執行 5 次'), saveJob: T('Save as scheduled job', '儲存做排程工作'),
+        avg: T('Average', '平均'), minmax: T('Min / max', '最低 / 最高'), jitter: T('Jitter', '抖動'), loss: T('Loss', '流失'), quality: T('Path quality', '路徑質素'), qualityAlt: T('Path quality bar', '路徑質素指示條'),
+        map: T('Hop map', '跳點地圖'), mapTitle: tool === 'lookup' ? T('Resolver path', '解析路徑') : T('Route to ', '路由去 ') + target, fast: T('under 6 ms', '低於 6 毫秒'), mid: T('6 to 14 ms', '6 至 14 毫秒'), slow: T('over 14 ms', '高於 14 毫秒'), mapAlt: T('Map of router hops with latency per hop', '附每跳延遲嘅路由跳點地圖'), mapNote: T('Public addresses shown are documentation ranges, not real hosts.', '顯示嘅公共地址係文件用範圍，唔係真實主機。'),
+        chart: T('Latency', '延遲'), chartAlt: T('Line chart of the last 40 round trip times', '最近 40 次來回時間折線圖'), oldest: T('40 replies ago', '40 個回覆前'), now: T('now', '而家'), samples: T('Round trip time', '來回時間'), avgline: T('Average', '平均'),
+        result: T('Results', '結果'), cType: T('Type', '類型'), cName: T('Name', '名稱'), cValue: T('Value', '值'), cFrom: T('Answered by', '回應者'), cHost: T('Host', '主機'), cRtt: T('Round trip', '來回'), cLoss: T('Loss', '流失'), cNote: T('Verdict', '評語'),
+        console: T('Log console', '記錄控制台'), consoleTitle: T('Live log', '即時記錄'), sevLabel: T('Severity filter', '嚴重程度篩選'), exportLogs: T('Export', '匯出'), logSearch: T('Search the log', '搜尋記錄'), logPh: T('Search sources and messages', '搜尋來源同訊息'), rxBtn: T('Regex builder', '正則表達式產生器'), noLogs: T('No log lines match these filters.', '冇記錄行符合呢啲篩選。'),
+        rxPanel: T('Regex builder', '正則表達式產生器'), pattern: T('Pattern', '表達式'), flags: T('Flags', '旗標'), palette: T('Token palette', '符號面板'), explain: T('Explanation tree', '解釋樹'), noTree: T('Nothing to explain yet.', '暫時冇嘢要解釋。'), testText: T('Test text', '測試文字'), matches: T('Matches in test text', '測試文字入面嘅符合'), highlight: T('Highlighted test text', '標示咗嘅測試文字'), applyFilter: T('Use as log filter', '用作記錄篩選'), reset: T('Reset', '重設')
+      }
+    });
+
+  }
+}
+</script>
+</body>
+</html>

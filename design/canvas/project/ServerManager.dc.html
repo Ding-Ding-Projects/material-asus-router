@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Minecraft server manager</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="theme.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,100..1000&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.card.ov{overflow:visible}
+.onp{background:color-mix(in srgb,var(--on-primary) 18%,transparent);color:var(--on-primary)}
+.cbw{width:44px;height:44px;border:0;background:none;display:grid;place-items:center;flex:none;padding:0}
+.cb2{width:22px;height:22px;border-radius:7px;border:2px solid var(--sub);display:grid;place-items:center;color:var(--on-primary)}
+.cb2 svg{opacity:0}.cb2.on{background:var(--primary);border-color:var(--primary)}.cb2.on svg{opacity:1}
+.lockedcard{outline:3px solid var(--primary);outline-offset:-3px}
+.tilehead{display:flex;align-items:center;gap:4px}.tilehead .k{flex:1}
+.pos{position:relative}
+.legend{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub)}
+.legend i{width:12px;height:12px;border-radius:6px;display:inline-block}
+.hero h1{position:relative;max-width:16ch}
+.herogrid{display:flex;flex-wrap:wrap;gap:24px 44px;align-items:flex-end;position:relative;margin-top:8px}
+.herostat .big{font-size:52px}
+pre.code{margin:0;padding:16px 18px;border-radius:20px;background:var(--surf-low);color:var(--text);font:13px/1.55 ui-monospace,'Cascadia Code',Consolas,monospace;overflow:auto;white-space:pre;max-height:300px}
+textarea.field{height:auto;padding:14px 16px;line-height:1.5;resize:vertical;width:100%;font-family:ui-monospace,'Cascadia Code',Consolas,monospace;font-size:13.5px}
+.dis{opacity:.5;cursor:not-allowed}
+.tile{display:flex;flex-direction:column;gap:8px;align-items:flex-start;text-align:left;border:0;border-radius:28px;padding:18px;background:var(--surf);box-shadow:var(--e1);color:var(--text);min-height:112px;font:inherit}
+.tile.on{background:var(--primary-c);color:var(--on-primary-c)}
+.tile b{font-size:15px}.tile span.s{font-size:12.5px;opacity:.75}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;align-items:start}
+.vgrid{display:flex;flex-wrap:wrap;gap:8px;max-height:132px;overflow:auto;padding:2px}
+.console{background:oklch(from var(--accent) calc(0.2 - var(--dark) * 0.06) 0.02 h);color:oklch(0.9 0.02 150);border-radius:22px;padding:16px;font:12.5px/1.6 ui-monospace,'Cascadia Code',Consolas,monospace;min-height:260px;max-height:300px;overflow:auto}
+.console .w{color:oklch(0.82 0.13 80)}.console .e{color:oklch(0.75 0.15 25)}.console .i{color:oklch(0.8 0.1 200)}
+.srv{display:flex;align-items:center;gap:12px;width:100%;padding:14px 16px;border-radius:24px;border:0;background:var(--surf-low);color:var(--text);text-align:left;font:inherit}
+.srv.on{background:var(--primary-c);color:var(--on-primary-c)}
+.reqs{display:flex;flex-wrap:wrap;gap:6px}
+.cmd{display:block}
+input[type=range]{width:100%;accent-color:var(--primary);height:32px}
+.mapbox{border-radius:24px;background:var(--surf-low);padding:14px;display:grid;place-items:center}
+</style>
+</helmet>
+<div class="mx shell {{motionCls}}" style="--accent:{{accent}};--dark:{{darkNum}}">
+  <div class="railwrap"><dc-import name="Rail" page="tools" lang="{{lang}}" role="{{role}}" firmware="{{firmware}}" pending="{{pendCount}}" accent="{{accent}}" dark="{{dark}}" hint-size="288px,900px"></dc-import></div>
+  <div class="main">
+    <dc-import name="TopBar" title="{{t.title}}" lang="{{lang}}" role="{{role}}" firmware="{{firmware}}" tabs="{{tabsStr}}" active="0" accent="{{accent}}" dark="{{dark}}" hint-size="1152px,170px"></dc-import>
+    <main class="page">
+      <section class="card hero rise" aria-label="{{t.heroLabel}}">
+        <svg class="deco a" viewBox="0 0 200 200" aria-hidden="true" style="right:-50px;top:-80px;width:320px;height:320px"><path d="M182.8 100C183.5 121 178.9 152.8 165.1 165.1C151.3 177.3 121.3 174 100 173.6C78.7 173.2 50.4 174.7 37.5 162.5C24.7 150.2 23.2 121.3 22.7 100C22.3 78.7 22.1 46.9 34.9 34.9C47.8 23 79 27.6 100 28.2C121 28.9 147.4 26.9 161.2 38.8C175 50.8 182.1 79 182.8 100Z"/></svg><svg class="deco b" viewBox="0 0 200 200" aria-hidden="true" style="right:220px;bottom:-100px;width:220px;height:220px"><path d="M192 100C192.2 117.6 168.7 138.8 153.3 153.3C138 167.9 117.3 187.8 100 187.4C82.7 187 64.6 165.3 49.3 150.7C33.9 136.2 8.9 117.8 8 100C7.1 82.2 28.7 58.9 44.1 44.1C59.4 29.2 82 10.1 100 10.8C118 11.4 136.7 33.1 152 48C167.4 62.8 191.8 82.4 192 100Z"/></svg><div class="cookie" style="position:absolute;right:48px;top:36px;width:124px;height:124px;color:var(--tertiary-c)" aria-hidden="true"><svg viewBox="0 0 200 200"><path d="M192.4 100.0L191.7 104.8L189.7 109.4L186.9 113.8L183.9 117.8L181.3 121.8L179.5 125.8L178.6 130.2L178.4 134.9L178.4 140.0L178.1 145.1L177.0 150.0L174.8 154.3L171.4 157.8L167.0 160.4L162.2 162.2L157.4 163.8L153.0 165.4L149.1 167.6L145.9 170.6L142.9 174.3L140.0 178.4L136.7 182.4L132.9 185.7L128.6 187.9L123.8 188.7L118.8 188.2L113.8 186.9L109.0 185.3L104.4 184.1L100.0 183.6L95.6 184.1L91.0 185.3L86.2 186.9L81.2 188.2L76.2 188.7L71.4 187.9L67.1 185.7L63.3 182.4L60.0 178.4L57.1 174.3L54.1 170.6L50.9 167.6L47.0 165.4L42.6 163.8L37.8 162.2L33.0 160.4L28.6 157.8L25.2 154.3L23.0 150.0L21.9 145.1L21.6 140.0L21.6 134.9L21.4 130.2L20.5 125.8L18.7 121.8L16.1 117.8L13.1 113.8L10.3 109.4L8.3 104.8L7.6 100.0L8.3 95.2L10.3 90.6L13.1 86.2L16.1 82.2L18.7 78.2L20.5 74.2L21.4 69.8L21.6 65.1L21.6 60.0L21.9 54.9L23.0 50.0L25.2 45.7L28.6 42.2L33.0 39.6L37.8 37.8L42.6 36.2L47.0 34.6L50.9 32.4L54.1 29.4L57.1 25.7L60.0 21.6L63.3 17.6L67.1 14.3L71.4 12.1L76.2 11.3L81.2 11.8L86.2 13.1L91.0 14.7L95.6 15.9L100.0 16.4L104.4 15.9L109.0 14.7L113.8 13.1L118.8 11.8L123.8 11.3L128.6 12.1L132.9 14.3L136.7 17.6L140.0 21.6L142.9 25.7L145.9 29.4L149.1 32.4L153.0 34.6L157.4 36.2L162.2 37.8L167.0 39.6L171.4 42.2L174.8 45.7L177.0 50.0L178.1 54.9L178.4 60.0L178.4 65.1L178.6 69.8L179.5 74.2L181.3 78.2L183.9 82.2L186.9 86.2L189.7 90.6L191.7 95.2L192.4 100.0Z"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="var(--on-tertiary-c)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:58px;height:58px;grid-area:1/1;fill:none"><path d="M4 8l8-4 8 4v8l-8 4-8-4z M4 8l8 4 8-4 M12 12v8"/></svg></div>
+        <div style="position:relative;display:flex;flex-wrap:wrap;gap:8px"><span class="tag onp"><span class="dot live" style="background:var(--on-primary)"></span>{{t.running}}</span><span class="tag onp">{{t.nas}}</span></div>
+        <h1 class="disp">{{t.headline}}</h1>
+        <p class="lede" style="position:relative;color:color-mix(in srgb,var(--on-primary) 86%,transparent)">{{t.lede}}</p>
+        <div class="herogrid">
+          <div class="herostat"><div class="k">{{t.stPlayers}}</div><div class="big">3<small>/ 20</small></div></div>
+          <div class="herostat"><div class="k">TPS</div><div class="big">19.8</div></div>
+          <div class="herostat"><div class="k">{{t.stUptime}}</div><div class="big">2<small>d</small> 7<small>h</small></div></div>
+        </div>
+      </section>
+
+      <div class="dash">
+        <section class="card rise {{cc.list}}" aria-label="{{t.listTitle}}">
+          <div class="tilehead"><span class="k">{{t.listTitle}}</span><button class="info" aria-label="{{tp.list.label}}" onClick="{{tp.list.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.list.label}}" aria-pressed="{{lk.list.pressed}}" onClick="{{lk.list.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.list.d}}"/></svg></button></div><sc-if value="{{tp.list.on}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:52px;right:16px">{{tp.list.text}}</div></sc-if>
+          <sc-for list="{{servers}}" as="sv" hint-placeholder-count="3">
+            <button class="{{sv.cls}}" aria-pressed="{{sv.pressed}}" onClick="{{sv.pick}}">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{sv.d}}"/></svg>
+              <span class="grow"><span class="t1" style="display:block">{{sv.name}}</span><span class="t2" style="display:block;color:inherit;opacity:.75">{{sv.sub}}</span></span>
+              <span class="{{sv.tag}}">{{sv.state}}</span>
+            </button>
+          </sc-for>
+          <div class="cols" style="margin-top:6px"><button class="{{ctlCls}}" onClick="{{startStop}}">{{ctlLabel}}</button><button class="btn t sm">{{t.restart}}</button><button class="btn o sm">{{t.backup}}</button></div>
+          <div class="area-note">{{ctlNote}}</div>
+        </section>
+
+        <section class="card span2 ov rise {{cc.create}}" aria-label="{{t.createTitle}}">
+          <div class="tilehead"><span class="k">{{t.createTitle}}</span><button class="info" aria-label="{{tp.create.label}}" onClick="{{tp.create.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.create.label}}" aria-pressed="{{lk.create.pressed}}" onClick="{{lk.create.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.create.d}}"/></svg></button></div><sc-if value="{{tp.create.on}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:52px;right:16px">{{tp.create.text}}</div></sc-if>
+          <div class="cols">
+            <div class="seg" role="group" aria-label="{{t.edition}}"><sc-for list="{{editions}}" as="ed" hint-placeholder-count="2"><button aria-pressed="{{ed.pressed}}" onClick="{{ed.pick}}">{{ed.label}}</button></sc-for></div>
+            <span class="tag">{{t.verCount}}</span>
+            <span class="sp"></span>
+            <label class="search" style="flex:0 1 300px;height:44px;background:var(--surf-high)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input aria-label="{{t.verFilter}}" placeholder="{{t.verFilter}}"><button class="rxbtn" aria-pressed="false" aria-label="{{t.rx}}" style="height:34px">.*</button></label>
+          </div>
+          <div class="vgrid" role="group" aria-label="{{t.versions}}"><sc-for list="{{versions}}" as="vr" hint-placeholder-count="10"><button class="{{vr.cls}}" aria-pressed="{{vr.pressed}}" onClick="{{vr.pick}}">{{vr.label}}</button></sc-for></div>
+          <div class="k">{{t.flavour}}</div>
+          <div class="bgroup" role="group" aria-label="{{t.flavour}}"><sc-for list="{{flavours}}" as="fl" hint-placeholder-count="4"><button class="{{fl.cls}}" aria-pressed="{{fl.pressed}}" aria-disabled="{{fl.disabled}}" title="{{fl.title}}" onClick="{{fl.pick}}">{{fl.label}}</button></sc-for></div>
+          <div class="two">
+            <div>
+              <div class="k" style="margin-bottom:6px">{{pluginHead}}</div>
+              <sc-for list="{{plugins}}" as="pl" hint-placeholder-count="4">
+                <div class="row"><div class="grow"><div class="t1">{{pl.name}}</div><div class="t2">{{pl.sub}}</div></div><button class="{{pl.sw}}" role="switch" aria-checked="{{pl.on}}" aria-label="{{pl.name}}" onClick="{{pl.toggle}}"><i></i></button></div>
+              </sc-for>
+              <button class="btn o sm" style="margin-top:8px">{{t.customJar}}</button>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div class="k">{{t.target}}</div>
+              <div class="seg" role="group" aria-label="{{t.target}}" style="flex-wrap:wrap"><sc-for list="{{targets}}" as="tg" hint-placeholder-count="4"><button aria-pressed="{{tg.pressed}}" onClick="{{tg.pick}}">{{tg.label}}</button></sc-for></div>
+              <div class="reqs"><sc-for list="{{reqs}}" as="rq" hint-placeholder-count="3"><span class="{{rq.cls}}">{{rq.text}}</span></sc-for></div>
+              <div class="cols"><span class="k">{{t.memory}}</span><b class="mono">{{ram}} GB</b></div>
+              <input type="range" min="1" max="16" value="{{ram}}" aria-label="{{t.memory}}" onInput="{{onRam}}">
+              <div class="k">{{t.cmd}}</div>
+              <pre class="code" tabindex="0" style="max-height:130px;white-space:pre-wrap;word-break:break-all">{{command}}</pre>
+              <div class="cols"><button class="{{createCls}}" onClick="{{createServer}}">{{t.create}}</button><span class="tag good">{{createStatus}}</span></div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="dash">
+        <section class="card span2 rise {{cc.console}}" aria-label="{{t.consoleTitle}}">
+          <div class="tilehead"><span class="k">{{t.consoleTitle}}</span><button class="info" aria-label="{{tp.console.label}}" onClick="{{tp.console.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.console.label}}" aria-pressed="{{lk.console.pressed}}" onClick="{{lk.console.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.console.d}}"/></svg></button></div><sc-if value="{{tp.console.on}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:52px;right:16px">{{tp.console.text}}</div></sc-if>
+          <div class="console" role="log" aria-live="polite" tabindex="0"><sc-for list="{{logLines}}" as="ln" hint-placeholder-count="8"><div class="{{ln.cls}}">{{ln.text}}</div></sc-for></div>
+          <div class="cols"><input class="field" aria-label="{{t.cmdInput}}" placeholder="{{t.cmdInput}}" style="flex:1;min-width:200px;font-family:ui-monospace,Consolas,monospace"><button class="{{sendCls}}" onClick="{{sendCmd}}">{{t.send}}</button></div>
+          <div class="cols"><sc-for list="{{quick}}" as="qk" hint-placeholder-count="5"><button class="chip" onClick="{{qk.pick}}">{{qk.label}}</button></sc-for></div>
+        </section>
+
+        <section class="card ov rise {{cc.players}}" aria-label="{{t.playersTitle}}">
+          <div class="tilehead"><span class="k">{{t.playersTitle}}</span><button class="info" aria-label="{{tp.players.label}}" onClick="{{tp.players.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.players.label}}" aria-pressed="{{lk.players.pressed}}" onClick="{{lk.players.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.players.d}}"/></svg></button></div><sc-if value="{{tp.players.on}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:52px;right:16px">{{tp.players.text}}</div></sc-if>
+          <sc-if value="{{hasSel}}" hint-placeholder-val="{{ false }}"><div class="glass cols" role="region" aria-label="{{t.bulk}}" style="padding:8px 12px;border-radius:22px"><b>{{selCount}}</b><button class="btn t sm" onClick="{{bulkOp}}">{{t.op}}</button><button class="btn t sm" onClick="{{bulkKick}}">{{t.kick}}</button><button class="btn o sm" onClick="{{bulkBan}}">{{t.ban}}</button></div></sc-if>
+          <sc-for list="{{players}}" as="pr" hint-placeholder-count="4">
+            <div class="row pos">
+              <button class="cbw" role="checkbox" aria-checked="{{pr.checked}}" aria-label="{{pr.selLabel}}" onClick="{{pr.toggle}}"><span class="{{pr.cbCls}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></button>
+              <div class="grow"><div class="t1">{{pr.name}}</div><div class="t2">{{pr.sub}}</div></div>
+              <sc-if value="{{pr.isOp}}" hint-placeholder-val="{{ false }}"><span class="tag good">OP</span></sc-if>
+              <button class="icb" aria-label="{{pr.moreLabel}}" aria-haspopup="menu" aria-expanded="{{pr.menuOpen}}" onClick="{{pr.more}}"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg></button>
+              <sc-if value="{{pr.menuOpen}}" hint-placeholder-val="{{ false }}"><div class="menu" role="menu" style="right:20px;top:46px"><button class="mi" role="menuitem" onClick="{{pr.kick}}">{{t.kick}}</button><button class="mi" role="menuitem" onClick="{{pr.opIt}}">{{t.op}}</button><button class="mi" role="menuitem">{{t.whitelist}}</button></div></sc-if>
+            </div>
+          </sc-for>
+          <div class="area-note">{{t.whitelistOn}}</div>
+        </section>
+      </div>
+
+      <section class="card rise {{cc.world}}" aria-label="{{t.worldTitle}}">
+        <div class="tilehead"><span class="k">{{t.worldTitle}}</span><button class="info" aria-label="{{tp.world.label}}" onClick="{{tp.world.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.world.label}}" aria-pressed="{{lk.world.pressed}}" onClick="{{lk.world.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.world.d}}"/></svg></button></div><sc-if value="{{tp.world.on}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:52px;right:16px">{{tp.world.text}}</div></sc-if>
+        <div class="two">
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <label class="k" for="seed">{{t.seed}}</label>
+            <div class="cols"><input id="seed" class="field mono" value="{{seed}}" style="flex:1;min-width:160px" aria-label="{{t.seed}}" onInput="{{onSeed}}"><button class="btn t sm" onClick="{{rollSeed}}">{{t.random}}</button></div>
+            <div class="k">{{t.radius}}</div>
+            <div class="seg" role="group" aria-label="{{t.radius}}"><sc-for list="{{radii}}" as="rd" hint-placeholder-count="4"><button aria-pressed="{{rd.pressed}}" onClick="{{rd.pick}}">{{rd.label}}</button></sc-for></div>
+            <div class="row"><div class="grow"><div class="t1">{{areaText}}</div><div class="t2">{{sizeText}}</div></div></div>
+            <div class="k">{{t.output}}</div>
+            <div class="seg" role="group" aria-label="{{t.output}}"><sc-for list="{{outs}}" as="ot" hint-placeholder-count="2"><button aria-pressed="{{ot.pressed}}" onClick="{{ot.pick}}">{{ot.label}}</button></sc-for></div>
+            <div class="cols"><button class="{{genCls}}" onClick="{{generate}}">{{t.generate}}</button><span class="tag good">{{genStatus}}</span></div>
+            <div class="area-note">{{t.worldNote}}</div>
+          </div>
+          <div class="mapbox">
+            <svg viewBox="0 0 260 260" width="100%" style="max-width:360px" role="img" aria-label="{{t.mapAlt}}">
+              <rect x="0" y="0" width="260" height="260" rx="20" fill="var(--surf-high)"/>
+              <path d="M0 65H260M0 130H260M0 195H260M65 0V260M130 0V260M195 0V260" stroke="var(--line)" stroke-width="1"/>
+              <rect x="{{mapX}}" y="{{mapX}}" width="{{mapW}}" height="{{mapW}}" rx="10" fill="var(--primary)" fill-opacity=".28" stroke="var(--primary)" stroke-width="3" stroke-dasharray="8 6"/>
+              <circle cx="130" cy="130" r="7" fill="var(--tertiary)"/>
+              <text x="136" y="148" font-family="Roboto Flex, sans-serif" font-size="12" font-weight="700" fill="var(--text)">{{t.spawn}}</text>
+            </svg>
+          </div>
+        </div>
+      </section>
+
+      <footer class="prov" style="padding:0 4px"><span>{{t.prov1}}</span><span>{{t.prov2}}</span><span>{{t.prov3}}</span></footer>
+
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#4f5bd5","options":["#4f5bd5","#00897b","#d81b60","#f4511e","#7c4dff"],"section":"Look"},"dark":{"editor":"boolean","default":false,"section":"Look"},"motion":{"editor":"enum","options":["calm","standard","expressive"],"default":"expressive","section":"Look"},"firmware":{"editor":"enum","options":["merlin","stock"],"default":"merlin","section":"Router"},"role":{"editor":"enum","options":["owner","operator","viewer"],"default":"owner","section":"Router"},"lang":{"editor":"enum","options":["en","yue","both"],"default":"en","section":"Language"},"$preview":{"width":1440,"height":1600}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const p=this.props,s=this.state||{};
+    const lang=p.lang??'en',role=p.role??'owner',firmware=p.firmware??'merlin',motion=p.motion??'expressive';
+    const accent=p.accent||'#4f5bd5';
+    const dark=p.dark===true||p.dark==='true'||p.dark===1||p.dark==='1';
+    const T=(en,yue)=>lang==='en'?en:lang==='yue'?yue:en+' · '+yue;
+    const canWrite=role!=='viewer';
+    const set=(o)=>this.setState(o);
+    const base={accent,dark,darkNum:dark?1:0,lang,role,firmware,motionCls:motion==='calm'?'calm':motion==='standard'?'std':'',pendCount:2};
+    const tp={},lk={},cc={};
+    const LKO='M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4',LKU='M5 11h14v10H5z M8 11V7a4 4 0 0 1 7.5-2';
+    const locks=s.locks||[];
+    const card=(id,en,yue)=>{const on=s.tip===id,l=locks.includes(id);
+      tp[id]={on,text:T(en,yue),label:T('About this card','關於呢張卡'),toggle:()=>set({tip:on?'':id})};
+      lk[id]={pressed:l?'true':'false',d:l?LKO:LKU,label:l?T('Unlock card','解鎖卡片'):T('Lock card','鎖定卡片'),toggle:()=>set({locks:l?locks.filter(x=>x!==id):locks.concat([id])})};
+      cc[id]=l?'lockedcard':'';};
+    const toggleIn=(arr,v)=>arr.includes(v)?arr.filter(x=>x!==v):arr.concat([v]);
+    const tabsStr=[T('Servers','伺服器'),T('Create','建立'),T('Console','控制台'),T('Players','玩家'),T('World','世界')].join(',');
+    card('list','Servers this app created or adopted. Only servers it created can be removed from here.','呢度列出由本程式建立或接管嘅伺服器，只可以移除由本程式建立嘅。');
+    card('create','Version, flavour, plugins and target in one place. The command shown is exactly what will run.','版本、風味、外掛同目標喺同一處設定，顯示嘅指令就係實際執行嘅指令。');
+    card('console','Live console of the selected server. Commands are sent as the server operator.','所選伺服器嘅即時控制台，指令以伺服器操作員身份發送。');
+    card('players','Players currently online with operator and whitelist actions.','目前在線玩家，可設定操作員同白名單。');
+    card('world','Generates a bounded area ahead of time so players never wait on terrain.','預先生成指定範圍，玩家唔使等地形載入。');
+    const ed=s.ed||'java',ver=s.ver||'1.21.4',fl=s.fl||'paper',tg=s.tg||'local',ram=s.ram??4,sel=s.sel||[],ops=s.ops||['Pat'],kicked=s.kicked||[],rowMenu=s.rowMenu||'',srvSel=s.srv||'survival',running=s.run??true;
+    const seed=s.seed??'-2917464580',radius=s.radius??16,outId=s.out||'folder',logExtra=s.log||[];
+    // servers
+    const SV=[['survival','Family survival',T('Paper 1.21.4 · 198.51.100.20:25565','Paper 1.21.4 · 198.51.100.20:25565'),'M4 8l8-4 8 4v8l-8 4-8-4z'],['creative','Creative flat',T('Fabric 1.21.1 · Docker · 25566','Fabric 1.21.1 · Docker · 25566'),'M3 7h18v10H3z M7 21h10'],['pocket','Pocket friends',T('Bedrock 1.21.50 · 19132 UDP','Bedrock 1.21.50 · 19132 UDP'),'M7 3h10v18H7z M11 18h2']];
+    const isRun=(id)=>id==='survival'?running:id==='creative';
+    const servers=SV.map(([id,name,sub,d])=>({name,sub,d,cls:'srv'+(srvSel===id?' on':''),pressed:srvSel===id?'true':'false',pick:()=>set({srv:id}),tag:isRun(id)?'tag good':'tag',state:isRun(id)?T('Running','運行中'):T('Stopped','已停止')}));
+    const srvRun=isRun(srvSel);
+    // versions
+    const VJ=['1.21.4','1.21.3','1.21.1','1.20.6','1.20.4','1.20.1','1.19.4','1.18.2','1.17.1','1.16.5','1.12.2','1.8.9','25w02a'],VB=['1.21.50','1.21.44','1.21.30','1.21.0','1.20.80','1.20.40'];
+    const vs=ed==='java'?VJ:VB;
+    const curVer=vs.includes(ver)?ver:vs[0];
+    const versions=vs.map(v=>({label:v+(/[a-z]/.test(v)?' ('+T('snapshot','快照')+')':''),cls:'chip'+(curVer===v?' on':''),pressed:curVer===v?'true':'false',pick:()=>set({ver:v})}));
+    const editions=[['java','Java Edition'],['bedrock','Bedrock Edition']].map(([id,label])=>({label,pressed:ed===id?'true':'false',pick:()=>set({ed:id,ver:id==='java'?'1.21.4':'1.21.50',fl:id==='java'?fl:'vanilla'})}));
+    const FLV=[['vanilla','Vanilla'],['paper','Paper'],['fabric','Fabric'],['forge','Forge']];
+    const flOk=(id)=>ed==='java'||id==='vanilla';
+    const curFl=flOk(fl)?fl:'vanilla';
+    const flavours=FLV.map(([id,label])=>({label,disabled:flOk(id)?'false':'true',title:flOk(id)?label:T('Not available for Bedrock','Bedrock 版冇呢個選項'),cls:'btn'+(curFl===id?' on':'')+(flOk(id)?'':' dis'),pressed:curFl===id?'true':'false',pick:()=>{if(flOk(id))set({fl:id})}}));
+    // plugins
+    const PL={vanilla:[[T('Data packs','資料包'),T('Drop-in packs from your library','由你嘅庫加入')],[T('Resource pack URL','資源包網址'),T('Served from the server','由伺服器提供')]],
+      paper:[['EssentialsX',T('Homes, warps, kits','家園、傳送點、套裝')],['LuckPerms',T('Permission groups','權限群組')],['Dynmap',T('Live web map','即時網頁地圖')],['WorldEdit',T('Build faster with selections','用選取範圍加快建造')]],
+      fabric:[['Fabric API',T('Required by most mods','大部分模組都需要')],['Lithium',T('Game logic optimisation','遊戲邏輯優化')],['FerriteCore',T('Lower memory use','減少記憶體用量')]],
+      forge:[['JEI',T('Item and recipe viewer','物品同配方查看')],['Create',T('Machines and contraptions','機械同裝置')]]};
+    const plSel=s.pl||['EssentialsX','Fabric API','Lithium'];
+    const bedPl=[[T('Add-on: Better Villagers','附加包：Better Villagers'),T('Behaviour and resource pack','行為同資源包')],[T('Add-on: Furniture','附加包：Furniture'),T('Behaviour and resource pack','行為同資源包')]];
+    const plSrc=ed==='bedrock'?bedPl:PL[curFl];
+    const plugins=plSrc.map(([name,sub])=>{const on=plSel.includes(name);return{name,sub,on:on?'true':'false',sw:'sw'+(on?' on':''),toggle:()=>set({pl:toggleIn(plSel,name)})};});
+    const pluginHead=ed==='bedrock'?T('Add-ons','附加包'):curFl==='vanilla'?T('Data packs','資料包'):curFl==='paper'?T('Plugins','外掛'):T('Mods','模組');
+    // targets
+    const TGT=[['local',T('Local process','本機程序')],['docker',T('Local Docker','本機 Docker')],['sshp',T('SSH process','SSH 程序')],['sshd',T('SSH Docker','SSH Docker')]];
+    const targets=TGT.map(([id,label])=>({label,pressed:tg===id?'true':'false',pick:()=>set({tg:id})}));
+    const jar=ed==='bedrock'?'bedrock_server':curFl==='paper'?'paper-'+curVer+'.jar':curFl==='fabric'?'fabric-server-launch.jar':curFl==='forge'?'forge-'+curVer+'-server.jar':'server-'+curVer+'.jar';
+    const typ=curFl.toUpperCase();
+    const CM={local:ed==='bedrock'?'cd %USERPROFILE%\\mc\\bedrock && bedrock_server.exe':'java -Xmx'+ram+'G -jar '+jar+' nogui',
+      docker:ed==='bedrock'?'docker run -d -p 19132:19132/udp -e EULA=TRUE -v mc-data:/data itzg/minecraft-bedrock-server':'docker run -d -p 25565:25565 -e EULA=TRUE -e TYPE='+typ+' -e VERSION='+curVer+' -e MEMORY='+ram+'G -v mc-data:/data itzg/minecraft-server',
+      sshp:"ssh pat@198.51.100.20 'cd ~/mc && screen -dmS mc "+(ed==='bedrock'?'./bedrock_server':'java -Xmx'+ram+'G -jar '+jar+' nogui')+"'",
+      sshd:'ssh pat@198.51.100.20 docker compose -f ~/mc/compose.yaml up -d   # TYPE='+typ+' VERSION='+curVer};
+    const RQ={local:[[ed==='bedrock'?T('Bedrock server download ready','Bedrock 伺服器已下載'):T('Java 21 found','搵到 Java 21'),'tag good'],[T('Port 25565 free','端口 25565 冇人用'),'tag good']],
+      docker:[[T('Docker 27 running','Docker 27 運行中'),'tag good'],[T('Image cached','映像已快取'),'tag good']],
+      sshp:[[T('SSH key accepted by 198.51.100.20','198.51.100.20 接受 SSH 金鑰'),'tag good'],[T('Host key pinned','主機金鑰已釘選'),'tag good'],[T('Java 21 on host','主機有 Java 21'),'tag warn']],
+      sshd:[[T('SSH key accepted by 198.51.100.20','198.51.100.20 接受 SSH 金鑰'),'tag good'],[T('Docker on host','主機有 Docker'),'tag good'],[T('Compose file will be written','會寫入 Compose 檔'),'tag']]};
+    const reqs=RQ[tg].map(([text,cls])=>({text,cls}));
+    // console
+    const baseLog=[['i','[17:02:11 INFO]: Starting minecraft server version '+curVer],['','[17:02:13 INFO]: Loading 4 plugins'],['','[17:02:19 INFO]: Done (8.214s)! For help, type "help"'],['','[17:05:40 INFO]: Pat joined the game'],['w','[17:06:02 WARN]: Can\'t keep up! Is the server overloaded? Running 2140ms behind'],['','[17:08:31 INFO]: Alex joined the game'],['','[17:09:12 INFO]: <Pat> anyone up for a build battle?'],['e','[17:10:04 ERROR]: Could not load plugin OldHomes.jar: unsupported API 1.16']];
+    const logLines=baseLog.concat(logExtra.map(c=>['i','> '+c])).map(([c,text])=>({cls:c,text}));
+    const QC=['list','whitelist list','save-all','weather clear','time set day'];
+    const quick=QC.map(c=>({label:c,pick:()=>{if(canWrite)set({log:logExtra.concat([c])})}}));
+    // players
+    const PLY=[['Pat',T('Survival · 38 ms · Overworld','生存 · 38 ms · 主世界')],['Alex',T('Creative · 52 ms · Nether','創造 · 52 ms · 地獄')],['Robin',T('Survival · 71 ms · Overworld','生存 · 71 ms · 主世界')]].filter(x=>!kicked.includes(x[0]));
+    const players=PLY.map(([name,sub])=>{const on=sel.includes(name);return{name,sub,isOp:ops.includes(name),checked:on?'true':'false',selLabel:T('Select ','揀選 ')+name,cbCls:'cb2'+(on?' on':''),menuOpen:rowMenu===name,moreLabel:T('More for ','更多：')+name,toggle:()=>set({sel:toggleIn(sel,name)}),more:()=>set({rowMenu:rowMenu===name?'':name}),kick:()=>{if(canWrite)set({kicked:kicked.concat([name]),rowMenu:''})},opIt:()=>{if(canWrite)set({ops:toggleIn(ops,name),rowMenu:''})}};});
+    // world
+    const RD=[8,16,32,64];
+    const radii=RD.map(r=>({label:r+' '+T('chunks','區塊'),pressed:radius===r?'true':'false',pick:()=>set({radius:r})}));
+    const side=radius*2,blocks=side*16,chunks=side*side,mb=Math.round(chunks*0.045);
+    const mapW=Math.round(40+(radius/64)*180),mapX=Math.round((260-mapW)/2);
+    const outs=[['folder',T('World folder','世界資料夾')],['zip',T('ZIP archive','ZIP 壓縮檔')]].map(([id,label])=>({label,pressed:outId===id?'true':'false',pick:()=>set({out:id})}));
+    const genStatus=s.gen||T('Ready','準備好');
+    const createStatus=s.created||T('Not created yet','仲未建立');
+    return {...base,tp,lk,cc,tabsStr,servers,editions,versions,flavours,plugins,pluginHead,targets,reqs,command:CM[tg],logLines,quick,players,radii,outs,
+      ram,onRam:(e)=>set({ram:Number(e&&e.target?e.target.value:4)}),seed,onSeed:(e)=>set({seed:e&&e.target?e.target.value:''}),rollSeed:()=>set({seed:String(Math.floor(Math.random()*4e9-2e9))}),
+      mapX,mapW,areaText:T(side+' x '+side+' chunks · '+blocks+' x '+blocks+' blocks',side+' x '+side+' 區塊 · '+blocks+' x '+blocks+' 方塊'),sizeText:T(chunks+' chunks, about '+mb+' MB on disk',chunks+' 個區塊，約佔 '+mb+' MB'),
+      ctlLabel:srvRun?T('Stop','停止'):T('Start','啟動'),ctlCls:'btn '+(srvRun?'o':'f')+' sm'+(canWrite?'':' dis'),startStop:()=>{if(canWrite&&srvSel==='survival')set({run:!running})},ctlNote:srvSel==='survival'?T('Started 2 days ago on 198.51.100.20','2 日前喺 198.51.100.20 啟動'):T('Control from its own target','喺佢自己嘅目標控制'),
+      createCls:'btn f'+(canWrite?'':' dis'),createServer:()=>{if(canWrite)set({created:T('Created '+curVer+' '+typ+' on '+TGT.find(x=>x[0]===tg)[1],'已建立 '+curVer+' '+typ+'，目標：'+TGT.find(x=>x[0]===tg)[1])})},
+      sendCls:'btn f sm'+(canWrite?'':' dis'),sendCmd:()=>{if(canWrite)set({log:logExtra.concat(['say Maintenance in 10 minutes'])})},
+      hasSel:sel.length>0,selCount:sel.length+T(' selected',' 個已揀'),bulkOp:()=>{if(canWrite)set({ops:ops.concat(sel.filter(x=>!ops.includes(x))),sel:[]})},bulkKick:()=>{if(canWrite)set({kicked:kicked.concat(sel),sel:[]})},bulkBan:()=>{if(canWrite)set({kicked:kicked.concat(sel),sel:[]})},
+      genCls:'btn f'+(canWrite?'':' dis'),generate:()=>{if(canWrite)set({gen:T('Generated '+chunks+' chunks to '+(outId==='zip'?'world.zip':'world/')+' ('+mb+' MB)','已生成 '+chunks+' 個區塊去 '+(outId==='zip'?'world.zip':'world/')+'（'+mb+' MB）')})},genStatus,createStatus,
+      t:{title:T('Minecraft server manager','Minecraft 伺服器管理'),heroLabel:T('Server summary','伺服器摘要'),running:T('2 of 3 servers running','3 部入面 2 部運行中'),nas:T('Host: NAS 198.51.100.20','主機：NAS 198.51.100.20'),headline:T('Your own worlds, one click','自己嘅世界，一鍵開服'),lede:T('Create a Java or Bedrock server on this PC, in Docker, or on your NAS over SSH. Pick any version, add plugins and pre-generate the world.','喺本機、Docker 或者經 SSH 喺 NAS 建立 Java 或 Bedrock 伺服器，可揀任何版本、加外掛同預先生成世界。'),stPlayers:T('Players online','在線玩家'),stUptime:T('Uptime','運行時間'),
+        listTitle:T('Servers','伺服器'),restart:T('Restart','重啟'),backup:T('Backup world','備份世界'),
+        createTitle:T('Create a server','建立伺服器'),edition:T('Edition','版本類型'),verCount:T('112 Java and 87 Bedrock versions found','搵到 112 個 Java 同 87 個 Bedrock 版本'),verFilter:T('Filter versions','篩選版本'),rx:T('Regex builder','正則表達式建構器'),versions:T('Versions','版本'),flavour:T('Flavour','風味'),customJar:T('Add custom plugin file','加入自訂外掛檔'),target:T('Where to run','運行位置'),memory:T('Memory','記憶體'),cmd:T('Command that will run','將會執行嘅指令'),create:T('Create server','建立伺服器'),
+        consoleTitle:T('Console','控制台'),cmdInput:T('Type a command','輸入指令'),send:T('Send','傳送'),
+        playersTitle:T('Players','玩家'),bulk:T('Bulk actions','批次操作'),op:T('Make operator','設為操作員'),kick:T('Kick','踢走'),ban:T('Ban','封鎖'),whitelist:T('Add to whitelist','加入白名單'),whitelistOn:T('Whitelist is on · 6 names','白名單已開 · 6 個名稱'),
+        worldTitle:T('World generator','世界生成'),seed:T('Seed','種子'),random:T('Random','隨機'),radius:T('Radius around spawn','出生點半徑'),output:T('Output','輸出'),generate:T('Generate area','生成範圍'),worldNote:T('Generation uses the server jar for this version. Nothing outside the chosen area is created.','生成用呢個版本嘅伺服器檔，揀選範圍以外嘅位置唔會建立。'),mapAlt:T('Square generation area centred on spawn','以出生點為中心嘅正方形生成範圍'),spawn:T('Spawn','出生點'),
+        prov1:T('Material Asus Router 0.9.0 (design preview)','Material Asus Router 0.9.0（設計預覽）'),prov2:T('Updated 2026-11-25 17:10 +08:00','更新於 2026-11-25 17:10 +08:00'),prov3:T('Minecraft is a trademark of its owner; this app is not affiliated','Minecraft 係其擁有者嘅商標，本程式同佢冇關連')}};
+
+  }
+}
+</script>
+</body>
+</html>

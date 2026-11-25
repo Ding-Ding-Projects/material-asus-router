@@ -1,0 +1,586 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Router overview</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="theme.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,100..1000&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.onp{background:color-mix(in srgb,var(--on-primary) 18%,transparent);color:var(--on-primary)}
+.card.ov{overflow:visible}
+.cbw{width:44px;height:44px;border:0;background:none;display:grid;place-items:center;flex:none;padding:0}
+.cb2{width:22px;height:22px;border-radius:7px;border:2px solid var(--sub);display:grid;place-items:center;color:var(--on-primary)}
+.cb2 svg{opacity:0}
+.cb2.on{background:var(--primary);border-color:var(--primary)}
+.cb2.on svg{opacity:1}
+.struck{text-decoration:line-through;opacity:.6}
+.lockedcard{outline:3px solid var(--primary);outline-offset:-3px}
+.herogrid{display:flex;flex-wrap:wrap;gap:28px 48px;align-items:flex-end;position:relative;margin-top:8px}
+.herostat .big{font-size:56px}
+.hero h1{position:relative;max-width:14ch}
+.pos{position:relative}
+.tilehead{display:flex;align-items:center;gap:4px}
+.tilehead .k{flex:1}
+.mini{width:34px;height:34px;border-radius:17px;border:3px solid var(--surf);display:grid;place-items:center;font-size:13px;font-weight:800;color:#fff;margin-left:-10px}
+.mini:first-child{margin-left:0}
+.legend{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub)}
+.legend i{width:12px;height:12px;border-radius:6px;display:inline-block}
+.dis{opacity:.5;cursor:not-allowed}
+.nbadge{width:44px;height:44px;flex:none;color:var(--primary-c)}
+.nbadge.w{color:var(--warn-c)}
+.nbadge.b{color:var(--bad-c)}
+.nbadge>svg:first-child{fill:currentColor}
+.nbadge .in{width:22px;height:22px;color:var(--text)}
+</style>
+</helmet>
+<div class="mx shell {{motionCls}}" style="--accent:{{accent}};--dark:{{darkNum}}">
+  <div class="railwrap">
+    <dc-import name="Rail" page="overview" lang="{{lang}}" role="{{role}}" firmware="{{firmware}}" pending="{{pendCount}}" accent="{{accent}}" dark="{{dark}}" hint-size="288px,900px"></dc-import>
+  </div>
+  <div class="main">
+    <dc-import name="TopBar" title="{{t.title}}" lang="{{lang}}" role="{{role}}" firmware="{{firmware}}" tabs="{{tabsStr}}" active="0" accent="{{accent}}" dark="{{dark}}" hint-size="1152px,170px"></dc-import>
+    <main class="page">
+
+      <section class="card hero rise" aria-label="{{t.heroLabel}}">
+        <svg class="deco a" viewBox="0 0 200 200" aria-hidden="true" style="right:-60px;top:-70px;width:320px;height:320px"><path d="M195 100L194.1 104.1L191.4 108L187.6 111.5L183.2 114.7L178.9 117.5L175.5 120.2L173.5 123.2L172.9 126.5L173.6 130.5L175.2 135L177 140.1L178.4 145.3L178.7 150.2L177.7 154.4L175.1 157.6L171.2 159.7L166.2 160.7L160.8 160.8L155.5 160.6L150.8 160.6L147.1 161.3L144.2 163.2L142.2 166.3L140.8 170.6L139.3 175.6L137.6 180.7L135.3 185.3L132.3 188.8L128.6 190.6L124.3 190.6L119.7 189L115.2 186.2L110.9 183L107 179.9L103.4 177.8L100 177L96.6 177.8L93 179.9L89.1 183L84.8 186.2L80.3 189L75.7 190.6L71.4 190.6L67.7 188.8L64.7 185.3L62.4 180.7L60.7 175.6L59.3 170.6L57.8 166.3L55.8 163.2L52.9 161.3L49.2 160.6L44.5 160.6L39.2 160.8L33.8 160.7L28.8 159.7L24.9 157.6L22.3 154.4L21.3 150.2L21.6 145.3L23 140.1L24.8 135L26.4 130.5L27.1 126.5L26.5 123.2L24.5 120.2L21.1 117.5L16.8 114.7L12.4 111.5L8.6 108L5.9 104.1L5 100L5.9 95.9L8.6 92L12.4 88.5L16.8 85.3L21.1 82.5L24.5 79.8L26.5 76.8L27.1 73.5L26.4 69.5L24.8 65L23 59.9L21.6 54.7L21.3 49.8L22.3 45.6L24.9 42.4L28.8 40.3L33.8 39.3L39.2 39.2L44.5 39.4L49.2 39.4L52.9 38.7L55.8 36.8L57.8 33.7L59.2 29.4L60.7 24.4L62.4 19.3L64.7 14.7L67.7 11.2L71.4 9.4L75.7 9.4L80.3 11L84.8 13.8L89.1 17L93 20.1L96.6 22.2L100 23L103.4 22.2L107 20.1L110.9 17L115.2 13.8L119.7 11L124.3 9.4L128.6 9.4L132.3 11.2L135.3 14.7L137.6 19.3L139.3 24.4L140.8 29.4L142.2 33.7L144.2 36.8L147.1 38.7L150.8 39.4L155.5 39.4L160.8 39.2L166.2 39.3L171.2 40.3L175.1 42.4L177.7 45.6L178.7 49.8L178.4 54.7L177 59.9L175.2 65L173.6 69.5L172.9 73.5L173.5 76.8L175.5 79.8L178.9 82.5L183.2 85.3L187.6 88.5L191.4 92L194.1 95.9L195 100Z"/></svg>
+        <svg class="deco b" viewBox="0 0 200 200" aria-hidden="true" style="right:190px;bottom:-110px;width:230px;height:230px"><path d="M182.8 100C183.5 121 178.9 152.8 165.1 165.1C151.3 177.3 121.3 174 100 173.6C78.7 173.2 50.4 174.7 37.5 162.5C24.7 150.2 23.2 121.3 22.7 100C22.3 78.7 22.1 46.9 34.9 34.9C47.8 23 79 27.6 100 28.2C121 28.9 147.4 26.9 161.2 38.8C175 50.8 182.1 79 182.8 100Z"/></svg>
+        <svg class="deco a" viewBox="0 0 200 200" aria-hidden="true" style="left:-70px;bottom:-90px;width:210px;height:210px"><path d="M192 100C192.2 117.6 168.7 138.8 153.3 153.3C138 167.9 117.3 187.8 100 187.4C82.7 187 64.6 165.3 49.3 150.7C33.9 136.2 8.9 117.8 8 100C7.1 82.2 28.7 58.9 44.1 44.1C59.4 29.2 82 10.1 100 10.8C118 11.4 136.7 33.1 152 48C167.4 62.8 191.8 82.4 192 100Z"/></svg>
+        <div class="cookie" style="position:absolute;right:56px;top:40px;width:132px;height:132px;color:var(--tertiary-c)" aria-hidden="true">
+          <svg viewBox="0 0 200 200"><path d="M194 100L193.4 104.1L191.8 108L189.2 111.7L186.1 115.2L182.6 118.3L179.2 121.2L176.2 124L173.7 126.8L172.1 129.8L171.1 133.2L170.8 136.9L171 141L171.4 145.5L171.6 150.1L171.4 154.8L170.6 159.2L168.9 163.2L166.5 166.5L163.2 168.9L159.2 170.6L154.8 171.4L150.1 171.6L145.5 171.4L141 171L136.9 170.8L133.2 171.1L129.8 172.1L126.8 173.7L124 176.2L121.2 179.2L118.3 182.6L115.2 186.1L111.7 189.2L108 191.8L104.1 193.4L100 194L95.9 193.4L92 191.8L88.3 189.2L84.8 186.1L81.7 182.6L78.8 179.2L76 176.2L73.2 173.7L70.2 172.1L66.8 171.1L63.1 170.8L59 171L54.5 171.4L49.9 171.6L45.2 171.4L40.8 170.6L36.8 168.9L33.5 166.5L31.1 163.2L29.4 159.2L28.6 154.8L28.4 150.1L28.6 145.5L29 141L29.2 136.9L28.9 133.2L27.9 129.8L26.3 126.8L23.8 124L20.8 121.2L17.4 118.3L13.9 115.2L10.8 111.7L8.2 108L6.6 104.1L6 100L6.6 95.9L8.2 92L10.8 88.3L13.9 84.8L17.4 81.7L20.8 78.8L23.8 76L26.3 73.2L27.9 70.2L28.9 66.8L29.2 63.1L29 59L28.6 54.5L28.4 49.9L28.6 45.2L29.4 40.8L31.1 36.8L33.5 33.5L36.8 31.1L40.8 29.4L45.2 28.6L49.9 28.4L54.5 28.6L59 29L63.1 29.2L66.8 28.9L70.2 27.9L73.2 26.3L76 23.8L78.8 20.8L81.7 17.4L84.8 13.9L88.3 10.8L92 8.2L95.9 6.6L100 6L104.1 6.6L108 8.2L111.7 10.8L115.2 13.9L118.3 17.4L121.2 20.8L124 23.8L126.8 26.3L129.8 27.9L133.2 28.9L136.9 29.2L141 29L145.5 28.6L150.1 28.4L154.8 28.6L159.2 29.4L163.2 31.1L166.5 33.5L168.9 36.8L170.6 40.8L171.4 45.2L171.6 49.9L171.4 54.5L171 59L170.8 63.1L171.1 66.8L172.1 70.2L173.7 73.2L176.2 76L179.2 78.8L182.6 81.7L186.1 84.8L189.2 88.3L191.8 92L193.4 95.9L194 100Z"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--on-tertiary-c)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="width:64px;height:64px;grid-area:1/1;fill:none"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+        </div>
+        <div style="position:relative;display:flex;flex-wrap:wrap;gap:8px">
+          <span class="tag onp"><span class="dot live" style="background:var(--on-primary)"></span>RT-AX86U · 198.51.100.1</span>
+          <span class="tag onp">{{t.fw}}</span>
+          <span class="tag onp">{{t.addons}}</span>
+          <span class="tag onp">{{t.roleChip}}</span>
+        </div>
+        <h1 class="disp">{{t.headline}}</h1>
+        <p class="lede sub2" style="position:relative;color:color-mix(in srgb,var(--on-primary) 86%,transparent)">{{t.heroLede}}</p>
+        <div class="herogrid">
+          <div class="herostat"><div class="k">{{t.uptime}}</div><div class="big">3<small>d</small> 5<small>h</small></div></div>
+          <div class="herostat"><div class="k">{{t.latency}}</div><div class="big">4<small>ms</small></div></div>
+          <div class="herostat" style="flex:1 1 300px;max-width:380px">
+            <div class="k" style="display:flex;justify-content:space-between"><span>{{t.health}}</span><span>98%</span></div>
+            <svg width="340" height="24" viewBox="0 0 340 24" style="max-width:100%;display:block;margin-top:8px" role="img" aria-label="{{t.healthAlt}}">
+              <path d="M0 12H340" stroke="currentColor" stroke-opacity=".3" stroke-width="6" stroke-linecap="round" fill="none"/>
+              <svg x="0" y="0" width="334" height="24" overflow="hidden"><path class="wavy" d="M0 12 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/></svg>
+            </svg>
+          </div>
+        </div>
+      </section>
+
+      <section class="card sec ov rise" aria-label="{{t.qaLabel}}">
+        <div class="cols">
+          <div class="grow" style="min-width:200px">
+            <div class="tilehead"><span class="k" style="opacity:1">{{t.qa}}</span><button class="info" aria-label="{{t.qaInfo}}" onClick="{{tips.qa.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button></div>
+            <div class="muted" style="color:inherit;opacity:.85">{{t.qaLede}}</div>
+            <sc-if value="{{tips.qa.on}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:46px;left:60px;z-index:30">{{tips.qa.text}}</div></sc-if>
+          </div>
+          <div class="bgroup" role="group" aria-label="{{t.qa}}">
+            <sc-for list="{{qas}}" as="q" hint-placeholder-count="4">
+              <button class="{{q.cls}}" aria-pressed="{{q.pressed}}" onClick="{{q.pick}}" style="min-width:0"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{q.d}}"/></svg><span>{{q.label}}</span></button>
+            </sc-for>
+          </div>
+          <div class="pos">
+            <div class="split">
+              <button class="{{reviewCls}}" onClick="{{applyAll}}">{{t.review}}</button>
+              <button class="{{dropCls}}" aria-label="{{t.moreApply}}" aria-expanded="{{splitOpen}}" aria-haspopup="menu" onClick="{{toggleSplit}}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+            </div>
+            <sc-if value="{{splitOpen}}" hint-placeholder-val="{{ false }}">
+              <div class="menu" role="menu" style="right:0;top:56px">
+                <button class="mi" role="menuitem" onClick="{{applyAll}}">{{t.applyNow}}</button>
+                <button class="mi" role="menuitem" onClick="{{schedule}}">{{t.schedule}}</button>
+                <button class="mi" role="menuitem" onClick="{{discard}}">{{t.discard}}</button>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+        <sc-if value="{{viewer}}" hint-placeholder-val="{{ false }}"><div class="tag warn" style="align-self:flex-start">{{t.readOnly}}</div></sc-if>
+        <sc-if value="{{hasSchedule}}" hint-placeholder-val="{{ false }}"><div class="tag good" style="align-self:flex-start">{{t.scheduled}}</div></sc-if>
+      </section>
+
+      <div class="grid">
+        <section class="card rise {{cardCls.cpu}}" aria-label="{{t.cpu}}">
+          <div class="tilehead"><span class="k">{{t.cpu}}</span>
+            <button class="info" aria-label="{{tips.cpu.label}}" onClick="{{tips.cpu.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button>
+            <button class="lock" aria-label="{{lk.cpu.label}}" aria-pressed="{{lk.cpu.pressed}}" onClick="{{lk.cpu.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.cpu.d}}"/></svg></button>
+          </div>
+          <sc-if value="{{tips.cpu.on}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:52px;right:16px">{{tips.cpu.text}}</div></sc-if>
+          <div class="big">18<small>%</small></div>
+          <div class="muted">{{t.cpuSub}}</div>
+          <svg viewBox="0 0 160 48" preserveAspectRatio="none" width="100%" height="56" aria-hidden="true" style="display:block;margin-top:auto">
+            <defs><linearGradient id="mxgc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--primary);stop-opacity:.45"/><stop offset="1" style="stop-color:var(--primary);stop-opacity:0"/></linearGradient></defs>
+            <path d="{{spark.area}}" fill="url(#mxgc)"/>
+            <path d="{{spark.line}}" fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+          </svg>
+        </section>
+
+        <section class="card rise {{cardCls.mem}}" aria-label="{{t.mem}}">
+          <div class="tilehead"><span class="k">{{t.mem}}</span>
+            <button class="info" aria-label="{{tips.mem.label}}" onClick="{{tips.mem.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button>
+            <button class="lock" aria-label="{{lk.mem.label}}" aria-pressed="{{lk.mem.pressed}}" onClick="{{lk.mem.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.mem.d}}"/></svg></button>
+          </div>
+          <sc-if value="{{tips.mem.on}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:52px;right:16px">{{tips.mem.text}}</div></sc-if>
+          <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">
+            <div style="position:relative;width:104px;height:104px;flex:none">
+              <svg viewBox="0 0 36 36" width="104" height="104" role="img" aria-label="{{t.memAlt}}" style="transform:rotate(-90deg)">
+                <circle cx="18" cy="18" r="15.9155" fill="none" stroke="var(--surf-high)" stroke-width="4.4"/>
+                <circle cx="18" cy="18" r="15.9155" fill="none" stroke="var(--primary)" stroke-width="4.4" stroke-dasharray="68 32" stroke-linecap="round"/>
+                <circle cx="18" cy="18" r="15.9155" fill="none" stroke="var(--tertiary)" stroke-width="4.4" stroke-dasharray="11 89" stroke-dashoffset="-72" stroke-linecap="round"/>
+              </svg>
+              <div class="big" style="position:absolute;inset:0;display:grid;place-items:center;font-size:30px">70<small style="margin:0;font-size:13px;align-self:end">%</small></div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+              <div class="legend"><i style="background:var(--primary)"></i>{{t.used}} 712 MB</div>
+              <div class="legend"><i style="background:var(--tertiary)"></i>{{t.cache}} 118 MB</div>
+              <div class="legend"><i style="background:var(--surf-high)"></i>{{t.free}} 164 MB</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card rise {{cardCls.temp}}" aria-label="{{t.temp}}">
+          <div class="tilehead"><span class="k">{{t.temp}}</span>
+            <button class="info" aria-label="{{tips.temp.label}}" onClick="{{tips.temp.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button>
+            <button class="lock" aria-label="{{lk.temp.label}}" aria-pressed="{{lk.temp.pressed}}" onClick="{{lk.temp.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.temp.d}}"/></svg></button>
+          </div>
+          <sc-if value="{{tips.temp.on}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:52px;right:16px">{{tips.temp.text}}</div></sc-if>
+          <div style="position:relative;width:150px;height:118px;margin:0 auto">
+            <svg viewBox="0 0 100 80" width="150" height="118" role="img" aria-label="{{t.tempAlt}}">
+              <path d="M21.7 78.3A40 40 0 1 1 78.3 78.3" pathLength="100" fill="none" stroke="var(--surf-high)" stroke-width="9" stroke-linecap="round"/>
+              <path d="M21.7 78.3A40 40 0 1 1 78.3 78.3" pathLength="100" fill="none" stroke="var(--tertiary)" stroke-width="9" stroke-linecap="round" stroke-dasharray="54 100"/>
+            </svg>
+            <div style="position:absolute;inset:0;display:grid;place-items:center;padding-bottom:4px"><div class="big" style="font-size:34px">54<small style="font-size:15px">°C</small></div></div>
+          </div>
+          <div style="text-align:center"><span class="tag good">{{t.tempOk}}</span></div>
+        </section>
+
+        <section class="card ter rise {{cardCls.dev}}" aria-label="{{t.devs}}">
+          <div class="tilehead"><span class="k">{{t.devs}}</span>
+            <button class="info" aria-label="{{tips.dev.label}}" onClick="{{tips.dev.toggle}}" style="background:color-mix(in srgb,var(--on-tertiary-c) 14%,transparent);color:inherit"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button>
+            <button class="lock" aria-label="{{lk.dev.label}}" aria-pressed="{{lk.dev.pressed}}" onClick="{{lk.dev.toggle}}" style="color:inherit"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.dev.d}}"/></svg></button>
+          </div>
+          <sc-if value="{{tips.dev.on}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:52px;right:16px">{{tips.dev.text}}</div></sc-if>
+          <div class="big">12<small>{{t.online}}</small></div>
+          <div class="muted" style="color:inherit;opacity:.85">{{t.devSub}}</div>
+          <div style="display:flex;align-items:center;margin-top:auto;padding-left:10px">
+            <span class="mini" style="background:var(--primary);margin-left:0" aria-hidden="true">P</span>
+            <span class="mini" style="background:#0b7285" aria-hidden="true">A</span>
+            <span class="mini" style="background:#c2255c" aria-hidden="true">N</span>
+            <span class="mini" style="background:#8a5a00" aria-hidden="true">T</span>
+            <span class="mini" style="background:var(--surf);color:var(--text)" aria-hidden="true">+8</span>
+            <a class="btn t sm" href="Devices.dc.html" style="margin-left:auto">{{t.viewAll}}</a>
+          </div>
+        </section>
+      </div>
+
+      <div class="dash">
+        <section class="card span2 rise {{cardCls.chart}}" aria-label="{{t.traffic}}">
+          <div class="cols">
+            <div class="grow" style="min-width:180px">
+              <div class="tilehead"><h2 class="h2">{{t.traffic}}</h2>
+                <button class="info" aria-label="{{tips.chart.label}}" onClick="{{tips.chart.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button>
+                <button class="lock" aria-label="{{lk.chart.label}}" aria-pressed="{{lk.chart.pressed}}" onClick="{{lk.chart.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.chart.d}}"/></svg></button>
+              </div>
+              <sc-if value="{{tips.chart.on}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:46px;left:24px">{{tips.chart.text}}</div></sc-if>
+              <div class="muted">{{t.trafficSub}}</div>
+            </div>
+            <div class="seg" role="group" aria-label="{{t.rangeLabel}}">
+              <sc-for list="{{ranges}}" as="r" hint-placeholder-count="4">
+                <button aria-pressed="{{r.pressed}}" class="{{r.cls}}" onClick="{{r.pick}}">{{r.label}}</button>
+              </sc-for>
+            </div>
+            <button class="icb" aria-label="{{t.exportChart}}" title="{{t.exportChart}}" onClick="{{exportChart}}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M4 19h16"/></svg></button>
+          </div>
+          <div class="cols" style="gap:10px 36px">
+            <div><div class="legend"><i style="background:var(--primary)"></i>{{t.down}}</div><div class="big" style="color:var(--primary)">{{chart.nowDl}}<small>Mbps</small></div></div>
+            <div><div class="legend"><i style="background:var(--tertiary)"></i>{{t.up}}</div><div class="big" style="color:var(--tertiary)">{{chart.nowUl}}<small>Mbps</small></div></div>
+            <div><div class="legend">{{t.peak}}</div><div class="t1 mono">{{chart.peak}} Mbps</div></div>
+            <div><div class="legend">{{t.avg}}</div><div class="t1 mono">{{chart.avg}} Mbps</div></div>
+            <sc-if value="{{exportedChart}}" hint-placeholder-val="{{ false }}"><span class="tag good">{{t.chartExported}}</span></sc-if>
+          </div>
+          <div style="display:flex;gap:10px;align-items:stretch">
+            <div style="display:flex;flex-direction:column;justify-content:space-between;font-size:12px;color:var(--sub);text-align:right;min-width:32px;height:240px" aria-hidden="true"><span>{{chart.y1}}</span><span>{{chart.y2}}</span><span>0</span></div>
+            <div style="flex:1;min-width:0">
+              <div class="plot">
+                <svg viewBox="0 0 800 240" preserveAspectRatio="none" width="100%" height="240" role="img" aria-label="{{chart.alt}}">
+                  <defs>
+                    <linearGradient id="mxgd" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--primary);stop-opacity:.5"/><stop offset="1" style="stop-color:var(--primary);stop-opacity:0"/></linearGradient>
+                    <linearGradient id="mxgu" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--tertiary);stop-opacity:.28"/><stop offset="1" style="stop-color:var(--tertiary);stop-opacity:0"/></linearGradient>
+                  </defs>
+                  <line class="gridline" x1="0" x2="800" y1="0" y2="0"/><line class="gridline" x1="0" x2="800" y1="60" y2="60"/><line class="gridline" x1="0" x2="800" y1="120" y2="120"/><line class="gridline" x1="0" x2="800" y1="180" y2="180"/><line class="gridline" x1="0" x2="800" y1="240" y2="240"/>
+                  <path d="{{chart.dlArea}}" fill="url(#mxgd)"/>
+                  <path d="{{chart.ulArea}}" fill="url(#mxgu)"/>
+                  <path d="{{chart.dlLine}}" fill="none" stroke="var(--primary)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+                  <path d="{{chart.ulLine}}" fill="none" stroke="var(--tertiary)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+                </svg>
+                <span class="ptwrap" style="left:100%;top:{{chart.dotTop}}%"><span class="pt live"></span></span>
+              </div>
+              <div class="axis" aria-hidden="true"><span>{{chart.x0}}</span><span>{{chart.x1}}</span><span>{{chart.x2}}</span><span>{{chart.x3}}</span><span>{{chart.x4}}</span></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card rise" aria-label="{{t.bands}}">
+          <div class="tilehead"><h2 class="h2" style="flex:1">{{t.bands}}</h2><button class="info" aria-label="{{t.more}}" onClick="{{tips.bands.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button></div>
+          <sc-if value="{{tips.bands.on}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:52px;right:16px">{{tips.bands.text}}</div></sc-if>
+          <div class="stack" role="img" aria-label="{{t.bandsAlt}}">
+            <i style="width:50%;background:var(--primary)"></i><i style="width:25%;background:var(--tertiary)"></i><i style="width:17%;background:var(--good)"></i><i style="width:8%;background:var(--warn)"></i>
+          </div>
+          <sc-for list="{{bands}}" as="b" hint-placeholder-count="4">
+            <div class="row">
+              <span style="width:14px;height:14px;border-radius:7px;flex:none;background:{{b.color}}"></span>
+              <div class="grow"><div class="t1">{{b.label}}</div><div class="t2">{{b.sub}}</div></div>
+              <span class="big" style="font-size:30px">{{b.n}}</span>
+            </div>
+          </sc-for>
+          <a class="btn o sm" href="Devices.dc.html" style="align-self:flex-start;margin-top:4px">{{t.viewAll}}</a>
+        </section>
+      </div>
+
+      <div class="dash">
+        <section class="card rise" aria-label="{{t.mesh}}">
+          <div class="tilehead"><h2 class="h2">{{t.mesh}}</h2><span class="tag good" style="margin-left:8px">{{t.meshOk}}</span><span class="grow"></span>
+            <button class="info" aria-label="{{tips.mesh.label}}" onClick="{{tips.mesh.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button>
+          </div>
+          <sc-if value="{{tips.mesh.on}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:52px;right:16px">{{tips.mesh.text}}</div></sc-if>
+          <svg viewBox="0 0 400 236" width="100%" role="img" aria-label="{{t.meshAlt}}" style="display:block">
+            <path d="M200 60 L84 176" stroke="var(--good)" stroke-width="5" stroke-linecap="round" fill="none"/>
+            <path d="M200 60 L316 176" stroke="var(--primary)" stroke-width="4" stroke-linecap="round" stroke-dasharray="2 9" fill="none"/>
+            <rect x="96" y="96" width="76" height="24" rx="12" fill="var(--surf)" stroke="var(--line)"/>
+            <text x="134" y="112" text-anchor="middle" font-size="11.5" font-weight="700" fill="var(--text)" style="font-family:inherit">{{t.meshWired}}</text>
+            <rect x="228" y="96" width="104" height="24" rx="12" fill="var(--surf)" stroke="var(--line)"/>
+            <text x="280" y="112" text-anchor="middle" font-size="11.5" font-weight="700" fill="var(--text)" style="font-family:inherit">-61 dBm · 866 Mbps</text>
+            <circle cx="200" cy="52" r="34" fill="var(--primary-c)"/>
+            <g transform="translate(184 36)" fill="none" stroke="var(--on-primary-c)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10a15 15 0 0 1 20 0"/><path d="M6 14a9 9 0 0 1 12 0"/><rect x="3" y="20" width="18" height="7" rx="2.5"/></g>
+            <circle cx="84" cy="180" r="28" fill="var(--tertiary-c)"/>
+            <g transform="translate(72 168)" fill="none" stroke="var(--on-tertiary-c)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8a12 12 0 0 1 20 0"/><path d="M6 13a6 6 0 0 1 12 0"/><path d="M12 19h.01"/></g>
+            <circle cx="316" cy="180" r="28" fill="var(--tertiary-c)"/>
+            <g transform="translate(304 168)" fill="none" stroke="var(--on-tertiary-c)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8a12 12 0 0 1 20 0"/><path d="M6 13a6 6 0 0 1 12 0"/><path d="M12 19h.01"/></g>
+            <text x="200" y="104" text-anchor="middle" font-size="12.5" font-weight="750" fill="var(--text)" style="font-family:inherit">{{t.meshRouter}}</text>
+            <text x="84" y="226" text-anchor="middle" font-size="12.5" font-weight="750" fill="var(--text)" style="font-family:inherit">{{t.meshLiving}}</text>
+            <text x="316" y="226" text-anchor="middle" font-size="12.5" font-weight="750" fill="var(--text)" style="font-family:inherit">{{t.meshBed}}</text>
+          </svg>
+          <div class="row"><span class="dot"></span><div class="grow"><div class="t1">{{t.meshLiving}}</div><div class="t2">{{t.meshLivingSub}}</div></div><span class="tag good">{{t.excellent}}</span></div>
+          <div class="row"><span class="dot" style="background:var(--warn)"></span><div class="grow"><div class="t1">{{t.meshBed}}</div><div class="t2">{{t.meshBedSub}}</div></div><span class="tag">{{t.good}}</span></div>
+        </section>
+
+        <section class="card ov span2 rise" aria-label="{{t.recent}}">
+          <div class="cols">
+            <h2 class="h2 grow">{{t.recent}}</h2>
+            <button class="btn o sm" onClick="{{selectAll}}">{{t.selectAll}}</button>
+            <a class="btn t sm" href="Changes.dc.html">{{t.history}}</a>
+          </div>
+          <sc-if value="{{hasSel}}" hint-placeholder-val="{{ false }}">
+            <div class="glass" role="region" aria-label="{{t.bulk}}" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-radius:22px;padding:8px 8px 8px 20px">
+              <b style="flex:1;min-width:120px">{{selText}}</b>
+              <button class="{{bulkCls}}" onClick="{{undoSel}}">{{t.undoSel}}</button>
+              <button class="btn o sm" onClick="{{clearSel}}">{{t.clear}}</button>
+            </div>
+          </sc-if>
+          <div class="tl">
+            <sc-for list="{{changes}}" as="c" hint-placeholder-count="5">
+              <div class="row pos">
+                <button class="cbw" role="checkbox" aria-checked="{{c.checked}}" aria-label="{{c.selLabel}}" onClick="{{c.toggle}}"><span class="{{c.cbCls}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></button>
+                <div class="grow"><div class="{{c.cls}}">{{c.text}}</div><div class="t2">{{c.time}} · {{c.sub}}</div></div>
+                <sc-if value="{{c.undone}}" hint-placeholder-val="{{ false }}"><span class="tag warn">{{t.undone}}</span></sc-if>
+                <button class="{{c.undoCls}}" onClick="{{c.undo}}">{{c.undoLabel}}</button>
+                <button class="info" aria-label="{{t.rowMenu}}" aria-haspopup="menu" aria-expanded="{{c.menuOpen}}" onClick="{{c.more}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg></button>
+                <sc-if value="{{c.menuOpen}}" hint-placeholder-val="{{ false }}">
+                  <div class="menu" role="menu" style="right:8px;top:54px">
+                    <button class="mi" role="menuitem" onClick="{{c.more}}">{{t.copyDetails}}</button>
+                    <button class="mi" role="menuitem" onClick="{{c.more}}">{{t.openHistory}}</button>
+                    <button class="mi" role="menuitem" onClick="{{c.more}}">{{t.exportOne}}</button>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </section>
+      </div>
+
+      <section aria-label="{{t.notifs}}">
+        <div class="cols" style="margin-bottom:12px">
+          <h2 class="h2 grow">{{t.notifs}} <span class="badge" style="vertical-align:middle">{{unread}}</span></h2>
+          <button class="btn o sm" onClick="{{markRead}}">{{t.markRead}}</button>
+          <a class="btn t sm" href="Notifications.dc.html">{{t.openNotifs}}</a>
+        </div>
+        <div class="grid">
+          <sc-for list="{{notifs}}" as="n" hint-placeholder-count="3">
+            <article class="card tone rise" style="flex-direction:row;align-items:flex-start;gap:14px">
+              <span class="{{n.badgeCls}} cookie"><svg viewBox="0 0 200 200" aria-hidden="true"><path d="M194 100L193.4 104.1L191.8 108L189.2 111.7L186.1 115.2L182.6 118.3L179.2 121.2L176.2 124L173.7 126.8L172.1 129.8L171.1 133.2L170.8 136.9L171 141L171.4 145.5L171.6 150.1L171.4 154.8L170.6 159.2L168.9 163.2L166.5 166.5L163.2 168.9L159.2 170.6L154.8 171.4L150.1 171.6L145.5 171.4L141 171L136.9 170.8L133.2 171.1L129.8 172.1L126.8 173.7L124 176.2L121.2 179.2L118.3 182.6L115.2 186.1L111.7 189.2L108 191.8L104.1 193.4L100 194L95.9 193.4L92 191.8L88.3 189.2L84.8 186.1L81.7 182.6L78.8 179.2L76 176.2L73.2 173.7L70.2 172.1L66.8 171.1L63.1 170.8L59 171L54.5 171.4L49.9 171.6L45.2 171.4L40.8 170.6L36.8 168.9L33.5 166.5L31.1 163.2L29.4 159.2L28.6 154.8L28.4 150.1L28.6 145.5L29 141L29.2 136.9L28.9 133.2L27.9 129.8L26.3 126.8L23.8 124L20.8 121.2L17.4 118.3L13.9 115.2L10.8 111.7L8.2 108L6.6 104.1L6 100L6.6 95.9L8.2 92L10.8 88.3L13.9 84.8L17.4 81.7L20.8 78.8L23.8 76L26.3 73.2L27.9 70.2L28.9 66.8L29.2 63.1L29 59L28.6 54.5L28.4 49.9L28.6 45.2L29.4 40.8L31.1 36.8L33.5 33.5L36.8 31.1L40.8 29.4L45.2 28.6L49.9 28.4L54.5 28.6L59 29L63.1 29.2L66.8 28.9L70.2 27.9L73.2 26.3L76 23.8L78.8 20.8L81.7 17.4L84.8 13.9L88.3 10.8L92 8.2L95.9 6.6L100 6L104.1 6.6L108 8.2L111.7 10.8L115.2 13.9L118.3 17.4L121.2 20.8L124 23.8L126.8 26.3L129.8 27.9L133.2 28.9L136.9 29.2L141 29L145.5 28.6L150.1 28.4L154.8 28.6L159.2 29.4L163.2 31.1L166.5 33.5L168.9 36.8L170.6 40.8L171.4 45.2L171.6 49.9L171.4 54.5L171 59L170.8 63.1L171.1 66.8L172.1 70.2L173.7 73.2L176.2 76L179.2 78.8L182.6 81.7L186.1 84.8L189.2 88.3L191.8 92L193.4 95.9L194 100Z"/></svg><svg class="in" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:22px;height:22px;fill:none;color:var(--text)"><path d="{{n.d}}"/></svg></span>
+              <div class="grow">
+                <div class="t1">{{n.title}}</div>
+                <div class="t2">{{n.text}}</div>
+                <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button class="btn t sm" onClick="{{n.act}}">{{n.actLabel}}</button><span class="t2" style="align-self:center">{{n.time}}</span></div>
+              </div>
+            </article>
+          </sc-for>
+        </div>
+      </section>
+    </main>
+    <sc-if value="{{showDock}}" hint-placeholder-val="{{ true }}">
+      <div class="dock" role="region" aria-label="{{t.dockLabel}}" style="margin:0 24px 20px">
+        <b>{{t.dockText}}</b>
+        <span class="mono" style="opacity:.8;font-size:13px">{{dockNames}}</span>
+        <button class="btn t sm" onClick="{{discard}}">{{t.discard}}</button>
+        <button class="btn f" onClick="{{applyAll}}">{{t.review}}</button>
+      </div>
+    </sc-if>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#4f5bd5","options":["#4f5bd5","#00897b","#d81b60","#f4511e","#7c4dff"],"section":"Look"},"dark":{"editor":"boolean","default":false,"section":"Look"},"motion":{"editor":"enum","options":["calm","standard","expressive"],"default":"expressive","section":"Look"},"firmware":{"editor":"enum","options":["merlin","stock"],"default":"merlin","section":"Router"},"role":{"editor":"enum","options":["owner","operator","viewer"],"default":"owner","section":"Router"},"lang":{"editor":"enum","options":["en","yue","both"],"default":"en","section":"Language"},"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const p = this.props;
+    const s = this.state || {};
+    const lang = p.lang ?? 'en';
+    const role = p.role ?? 'owner';
+    const firmware = p.firmware ?? 'merlin';
+    const motion = p.motion ?? 'expressive';
+    const accent = p.accent || '#4f5bd5';
+    const dark = p.dark === true || p.dark === 'true' || p.dark === 1 || p.dark === '1';
+    const T = (en, yue) => lang === 'en' ? en : lang === 'yue' ? yue : en + ' · ' + yue;
+    const canWrite = role !== 'viewer';
+    const set = (o) => this.setState(o);
+    const toggleIn = (arr, v) => arr.includes(v) ? arr.filter(x => x !== v) : arr.concat([v]);
+
+    const ACT = {
+      dns: T('DNS server 198.51.100.2 with DNS over TLS', 'DNS 伺服器 198.51.100.2（DNS over TLS）'),
+      chan: T('5 GHz channel 36 to 44', '5 GHz 頻道 36 改做 44'),
+      guest: T('Guest Wi-Fi on', '開訪客 Wi-Fi'),
+      restart: T('Restart Wi-Fi radios', '重啟 Wi-Fi 無線電'),
+      speed: T('Run speed test', '做速度測試'),
+      wake: T('Wake NAS 198.51.100.20', '喚醒 NAS 198.51.100.20')
+    };
+    const range = s.range || '10m';
+    const pend = s.pend || ['dns', 'chan'];
+    const sel = s.sel || [];
+    const undone = s.undone || [];
+    const applied = s.applied || [];
+    const locks = s.locks || [];
+    const gone = s.gone || [];
+    const tip = s.tip || '';
+    const rowMenu = s.rowMenu || '';
+    const pendCount = pend.length;
+
+    // quick actions
+    const qaDefs = [
+      ['guest', 'M2 9a15 15 0 0 1 20 0 M5 12.5a10 10 0 0 1 14 0 M8.5 16a5 5 0 0 1 7 0 M12 19.5h.01'],
+      ['restart', 'M20 12a8 8 0 1 1-2.5-5.8 M20 4v5h-5'],
+      ['speed', 'M4 17a8 8 0 1 1 16 0 M12 17l4-5'],
+      ['wake', 'M12 3v9 M6.4 6.6a8 8 0 1 0 11.2 0']
+    ];
+    const qas = qaDefs.map(([id, d]) => {
+      const queued = pend.includes(id);
+      return {
+        d: queued ? 'M5 12.5l4.5 4.5L19 7.5' : d,
+        label: ACT[id],
+        cls: 'btn' + (queued ? ' on' : '') + (canWrite ? '' : ' dis'),
+        pressed: queued ? 'true' : 'false',
+        pick: () => { if (canWrite) set({ pend: toggleIn(pend, id) }); }
+      };
+    });
+
+    // timeline
+    const baseChanges = [
+      ['c1', '17:12', T('Guest Wi-Fi turned on', '開咗訪客 Wi-Fi'), T('SSID Guest-Home, 2.4 GHz, by Pat', 'SSID Guest-Home，2.4 GHz，Pat 設定')],
+      ['c2', '16:40', T('DNS server set to 198.51.100.2', 'DNS 伺服器設做 198.51.100.2'), T('DNS over TLS on, by Pat', '已開 DNS over TLS，Pat 設定')],
+      ['c3', '14:05', T('Port 32400 forwarded to NAS', '端口 32400 轉發去 NAS'), T('TCP to 198.51.100.20, by Alex', 'TCP 去 198.51.100.20，Alex 設定')],
+      ['c4', '09:30', T('5 GHz channel changed 36 to 44', '5 GHz 頻道由 36 改做 44'), T('Automatic selection off, by Pat', '已關閉自動選擇，Pat 設定')],
+      ['c5', T('Yesterday 22:10', '尋日 22:10'), T('Parental schedule updated', '更新咗家長監護時間表'), T('Tablet bedtime 21:30, by Pat', '平板就寢時間 21:30，Pat 設定')]
+    ];
+    const appliedRows = applied.map((id, i) => ['a' + i + id, T('Just now', '啱啱'), ACT[id], T('Applied from the queue, by Pat', '由排隊清單套用，Pat 設定')]);
+    const allChanges = appliedRows.concat(baseChanges);
+    const changes = allChanges.map(([id, time, text, sub]) => {
+      const on = sel.includes(id);
+      const u = undone.includes(id);
+      return {
+        time, text, sub, undone: u,
+        checked: on ? 'true' : 'false',
+        selLabel: T('Select change: ', '揀選變更：') + text,
+        cbCls: 'cb2' + (on ? ' on' : ''),
+        cls: 't1' + (u ? ' struck' : ''),
+        undoLabel: u ? T('Redo', '重做') : T('Undo', '復原'),
+        undoCls: 'btn t sm' + (canWrite ? '' : ' dis'),
+        menuOpen: rowMenu === id,
+        toggle: () => set({ sel: toggleIn(sel, id) }),
+        undo: () => { if (canWrite) set({ undone: toggleIn(undone, id) }); },
+        more: () => set({ rowMenu: rowMenu === id ? '' : id })
+      };
+    });
+
+    // chart
+    const cfgs = {
+      '1m': { base: 430, amp: 90, up: 46, seed: 3, x: ['-60 s', '-45 s', '-30 s', '-15 s', T('now', '而家')] },
+      '10m': { base: 330, amp: 140, up: 62, seed: 7, x: ['-10 min', '-7.5 min', '-5 min', '-2.5 min', T('now', '而家')] },
+      '1h': { base: 250, amp: 170, up: 70, seed: 11, x: ['-60 min', '-45 min', '-30 min', '-15 min', T('now', '而家')] },
+      '24h': { base: 160, amp: 210, up: 52, seed: 19, x: ['00:00', '06:00', '12:00', '18:00', T('now', '而家')] }
+    };
+    const cfg = cfgs[range];
+    let r = cfg.seed * 9301 + 49297;
+    const rnd = () => { r = (r * 9301 + 49297) % 233280; return r / 233280; };
+    const N = 60, W = 800, H = 240;
+    const dl = [], ul = [];
+    for (let i = 0; i < N; i++) {
+      const t = i / (N - 1);
+      dl.push(Math.max(10, cfg.base + cfg.amp * 0.6 * Math.sin(t * 9 + cfg.seed) + cfg.amp * 0.25 * Math.sin(t * 23 + cfg.seed * 2) + (rnd() - 0.5) * cfg.amp * 0.5));
+      ul.push(Math.max(3, cfg.up * (0.75 + 0.45 * Math.sin(t * 7 + cfg.seed)) + (rnd() - 0.5) * cfg.up * 0.5));
+    }
+    const maxDl = Math.max.apply(null, dl);
+    const yMax = Math.max(100, Math.ceil(maxDl * 1.1 / 100) * 100);
+    const f = (n) => Math.round(n * 10) / 10;
+    const smooth = (pts) => {
+      let d = 'M' + f(pts[0][0]) + ' ' + f(pts[0][1]);
+      for (let i = 1; i < pts.length - 1; i++) {
+        const mx = (pts[i][0] + pts[i + 1][0]) / 2, my = (pts[i][1] + pts[i + 1][1]) / 2;
+        d += ' Q' + f(pts[i][0]) + ' ' + f(pts[i][1]) + ' ' + f(mx) + ' ' + f(my);
+      }
+      const l = pts[pts.length - 1];
+      return d + ' L' + f(l[0]) + ' ' + f(l[1]);
+    };
+    const toPts = (arr) => arr.map((v, i) => [i / (N - 1) * W, H - Math.min(v / yMax, 1) * H]);
+    const dlP = toPts(dl), ulP = toPts(ul);
+    const dlLine = smooth(dlP), ulLine = smooth(ulP);
+    const nowDl = Math.round(dl[N - 1]), nowUl = Math.round(ul[N - 1]);
+    const avg = Math.round(dl.reduce((a, b) => a + b, 0) / N);
+    const chart = {
+      dlLine, ulLine, dlArea: dlLine + ' L' + W + ' ' + H + ' L0 ' + H + ' Z', ulArea: ulLine + ' L' + W + ' ' + H + ' L0 ' + H + ' Z',
+      nowDl, nowUl, peak: Math.round(maxDl), avg, y1: yMax, y2: yMax / 2,
+      dotTop: f((H - Math.min(dl[N - 1] / yMax, 1) * H) / H * 100),
+      x0: cfg.x[0], x1: cfg.x[1], x2: cfg.x[2], x3: cfg.x[3], x4: cfg.x[4],
+      alt: T('Download and upload speed over the selected period. Now ' + nowDl + ' Mbps down, ' + nowUl + ' Mbps up.', '所選時段嘅下載同上傳速度。而家下載 ' + nowDl + ' Mbps，上傳 ' + nowUl + ' Mbps。')
+    };
+    const rangeDefs = [['1m', '1 min', '1 分鐘'], ['10m', '10 min', '10 分鐘'], ['1h', '1 h', '1 小時'], ['24h', '24 h', '24 小時']];
+    const ranges = rangeDefs.map(([id, en, yue]) => ({ label: lang === 'yue' ? yue : en, cls: range === id ? 'on' : '', pressed: range === id ? 'true' : 'false', pick: () => set({ range: id }) }));
+
+    // sparkline
+    let rr = 4242;
+    const rn = () => { rr = (rr * 9301 + 49297) % 233280; return rr / 233280; };
+    const sp = [];
+    for (let i = 0; i < 24; i++) sp.push([i / 23 * 160, 48 - (10 + 8 * Math.sin(i / 3) + rn() * 9 + (i > 17 ? 5 : 0)) / 40 * 48]);
+    const spLine = smooth(sp);
+    const spark = { line: spLine, area: spLine + ' L160 48 L0 48 Z' };
+
+    // locks, tips, card classes
+    const lkDefs = { cpu: T('processor', '處理器'), mem: T('memory', '記憶體'), temp: T('temperature', '溫度'), dev: T('devices', '裝置'), chart: T('traffic chart', '流量圖') };
+    const lk = {}; const cardCls = {};
+    Object.keys(lkDefs).forEach(id => {
+      const on = locks.includes(id);
+      lk[id] = {
+        d: on ? 'M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4' : 'M5 11h14v10H5z M8 11V7a4 4 0 0 1 7.5-2',
+        pressed: on ? 'true' : 'false',
+        label: (on ? T('Unlock ', '解鎖 ') : T('Lock ', '鎖定 ')) + lkDefs[id] + T(' card', ' 卡片'),
+        toggle: () => set({ locks: toggleIn(locks, id) })
+      };
+      cardCls[id] = on ? 'lockedcard' : '';
+    });
+    const tipText = {
+      cpu: T('Average load across both cores over the last minute. Anything under 70% is comfortable.', '兩個核心最近一分鐘嘅平均負載，低於 70% 就好舒服。'),
+      mem: T('Used, cache and free memory. Cache is released automatically when apps need it.', '已用、快取同可用記憶體，程式需要嘅時候快取會自動釋放。'),
+      temp: T('Processor temperature. The router slows down above 75 °C.', '處理器溫度，超過 75 °C 路由器會減速。'),
+      dev: T('Devices with a lease in the last 10 minutes, wired and wireless.', '最近 10 分鐘有租約嘅裝置，有線同無線都計。'),
+      chart: T('Live throughput on the internet port. Switch the period to compare.', '網絡埠即時流量，轉換時段就可以比較。'),
+      bands: T('Counts every connected device by the band it uses right now.', '按目前使用嘅頻段，統計所有連線裝置。'),
+      mesh: T('Backhaul is the link between each node and the main router.', '回程連線係每個節點同主路由器之間嘅連線。'),
+      qa: T('Quick actions are queued first. Nothing reaches the router until you review.', '快速動作會先排隊，檢視之前唔會真正套用到路由器。')
+    };
+    const tips = {};
+    Object.keys(tipText).forEach(id => {
+      tips[id] = { on: tip === id, text: tipText[id], label: T('About this card: ', '關於呢張卡片：') + (lkDefs[id] || id), toggle: () => set({ tip: tip === id ? '' : id }) };
+    });
+
+    // bands
+    const bands = [
+      { label: '5 GHz', sub: T('Phones, laptops, TV', '手機、手提電腦、電視'), n: 6, color: 'var(--primary)' },
+      { label: '2.4 GHz', sub: T('Smart plugs, speakers', '智能插座、喇叭'), n: 3, color: 'var(--tertiary)' },
+      { label: T('Wired', '有線'), sub: T('NAS, desktop', 'NAS、桌面電腦'), n: 2, color: 'var(--good)' },
+      { label: T('Guest', '訪客'), sub: T('Guest-Home network', 'Guest-Home 網絡'), n: 1, color: 'var(--warn)' }
+    ];
+
+    // notifications
+    const notifDefs = [
+      ['n1', 'M12 9v4 M12 17h.01 M10.3 3.9L2.5 17.5A2 2 0 0 0 4.2 20.5h15.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z', 'w', T('Unknown device joined', '有未知裝置連線'), T('android-5f2a took 198.51.100.143 on 5 GHz.', 'android-5f2a 喺 5 GHz 攞咗 198.51.100.143。'), T('Block', '封鎖'), T('4 min ago', '4 分鐘前')],
+      ['n2', 'M4 17a8 8 0 1 1 16 0 M12 17l4-5', '', T('Speed test finished', '速度測試完成'), T('892 Mbps down, 41 Mbps up, 5 ms to the first hop.', '下載 892 Mbps，上傳 41 Mbps，第一跳 5 ms。'), T('See result', '睇結果'), T('32 min ago', '32 分鐘前')],
+      ['n3', 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18 M8 12.5l2.7 2.7L16 9.5', '', firmware === 'merlin' ? T('Firmware is current', '韌體已經係最新') : T('Firmware update ready', '有韌體更新'), firmware === 'merlin' ? T('Asuswrt-Merlin 388.8_4 is the latest stable build.', 'Asuswrt-Merlin 388.8_4 已經係最新穩定版。') : T('ASUS 388.24198 is installed. A newer stable build is ready to review.', '已安裝 ASUS 388.24198，有較新嘅穩定版可以檢視。'), firmware === 'merlin' ? T('Check again', '再檢查') : T('Review', '檢視'), T('Today 08:00', '今日 08:00')]
+    ];
+    const notifs = notifDefs.filter(n => !gone.includes(n[0])).map(n => ({
+      d: n[1], badgeCls: 'nbadge ' + n[2], title: n[3], text: n[4], actLabel: n[5], time: n[6],
+      act: () => set({ gone: gone.concat([n[0]]) })
+    }));
+    const unread = notifs.length;
+
+    const showDock = canWrite && pendCount > 0;
+    const hasSel = sel.length > 0;
+    const selText = sel.length + T(' selected', ' 項已選');
+    return {
+      accent, dark, darkNum: dark ? 1 : 0, lang, role, firmware,
+      motionCls: motion === 'calm' ? 'calm' : motion === 'standard' ? 'std' : '',
+      viewer: !canWrite,
+      pendCount, qas, changes, chart, ranges, spark, lk, cardCls, tips, bands, notifs, unread,
+      tabsStr: [T('Overview', '概覽'), T('Devices', '裝置'), 'Wi-Fi'].map(x => x.replace(/,/g, ' ')).join(','),
+      reviewCls: 'btn f' + (canWrite ? '' : ' dis'), dropCls: 'btn f drop' + (canWrite ? '' : ' dis'),
+      splitOpen: !!s.split, toggleSplit: () => set({ split: !s.split }),
+      applyAll: () => { if (canWrite && pend.length) set({ pend: [], applied: pend.concat(applied), split: false, scheduled: false }); },
+      discard: () => set({ pend: [], split: false }),
+      schedule: () => { if (canWrite && pend.length) set({ scheduled: true, split: false }); },
+      hasSchedule: !!s.scheduled && pendCount > 0,
+      showDock,
+      dockNames: pend.map(id => ACT[id]).slice(0, 2).join(', ') + (pend.length > 2 ? ' +' + (pend.length - 2) : ''),
+      exportChart: () => set({ exportedChart: true }), exportedChart: !!s.exportedChart,
+      hasSel, selText, bulkCls: 'btn t sm' + (canWrite ? '' : ' dis'),
+      selectAll: () => set({ sel: allChanges.map(c => c[0]) }),
+      clearSel: () => set({ sel: [] }),
+      undoSel: () => { if (canWrite) set({ undone: sel.reduce((a, id) => a.includes(id) ? a : a.concat([id]), undone), sel: [] }); },
+      markRead: () => set({ gone: notifDefs.map(n => n[0]) }),
+      t: {
+        title: T('Overview', '概覽'),
+        heroLabel: T('Router health summary', '路由器狀態摘要'),
+        headline: T('Everything is running', '一切運作正常'),
+        heroLede: T('The router has been up for 3 days and 5 hours. 12 devices are online and the internet connection is steady at 892 Mbps.', '路由器已經運作 3 日 5 個鐘，12 部裝置在線，網絡連線穩定喺 892 Mbps。'),
+        fw: firmware === 'merlin' ? 'Asuswrt-Merlin 388.8_4' : T('Stock ASUS 388.24198', '原廠 ASUS 388.24198'),
+        addons: firmware === 'merlin' ? T('3 add-ons running', '3 個擴充功能運行中') : T('No add-ons on stock firmware', '原廠韌體冇擴充功能'),
+        roleChip: role === 'owner' ? T('Owner', '擁有人') : role === 'operator' ? T('Operator', '操作員') : T('Viewer, read only', '檢視者（唯讀）'),
+        uptime: T('Uptime', '運作時間'), latency: T('Latency', '延遲'), health: T('Health', '健康度'),
+        healthAlt: T('Health 98 percent', '健康度 98%'),
+        qa: T('Quick actions', '快速動作'), qaLabel: T('Quick actions', '快速動作'), qaInfo: T('About quick actions', '關於快速動作'),
+        qaLede: T('Queue a change now, review it before it reaches the router.', '先排隊，檢視之後先會套用到路由器。'),
+        review: pendCount > 0 ? T('Review ' + pendCount + ' changes', '檢視 ' + pendCount + ' 項變更') : T('Review changes', '檢視變更'),
+        moreApply: T('More apply options', '更多套用選項'),
+        applyNow: T('Apply now', '即時套用'), schedule: T('Apply at 03:00', '凌晨 03:00 套用'), discard: T('Discard queue', '放棄排隊'),
+        readOnly: T('Read-only role: you can look but not change anything.', '唯讀角色：只可以睇，唔可以改動。'),
+        scheduled: T('Scheduled for 03:00 tonight', '已排程今晚 03:00 套用'),
+        cpu: T('Processor', '處理器'), cpuSub: T('2 cores at 1.8 GHz', '2 個核心 1.8 GHz'),
+        mem: T('Memory', '記憶體'), memAlt: T('Memory 70 percent used', '記憶體已用 70%'), used: T('Used', '已用'), cache: T('Cache', '快取'), free: T('Free', '可用'),
+        temp: T('Temperature', '溫度'), tempAlt: T('Temperature 54 degrees Celsius', '溫度 54 攝氏度'), tempOk: T('Normal, limit 75 °C', '正常，上限 75 °C'),
+        devs: T('Devices', '裝置'), online: T(' online', ' 在線'), devSub: T('9 on Wi-Fi, 2 wired, 1 guest', '9 部 Wi-Fi、2 部有線、1 部訪客'), viewAll: T('View all', '睇全部'),
+        traffic: T('Internet traffic', '網絡流量'), trafficSub: T('Live, updates every second', '即時，每秒更新'),
+        rangeLabel: T('Chart period', '圖表時段'), exportChart: T('Export chart data', '匯出圖表資料'), chartExported: T('Chart data exported', '已匯出圖表資料'),
+        down: T('Download', '下載'), up: T('Upload', '上傳'), peak: T('Peak', '高峰'), avg: T('Average', '平均'),
+        bands: T('Devices by band', '按頻段嘅裝置'), bandsAlt: T('6 on 5 GHz, 3 on 2.4 GHz, 2 wired, 1 guest', '5 GHz 6 部、2.4 GHz 3 部、有線 2 部、訪客 1 部'), more: T('More options', '更多選項'),
+        mesh: 'AiMesh', meshOk: T('Both nodes connected', '兩個節點都已連線'), meshAlt: T('AiMesh map: router connected to two nodes', 'AiMesh 地圖：路由器連住兩個節點'),
+        meshWired: T('Ethernet 1 Gbps', '網線 1 Gbps'), meshRouter: T('Router RT-AX86U', '路由器 RT-AX86U'),
+        meshLiving: T('Living room node', '客廳節點'), meshBed: T('Bedroom node', '睡房節點'),
+        meshLivingSub: T('RT-AX58U · wired backhaul · 5 clients', 'RT-AX58U · 網線回程 · 5 部裝置'), meshBedSub: T('ZenWiFi XD4 · 5 GHz backhaul · 3 clients', 'ZenWiFi XD4 · 5 GHz 回程 · 3 部裝置'),
+        excellent: T('Excellent', '極佳'), good: T('Good', '良好'),
+        recent: T('Recent changes', '最近變更'), selectAll: T('Select all', '全選'), history: T('Change history', '變更記錄'),
+        bulk: T('Bulk actions', '批量操作'), undoSel: T('Undo selected', '復原所選'), clear: T('Clear', '清除'), undone: T('Undone', '已復原'),
+        rowMenu: T('Row actions', '列操作'), copyDetails: T('Copy details', '複製詳情'), openHistory: T('Open in history', '喺記錄開啟'), exportOne: T('Export this change', '匯出呢項變更'),
+        notifs: T('Notifications', '通知'), markRead: T('Mark all read', '全部標記已讀'), openNotifs: T('Open notifications', '開啟通知'),
+        dockLabel: T('Pending changes', '待套用變更'),
+        dockText: pendCount + T(' changes waiting', ' 項變更等緊')
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

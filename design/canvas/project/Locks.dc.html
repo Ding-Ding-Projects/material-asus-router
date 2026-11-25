@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Locks, recovery and authenticator</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="theme.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,100..1000&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.onp{background:color-mix(in srgb,var(--on-primary) 18%,transparent);color:var(--on-primary)}
+.card.ov{overflow:visible}
+.cbw{width:44px;height:44px;border:0;background:none;display:grid;place-items:center;flex:none;padding:0}
+.cb2{width:22px;height:22px;border-radius:7px;border:2px solid var(--sub);display:grid;place-items:center;color:var(--on-primary)}
+.cb2 svg{opacity:0}
+.cb2.on{background:var(--primary);border-color:var(--primary)}
+.cb2.on svg{opacity:1}
+.struck{text-decoration:line-through;opacity:.6}
+.lockedcard{outline:3px solid var(--primary);outline-offset:-3px}
+.tilehead{display:flex;align-items:center;gap:4px}
+.tilehead .k,.tilehead .h2{flex:1}
+.legend{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub)}
+.legend i{width:12px;height:12px;border-radius:6px;display:inline-block}
+.pos{position:relative}
+.dis{opacity:.5;cursor:not-allowed}
+.rng{width:100%;min-width:120px;height:44px;accent-color:var(--primary);margin:0}
+.lbl{font-size:12.5px;font-weight:750;color:var(--sub);letter-spacing:.3px}
+.sel{height:44px;border-radius:14px;border:1.5px solid var(--line);background:var(--surf);color:var(--text);font:inherit;font-size:14px;padding:0 12px}
+.kbd{font:700 12px ui-monospace,Consolas,monospace;padding:3px 8px;border-radius:8px;background:var(--surf-high);color:var(--text)}
+.sw[aria-pressed=true]{background:var(--primary);border-color:var(--primary)}
+.sw[aria-pressed=true] i{left:26px;top:2px;width:24px;height:24px;border-radius:12px;background:#fff}
+.seg button[aria-pressed=true],.seg .on{background:var(--surf);color:var(--text);box-shadow:var(--e1)}
+.chip[aria-pressed=true]{background:var(--secondary-c);color:var(--on-secondary-c);border-color:transparent}
+.rowbtn{display:flex;align-items:center;gap:14px;padding:12px 0;border:0;border-top:1px solid var(--line);background:none;color:var(--text);text-align:left;font:inherit;width:100%;min-height:44px}
+.main{position:relative}
+.scrim{z-index:40}
+.scrim .sheet{position:sticky;top:96px}
+.toyl{position:relative;border-radius:28px;padding:20px;background:var(--surf-low);display:flex;flex-direction:column;gap:8px;border:2px solid transparent;min-height:200px}
+.toyl.locked{border-color:var(--primary);background:var(--primary-c);color:var(--on-primary-c)}
+.toyl.locked .muted{color:inherit;opacity:.85}
+.toyl .shine{position:absolute;right:12px;top:12px;width:40px;height:40px;border-radius:20px;display:grid;place-items:center;background:var(--surf);color:var(--text);border:0;padding:0;box-shadow:var(--e1)}
+.toyl.locked .shine{background:var(--primary);color:var(--on-primary)}
+.ladder{display:flex;flex-direction:column;gap:6px;position:relative}
+.rung{display:flex;gap:12px;align-items:center;width:100%;min-height:64px;padding:10px 14px;border:2px solid var(--line);border-radius:22px;background:var(--surf);color:var(--text);font:inherit;text-align:left}
+.rung[aria-pressed=true]{border-color:var(--primary);background:var(--secondary-c);color:var(--on-secondary-c)}
+.rung .num{width:36px;height:36px;border-radius:18px;background:var(--surf-high);display:grid;place-items:center;font-weight:850;flex:none;color:var(--text)}
+.rung[aria-pressed=true] .num{background:var(--primary);color:var(--on-primary)}
+.keyslot{display:flex;align-items:center;gap:12px;padding:14px;border-radius:20px;background:var(--surf-low);border:2px solid var(--line)}
+.keyslot.turned{border-color:var(--good);background:var(--good-c)}
+.codebox{display:flex;align-items:center;gap:16px;padding:16px;border-radius:24px;background:var(--surf-low)}
+.ring{width:56px;height:56px;flex:none}
+.ring circle{fill:none;stroke-width:5}
+.ring .bg{stroke:var(--surf-high)}
+.ring .fg{stroke:var(--primary);stroke-linecap:round;stroke-dasharray:100;animation:ringt 30s linear infinite;transform:rotate(-90deg);transform-origin:50% 50%}
+@keyframes ringt{from{stroke-dashoffset:0}to{stroke-dashoffset:100}}
+.calm .ring .fg{animation:none}
+@media (prefers-reduced-motion:reduce){.ring .fg{animation:none}}
+.qr{display:block;background:#fff;border-radius:20px;padding:12px;box-shadow:var(--e1)}
+.tkt{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line);flex-wrap:wrap;position:relative}
+.tkt:first-of-type{border-top:0}
+.prog{height:8px;border-radius:4px;background:var(--surf-high);overflow:hidden}
+.prog i{display:block;height:100%;background:var(--primary);border-radius:4px}
+</style>
+</helmet>
+<div class="mx shell {{motionCls}}" style="--accent:{{accent}};--dark:{{darkNum}}">
+  <div class="railwrap"><dc-import name="Rail" page="settings" lang="{{lang}}" role="{{role}}" firmware="{{firmware}}" pending="{{pendCount}}" accent="{{accent}}" dark="{{dark}}" hint-size="288px,900px"></dc-import></div>
+  <div class="main">
+    <dc-import name="TopBar" title="{{t.title}}" lang="{{lang}}" role="{{role}}" firmware="{{firmware}}" tabs="{{tabsStr}}" active="0" accent="{{accent}}" dark="{{dark}}" hint-size="1152px,170px"></dc-import>
+    <main class="page">
+
+      <section class="card hero rise" aria-label="{{t.heroLabel}}" style="min-height:220px">
+        <svg class="deco a" viewBox="0 0 200 200" aria-hidden="true" style="right:-70px;top:-80px;width:330px;height:330px"><path d="M195 100L194.1 104.1L191.4 108L187.6 111.5L183.2 114.7L178.9 117.5L175.5 120.2L173.5 123.2L172.9 126.5L173.6 130.5L175.2 135L177 140.1L178.4 145.3L178.7 150.2L177.7 154.4L175.1 157.6L171.2 159.7L166.2 160.7L160.8 160.8L155.5 160.6L150.8 160.6L147.1 161.3L144.2 163.2L142.2 166.3L140.8 170.6L139.3 175.6L137.6 180.7L135.3 185.3L132.3 188.8L128.6 190.6L124.3 190.6L119.7 189L115.2 186.2L110.9 183L107 179.9L103.4 177.8L100 177L96.6 177.8L93 179.9L89.1 183L84.8 186.2L80.3 189L75.7 190.6L71.4 190.6L67.7 188.8L64.7 185.3L62.4 180.7L60.7 175.6L59.3 170.6L57.8 166.3L55.8 163.2L52.9 161.3L49.2 160.6L44.5 160.6L39.2 160.8L33.8 160.7L28.8 159.7L24.9 157.6L22.3 154.4L21.3 150.2L21.6 145.3L23 140.1L24.8 135L26.4 130.5L27.1 126.5L26.5 123.2L24.5 120.2L21.1 117.5L16.8 114.7L12.4 111.5L8.6 108L5.9 104.1L5 100L5.9 95.9L8.6 92L12.4 88.5L16.8 85.3L21.1 82.5L24.5 79.8L26.5 76.8L27.1 73.5L26.4 69.5L24.8 65L23 59.9L21.6 54.7L21.3 49.8L22.3 45.6L24.9 42.4L28.8 40.3L33.8 39.3L39.2 39.2L44.5 39.4L49.2 39.4L52.9 38.7L55.8 36.8L57.8 33.7L59.2 29.4L60.7 24.4L62.4 19.3L64.7 14.7L67.7 11.2L71.4 9.4L75.7 9.4L80.3 11L84.8 13.8L89.1 17L93 20.1L96.6 22.2L100 23L103.4 22.2L107 20.1L110.9 17L115.2 13.8L119.7 11L124.3 9.4L128.6 9.4L132.3 11.2L135.3 14.7L137.6 19.3L139.3 24.4L140.8 29.4L142.2 33.7L144.2 36.8L147.1 38.7L150.8 39.4L155.5 39.4L160.8 39.2L166.2 39.3L171.2 40.3L175.1 42.4L177.7 45.6L178.7 49.8L178.4 54.7L177 59.9L175.2 65L173.6 69.5L172.9 73.5L173.5 76.8L175.5 79.8L178.9 82.5L183.2 85.3L187.6 88.5L191.4 92L194.1 95.9L195 100Z"/></svg>
+        <svg class="deco b" viewBox="0 0 200 200" aria-hidden="true" style="right:280px;bottom:-125px;width:250px;height:250px"><path d="M192 100C192.2 117.6 168.7 138.8 153.3 153.3C138 167.9 117.3 187.8 100 187.4C82.7 187 64.6 165.3 49.3 150.7C33.9 136.2 8.9 117.8 8 100C7.1 82.2 28.7 58.9 44.1 44.1C59.4 29.2 82 10.1 100 10.8C118 11.4 136.7 33.1 152 48C167.4 62.8 191.8 82.4 192 100Z"/></svg>
+        <div class="cookie" style="position:absolute;right:66px;top:42px;width:124px;height:124px;color:var(--tertiary-c)" aria-hidden="true"><svg viewBox="0 0 200 200"><path d="M194 100L193.4 104.1L191.8 108L189.2 111.7L186.1 115.2L182.6 118.3L179.2 121.2L176.2 124L173.7 126.8L172.1 129.8L171.1 133.2L170.8 136.9L171 141L171.4 145.5L171.6 150.1L171.4 154.8L170.6 159.2L168.9 163.2L166.5 166.5L163.2 168.9L159.2 170.6L154.8 171.4L150.1 171.6L145.5 171.4L141 171L136.9 170.8L133.2 171.1L129.8 172.1L126.8 173.7L124 176.2L121.2 179.2L118.3 182.6L115.2 186.1L111.7 189.2L108 191.8L104.1 193.4L100 194L95.9 193.4L92 191.8L88.3 189.2L84.8 186.1L81.7 182.6L78.8 179.2L76 176.2L73.2 173.7L70.2 172.1L66.8 171.1L63.1 170.8L59 171L54.5 171.4L49.9 171.6L45.2 171.4L40.8 170.6L36.8 168.9L33.5 166.5L31.1 163.2L29.4 159.2L28.6 154.8L28.4 150.1L28.6 145.5L29 141L29.2 136.9L28.9 133.2L27.9 129.8L26.3 126.8L23.8 124L20.8 121.2L17.4 118.3L13.9 115.2L10.8 111.7L8.2 108L6.6 104.1L6 100L6.6 95.9L8.2 92L10.8 88.3L13.9 84.8L17.4 81.7L20.8 78.8L23.8 76L26.3 73.2L27.9 70.2L28.9 66.8L29.2 63.1L29 59L28.6 54.5L28.4 49.9L28.6 45.2L29.4 40.8L31.1 36.8L33.5 33.5L36.8 31.1L40.8 29.4L45.2 28.6L49.9 28.4L54.5 28.6L59 29L63.1 29.2L66.8 28.9L70.2 27.9L73.2 26.3L76 23.8L78.8 20.8L81.7 17.4L84.8 13.9L88.3 10.8L92 8.2L95.9 6.6L100 6L104.1 6.6L108 8.2L111.7 10.8L115.2 13.9L118.3 17.4L121.2 20.8L124 23.8L126.8 26.3L129.8 27.9L133.2 28.9L136.9 29.2L141 29L145.5 28.6L150.1 28.4L154.8 28.6L159.2 29.4L163.2 31.1L166.5 33.5L168.9 36.8L170.6 40.8L171.4 45.2L171.6 49.9L171.4 54.5L171 59L170.8 63.1L171.1 66.8L172.1 70.2L173.7 73.2L176.2 76L179.2 78.8L182.6 81.7L186.1 84.8L189.2 88.3L191.8 92L193.4 95.9L194 100Z"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--on-tertiary-c)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:52px;height:52px;grid-area:1/1;fill:none"><path d="{{d.lock}}"/></svg></div>
+        <div style="position:relative;display:flex;flex-wrap:wrap;gap:8px"><span class="tag onp">{{t.chipLocked}}</span><span class="tag onp">{{t.chipTwoKey}}</span><span class="tag onp">{{t.chipTotp}}</span></div>
+        <h1 class="disp" style="position:relative;max-width:16ch">{{t.headline}}</h1>
+        <p class="lede" style="position:relative;color:color-mix(in srgb,var(--on-primary) 86%,transparent)">{{t.lede}}</p>
+      </section>
+
+      <div class="dash">
+        <section class="card span2 ov rise {{cc.toys}}" aria-label="{{t.toysTitle}}">
+          <div class="cols">
+            <div class="grow" style="min-width:220px"><div class="tilehead"><h2 class="h2">{{t.toysTitle}}</h2>
+  <button class="info" aria-label="{{tips.toys.label}}" aria-expanded="{{tips.toys.on}}" onClick="{{tips.toys.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button>
+  <button class="lock" aria-label="{{lk.toys.label}}" aria-pressed="{{lk.toys.pressed}}" onClick="{{lk.toys.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.toys.d}}"/></svg></button>
+</div>
+<sc-if value="{{tips.toys.on}}" hint-placeholder-val="{{ false }}"><div class="tip" role="tooltip" style="top:52px;right:16px">{{tips.toys.text}}</div></sc-if><div class="muted">{{t.toysSub}}</div></div>
+            <button class="btn t sm {{lockAllDis}}" onClick="{{lockAll}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4"/></svg>{{t.lockAll}}</button>
+            <button class="btn o sm {{lockAllDis}}" onClick="{{unlockAll}}">{{t.unlockAll}}</button>
+          </div>
+          <sc-if value="{{viewer}}" hint-placeholder-val="{{ false }}"><div class="tag warn" style="align-self:flex-start">{{t.viewerNote}}</div></sc-if>
+          <div class="grid2" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
+            <sc-for list="{{toys}}" as="x" hint-placeholder-count="4">
+              <div class="{{x.cls}}">
+                <button class="shine" aria-pressed="{{x.pressed}}" aria-label="{{x.lockLabel}}" onClick="{{x.toggle}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{x.d}}"/></svg></button>
+                <span class="k">{{x.level}}</span>
+                <div class="t1" style="font-size:18px;padding-right:44px">{{x.name}}</div>
+                <div class="muted">{{x.sub}}</div>
+                <sc-if value="{{x.isHold}}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:6px"><div class="prog" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{x.holdN}}" aria-label="{{x.holdLabel}}"><i style="width:{{x.holdN}}%"></i></div><button class="btn f sm" onClick="{{x.hold}}">{{x.holdLabel}}</button></div></sc-if>
+                <sc-if value="{{x.isPass}}" hint-placeholder-val="{{ false }}"><div class="cols"><input class="field" style="flex:1;height:44px;min-width:140px" type="password" aria-label="{{x.passLabel}}" placeholder="{{x.passLabel}}" value="" onInput="{{x.onPass}}"><button class="btn f sm" onClick="{{x.passGo}}">{{x.passBtn}}</button></div></sc-if>
+                <div class="cols" style="margin-top:auto"><button class="{{x.editCls}}" onClick="{{x.edit}}">{{x.editLabel}}</button><span class="tag {{x.tagCls}}">{{x.tag}}</span></div>
+              </div>
+            </sc-for>
+          </div>
+        </section>
+
+        <section class="card ov rise {{cc.ladder}}" aria-label="{{t.ladderTitle}}">
+          <div class="tilehead"><h2 class="h2">{{t.ladderTitle}}</h2>
+  <button class="info" aria-label="{{tips.ladder.label}}" aria-expanded="{{tips.ladder.on}}" onClick="{{tips.ladder.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button>
+  <button class="lock" aria-label="{{lk.ladder.label}}" aria-pressed="{{lk.ladder.pressed}}" onClick="{{lk.ladder.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.ladder.d}}"/></svg></button>
+</div>
+<sc-if value="{{tips.ladder.on}}" hint-placeholder-val="{{ false }}"><div class="tip" role="tooltip" style="top:52px;right:16px">{{tips.ladder.text}}</div></sc-if>
+          <div class="muted">{{t.ladderSub}}</div>
+          <div class="ladder" role="group" aria-label="{{t.ladderTitle}}">
+            <sc-for list="{{rungs}}" as="r" hint-placeholder-count="5"><button class="rung" aria-pressed="{{r.pressed}}" onClick="{{r.pick}}"><span class="num">{{r.n}}</span><span class="grow"><b style="font-size:15px">{{r.name}}</b><span class="t2" style="display:block;margin:0">{{r.sub}}</span></span></button></sc-for>
+          </div>
+          <div class="sample" style="padding:14px 16px;border-radius:20px;background:var(--surf-low)"><span class="k">{{t.ladderNeeds}}</span><div class="t1" style="margin-top:4px">{{rungNeeds}}</div></div>
+        </section>
+      </div>
+
+      <div class="dash">
+        <section class="card ter ov rise {{cc.reboot}}" aria-label="{{t.rebootTitle}}">
+          <div class="tilehead"><h2 class="h2">{{t.rebootTitle}}</h2>
+  <button class="info" style="background:color-mix(in srgb,var(--on-tertiary-c) 14%,transparent);color:inherit" aria-label="{{tips.reboot.label}}" aria-expanded="{{tips.reboot.on}}" onClick="{{tips.reboot.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button>
+  <button class="lock" style="color:inherit" aria-label="{{lk.reboot.label}}" aria-pressed="{{lk.reboot.pressed}}" onClick="{{lk.reboot.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.reboot.d}}"/></svg></button>
+</div>
+<sc-if value="{{tips.reboot.on}}" hint-placeholder-val="{{ false }}"><div class="tip" role="tooltip" style="top:52px;right:16px">{{tips.reboot.text}}</div></sc-if>
+          <div class="muted" style="color:inherit;opacity:.88">{{t.rebootSub}}</div>
+          <div class="big" style="font-size:40px">{{t.rebootBig}}</div>
+          <div class="muted" style="color:inherit;opacity:.88">{{t.rebootEffects}}</div>
+          <button class="btn f {{rebootDis}}" style="align-self:flex-start;background:var(--bad);color:#fff" onClick="{{openDlg}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.5-5.8 M20 4v5h-5"/></svg>{{t.rebootBtn}}</button>
+          <sc-if value="{{rebooted}}" hint-placeholder-val="{{ false }}"><div class="tag good" style="align-self:flex-start">{{t.rebooted}}</div></sc-if>
+          <div class="row" style="border-color:color-mix(in srgb,currentColor 20%,transparent)"><div class="grow"><div class="t1">{{t.lastReboot}}</div><div class="t2" style="color:inherit;opacity:.8">{{t.lastRebootSub}}</div></div></div>
+          <div class="row" style="border-color:color-mix(in srgb,currentColor 20%,transparent)"><div class="grow"><div class="t1">{{t.needs}}</div><div class="t2" style="color:inherit;opacity:.8">{{t.needsSub}}</div></div><span class="badge">3</span></div>
+        </section>
+
+        <section class="card span2 ov rise {{cc.auth}}" aria-label="{{t.authTitle}}">
+          <div class="cols">
+            <div class="grow" style="min-width:220px"><div class="tilehead"><h2 class="h2">{{t.authTitle}}</h2>
+  <button class="info" aria-label="{{tips.auth.label}}" aria-expanded="{{tips.auth.on}}" onClick="{{tips.auth.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button>
+  <button class="lock" aria-label="{{lk.auth.label}}" aria-pressed="{{lk.auth.pressed}}" onClick="{{lk.auth.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.auth.d}}"/></svg></button>
+</div>
+<sc-if value="{{tips.auth.on}}" hint-placeholder-val="{{ false }}"><div class="tip" role="tooltip" style="top:52px;right:16px">{{tips.auth.text}}</div></sc-if><div class="muted">{{t.authSub}}</div></div>
+            <button class="btn t sm" onClick="{{togglePair}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>{{pairBtn}}</button>
+          </div>
+          <div class="grid2" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
+            <sc-for list="{{codes}}" as="c" hint-placeholder-count="3">
+              <div class="codebox">
+                <svg class="ring" viewBox="0 0 40 40" aria-hidden="true"><circle class="bg" cx="20" cy="20" r="16"/><circle class="fg" cx="20" cy="20" r="16" pathLength="100" style="{{c.ringStyle}}"/></svg>
+                <div class="grow" style="min-width:0"><div class="t2" style="margin:0">{{c.who}}</div><div class="big mono" style="font-size:34px;letter-spacing:2px;font-stretch:100%">{{c.code}}</div><div class="area-note">{{c.left}}</div></div>
+                <button class="btn t sm" onClick="{{c.copy}}" aria-label="{{c.copyLabel}}">{{c.copyText}}</button>
+              </div>
+            </sc-for>
+          </div>
+          <sc-if value="{{pairing}}" hint-placeholder-val="{{ true }}">
+            <div class="cols" style="align-items:flex-start;gap:24px;padding:20px;border-radius:28px;background:var(--surf-low)">
+              <svg class="qr" width="196" height="196" viewBox="-1 -1 27 27" role="img" aria-label="{{t.qrAlt}}"><path d="M9 0h1v1h-1zM15 0h1v1h-1zM16 0h1v1h-1zM10 1h1v1h-1zM11 1h1v1h-1zM15 1h1v1h-1zM8 2h1v1h-1zM12 2h1v1h-1zM13 2h1v1h-1zM16 2h1v1h-1zM10 3h1v1h-1zM11 3h1v1h-1zM14 3h1v1h-1zM8 4h1v1h-1zM11 4h1v1h-1zM15 4h1v1h-1zM8 5h1v1h-1zM11 5h1v1h-1zM13 5h1v1h-1zM14 5h1v1h-1zM12 6h1v1h-1zM13 6h1v1h-1zM14 6h1v1h-1zM10 7h1v1h-1zM15 7h1v1h-1zM1 8h1v1h-1zM2 8h1v1h-1zM3 8h1v1h-1zM4 8h1v1h-1zM5 8h1v1h-1zM6 8h1v1h-1zM7 8h1v1h-1zM8 8h1v1h-1zM14 8h1v1h-1zM15 8h1v1h-1zM17 8h1v1h-1zM20 8h1v1h-1zM23 8h1v1h-1zM0 9h1v1h-1zM1 9h1v1h-1zM4 9h1v1h-1zM5 9h1v1h-1zM9 9h1v1h-1zM10 9h1v1h-1zM11 9h1v1h-1zM12 9h1v1h-1zM14 9h1v1h-1zM19 9h1v1h-1zM20 9h1v1h-1zM21 9h1v1h-1zM6 10h1v1h-1zM10 10h1v1h-1zM17 10h1v1h-1zM19 10h1v1h-1zM21 10h1v1h-1zM22 10h1v1h-1zM23 10h1v1h-1zM2 11h1v1h-1zM8 11h1v1h-1zM11 11h1v1h-1zM12 11h1v1h-1zM13 11h1v1h-1zM16 11h1v1h-1zM17 11h1v1h-1zM19 11h1v1h-1zM20 11h1v1h-1zM22 11h1v1h-1zM23 11h1v1h-1zM1 12h1v1h-1zM2 12h1v1h-1zM3 12h1v1h-1zM4 12h1v1h-1zM5 12h1v1h-1zM6 12h1v1h-1zM7 12h1v1h-1zM10 12h1v1h-1zM11 12h1v1h-1zM12 12h1v1h-1zM14 12h1v1h-1zM15 12h1v1h-1zM18 12h1v1h-1zM19 12h1v1h-1zM23 12h1v1h-1zM24 12h1v1h-1zM1 13h1v1h-1zM4 13h1v1h-1zM7 13h1v1h-1zM12 13h1v1h-1zM14 13h1v1h-1zM16 13h1v1h-1zM17 13h1v1h-1zM19 13h1v1h-1zM23 13h1v1h-1zM24 13h1v1h-1zM9 14h1v1h-1zM11 14h1v1h-1zM12 14h1v1h-1zM19 14h1v1h-1zM20 14h1v1h-1zM22 14h1v1h-1zM1 15h1v1h-1zM4 15h1v1h-1zM5 15h1v1h-1zM6 15h1v1h-1zM8 15h1v1h-1zM9 15h1v1h-1zM14 15h1v1h-1zM15 15h1v1h-1zM16 15h1v1h-1zM21 15h1v1h-1zM22 15h1v1h-1zM23 15h1v1h-1zM24 15h1v1h-1zM1 16h1v1h-1zM3 16h1v1h-1zM4 16h1v1h-1zM5 16h1v1h-1zM8 16h1v1h-1zM9 16h1v1h-1zM12 16h1v1h-1zM13 16h1v1h-1zM14 16h1v1h-1zM15 16h1v1h-1zM16 16h1v1h-1zM21 16h1v1h-1zM22 16h1v1h-1zM23 16h1v1h-1zM8 17h1v1h-1zM11 17h1v1h-1zM18 17h1v1h-1zM19 17h1v1h-1zM20 17h1v1h-1zM21 17h1v1h-1zM11 18h1v1h-1zM12 18h1v1h-1zM14 18h1v1h-1zM15 18h1v1h-1zM22 18h1v1h-1zM10 19h1v1h-1zM11 19h1v1h-1zM12 19h1v1h-1zM15 19h1v1h-1zM16 19h1v1h-1zM17 19h1v1h-1zM18 19h1v1h-1zM19 19h1v1h-1zM20 19h1v1h-1zM23 19h1v1h-1zM8 20h1v1h-1zM11 20h1v1h-1zM12 20h1v1h-1zM14 20h1v1h-1zM15 20h1v1h-1zM23 20h1v1h-1zM24 20h1v1h-1zM8 21h1v1h-1zM20 21h1v1h-1zM23 21h1v1h-1zM24 21h1v1h-1zM9 22h1v1h-1zM12 22h1v1h-1zM14 22h1v1h-1zM17 22h1v1h-1zM22 22h1v1h-1zM23 22h1v1h-1zM8 23h1v1h-1zM11 23h1v1h-1zM17 23h1v1h-1zM22 23h1v1h-1zM24 23h1v1h-1zM9 24h1v1h-1zM10 24h1v1h-1zM12 24h1v1h-1zM13 24h1v1h-1zM14 24h1v1h-1zM18 24h1v1h-1zM19 24h1v1h-1zM20 24h1v1h-1zM23 24h1v1h-1zM0 0h7v7h-7zM1 1v5h5v-5zM2 2h3v3h-3zM18 0h7v7h-7zM19 1v5h5v-5zM20 2h3v3h-3zM0 18h7v7h-7zM1 19v5h5v-5zM2 20h3v3h-3z" fill="#14161f" fill-rule="evenodd"/></svg>
+              <div style="flex:1 1 260px;min-width:240px;display:flex;flex-direction:column;gap:10px">
+                <h3 class="h2" style="font-size:19px;margin:0">{{t.pairTitle}}</h3>
+                <ol class="muted" style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px"><li>{{t.pair1}}</li><li>{{t.pair2}}</li><li>{{t.pair3}}</li></ol>
+                <div class="cols"><span class="mono t1" style="letter-spacing:1px">{{secretShown}}</span><button class="btn o sm" onClick="{{toggleReveal}}">{{revealBtn}}</button></div>
+                <div class="cols"><label class="lbl" for="vcode">{{t.verify}}</label><input id="vcode" class="field mono" inputmode="numeric" maxlength="7" style="width:140px;height:44px" placeholder="000 000" value="{{vin}}" onInput="{{onVin}}"><button class="btn f sm" onClick="{{doVerify}}">{{t.verifyBtn}}</button></div>
+                <sc-if value="{{verOk}}" hint-placeholder-val="{{ false }}"><span class="tag good" style="align-self:flex-start">{{t.verOk}}</span></sc-if>
+                <sc-if value="{{verBad}}" hint-placeholder-val="{{ false }}"><span class="tag bad" style="align-self:flex-start">{{t.verBad}}</span></sc-if>
+              </div>
+            </div>
+          </sc-if>
+        </section>
+      </div>
+
+      <section class="card ov rise {{cc.desk}}" aria-label="{{t.deskTitle}}">
+        <div class="cols">
+          <div class="grow" style="min-width:220px"><div class="tilehead"><h2 class="h2">{{t.deskTitle}}</h2>
+  <button class="info" aria-label="{{tips.desk.label}}" aria-expanded="{{tips.desk.on}}" onClick="{{tips.desk.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button>
+  <button class="lock" aria-label="{{lk.desk.label}}" aria-pressed="{{lk.desk.pressed}}" onClick="{{lk.desk.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.desk.d}}"/></svg></button>
+</div>
+<sc-if value="{{tips.desk.on}}" hint-placeholder-val="{{ false }}"><div class="tip" role="tooltip" style="top:52px;right:16px">{{tips.desk.text}}</div></sc-if><div class="muted">{{t.deskSub}}</div></div>
+          <button class="btn o sm" onClick="{{selectAllT}}">{{t.selectAll}}</button>
+        </div>
+        <sc-if value="{{hasSel}}" hint-placeholder-val="{{ false }}"><div class="glass" role="region" aria-label="{{t.bulk}}" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-radius:22px;padding:8px 8px 8px 20px"><b style="flex:1;min-width:140px">{{selText}}</b><button class="btn t sm" onClick="{{bulkClose}}">{{t.closeT}}</button><button class="btn o sm" onClick="{{clearSel}}">{{t.clear}}</button></div></sc-if>
+        <div class="grid2" style="grid-template-columns:repeat(auto-fit,minmax(420px,1fr));align-items:flex-start;gap:24px">
+          <div>
+            <sc-for list="{{tickets}}" as="k" hint-placeholder-count="3">
+              <div class="tkt">
+                <button class="cbw" role="checkbox" aria-checked="{{k.checked}}" aria-label="{{k.selLabel}}" onClick="{{k.toggle}}"><span class="{{k.cbCls}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></button>
+                <div class="grow" style="min-width:180px"><div class="t1">{{k.subject}}</div><div class="t2">{{k.id}} · {{k.when}} · {{k.who}}</div></div>
+                <span class="tag {{k.cls}}">{{k.status}}</span>
+                <button class="info" aria-label="{{t.rowMenu}}" aria-haspopup="menu" aria-expanded="{{k.menuOpen}}" onClick="{{k.more}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg></button>
+                <sc-if value="{{k.menuOpen}}" hint-placeholder-val="{{ false }}"><div class="menu" role="menu" style="right:0;top:52px"><button class="mi" role="menuitem" onClick="{{k.advance}}">{{k.advLabel}}</button><button class="mi" role="menuitem" onClick="{{k.more}}">{{t.copyId}}</button><button class="mi" role="menuitem" onClick="{{k.close}}">{{t.closeT}}</button></div></sc-if>
+              </div>
+            </sc-for>
+            <sc-if value="{{noTickets}}" hint-placeholder-val="{{ false }}"><div class="muted" style="padding:24px 0">{{t.noTickets}}</div></sc-if>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px;padding:20px;border-radius:28px;background:var(--surf-low)">
+            <h3 class="h2" style="font-size:19px;margin:0">{{t.newTicket}}</h3>
+            <div><div class="lbl" style="margin-bottom:6px">{{t.reason}}</div><div class="seg" role="group" aria-label="{{t.reason}}" style="flex-wrap:wrap"><sc-for list="{{reasons}}" as="o" hint-placeholder-count="4"><button aria-pressed="{{o.pressed}}" onClick="{{o.pick}}">{{o.label}}</button></sc-for></div></div>
+            <div style="display:flex;flex-direction:column;gap:6px"><label class="lbl" for="tmsg">{{t.message}}</label><textarea id="tmsg" class="field" style="height:96px;padding:12px 16px;resize:vertical" onInput="{{onMsg}}">{{msg}}</textarea></div>
+            <div class="cols"><button class="btn f sm {{submitCls}}" onClick="{{submitTicket}}">{{t.submit}}</button><span class="area-note">{{t.deskNote}}</span></div>
+            <sc-if value="{{justSent}}" hint-placeholder-val="{{ false }}"><span class="tag good" style="align-self:flex-start">{{t.sent}}</span></sc-if>
+          </div>
+        </div>
+      </section>
+
+    </main>
+    <sc-if value="{{dlg}}" hint-placeholder-val="{{ false }}">
+      <div class="scrim" role="presentation"><div class="sheet" role="dialog" aria-modal="true" aria-label="{{t.dlgTitle}}">
+        <div class="cols"><span class="cookie" style="width:56px;height:56px;color:var(--bad-c)" aria-hidden="true"><svg viewBox="0 0 200 200"><path d="M194 100L193.4 104.1L191.8 108L189.2 111.7L186.1 115.2L182.6 118.3L179.2 121.2L176.2 124L173.7 126.8L172.1 129.8L171.1 133.2L170.8 136.9L171 141L171.4 145.5L171.6 150.1L171.4 154.8L170.6 159.2L168.9 163.2L166.5 166.5L163.2 168.9L159.2 170.6L154.8 171.4L150.1 171.6L145.5 171.4L141 171L136.9 170.8L133.2 171.1L129.8 172.1L126.8 173.7L124 176.2L121.2 179.2L118.3 182.6L115.2 186.1L111.7 189.2L108 191.8L104.1 193.4L100 194L95.9 193.4L92 191.8L88.3 189.2L84.8 186.1L81.7 182.6L78.8 179.2L76 176.2L73.2 173.7L70.2 172.1L66.8 171.1L63.1 170.8L59 171L54.5 171.4L49.9 171.6L45.2 171.4L40.8 170.6L36.8 168.9L33.5 166.5L31.1 163.2L29.4 159.2L28.6 154.8L28.4 150.1L28.6 145.5L29 141L29.2 136.9L28.9 133.2L27.9 129.8L26.3 126.8L23.8 124L20.8 121.2L17.4 118.3L13.9 115.2L10.8 111.7L8.2 108L6.6 104.1L6 100L6.6 95.9L8.2 92L10.8 88.3L13.9 84.8L17.4 81.7L20.8 78.8L23.8 76L26.3 73.2L27.9 70.2L28.9 66.8L29.2 63.1L29 59L28.6 54.5L28.4 49.9L28.6 45.2L29.4 40.8L31.1 36.8L33.5 33.5L36.8 31.1L40.8 29.4L45.2 28.6L49.9 28.4L54.5 28.6L59 29L63.1 29.2L66.8 28.9L70.2 27.9L73.2 26.3L76 23.8L78.8 20.8L81.7 17.4L84.8 13.9L88.3 10.8L92 8.2L95.9 6.6L100 6L104.1 6.6L108 8.2L111.7 10.8L115.2 13.9L118.3 17.4L121.2 20.8L124 23.8L126.8 26.3L129.8 27.9L133.2 28.9L136.9 29.2L141 29L145.5 28.6L150.1 28.4L154.8 28.6L159.2 29.4L163.2 31.1L166.5 33.5L168.9 36.8L170.6 40.8L171.4 45.2L171.6 49.9L171.4 54.5L171 59L170.8 63.1L171.1 66.8L172.1 70.2L173.7 73.2L176.2 76L179.2 78.8L182.6 81.7L186.1 84.8L189.2 88.3L191.8 92L193.4 95.9L194 100Z"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="var(--bad)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:26px;height:26px;grid-area:1/1;fill:none"><path d="{{d.warn}}"/></svg></span>
+          <div class="grow"><h2 class="h2">{{t.dlgTitle}}</h2><div class="muted">{{t.dlgSub}}</div></div>
+          <button class="icb" aria-label="{{t.cancel}}" onClick="{{closeDlg}}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+        <div class="keyslot {{k1cls}}"><span class="cookie" style="width:44px;height:44px;color:var(--primary)" aria-hidden="true"><svg viewBox="0 0 200 200"><path d="M194 100L193.4 104.1L191.8 108L189.2 111.7L186.1 115.2L182.6 118.3L179.2 121.2L176.2 124L173.7 126.8L172.1 129.8L171.1 133.2L170.8 136.9L171 141L171.4 145.5L171.6 150.1L171.4 154.8L170.6 159.2L168.9 163.2L166.5 166.5L163.2 168.9L159.2 170.6L154.8 171.4L150.1 171.6L145.5 171.4L141 171L136.9 170.8L133.2 171.1L129.8 172.1L126.8 173.7L124 176.2L121.2 179.2L118.3 182.6L115.2 186.1L111.7 189.2L108 191.8L104.1 193.4L100 194L95.9 193.4L92 191.8L88.3 189.2L84.8 186.1L81.7 182.6L78.8 179.2L76 176.2L73.2 173.7L70.2 172.1L66.8 171.1L63.1 170.8L59 171L54.5 171.4L49.9 171.6L45.2 171.4L40.8 170.6L36.8 168.9L33.5 166.5L31.1 163.2L29.4 159.2L28.6 154.8L28.4 150.1L28.6 145.5L29 141L29.2 136.9L28.9 133.2L27.9 129.8L26.3 126.8L23.8 124L20.8 121.2L17.4 118.3L13.9 115.2L10.8 111.7L8.2 108L6.6 104.1L6 100L6.6 95.9L8.2 92L10.8 88.3L13.9 84.8L17.4 81.7L20.8 78.8L23.8 76L26.3 73.2L27.9 70.2L28.9 66.8L29.2 63.1L29 59L28.6 54.5L28.4 49.9L28.6 45.2L29.4 40.8L31.1 36.8L33.5 33.5L36.8 31.1L40.8 29.4L45.2 28.6L49.9 28.4L54.5 28.6L59 29L63.1 29.2L66.8 28.9L70.2 27.9L73.2 26.3L76 23.8L78.8 20.8L81.7 17.4L84.8 13.9L88.3 10.8L92 8.2L95.9 6.6L100 6L104.1 6.6L108 8.2L111.7 10.8L115.2 13.9L118.3 17.4L121.2 20.8L124 23.8L126.8 26.3L129.8 27.9L133.2 28.9L136.9 29.2L141 29L145.5 28.6L150.1 28.4L154.8 28.6L159.2 29.4L163.2 31.1L166.5 33.5L168.9 36.8L170.6 40.8L171.4 45.2L171.6 49.9L171.4 54.5L171 59L170.8 63.1L171.1 66.8L172.1 70.2L173.7 73.2L176.2 76L179.2 78.8L182.6 81.7L186.1 84.8L189.2 88.3L191.8 92L193.4 95.9L194 100Z"/></svg><svg style="color:#fff" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 8a4 4 0 1 1-3.5 6L4 21v-3l2-2v-2l2-1 3.5-3.5A4 4 0 0 1 15 8z"/></svg></span><div class="grow"><div class="t1">{{t.key1}}</div><div class="t2">{{t.key1Sub}}</div></div><button class="btn t sm" onClick="{{turn1}}">{{k1btn}}</button></div>
+        <div class="keyslot {{k2cls}}"><span class="cookie" style="width:44px;height:44px;color:var(--tertiary)" aria-hidden="true"><svg viewBox="0 0 200 200"><path d="M194 100L193.4 104.1L191.8 108L189.2 111.7L186.1 115.2L182.6 118.3L179.2 121.2L176.2 124L173.7 126.8L172.1 129.8L171.1 133.2L170.8 136.9L171 141L171.4 145.5L171.6 150.1L171.4 154.8L170.6 159.2L168.9 163.2L166.5 166.5L163.2 168.9L159.2 170.6L154.8 171.4L150.1 171.6L145.5 171.4L141 171L136.9 170.8L133.2 171.1L129.8 172.1L126.8 173.7L124 176.2L121.2 179.2L118.3 182.6L115.2 186.1L111.7 189.2L108 191.8L104.1 193.4L100 194L95.9 193.4L92 191.8L88.3 189.2L84.8 186.1L81.7 182.6L78.8 179.2L76 176.2L73.2 173.7L70.2 172.1L66.8 171.1L63.1 170.8L59 171L54.5 171.4L49.9 171.6L45.2 171.4L40.8 170.6L36.8 168.9L33.5 166.5L31.1 163.2L29.4 159.2L28.6 154.8L28.4 150.1L28.6 145.5L29 141L29.2 136.9L28.9 133.2L27.9 129.8L26.3 126.8L23.8 124L20.8 121.2L17.4 118.3L13.9 115.2L10.8 111.7L8.2 108L6.6 104.1L6 100L6.6 95.9L8.2 92L10.8 88.3L13.9 84.8L17.4 81.7L20.8 78.8L23.8 76L26.3 73.2L27.9 70.2L28.9 66.8L29.2 63.1L29 59L28.6 54.5L28.4 49.9L28.6 45.2L29.4 40.8L31.1 36.8L33.5 33.5L36.8 31.1L40.8 29.4L45.2 28.6L49.9 28.4L54.5 28.6L59 29L63.1 29.2L66.8 28.9L70.2 27.9L73.2 26.3L76 23.8L78.8 20.8L81.7 17.4L84.8 13.9L88.3 10.8L92 8.2L95.9 6.6L100 6L104.1 6.6L108 8.2L111.7 10.8L115.2 13.9L118.3 17.4L121.2 20.8L124 23.8L126.8 26.3L129.8 27.9L133.2 28.9L136.9 29.2L141 29L145.5 28.6L150.1 28.4L154.8 28.6L159.2 29.4L163.2 31.1L166.5 33.5L168.9 36.8L170.6 40.8L171.4 45.2L171.6 49.9L171.4 54.5L171 59L170.8 63.1L171.1 66.8L172.1 70.2L173.7 73.2L176.2 76L179.2 78.8L182.6 81.7L186.1 84.8L189.2 88.3L191.8 92L193.4 95.9L194 100Z"/></svg><svg style="color:#fff" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 8a4 4 0 1 1-3.5 6L4 21v-3l2-2v-2l2-1 3.5-3.5A4 4 0 0 1 15 8z"/></svg></span><div class="grow"><div class="t1">{{t.key2}}</div><div class="t2">{{t.key2Sub}}</div></div><button class="btn t sm" onClick="{{turn2}}">{{k2btn}}</button></div>
+        <div class="cols"><label class="lbl" for="ph">{{t.phrase}}</label><input id="ph" class="field mono" style="flex:1;height:48px;min-width:200px" placeholder="REBOOT 198.51.100.1" value="{{phrase}}" onInput="{{onPhrase}}"><span class="tag {{phraseCls}}">{{phraseTag}}</span></div>
+        <div class="prog" role="progressbar" aria-valuemin="0" aria-valuemax="3" aria-valuenow="{{stepsDone}}" aria-label="{{t.dlgProgress}}"><i style="width:{{stepsPct}}%"></i></div>
+        <div class="cols" style="justify-content:flex-end"><button class="btn o" onClick="{{closeDlg}}">{{t.cancel}}</button><button class="btn f {{goDis}}" style="background:var(--bad);color:#fff" onClick="{{go}}">{{t.rebootNow}}</button></div>
+      </div></div>
+    </sc-if>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#4f5bd5","options":["#4f5bd5","#00897b","#d81b60","#f4511e","#7c4dff"],"section":"Look"},"dark":{"editor":"boolean","default":false,"section":"Look"},"motion":{"editor":"enum","options":["calm","standard","expressive"],"default":"expressive","section":"Look"},"firmware":{"editor":"enum","options":["merlin","stock"],"default":"merlin","section":"Router"},"role":{"editor":"enum","options":["owner","operator","viewer"],"default":"owner","section":"Router"},"lang":{"editor":"enum","options":["en","yue","both"],"default":"en","section":"Language"},"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const p = this.props;
+    const s = this.state || {};
+    const lang = p.lang ?? 'en';
+    const role = p.role ?? 'owner';
+    const firmware = p.firmware ?? 'merlin';
+    const motion = p.motion ?? 'expressive';
+    const accent = p.accent || '#4f5bd5';
+    const dark = p.dark === true || p.dark === 'true' || p.dark === 1 || p.dark === '1';
+    const T = (en, yue) => lang === 'en' ? en : lang === 'yue' ? yue : en + ' · ' + yue;
+    const canWrite = role !== 'viewer';
+    const set = (o) => this.setState(o);
+    const tg = (arr, v) => arr.includes(v) ? arr.filter(x => x !== v) : arr.concat([v]);
+    const num = (e, d) => { const v = e && e.target ? parseFloat(e.target.value) : NaN; return isNaN(v) ? d : v; };
+    const txt = (e) => e && e.target ? String(e.target.value) : '';
+    const locks = s.locks || [];
+    const tipOn = s.tip || '';
+    const mk = (defs) => {
+      const lk = {}, tips = {}, cc = {};
+      Object.keys(defs).forEach(id => {
+        const on = locks.includes(id);
+        lk[id] = { d: on ? 'M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4' : 'M5 11h14v10H5z M8 11V7a4 4 0 0 1 7.5-2', pressed: on ? 'true' : 'false',
+          label: (on ? T('Unlock ', '解鎖 ') : T('Lock ', '鎖定 ')) + defs[id][0], toggle: () => set({ locks: tg(locks, id) }) };
+        tips[id] = { label: T('About ', '關於 ') + defs[id][0], text: defs[id][1], on: tipOn === id, toggle: () => set({ tip: tipOn === id ? '' : id }) };
+        cc[id] = on ? 'lockedcard' : '';
+      });
+      return { lk, tips, cc };
+    };
+    const base = (tabs) => ({ accent, dark, darkNum: dark ? 1 : 0, lang, role, firmware, motionCls: motion === 'calm' ? 'calm' : motion === 'standard' ? 'std' : '', pendCount: 2, viewer: !canWrite, tabsStr: tabs.map(x => x.replace(/,/g, ' ')).join(',') });
+    const D = { bell: 'M6 9a6 6 0 0 1 12 0c0 6 2 7 2 8H4c0-1 2-2 2-8 M10 20a2 2 0 0 0 4 0', check: 'M5 12.5l4.5 4.5L19 7.5', x: 'M6 6l12 12M18 6L6 18', warn: 'M12 4l9 16H3z M12 10v4 M12 17.5h.01',
+      info: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z M12 11v5 M12 8h.01', shield: 'M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z', wifi: 'M2 9a15 15 0 0 1 20 0 M5 12.5a10 10 0 0 1 14 0 M8.5 16a5 5 0 0 1 7 0 M12 19.5h.01',
+      dl: 'M12 4v11M7 10l5 5 5-5M4 19h16', ul: 'M12 20V9M7 14l5-5 5 5M4 5h16', lock: 'M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4', search: 'M11 19a8 8 0 1 1 0-16 8 8 0 0 1 0 16z M21 21l-4.3-4.3', trash: 'M4 7h16 M9 7V4h6v3 M6 7l1 13h10l1-13',
+      clock: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z M12 7v5l3 2', play: 'M7 5l12 7-12 7z', refresh: 'M20 12a8 8 0 1 1-2.5-5.8 M20 4v5h-5', device: 'M4 5h16v11H4z M8 20h8 M12 16v4', bolt: 'M13 3L5 14h6l-1 7 8-11h-6z',
+      globe: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z M3 12h18 M12 3c3 3 3 15 0 18 M12 3c-3 3-3 15 0 18', palette: 'M12 3a9 9 0 1 0 0 18c1.5 0 2-1 1.5-2-.6-1.2.2-2.5 1.5-2.5H17a4 4 0 0 0 4-4c0-5-4-9.5-9-9.5z', key: 'M15 8a4 4 0 1 1-3.5 6L4 21v-3l2-2v-2l2-1 3.5-3.5A4 4 0 0 1 15 8z',
+      plus: 'M12 5v14M5 12h14', copy: 'M9 9h11v11H9z M5 15V4h11', up: 'M6 15l6-6 6 6', down: 'M6 9l6 6 6-6', eye: 'M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z', mic: 'M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3z M5 11a7 7 0 0 0 14 0 M12 18v3',
+      sound: 'M4 9v6h4l5 4V5L8 9z M16 9a4 4 0 0 1 0 6 M18.5 6.5a8 8 0 0 1 0 11', moon: 'M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5z', box: 'M3 8l9-5 9 5v8l-9 5-9-5z M3 8l9 5 9-5 M12 13v8',
+      gear: 'M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.4-2.4 1a7 7 0 0 0-2-1.2L14 3h-4l-.5 2.7a7 7 0 0 0-2 1.2l-2.4-1-2 3.4 2 1.5A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.5 2 3.4 2.4-1a7 7 0 0 0 2 1.2L10 21h4l.5-2.7a7 7 0 0 0 2-1.2l2.4 1 2-3.4-2-1.5c.1-.4.1-.8.1-1.2z',
+      list: 'M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01', tool: 'M14 6a4 4 0 0 0 5 5l-9 9-4-4 9-9a4 4 0 0 0-1-1z', route: 'M6 19a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M18 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M9 16h5a3 3 0 0 0 0-6h-4a3 3 0 0 1 0-6h4', menu: 'M4 7h16M4 12h16M4 17h16', ticket: 'M3 9a2 2 0 0 0 0 6v3h18v-3a2 2 0 0 1 0-6V6H3z M13 6v12', user: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z M4 21c1-4 4-6 8-6s7 2 8 6' };
+
+
+    const defs = {
+      toys: [T('element locks', '元素鎖'), T('Lock any card to stop accidental edits. A locked card keeps showing its data but its controls are disabled.', '鎖住任何卡片可以避免誤改。上鎖嘅卡片仍然顯示資料，但控制項會停用。')],
+      ladder: [T('unlock ladder', '解鎖階梯'), T('The riskier the change, the more steps are needed to unlock it.', '變更風險越高，解鎖需要嘅步驟越多。')],
+      reboot: [T('router reboot', '路由器重啟'), T('Rebooting drops every connection, so it needs two different people to confirm.', '重啟會中斷所有連線，所以需要兩個唔同嘅人確認。')],
+      auth: [T('built-in authenticator', '內置驗證器'), T('Time-based codes that refresh every 30 seconds. Secrets never leave this device.', '每 30 秒更新一次嘅限時驗證碼，密鑰唔會離開呢部裝置。')],
+      desk: [T('recovery desk', '復原服務台'), T('Locked out? Open a ticket. A second owner must approve before access returns.', '被鎖喺外面？開一張工單，另一位擁有人批准之後先會恢復存取。')]
+    };
+    const { lk, tips, cc } = mk(defs);
+    const hashN = (str) => { let h = 2166136261; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; };
+
+    // ---- toy element locks ----
+    const dl = s.dl || { wifi: false, fw: true, pf: false, dns: true };
+    const hold = s.hold || {};
+    const passOk = s.passOk || {};
+    const passIn = s.passIn || {};
+    const TOY = [
+      ['wifi', 'toy', T('Wi-Fi password', 'Wi-Fi 密碼'), T('Home-5G · WPA3 · last changed 12 days ago', 'Home-5G · WPA3 · 12 日前更改'), T('Toy lock: one click', '輕量鎖：撳一下')],
+      ['fw', 'hold', T('Firewall rules', '防火牆規則'), T('14 rules · 2 block lists · IPv6 on', '14 條規則 · 2 個封鎖清單 · IPv6 已開'), T('Hold to unlock', '長按解鎖')],
+      ['pf', 'pass', T('Port forwards', '端口轉發'), T('32400 to NAS 198.51.100.20 · 8 rules', '32400 轉去 NAS 198.51.100.20 · 8 條規則'), T('Owner password', '擁有人密碼')],
+      ['dns', 'toy', T('DNS servers', 'DNS 伺服器'), T('198.51.100.2 with DNS over TLS', '198.51.100.2，DNS over TLS'), T('Toy lock: one click', '輕量鎖：撳一下')]
+    ];
+    const toys = TOY.map(([id, kind, name, sub, level]) => {
+      const locked = !!dl[id];
+      const hN = hold[id] || 0;
+      const ok = !!passOk[id];
+      const setDl = (v) => canWrite && set({ dl: Object.assign({}, dl, { [id]: v }), hold: Object.assign({}, hold, { [id]: 0 }), passOk: Object.assign({}, passOk, { [id]: false }) });
+      return {
+        name, sub, level, cls: 'toyl' + (locked ? ' locked' : ''), pressed: locked ? 'true' : 'false', d: locked ? 'M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4' : 'M5 11h14v10H5z M8 11V7a4 4 0 0 1 7.5-2',
+        lockLabel: (locked ? T('Unlock ', '解鎖 ') : T('Lock ', '鎖定 ')) + name,
+        toggle: () => { if (!canWrite) return; if (!locked) return setDl(true); if (kind === 'toy') return setDl(false); set({ hold: Object.assign({}, hold, { [id]: 0 }) }); },
+        isHold: locked && kind === 'hold', holdN: hN, holdLabel: T('Hold to unlock ', '長按解鎖 ') + hN + '%',
+        hold: () => { if (!canWrite) return; const n = Math.min(100, hN + 34); if (n >= 100) setDl(false); else set({ hold: Object.assign({}, hold, { [id]: n }) }); },
+        isPass: locked && kind === 'pass', passLabel: T('Owner password', '擁有人密碼'), passBtn: T('Unlock', '解鎖'),
+        onPass: (e) => set({ passIn: Object.assign({}, passIn, { [id]: txt(e) }) }),
+        passGo: () => { if ((passIn[id] || '').length >= 8) setDl(false); },
+        editLabel: T('Edit', '編輯'), editCls: 'btn f sm' + (locked || !canWrite ? ' dis' : ''), edit: () => {},
+        tag: locked ? T('Locked', '已鎖定') : T('Editable', '可編輯'), tagCls: locked ? 'warn' : 'good'
+      };
+    });
+    const nLocked = Object.keys(dl).filter(k => dl[k]).length;
+
+    // ---- ladder ----
+    const rung = s.rung === undefined ? 1 : s.rung;
+    const RUNGS = [
+      [T('Toy lock', '輕量鎖'), T('One click. Stops accidental edits.', '撳一下，防止誤改。'), T('Wi-Fi password, DNS servers, display names', 'Wi-Fi 密碼、DNS 伺服器、顯示名稱')],
+      [T('Hold to unlock', '長按解鎖'), T('Press and hold for two seconds.', '長按兩秒。'), T('Firewall rules, parental schedules, QoS', '防火牆規則、家長監護時間表、QoS')],
+      [T('Owner password', '擁有人密碼'), T('Type the owner password again.', '再輸入一次擁有人密碼。'), T('Port forwards, VPN keys, remote access', '端口轉發、VPN 密鑰、遠端存取')],
+      [T('Two keys', '雙重確認'), T('Two different people confirm.', '兩個唔同嘅人確認。'), T('Reboot, firmware update, factory reset', '重啟、韌體更新、還原出廠設定')],
+      [T('Recovery desk', '復原服務台'), T('Open a ticket and wait for approval.', '開工單等待批准。'), T('Lost owner password or authenticator', '遺失擁有人密碼或者驗證器')]
+    ];
+    const rungs = RUNGS.map((r, i) => ({ n: i, name: r[0], sub: r[1], pressed: rung === i ? 'true' : 'false', pick: () => set({ rung: i }) }));
+
+    // ---- two-key reboot ----
+    const dlg = !!s.dlg, k1 = !!s.k1, k2 = !!s.k2, phrase = s.phrase || '';
+    const phraseOk = phrase.trim().toUpperCase() === 'REBOOT 198.51.100.1';
+    const stepsDone = (k1 ? 1 : 0) + (k2 ? 1 : 0) + (phraseOk ? 1 : 0);
+    const canGo = stepsDone === 3 && canWrite;
+    const rebooted = !!s.rebooted;
+
+    // ---- authenticator ----
+    const step = Math.floor(Date.now() / 30000);
+    const left = 30 - (Math.floor(Date.now() / 1000) % 30);
+    const fmt6 = (n) => { const v = String(n % 1000000).padStart(6, '0'); return v.slice(0, 3) + ' ' + v.slice(3); };
+    const copiedCode = s.cc || '';
+    const accts = [['pat', T('Owner · Pat', '擁有人 · Pat')], ['alex', T('Operator · Alex', '操作員 · Alex')], ['ssh', T('SSH admin key', 'SSH 管理金鑰')]];
+    const codes = accts.map(([id, who]) => ({
+      who, code: fmt6(hashN(id + ':' + step)), left: T('Refreshes in ' + left + ' s', left + ' 秒後更新'),
+      ringStyle: 'animation-delay:-' + (30 - left) + 's', copyText: copiedCode === id ? T('Copied', '已複製') : T('Copy', '複製'), copyLabel: T('Copy code for ', '複製驗證碼：') + who, copy: () => set({ cc: id })
+    }));
+    const pairing = s.pairing !== false;
+    const reveal = !!s.reveal;
+    const SECRET = 'JBSW Y3DP EHPK 3PXP';
+    const pairCode = fmt6(hashN('new:' + step));
+    const vin = s.vin || '';
+    const vstate = s.vstate || '';
+
+    // ---- recovery desk ----
+    const tk = s.tk || [
+      { id: 'T-1042', subject: T('Lost owner authenticator', '遺失擁有人驗證器'), when: T('Today 08:14', '今日 08:14'), who: 'Pat', st: 1 },
+      { id: 'T-1039', subject: T('Locked out after 5 wrong passwords', '輸入 5 次錯誤密碼被鎖'), when: T('Yesterday', '尋日'), who: 'Alex', st: 2 },
+      { id: 'T-1031', subject: T('Suspected intrusion on SSH', '懷疑 SSH 被入侵'), when: T('3 days ago', '3 日前'), who: 'Pat', st: 2 }
+    ];
+    const tsel = s.tsel || [];
+    const tmenu = s.tmenu || '';
+    const reason = s.reason || 0;
+    const msg = s.msg || '';
+    const ST = [[T('Open', '處理中'), 'warn'], [T('Awaiting second key', '等待第二把鑰匙'), 'warn'], [T('Resolved', '已解決'), 'good']];
+    const nextAdv = (st) => st >= 2 ? 2 : st + 1;
+    const tickets = tk.map(k => ({
+      id: k.id, subject: k.subject, when: k.when, who: k.who, status: ST[k.st][0], cls: ST[k.st][1],
+      checked: tsel.includes(k.id) ? 'true' : 'false', cbCls: 'cb2' + (tsel.includes(k.id) ? ' on' : ''), selLabel: T('Select ticket ', '揀選工單 ') + k.id,
+      menuOpen: tmenu === k.id, advLabel: k.st >= 2 ? T('Reopen', '重新開啟') : T('Advance status', '推進狀態'),
+      toggle: () => set({ tsel: tg(tsel, k.id) }), more: () => set({ tmenu: tmenu === k.id ? '' : k.id }),
+      advance: () => set({ tk: tk.map(x => x.id === k.id ? Object.assign({}, x, { st: x.st >= 2 ? 0 : nextAdv(x.st) }) : x), tmenu: '' }),
+      close: () => set({ tk: tk.filter(x => x.id !== k.id), tmenu: '', tsel: tsel.filter(x => x !== k.id) })
+    }));
+    const REAS = [T('Lost password', '遺失密碼'), T('Lost authenticator', '遺失驗證器'), T('Locked out', '被鎖喺外'), T('Intrusion', '懷疑入侵')];
+    const reasons = REAS.map((label, i) => ({ label, pressed: reason === i ? 'true' : 'false', pick: () => set({ reason: i }) }));
+
+    const t = {
+      title: T('Locks and recovery', '鎖同復原'), heroLabel: T('Locks summary', '鎖摘要'),
+      chipLocked: nLocked + T(' cards locked', ' 張卡片已鎖'), chipTwoKey: T('Two-key reboot', '雙重確認重啟'), chipTotp: T('Authenticator built in', '內置驗證器'),
+      headline: T('Lock what matters', '鎖住重要嘅設定'),
+      lede: T('Toy locks stop slips, the unlock ladder asks for more as the risk grows, and risky actions like a reboot need two different people. Locked out? The recovery desk gets you back in.', '輕量鎖防止手滑，風險越高解鎖步驟越多，重啟呢類高風險動作需要兩個唔同嘅人確認。被鎖喺外面？復原服務台幫你返入去。'),
+      toysTitle: T('Element locks', '元素鎖'), toysSub: T('Try the locks: each card needs a different way to unlock.', '試下啲鎖：每張卡片有唔同嘅解鎖方式。'), lockAll: T('Lock all', '全部鎖定'), unlockAll: T('Unlock all', '全部解鎖'),
+      viewerNote: T('Read-only role: locks cannot be changed.', '唯讀角色：唔可以更改鎖。'),
+      ladderTitle: T('Unlock ladder', '解鎖階梯'), ladderSub: T('Pick a rung to see what it protects.', '揀一級睇睇佢保護咩。'), ladderNeeds: T('Protects', '保護範圍'),
+      rebootTitle: T('Reboot the router', '重啟路由器'), rebootSub: T('A two-key action.', '需要雙重確認嘅動作。'), rebootBig: T('2 keys', '2 把鑰匙'), rebootEffects: T('Drops Wi-Fi for about 90 seconds and ends 12 sessions.', 'Wi-Fi 會中斷約 90 秒，並結束 12 個連線。'), rebootBtn: T('Reboot router', '重啟路由器'), lastReboot: T('Last reboot', '上次重啟'), lastRebootSub: T('3 days 5 hours ago, confirmed by Pat and Alex', '3 日 5 個鐘前，由 Pat 同 Alex 確認'), needs: T('Needs', '需要'), needsSub: T('Two keys and the typed phrase', '兩把鑰匙同輸入確認字句'), rebooted: T('Reboot sent. Wi-Fi returns in about 90 seconds.', '已發出重啟，約 90 秒後 Wi-Fi 恢復。'),
+      dlgTitle: T('Reboot RT-AX86U?', '要重啟 RT-AX86U 嗎？'), dlgSub: T('Two different people must turn a key, then type the phrase.', '兩個唔同嘅人要各轉一把鑰匙，再輸入確認字句。'),
+      key1: T('Key 1: Pat (owner)', '鑰匙 1：Pat（擁有人）'), key1Sub: T('Confirm with your authenticator code', '用驗證器代碼確認'), key2: T('Key 2: Alex (operator)', '鑰匙 2：Alex（操作員）'), key2Sub: T('Must be a different person from key 1', '必須同鑰匙 1 唔同人'),
+      phrase: T('Type to confirm', '輸入確認'), dlgProgress: T('Confirmation progress', '確認進度'), cancel: T('Cancel', '取消'), rebootNow: T('Reboot now', '即時重啟'),
+      authTitle: T('Authenticator', '驗證器'), authSub: T('Codes for the owner, the operator and the SSH key.', '擁有人、操作員同 SSH 金鑰嘅驗證碼。'),
+      qrAlt: T('QR code for pairing an authenticator app', '配對驗證器應用程式嘅 QR 碼'), pairTitle: T('Pair a new authenticator', '配對新驗證器'),
+      pair1: T('Open your authenticator app and choose Add account.', '打開驗證器應用程式，揀「加入帳戶」。'), pair2: T('Scan the QR code, or type the key.', '掃描 QR 碼，或者輸入密鑰。'), pair3: T('Enter the 6-digit code it shows to finish.', '輸入佢顯示嘅 6 位數字完成配對。'),
+      verify: T('Check code', '驗證碼'), verifyBtn: T('Verify', '驗證'), verOk: T('Paired. Codes will now match.', '配對成功，驗證碼已經同步。'), verBad: T('That code does not match. Try the next one.', '驗證碼唔符，試下下一個。'),
+      deskTitle: T('Recovery desk', '復原服務台'), deskSub: T('Support tickets for lost passwords, lost authenticators and lockouts.', '遺失密碼、遺失驗證器同被鎖喺外嘅支援工單。'),
+      selectAll: T('Select all', '全選'), bulk: T('Bulk actions', '批量操作'), closeT: T('Close ticket', '關閉工單'), clear: T('Clear', '清除'), rowMenu: T('Ticket actions', '工單操作'), copyId: T('Copy ticket number', '複製工單編號'),
+      noTickets: T('No open tickets. Everything is recovered.', '冇未處理工單，全部已復原。'), newTicket: T('New recovery ticket', '新增復原工單'), reason: T('What happened', '發生咗乜事'), message: T('Details', '詳情'),
+      submit: T('Send to the second owner', '送交第二位擁有人'), deskNote: T('Not in the real app yet: email approval links.', '真實應用程式未有：電郵批准連結。'), sent: T('Ticket sent. Waiting for the second key.', '工單已送出，等待第二把鑰匙。')
+    };
+    const speakStep = Math.max(stepsDone, 0);
+    const submit = () => { if (!canWrite) return; set({ tk: [{ id: 'T-' + (1043 + tk.length), subject: REAS[reason] + (msg ? ': ' + msg.slice(0, 30) : ''), when: T('Just now', '啱啱'), who: 'Pat', st: 1 }].concat(tk), msg: '', justSent: true }); };
+
+    return Object.assign(base([T('Settings', '設定'), T('Locks', '鎖'), T('Recovery', '復原')]), {
+      lk, tips, cc, t, d: D, toys, lockAllDis: canWrite ? '' : 'dis',
+      lockAll: () => canWrite && set({ dl: { wifi: true, fw: true, pf: true, dns: true } }), unlockAll: () => canWrite && set({ dl: { wifi: false, fw: false, pf: false, dns: false }, hold: {}, passOk: {} }),
+      rungs, rungNeeds: RUNGS[rung][2],
+      rebootDis: canWrite ? '' : 'dis', openDlg: () => canWrite && set({ dlg: true, rebooted: false }), closeDlg: () => set({ dlg: false, k1: false, k2: false, phrase: '' }), dlg,
+      k1cls: k1 ? 'turned' : '', k2cls: k2 ? 'turned' : '', k1btn: k1 ? T('Turned', '已轉') : T('Turn key 1', '轉鑰匙 1'), k2btn: k2 ? T('Turned', '已轉') : T('Turn key 2', '轉鑰匙 2'),
+      turn1: () => set({ k1: !k1 }), turn2: () => set({ k2: !k2 }), phrase, onPhrase: (e) => set({ phrase: txt(e) }),
+      phraseCls: phraseOk ? 'good' : '', phraseTag: phraseOk ? T('Matches', '符合') : T('Not yet', '未符合'),
+      stepsDone, stepsPct: Math.round(stepsDone / 3 * 100), goDis: canGo ? '' : 'dis', go: () => { if (canGo) set({ dlg: false, k1: false, k2: false, phrase: '', rebooted: true }); }, rebooted,
+      codes, pairing, togglePair: () => set({ pairing: !pairing }), pairBtn: pairing ? T('Hide pairing', '隱藏配對') : T('Pair a new authenticator', '配對新驗證器'),
+      secretShown: reveal ? SECRET : '•••• •••• •••• ••••', toggleReveal: () => set({ reveal: !reveal }), revealBtn: reveal ? T('Hide key', '隱藏密鑰') : T('Show key', '顯示密鑰'),
+      vin, onVin: (e) => set({ vin: txt(e), vstate: '' }), doVerify: () => set({ vstate: vin.replace(/\s/g, '') === pairCode.replace(' ', '') ? 'ok' : 'bad' }), verOk: vstate === 'ok', verBad: vstate === 'bad',
+      tickets, noTickets: tickets.length === 0, hasSel: tsel.length > 0, selText: tsel.length + T(' selected', ' 項已選'),
+      selectAllT: () => set({ tsel: tk.map(k => k.id) }), clearSel: () => set({ tsel: [] }), bulkClose: () => set({ tk: tk.filter(k => !tsel.includes(k.id)), tsel: [] }),
+      reasons, msg, onMsg: (e) => set({ msg: txt(e), justSent: false }), submitTicket: submit, submitCls: canWrite ? '' : 'dis', justSent: !!s.justSent
+    });
+  }
+}
+</script>
+</body>
+</html>

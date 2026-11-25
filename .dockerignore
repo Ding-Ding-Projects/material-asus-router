@@ -1,0 +1,13 @@
+.git
+.github
+.githooks
+node_modules
+data
+design
+docs
+evidence
+desktop
+dist
+site
+tests
+*.log

@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Records and exports</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="theme.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,100..1000&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.card.ov{overflow:visible}
+.onp{background:color-mix(in srgb,var(--on-primary) 18%,transparent);color:var(--on-primary)}
+.cbw{width:44px;height:44px;border:0;background:none;display:grid;place-items:center;flex:none;padding:0}
+.cb2{width:22px;height:22px;border-radius:7px;border:2px solid var(--sub);display:grid;place-items:center;color:var(--on-primary)}
+.cb2 svg{opacity:0}.cb2.on{background:var(--primary);border-color:var(--primary)}.cb2.on svg{opacity:1}
+.lockedcard{outline:3px solid var(--primary);outline-offset:-3px}
+.tilehead{display:flex;align-items:center;gap:4px}.tilehead .k{flex:1}
+.pos{position:relative}
+.legend{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub)}
+.legend i{width:12px;height:12px;border-radius:6px;display:inline-block}
+.hero h1{position:relative;max-width:16ch}
+.herogrid{display:flex;flex-wrap:wrap;gap:24px 44px;align-items:flex-end;position:relative;margin-top:8px}
+.herostat .big{font-size:52px}
+pre.code{margin:0;padding:16px 18px;border-radius:20px;background:var(--surf-low);color:var(--text);font:13px/1.55 ui-monospace,'Cascadia Code',Consolas,monospace;overflow:auto;white-space:pre;max-height:300px}
+textarea.field{height:auto;padding:14px 16px;line-height:1.5;resize:vertical;width:100%;font-family:ui-monospace,'Cascadia Code',Consolas,monospace;font-size:13.5px}
+.dis{opacity:.5;cursor:not-allowed}
+.tile{display:flex;flex-direction:column;gap:8px;align-items:flex-start;text-align:left;border:0;border-radius:28px;padding:18px;background:var(--surf);box-shadow:var(--e1);color:var(--text);min-height:112px;font:inherit}
+.tile.on{background:var(--primary-c);color:var(--on-primary-c)}
+.tile b{font-size:15px}.tile span.s{font-size:12.5px;opacity:.75}
+.prev{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;align-items:start}
+.stage{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid color-mix(in srgb,currentColor 18%,transparent)}
+.stage:first-of-type{border-top:0}
+.sico{width:32px;height:32px;border-radius:16px;display:grid;place-items:center;flex:none;background:var(--surf-high);color:var(--sub)}
+.sico.done{background:var(--good-c);color:var(--good)}
+.sico.run{background:var(--primary);color:var(--on-primary)}
+.docgrid{display:grid;grid-template-columns:minmax(200px,260px) 1fr;gap:18px}
+@media (max-width:760px){.docgrid{grid-template-columns:1fr}}
+.dnav{display:flex;flex-direction:column;gap:2px}
+.dnav button{display:flex;align-items:center;gap:10px;height:44px;padding:0 14px;border-radius:16px;border:0;background:none;color:var(--sub);font:600 14px var(--font);text-align:left}
+.dnav button[aria-pressed=true]{background:var(--secondary-c);color:var(--on-secondary-c)}
+.vlist{display:flex;gap:6px;flex-wrap:wrap}
+.cl li{margin:6px 0;line-height:1.45}
+</style>
+</helmet>
+<div class="mx shell {{motionCls}}" style="--accent:{{accent}};--dark:{{darkNum}}">
+  <div class="railwrap"><dc-import name="Rail" page="backup" lang="{{lang}}" role="{{role}}" firmware="{{firmware}}" pending="{{pendCount}}" accent="{{accent}}" dark="{{dark}}" hint-size="288px,900px"></dc-import></div>
+  <div class="main">
+    <dc-import name="TopBar" title="{{t.title}}" lang="{{lang}}" role="{{role}}" firmware="{{firmware}}" tabs="{{tabsStr}}" active="0" accent="{{accent}}" dark="{{dark}}" hint-size="1152px,170px"></dc-import>
+    <main class="page">
+      <section class="card hero rise" aria-label="{{t.heroLabel}}">
+        <svg class="deco a" viewBox="0 0 200 200" aria-hidden="true" style="right:-50px;top:-80px;width:320px;height:320px"><path d="M182.8 100C183.5 121 178.9 152.8 165.1 165.1C151.3 177.3 121.3 174 100 173.6C78.7 173.2 50.4 174.7 37.5 162.5C24.7 150.2 23.2 121.3 22.7 100C22.3 78.7 22.1 46.9 34.9 34.9C47.8 23 79 27.6 100 28.2C121 28.9 147.4 26.9 161.2 38.8C175 50.8 182.1 79 182.8 100Z"/></svg><svg class="deco b" viewBox="0 0 200 200" aria-hidden="true" style="right:220px;bottom:-100px;width:220px;height:220px"><path d="M192 100C192.2 117.6 168.7 138.8 153.3 153.3C138 167.9 117.3 187.8 100 187.4C82.7 187 64.6 165.3 49.3 150.7C33.9 136.2 8.9 117.8 8 100C7.1 82.2 28.7 58.9 44.1 44.1C59.4 29.2 82 10.1 100 10.8C118 11.4 136.7 33.1 152 48C167.4 62.8 191.8 82.4 192 100Z"/></svg><div class="cookie" style="position:absolute;right:48px;top:36px;width:124px;height:124px;color:var(--tertiary-c)" aria-hidden="true"><svg viewBox="0 0 200 200"><path d="M192.4 100.0L191.7 104.8L189.7 109.4L186.9 113.8L183.9 117.8L181.3 121.8L179.5 125.8L178.6 130.2L178.4 134.9L178.4 140.0L178.1 145.1L177.0 150.0L174.8 154.3L171.4 157.8L167.0 160.4L162.2 162.2L157.4 163.8L153.0 165.4L149.1 167.6L145.9 170.6L142.9 174.3L140.0 178.4L136.7 182.4L132.9 185.7L128.6 187.9L123.8 188.7L118.8 188.2L113.8 186.9L109.0 185.3L104.4 184.1L100.0 183.6L95.6 184.1L91.0 185.3L86.2 186.9L81.2 188.2L76.2 188.7L71.4 187.9L67.1 185.7L63.3 182.4L60.0 178.4L57.1 174.3L54.1 170.6L50.9 167.6L47.0 165.4L42.6 163.8L37.8 162.2L33.0 160.4L28.6 157.8L25.2 154.3L23.0 150.0L21.9 145.1L21.6 140.0L21.6 134.9L21.4 130.2L20.5 125.8L18.7 121.8L16.1 117.8L13.1 113.8L10.3 109.4L8.3 104.8L7.6 100.0L8.3 95.2L10.3 90.6L13.1 86.2L16.1 82.2L18.7 78.2L20.5 74.2L21.4 69.8L21.6 65.1L21.6 60.0L21.9 54.9L23.0 50.0L25.2 45.7L28.6 42.2L33.0 39.6L37.8 37.8L42.6 36.2L47.0 34.6L50.9 32.4L54.1 29.4L57.1 25.7L60.0 21.6L63.3 17.6L67.1 14.3L71.4 12.1L76.2 11.3L81.2 11.8L86.2 13.1L91.0 14.7L95.6 15.9L100.0 16.4L104.4 15.9L109.0 14.7L113.8 13.1L118.8 11.8L123.8 11.3L128.6 12.1L132.9 14.3L136.7 17.6L140.0 21.6L142.9 25.7L145.9 29.4L149.1 32.4L153.0 34.6L157.4 36.2L162.2 37.8L167.0 39.6L171.4 42.2L174.8 45.7L177.0 50.0L178.1 54.9L178.4 60.0L178.4 65.1L178.6 69.8L179.5 74.2L181.3 78.2L183.9 82.2L186.9 86.2L189.7 90.6L191.7 95.2L192.4 100.0Z"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="var(--on-tertiary-c)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:58px;height:58px;grid-area:1/1;fill:none"><path d="M12 3v12M7 10l5 5 5-5M5 20h14"/></svg></div>
+        <div style="position:relative;display:flex;flex-wrap:wrap;gap:8px"><span class="tag onp">{{t.provTag}}</span><span class="tag onp">{{t.roleChip}}</span></div>
+        <h1 class="disp">{{t.headline}}</h1>
+        <p class="lede" style="position:relative;color:color-mix(in srgb,var(--on-primary) 86%,transparent)">{{t.lede}}</p>
+        <div class="herogrid">
+          <div class="herostat"><div class="k">{{t.stExports}}</div><div class="big">14<small>{{t.thisMonth}}</small></div></div>
+          <div class="herostat"><div class="k">{{t.stEntries}}</div><div class="big">1,284</div></div>
+          <div class="herostat"><div class="k">{{t.stSize}}</div><div class="big">38<small>MB</small></div></div>
+        </div>
+      </section>
+
+      <div class="dash">
+        <section class="card span2 rise {{cc.exp}}" aria-label="{{t.expTitle}}">
+          <div class="tilehead"><span class="k">{{t.expTitle}}</span><button class="info" aria-label="{{tp.exp.label}}" onClick="{{tp.exp.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.exp.label}}" aria-pressed="{{lk.exp.pressed}}" onClick="{{lk.exp.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.exp.d}}"/></svg></button></div><sc-if value="{{tp.exp.on}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:52px;right:16px">{{tp.exp.text}}</div></sc-if>
+          <div class="cols">
+            <div class="seg" role="group" aria-label="{{t.fmtLabel}}">
+              <sc-for list="{{fmts}}" as="f" hint-placeholder-count="6"><button aria-pressed="{{f.pressed}}" onClick="{{f.pick}}">{{f.label}}</button></sc-for>
+            </div>
+            <span class="sp"></span>
+            <div class="pos"><div class="split">
+              <button class="{{exportCls}}" onClick="{{doExport}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 20h14"/></svg>{{t.exportBtn}}</button>
+              <button class="btn f drop" aria-label="{{t.moreExport}}" aria-haspopup="menu" aria-expanded="{{menuOpen}}" onClick="{{toggleMenu}}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+            </div>
+            <sc-if value="{{menuOpen}}" hint-placeholder-val="{{ false }}"><div class="menu" role="menu" style="right:0;top:56px">
+              <button class="mi" role="menuitem" onClick="{{doExport}}">{{t.mSave}}</button>
+              <button class="mi" role="menuitem" onClick="{{doCopy}}">{{t.mCopy}}</button>
+              <button class="mi" role="menuitem" onClick="{{doSchedule}}">{{t.mSchedule}}</button>
+            </div></sc-if></div>
+          </div>
+          <div class="cols" role="group" aria-label="{{t.scopeLabel}}">
+            <sc-for list="{{scopes}}" as="sc" hint-placeholder-count="5"><button class="{{sc.cls}}" aria-pressed="{{sc.pressed}}" onClick="{{sc.pick}}">{{sc.label}}</button></sc-for>
+          </div>
+          <div class="prev">
+            <div><div class="k" style="margin-bottom:8px">{{t.preview}} · {{fmtName}}</div><pre class="code" tabindex="0" aria-label="{{t.preview}}">{{preview}}</pre></div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div class="k">{{t.optsTitle}}</div>
+              <div class="row"><div class="grow"><div class="t1">{{t.optSecrets}}</div><div class="t2">{{t.optSecretsSub}}</div></div><button class="sw on" role="switch" aria-checked="true" aria-label="{{t.optSecrets}}"><i></i></button></div>
+              <div class="row"><div class="grow"><div class="t1">{{t.optCompress}}</div><div class="t2">{{t.optCompressSub}}</div></div><button class="{{zipCls}}" role="switch" aria-checked="{{zipOn}}" aria-label="{{t.optCompress}}" onClick="{{toggleZip}}"><i></i></button></div>
+              <div class="row"><div class="grow"><div class="t1">{{t.optPretty}}</div><div class="t2">{{t.optPrettySub}}</div></div><button class="sw on" role="switch" aria-checked="true" aria-label="{{t.optPretty}}"><i></i></button></div>
+              <div class="tag good" style="align-self:flex-start">{{result}}</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card ter rise {{cc.upd}}" aria-label="{{t.updTitle}}">
+          <div class="tilehead"><span class="k">{{t.updTitle}}</span><button class="info" aria-label="{{tp.upd.label}}" onClick="{{tp.upd.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.upd.label}}" aria-pressed="{{lk.upd.pressed}}" onClick="{{lk.upd.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.upd.d}}"/></svg></button></div><sc-if value="{{tp.upd.on}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:52px;right:16px">{{tp.upd.text}}</div></sc-if>
+          <div class="disp s" style="font-size:34px">{{t.updHead}}</div>
+          <div class="muted" style="color:inherit;opacity:.85">{{t.updSub}}</div>
+          <svg width="100%" height="24" viewBox="0 0 340 24" preserveAspectRatio="none" role="img" aria-label="{{t.updAlt}}" style="display:block;margin:6px 0">
+            <path d="M0 12H340" stroke="currentColor" stroke-opacity=".25" stroke-width="6" stroke-linecap="round" fill="none"/>
+            <svg x="0" y="0" width="212" height="24" overflow="hidden"><path class="wavy" d="M0 12 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0 q4 -6 8 0 t8 0" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/></svg>
+          </svg>
+          <div class="cols"><span class="tag good">62%</span><span class="muted" style="color:inherit">{{t.updTimes}}</span></div>
+          <div>
+            <sc-for list="{{stages}}" as="st" hint-placeholder-count="6">
+              <div class="stage"><span class="{{st.cls}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{st.d}}"/></svg></span><div class="grow"><div class="t1" style="font-size:14px">{{st.name}}</div><div class="t2" style="color:inherit;opacity:.75">{{st.sub}}</div></div><span class="mono" style="font-size:12px">{{st.time}}</span></div>
+            </sc-for>
+          </div>
+          <div class="area-note" style="color:inherit;opacity:.75">{{t.updNote}}</div>
+        </section>
+      </div>
+
+      <div class="dash">
+        <section class="card span2 ov rise {{cc.hist}}" aria-label="{{t.histTitle}}">
+          <div class="tilehead"><span class="k">{{t.histTitle}}</span><button class="info" aria-label="{{tp.hist.label}}" onClick="{{tp.hist.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.hist.label}}" aria-pressed="{{lk.hist.pressed}}" onClick="{{lk.hist.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.hist.d}}"/></svg></button></div><sc-if value="{{tp.hist.on}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:52px;right:16px">{{tp.hist.text}}</div></sc-if>
+          <sc-if value="{{hasSel}}" hint-placeholder-val="{{ false }}">
+            <div class="glass cols" role="region" aria-label="{{t.bulkLabel}}" style="padding:10px 14px;border-radius:24px">
+              <b>{{selCount}}</b>
+              <button class="btn t sm" onClick="{{bulkExport}}">{{t.bulkExport}}</button>
+              <button class="btn t sm" onClick="{{bulkPin}}">{{t.bulkPin}}</button>
+              <button class="btn o sm" onClick="{{bulkDelete}}">{{t.bulkDelete}}</button>
+              <span class="sp"></span>
+              <button class="btn o sm" onClick="{{clearSel}}">{{t.clear}}</button>
+            </div>
+          </sc-if>
+          <div class="row"><button class="cbw" role="checkbox" aria-checked="{{allChecked}}" aria-label="{{t.selAll}}" onClick="{{toggleAll}}"><span class="{{allCls}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></button><div class="grow k">{{t.selAll}}</div></div>
+          <sc-for list="{{hist}}" as="h" hint-placeholder-count="6">
+            <div class="row pos">
+              <button class="cbw" role="checkbox" aria-checked="{{h.checked}}" aria-label="{{h.selLabel}}" onClick="{{h.toggle}}"><span class="{{h.cbCls}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></button>
+              <div class="grow"><div class="t1">{{h.name}}</div><div class="t2">{{h.when}} · {{h.meta}}</div></div>
+              <sc-if value="{{h.pinned}}" hint-placeholder-val="{{ false }}"><span class="tag good">{{t.pinned}}</span></sc-if>
+              <span class="tag mono">{{h.fmt}}</span>
+              <button class="icb" aria-label="{{h.moreLabel}}" aria-haspopup="menu" aria-expanded="{{h.menuOpen}}" onClick="{{h.more}}"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg></button>
+              <sc-if value="{{h.menuOpen}}" hint-placeholder-val="{{ false }}"><div class="menu" role="menu" style="right:24px;top:48px">
+                <button class="mi" role="menuitem" onClick="{{h.reopen}}">{{t.mReopen}}</button>
+                <button class="mi" role="menuitem" onClick="{{h.again}}">{{t.mAgain}}</button>
+                <button class="mi" role="menuitem" onClick="{{h.del}}">{{t.mDelete}}</button>
+              </div></sc-if>
+            </div>
+          </sc-for>
+          <div class="area-note">{{histNote}}</div>
+        </section>
+
+        <section class="card rise {{cc.log}}" aria-label="{{t.clTitle}}">
+          <div class="tilehead"><span class="k">{{t.clTitle}}</span><button class="info" aria-label="{{tp.log.label}}" onClick="{{tp.log.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.log.label}}" aria-pressed="{{lk.log.pressed}}" onClick="{{lk.log.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.log.d}}"/></svg></button></div><sc-if value="{{tp.log.on}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:52px;right:16px">{{tp.log.text}}</div></sc-if>
+          <div class="vlist" role="group" aria-label="{{t.verLabel}}"><sc-for list="{{vers}}" as="v" hint-placeholder-count="4"><button class="{{v.cls}}" aria-pressed="{{v.pressed}}" onClick="{{v.pick}}">{{v.label}}</button></sc-for></div>
+          <div class="h2">{{ver.head}}</div>
+          <div class="muted">{{ver.date}}</div>
+          <ul class="cl muted" style="margin:0;padding-left:20px;color:var(--text)"><sc-for list="{{ver.items}}" as="i" hint-placeholder-count="4"><li>{{i.text}}</li></sc-for></ul>
+          <a class="btn o sm" href="Docs.dc.html" style="align-self:flex-start">{{t.fullLog}}</a>
+        </section>
+      </div>
+
+      <section class="card tone rise {{cc.docs}}" aria-label="{{t.docTitle}}">
+        <div class="tilehead"><span class="k">{{t.docTitle}}</span><button class="info" aria-label="{{tp.docs.label}}" onClick="{{tp.docs.toggle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7.5h.01"/></svg></button><button class="lock" aria-label="{{lk.docs.label}}" aria-pressed="{{lk.docs.pressed}}" onClick="{{lk.docs.toggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{lk.docs.d}}"/></svg></button></div><sc-if value="{{tp.docs.on}}" hint-placeholder-val="{{ false }}"><div class="tip" style="top:52px;right:16px">{{tp.docs.text}}</div></sc-if>
+        <div class="cols">
+          <span class="tag good">{{t.offlineReady}}</span><span class="muted">{{t.docSize}}</span>
+          <span class="sp"></span>
+          <label class="search" style="flex:0 1 360px;height:44px;background:var(--surf)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input aria-label="{{t.docSearch}}" placeholder="{{t.docSearch}}"><button class="rxbtn" aria-label="{{t.rx}}" aria-pressed="false" style="height:34px">.*</button></label>
+        </div>
+        <div class="docgrid">
+          <nav class="dnav" aria-label="{{t.docNav}}"><sc-for list="{{docs}}" as="d" hint-placeholder-count="5"><button aria-pressed="{{d.pressed}}" onClick="{{d.pick}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{d.d}}"/></svg>{{d.label}}</button></sc-for></nav>
+          <article class="card" style="box-shadow:none"><div class="k">{{doc.dest}}</div><h2 class="h2" style="font-size:26px">{{doc.title}}</h2><p class="muted" style="font-size:15px;color:var(--text)">{{doc.body}}</p><pre class="code" tabindex="0">{{doc.code}}</pre><div class="cols"><a class="btn t sm" href="Docs.dc.html">{{t.openSite}}</a><button class="btn o sm" onClick="{{printDoc}}">{{t.exportPdf}}</button></div></article>
+        </div>
+      </section>
+
+      <footer class="prov" style="padding:0 4px"><span>{{t.prov1}}</span><span>{{t.prov2}}</span><span>{{t.prov3}}</span></footer>
+
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#4f5bd5","options":["#4f5bd5","#00897b","#d81b60","#f4511e","#7c4dff"],"section":"Look"},"dark":{"editor":"boolean","default":false,"section":"Look"},"motion":{"editor":"enum","options":["calm","standard","expressive"],"default":"expressive","section":"Look"},"firmware":{"editor":"enum","options":["merlin","stock"],"default":"merlin","section":"Router"},"role":{"editor":"enum","options":["owner","operator","viewer"],"default":"owner","section":"Router"},"lang":{"editor":"enum","options":["en","yue","both"],"default":"en","section":"Language"},"$preview":{"width":1440,"height":1500}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const p=this.props,s=this.state||{};
+    const lang=p.lang??'en',role=p.role??'owner',firmware=p.firmware??'merlin',motion=p.motion??'expressive';
+    const accent=p.accent||'#4f5bd5';
+    const dark=p.dark===true||p.dark==='true'||p.dark===1||p.dark==='1';
+    const T=(en,yue)=>lang==='en'?en:lang==='yue'?yue:en+' · '+yue;
+    const canWrite=role!=='viewer';
+    const set=(o)=>this.setState(o);
+    const base={accent,dark,darkNum:dark?1:0,lang,role,firmware,motionCls:motion==='calm'?'calm':motion==='standard'?'std':'',pendCount:2};
+    const tp={},lk={},cc={};
+    const LKO='M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4',LKU='M5 11h14v10H5z M8 11V7a4 4 0 0 1 7.5-2';
+    const locks=s.locks||[];
+    const card=(id,en,yue)=>{const on=s.tip===id,l=locks.includes(id);
+      tp[id]={on,text:T(en,yue),label:T('About this card','關於呢張卡'),toggle:()=>set({tip:on?'':id})};
+      lk[id]={pressed:l?'true':'false',d:l?LKO:LKU,label:l?T('Unlock card','解鎖卡片'):T('Lock card','鎖定卡片'),toggle:()=>set({locks:l?locks.filter(x=>x!==id):locks.concat([id])})};
+      cc[id]=l?'lockedcard':'';};
+    const toggleIn=(arr,v)=>arr.includes(v)?arr.filter(x=>x!==v):arr.concat([v]);
+    const tabsStr=[T('Export','匯出'),T('History','記錄'),T('Changelog','更新日誌'),T('Offline docs','離線文件')].join(',');
+    card('exp','Every export is built on this device from the router data it already holds. Secrets are masked unless you choose otherwise.','所有匯出都喺呢部機本地由已有嘅路由器資料生成，密碼預設會遮蓋。');
+    card('upd','Shows a build that is not published yet. It never installs anything and the estimate is labelled as an estimate.','顯示未發佈嘅版本建置進度，唔會自動安裝，時間只係估算。');
+    card('hist','Every export and import is kept here. Select rows for bulk actions.','每次匯出同匯入都記錄喺度，可以揀多行做批次操作。');
+    card('log','Release notes for each version, newest first.','每個版本嘅更新說明，最新排最前。');
+    card('docs','Documentation bundled with this app so it still opens without internet.','內置文件，冇網絡都可以睇。');
+    const fmt=s.fmt||'json',scope=s.scope||['devices','wifi'],sel=s.sel||[],gone=s.gone||[],pinned=s.pinned||['h2'],rowMenu=s.rowMenu||'',verId=s.ver||'0.9.0',docId=s.doc||'start',menuOpen=!!s.menu,zip=!!s.zip,result=s.result||T('Ready. Nothing exported yet.','準備好，仲未匯出。');
+    const FM=[['json','JSON'],['csv','CSV'],['yaml','YAML'],['pdf','PDF'],['md','Markdown'],['html','HTML']];
+    const fmts=FM.map(([id,l])=>({label:l,pressed:fmt===id?'true':'false',pick:()=>set({fmt:id,result:T('Preview updated for '+l,'已更新 '+l+' 預覽')})}));
+    const fmtName=FM.find(x=>x[0]===fmt)[1];
+    const SC=[['devices',T('Devices','裝置')],['wifi','Wi-Fi'],['rules',T('Firewall rules','防火牆規則')],['dhcp',T('DHCP leases','DHCP 租約')],['logs',T('System log','系統記錄')]];
+    const scopes=SC.map(([id,l])=>{const on=scope.includes(id);return{label:l,cls:'chip'+(on?' on':''),pressed:on?'true':'false',pick:()=>set({scope:toggleIn(scope,id)})};});
+    const PV={
+      json:'{\n  "router": "RT-AX86U",\n  "lan": "198.51.100.0/24",\n  "devices": [\n    { "name": "Pat laptop", "ip": "198.51.100.101", "band": "5 GHz" },\n    { "name": "NAS", "ip": "198.51.100.20", "band": "wired" },\n    { "name": "Alex phone", "ip": "198.51.100.134", "band": "5 GHz" }\n  ],\n  "exported": "2026-11-25T17:10:00+08:00"\n}',
+      csv:'name,ip,mac,band,rssi\nPat laptop,198.51.100.101,AA:BB:CC:00:11:01,5 GHz,-48\nNAS,198.51.100.20,AA:BB:CC:00:11:20,wired,\nAlex phone,198.51.100.134,AA:BB:CC:00:11:34,5 GHz,-57',
+      yaml:'router: RT-AX86U\nlan: 198.51.100.0/24\ndevices:\n  - name: Pat laptop\n    ip: 198.51.100.101\n    band: 5 GHz\n  - name: NAS\n    ip: 198.51.100.20\n    band: wired\n  - name: Alex phone\n    ip: 198.51.100.134\n    band: 5 GHz',
+      pdf:'%PDF-1.7  (preview as page image)\n+------------------------------+\n| Material Asus Router report  |\n| RT-AX86U   198.51.100.1         |\n|------------------------------|\n| Pat laptop   198.51.100.101     |\n| NAS          198.51.100.20      |\n| Alex phone   198.51.100.134     |\n+------------------------------+\nPage 1 of 3 · A4 · embedded fonts',
+      md:'# RT-AX86U device list\n\n| Name | IP | Band |\n| --- | --- | --- |\n| Pat laptop | 198.51.100.101 | 5 GHz |\n| NAS | 198.51.100.20 | wired |\n| Alex phone | 198.51.100.134 | 5 GHz |\n\n_Exported 2026-11-25 17:10_',
+      html:'<!doctype html>\n<h1>RT-AX86U device list</h1>\n<table>\n  <tr><th>Name</th><th>IP</th></tr>\n  <tr><td>Pat laptop</td><td>198.51.100.101</td></tr>\n  <tr><td>NAS</td><td>198.51.100.20</td></tr>\n</table>'
+    };
+    const HI=[['h1','router-devices.json',T('Today 17:08','今日 17:08'),T('Export · 3 scopes · 4.2 KB','匯出 · 3 個範圍 · 4.2 KB'),'JSON'],['h2','settings-backup.cfg',T('Today 09:30','今日 09:30'),T('Backup · encrypted · 212 KB','備份 · 已加密 · 212 KB'),'CFG'],['h3','dhcp-leases.csv',T('Yesterday 22:10','尋日 22:10'),T('Export · 48 rows · 6 KB','匯出 · 48 行 · 6 KB'),'CSV'],['h4','firewall-rules.yaml',T('Mon 14:05','星期一 14:05'),T('Export · 12 rules · 3 KB','匯出 · 12 條規則 · 3 KB'),'YAML'],['h5','monthly-report.pdf',T('1 Nov 08:00','11月1日 08:00'),T('Scheduled report · 3 pages','定時報告 · 3 頁'),'PDF'],['h6','import-from-old-router.json',T('28 Oct 19:42','10月28日 19:42'),T('Import · 41 settings','匯入 · 41 項設定'),'JSON']].filter(x=>!gone.includes(x[0]));
+    const hist=HI.map(([id,name,when,meta,f])=>{const on=sel.includes(id);return{name,when,meta,fmt:f,pinned:pinned.includes(id),checked:on?'true':'false',selLabel:T('Select ','揀選 ')+name,cbCls:'cb2'+(on?' on':''),menuOpen:rowMenu===id,moreLabel:T('More actions for ','更多操作：')+name,
+      toggle:()=>set({sel:toggleIn(sel,id)}),more:()=>set({rowMenu:rowMenu===id?'':id}),reopen:()=>set({rowMenu:'',result:T('Opened '+name+' in preview','已喺預覽打開 '+name),fmt:f==='CSV'?'csv':f==='YAML'?'yaml':f==='PDF'?'pdf':'json'}),again:()=>set({rowMenu:'',result:T('Exported again: '+name,'已重新匯出：'+name)}),del:()=>{if(canWrite)set({rowMenu:'',gone:gone.concat([id])})}};});
+    const ids=HI.map(x=>x[0]),allOn=ids.length>0&&ids.every(i=>sel.includes(i));
+    const VL={
+      '0.9.0':{head:T('0.9.0 Expressive shell','0.9.0 全新表達式介面'),date:'2026-11-25',items:[T('New app shell with workspace tabs and rail','新增工作區分頁同側欄'),T('Export to six formats with live preview','六種格式匯出，即時預覽'),T('AiMesh map and USB storage panel','AiMesh 地圖同 USB 儲存面板'),T('Minecraft server manager preview','Minecraft 伺服器管理預覽')]},
+      '0.8.2':{head:T('0.8.2 Fixes','0.8.2 修正'),date:'2026-11-12',items:[T('Fixed a stuck spinner on slow routers','修正慢速路由器上轉圈唔停'),T('Port forward rules keep their order','端口轉發規則保持次序'),T('Cantonese strings reviewed','粵語字串已覆核')]},
+      '0.8.0':{head:T('0.8.0 Preview and undo','0.8.0 預覽同復原'),date:'2026-10-30',items:[T('Review changes before applying','套用前先預覽變更'),T('Undo any change from history','由記錄復原任何變更'),T('Read-only viewer role','新增唯讀檢視角色')]},
+      '0.7.0':{head:T('0.7.0 First public preview','0.7.0 首個公開預覽'),date:'2026-10-05',items:[T('Overview, Devices and Wi-Fi pages','總覽、裝置同 Wi-Fi 頁面'),T('Merlin firmware add-ons','Merlin 韌體附加功能')]}
+    };
+    const vers=Object.keys(VL).map(k=>({label:k,cls:'chip'+(verId===k?' on':''),pressed:verId===k?'true':'false',pick:()=>set({ver:k})}));
+    const v=VL[verId];
+    const CK='M5 12.5l4.5 4.5L19 7.5',CL='M12 6v6l4 2';
+    const ST=[['done',T('Fetch sources','攞原始碼'),T('Commit 4f2a9c1 on main','main 提交 4f2a9c1'),'17:02',CK],['done',T('Install toolchain','安裝工具鏈'),T('Node 22 and Electron 33 ready','Node 22 同 Electron 33 已就緒'),'17:03',CK],['run',T('Compile app','編譯程式'),T('Bundling renderer, 64%','打包介面，64%'),'17:05',CL],['',T('Package installer','打包安裝程式'),T('Waiting','等緊'),'—',CL],['',T('Verify checksums','核對校驗碼'),T('Waiting','等緊'),'—',CL],['',T('Publish release','發佈版本'),T('Not started','未開始'),'—',CL]];
+    const stages=ST.map(([c,name,sub,time,d])=>({cls:'sico'+(c?' '+c:''),name,sub,time,d}));
+    const DL=[['start',T('Getting started','開始使用'),'M5 4h14v16H5z M9 9h6 M9 13h6'],['export',T('Exporting data','匯出資料'),'M12 3v12 M7 10l5 5 5-5 M5 20h14'],['mesh',T('AiMesh nodes','AiMesh 節點'),'M12 7l-6 9 M12 7l6 9 M7 18h10'],['merlin',T('Merlin add-ons','Merlin 附加功能'),'M4 7h16 M4 12h16 M4 17h10'],['trouble',T('Troubleshooting','疑難排解'),'M12 8v5 M12 16.5h.01 M12 3l9 16H3z']];
+    const DB={start:{kind:T('Guide','指南'),title:T('Connect to your router','連接路由器'),body:T('Enter the router address 198.51.100.1, sign in with the router account and approve the host key. The password or key is stored encrypted on the app server and never shown again.','輸入路由器地址 198.51.100.1，用路由器帳戶登入並確認主機金鑰。登入資料只會存喺呢部機嘅系統鑰匙圈。'),code:'ssh you@198.51.100.1 -p 22\n# host key SHA256:3f9a...c21 (demo value)'},
+      export:{kind:T('Guide','指南'),title:T('Export every record','匯出所有記錄'),body:T('Pick a format, choose scopes and review the preview. Secrets are masked by default and the file never leaves this device.','揀格式同範圍，先睇預覽。密碼預設遮蓋，檔案唔會離開呢部機。'),code:'router export --format yaml --scope devices,wifi'},
+      mesh:{kind:T('Reference','參考'),title:T('Add an AiMesh node','加入 AiMesh 節點'),body:T('Place the node halfway between the router and the dead zone, then search for it from the AiMesh page.','將節點放喺路由器同訊號死角中間，然後喺 AiMesh 頁面搜尋。'),code:'nvram get cfg_device_list'},
+      merlin:{kind:T('Reference','參考'),title:T('Merlin add-ons','Merlin 附加功能'),body:T('Install scripts to /jffs/scripts. The app lists what is installed and checks versions.','將腳本裝入 /jffs/scripts，程式會列出已安裝項目並檢查版本。'),code:'ls /jffs/scripts\namtm   # open the add-on menu'},
+      trouble:{kind:T('Help','說明'),title:T('When something fails','出錯時點算'),body:T('Every failed change keeps its log. Use Undo in History, or restore the last backup from the Backup page.','每次失敗嘅變更都會保留記錄。可以喺記錄頁復原，或者喺備份頁還原最近一次備份。'),code:'tail -n 50 /tmp/syslog.log'}};
+    const docs=DL.map(([id,label,d])=>({label,d,pressed:docId===id?'true':'false',pick:()=>set({doc:id})}));
+    const doExport=()=>{if(canWrite)set({result:T('Saved router-'+fmt+(zip?'.zip':'')+' to Downloads (4.2 KB)','已儲存 router-'+fmt+(zip?'.zip':'')+' 去下載資料夾（4.2 KB）'),menu:false})};
+    return {...base,tp,lk,cc,fmts,fmtName,scopes,stages,hist,vers,docs,tabsStr,
+      ver:{head:v.head,date:v.date,items:v.items.map(text=>({text}))},doc:DB[docId],
+      preview:PV[fmt]+(scope.length?'':'\n(select at least one scope)'),menuOpen,zipOn:zip?'true':'false',zipCls:'sw'+(zip?' on':''),result,
+      exportCls:'btn f'+(canWrite?'':' dis'),doExport,doCopy:()=>set({menu:false,result:T('Copied preview to clipboard','已複製預覽')}),doSchedule:()=>set({menu:false,result:T('Weekly export scheduled, Sunday 08:00','已排程每星期日 08:00 匯出')}),
+      toggleMenu:()=>set({menu:!menuOpen}),toggleZip:()=>set({zip:!zip}),
+      hasSel:sel.length>0,selCount:sel.length+T(' selected',' 項已揀'),allChecked:allOn?'true':'false',allCls:'cb2'+(allOn?' on':''),toggleAll:()=>set({sel:allOn?[]:ids}),clearSel:()=>set({sel:[]}),
+      bulkExport:()=>set({result:T(sel.length+' records exported together as a ZIP',sel.length+' 項記錄已打包匯出'),sel:[]}),bulkPin:()=>set({pinned:pinned.concat(sel.filter(x=>!pinned.includes(x))),sel:[]}),bulkDelete:()=>{if(canWrite)set({gone:gone.concat(sel),sel:[]})},
+      histNote:T('Showing '+hist.length+' of 6 records. Deleting removes the local copy only.','顯示 '+hist.length+' / 6 項記錄，刪除只會移除本機副本。'),printDoc:()=>set({result:T('Saved article as PDF','已將文章存成 PDF')}),
+      t:{title:T('Records and exports','記錄同匯出'),heroLabel:T('Records summary','記錄摘要'),provTag:T('Version 0.9.0 · updated 2026-11-25 17:10','版本 0.9.0 · 更新於 2026-11-25 17:10'),roleChip:role==='viewer'?T('Viewer · read only','檢視者 · 唯讀'):role==='operator'?T('Operator','操作員'):T('Owner','擁有者'),
+        headline:T('Take your data anywhere','資料帶得走'),lede:T('Export settings, devices and logs in six formats, replay history, read what changed in each version and keep the manual offline.','六種格式匯出設定、裝置同記錄，重溫歷史、睇每版更新，連說明書都有離線版。'),
+        stExports:T('Exports','匯出'),thisMonth:T('this month','本月'),stEntries:T('History entries','記錄數量'),stSize:T('Stored locally','本機佔用'),
+        expTitle:T('Export','匯出'),fmtLabel:T('Export format','匯出格式'),exportBtn:T('Export '+fmtName,'匯出 '+fmtName),moreExport:T('More export options','更多匯出選項'),mSave:T('Save to Downloads','儲存到下載資料夾'),mCopy:T('Copy to clipboard','複製到剪貼簿'),mSchedule:T('Schedule weekly export','排程每週匯出'),scopeLabel:T('Export scope','匯出範圍'),preview:T('Preview','預覽'),
+        optsTitle:T('Options','選項'),optSecrets:T('Mask passwords and keys','遮蓋密碼同金鑰'),optSecretsSub:T('Replaced with ******** in every format','所有格式都以 ******** 取代'),optCompress:T('Compress as ZIP','壓縮成 ZIP'),optCompressSub:T('Useful for large logs','適合大型記錄'),optPretty:T('Readable layout','易讀排版'),optPrettySub:T('Indented, with units','縮排同單位'),
+        updTitle:T('Update coming soon','更新即將推出'),updHead:T('0.9.1 is building','0.9.1 建置中'),updSub:T('Not published yet. Nothing will install until you choose.','仲未發佈，你確認前唔會安裝。'),updAlt:T('Build progress 62 percent','建置進度 62%'),updTimes:T('Started 17:02 · elapsed 00:09:41 · about 6 min left (estimate)','17:02 開始 · 已用 00:09:41 · 預計仲要約 6 分鐘（估算）'),updNote:T('Will contain: fixes for DHCP export, new Cantonese labels, mesh map zoom.','包含：DHCP 匯出修正、新增粵語標籤、Mesh 地圖縮放。'),
+        histTitle:T('History','記錄'),bulkLabel:T('Bulk actions','批次操作'),bulkExport:T('Export selected','匯出已選'),bulkPin:T('Pin','釘選'),bulkDelete:T('Delete','刪除'),clear:T('Clear','清除'),selAll:T('Select all','全選'),pinned:T('Pinned','已釘選'),mReopen:T('Open in preview','喺預覽打開'),mAgain:T('Export again','再匯出'),mDelete:T('Delete local copy','刪除本機副本'),
+        clTitle:T('Changelog','更新日誌'),verLabel:T('Version','版本'),fullLog:T('Open full changelog','開啟完整日誌'),
+        docTitle:T('Offline documentation','離線文件'),offlineReady:T('Available offline','可離線使用'),docSize:T('32 articles · 2.1 MB · synced 2026-11-25','32 篇文章 · 2.1 MB · 2026-11-25 同步'),docSearch:T('Search the manual','搜尋說明書'),rx:T('Regex builder','正則表達式建構器'),docNav:T('Articles','文章'),openSite:T('Open online version','開啟網上版'),exportPdf:T('Save as PDF','存成 PDF'),
+        prov1:T('Material Asus Router 0.9.0 (design preview)','Material Asus Router 0.9.0（設計預覽）'),prov2:T('Updated 2026-11-25 17:10 +08:00','更新於 2026-11-25 17:10 +08:00'),prov3:T('Demo data: LAN 198.51.100.0/24','示範資料：LAN 198.51.100.0/24')}};
+
+  }
+}
+</script>
+</body>
+</html>
