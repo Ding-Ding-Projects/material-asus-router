@@ -8,7 +8,7 @@ import { test } from "node:test";
 import feature from "../../public/js/features/onboarding-wizard/index.js";
 import { checkFeatureModule } from "../../public/js/features/validate.js";
 import { STEPS as clientSteps, complete, emptyProgress, guardValid, percent, sanitize, skip } from "../../public/js/features/onboarding-wizard/steps.js";
-import { STEPS } from "../../server/features/onboarding-wizard/index.mjs";
+import { STEPS, suggestedRouter } from "../../server/features/onboarding-wizard/index.mjs";
 import { assertModuleListed } from "../nav-kit.mjs";
 import { startApp } from "../helpers.mjs";
 
@@ -170,4 +170,28 @@ test("onboarding-wizard: every step explains itself in both languages and the op
   assert.deepEqual(clientSteps.filter((s) => !s.optional).map((s) => s.id), ["owner", "router", "login", "test", "finish"]);
   const source = await readFile("public/js/features/onboarding-wizard/index.js", "utf8");
   for (const needle of ["STEPS.find", ".about", "progress.optional.includes", "progress.done.includes", "progress.skipped.includes", "可選", "/api/catalog", "Read the router's settings in", "/api/router\"", "demo", "again any time"]) assert.ok(source.includes(needle), `the guide uses ${needle}`);
+});
+
+test("onboarding-wizard: ROUTER_SUGGESTED_HOST and ROUTER_SUGGESTED_USER become editable suggestions and nothing else", async () => {
+  assert.deepEqual(suggestedRouter({}), {});
+  assert.deepEqual(suggestedRouter({ ROUTER_SUGGESTED_HOST: "198.51.100.1", ROUTER_SUGGESTED_USER: "pat" }), { host: "198.51.100.1", username: "pat" });
+  // Invalid values are dropped rather than passed on.
+  assert.deepEqual(suggestedRouter({ ROUTER_SUGGESTED_HOST: "bad host; rm", ROUTER_SUGGESTED_USER: "no spaces" }), {});
+  const before = { ...process.env };
+  process.env.ROUTER_SUGGESTED_HOST = "198.51.100.7";
+  process.env.ROUTER_SUGGESTED_USER = "suggested";
+  const t = await startApp({ configure: false });
+  try {
+    const progress = (await t.owner.get(`${base}/progress`)).data;
+    assert.deepEqual(progress.suggested, { host: "198.51.100.7", username: "suggested" });
+    assert.equal(progress.routerConfigured, false);
+    assert.equal(progress.router, null);
+    assert.deepEqual(progress.values, {});
+  } finally {
+    await t.stop();
+    for (const k of ["ROUTER_SUGGESTED_HOST", "ROUTER_SUGGESTED_USER"]) { if (before[k] === undefined) delete process.env[k]; else process.env[k] = before[k]; }
+  }
+  const source = await readFile(new URL("../../public/js/features/onboarding-wizard/index.js", import.meta.url), "utf8");
+  assert.ok(source.includes("progress.suggested?.host"));
+  assert.ok(source.includes("progress.suggested?.username"));
 });

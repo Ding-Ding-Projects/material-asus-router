@@ -49,6 +49,10 @@ Double-clicking `host.bat` opens the menu: pick where to run (this computer, the
 
 The script prints the address of this computer on your LAN, for example `http://198.51.100.5:8790/`. Open it from any device on the same network. The app is meant for your own network: do not expose the port to the Internet. See [Data and security model](../reference/security-model.md).
 
+## Its own address on the home network
+
+Instead of a port on the Docker host, the app can take its own address on your network, for example `http://198.51.100.50:8790/`. Start it with `host.bat --lan-ip 198.51.100.50`, see [Give the app its own address on the home network](own-address.md). The published port stays the default.
+
 ## What compose.yaml sets up
 
 - The image `ghcr.io/ding-ding-projects/material-asus-router`, with the tag from `ROUTER_APP_TAG`.

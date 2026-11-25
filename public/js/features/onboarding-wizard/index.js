@@ -14,7 +14,7 @@ async function render(ctx) {
   const { api, h, icon, t, tt, toast } = ctx;
   const progress = await api.get("/api/x/onboarding-wizard/progress");
   const isOwner = ctx.state.me?.role === "owner";
-  const form = { host: progress.values?.host ?? progress.router?.host ?? "", port: String(progress.values?.port ?? progress.router?.port ?? 22), username: progress.values?.username ?? progress.router?.username ?? "", authType: progress.values?.authType ?? progress.router?.authType ?? "password", password: "", pollSeconds: String(progress.values?.pollSeconds ?? 5) };
+  const form = { host: progress.values?.host ?? progress.router?.host ?? progress.suggested?.host ?? "", port: String(progress.values?.port ?? progress.router?.port ?? 22), username: progress.values?.username ?? progress.router?.username ?? progress.suggested?.username ?? "", authType: progress.values?.authType ?? progress.router?.authType ?? "password", password: "", pollSeconds: String(progress.values?.pollSeconds ?? 5) };
   const extras = { guard: null, users: undefined, router: undefined, timing: null };
   const run = { step: Math.min(progress.step ?? 0, progress.steps.length - 1), connected: progress.routerConfigured, result: null, pending: null, publicKey: null, busy: false };
   const root = h("div", { class: "ob" });

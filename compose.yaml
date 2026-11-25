@@ -6,6 +6,9 @@ services:
       - "${ROUTER_APP_PORT:-8790}:8790"
     environment:
       DEMO: ${ROUTER_APP_DEMO:-0}
+      # Optional editable suggestions for the first-run router step.
+      ROUTER_SUGGESTED_HOST: ${ROUTER_SUGGESTED_HOST:-}
+      ROUTER_SUGGESTED_USER: ${ROUTER_SUGGESTED_USER:-}
     volumes:
       - router-data:/data
     restart: unless-stopped

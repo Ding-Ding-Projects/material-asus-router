@@ -11,6 +11,18 @@ export const STEPS = ["owner", "router", "login", "test", "guard", "people", "po
 const OPTIONAL = new Set(["guard", "people", "polling"]);
 const USER = /^[A-Za-z0-9._@-]{1,64}$/;
 
+// Optional editable suggestions for the router step, set by whoever hosts the app
+// (ROUTER_SUGGESTED_HOST and ROUTER_SUGGESTED_USER). Anything invalid is dropped.
+export function suggestedRouter(env = process.env) {
+  const out = {};
+  try {
+    if (env.ROUTER_SUGGESTED_HOST) out.host = hostTarget(String(env.ROUTER_SUGGESTED_HOST).trim());
+  } catch { /* an invalid suggestion is ignored */ }
+  const user = String(env.ROUTER_SUGGESTED_USER ?? "").trim();
+  if (USER.test(user)) out.username = user;
+  return out;
+}
+
 const mineOf = (app, userId) => app.store.read().features?.[ID]?.progress?.[userId] ?? { step: 0, done: [], skipped: [], completed: false, dismissed: false, values: {} };
 
 function cleanValues(input, bad) {
@@ -45,7 +57,7 @@ export default {
     api.get("/progress", ({ app, who }) => {
       const p = mineOf(app, who.userId);
       const router = app.store.read().router;
-      return { steps: STEPS, optional: [...OPTIONAL], ...p, ownerDone: true, routerConfigured: Boolean(router?.host), router: router ? { host: router.host, port: router.port, username: router.username, authType: router.authType } : null };
+      return { steps: STEPS, optional: [...OPTIONAL], ...p, ownerDone: true, routerConfigured: Boolean(router?.host), suggested: suggestedRouter(), router: router ? { host: router.host, port: router.port, username: router.username, authType: router.authType } : null };
     });
 
     api.post("/progress", async ({ app, who, body, bad }) => {

@@ -1,0 +1,28 @@
+# Own-address mode: the app takes its own address on the home network through a macvlan
+# network, so people open http://<ROUTER_APP_LAN_IP>:8790/ instead of a port on the host.
+# Use it together with compose.yaml, which stays the default (published port):
+#
+#   docker compose -f compose.yaml -f compose.lan.yaml up -d
+#
+# Every hardening option of compose.yaml still applies (read-only root, no capabilities,
+# no-new-privileges, loopback health check). The host itself cannot reach a macvlan
+# container: open the address from another device.
+services:
+  asus-router:
+    # Own address instead of a published port.
+    ports: !reset []
+    networks:
+      lan:
+        ipv4_address: ${ROUTER_APP_LAN_IP:?set ROUTER_APP_LAN_IP to the address the app should take}
+
+networks:
+  lan:
+    driver: macvlan
+    driver_opts:
+      parent: ${ROUTER_APP_LAN_PARENT:?set ROUTER_APP_LAN_PARENT to the host network interface, for example eth0}
+    ipam:
+      config:
+        - subnet: ${ROUTER_APP_LAN_SUBNET:?set ROUTER_APP_LAN_SUBNET to the network in CIDR form}
+          gateway: ${ROUTER_APP_LAN_GATEWAY:?set ROUTER_APP_LAN_GATEWAY to the router address}
+          # Limits the network to the one address by default.
+          ip_range: ${ROUTER_APP_LAN_RANGE:-${ROUTER_APP_LAN_IP}/32}

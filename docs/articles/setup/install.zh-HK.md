@@ -45,6 +45,10 @@ Script 會檢查 `docker` 存唔存在、Compose 得唔得、Docker 伺服器有
 
 Script 會印出呢部電腦喺區域網絡嘅地址，例如 `http://198.51.100.5:8790/`。同網絡嘅任何裝置都可以開。呢個 app 係俾你自己嘅網絡用，唔好將個端口開放上互聯網。見[資料同安全模型](../reference/security-model.md)。
 
+## 喺家用網絡有自己嘅地址
+
+除咗用 Docker 主機上面嘅端口，個 app 亦可以喺你嘅網絡有自己嘅地址，例如 `http://198.51.100.50:8790/`。用 `host.bat --lan-ip 198.51.100.50` 啟動，詳情見[畀個 app 喺家用網絡有自己嘅地址](own-address.md)。預設仍然係發佈端口。
+
 ## compose.yaml 設定咗啲咩
 
 - 映像 `ghcr.io/ding-ding-projects/material-asus-router`，標籤取自 `ROUTER_APP_TAG`。
