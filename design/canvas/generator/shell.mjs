@@ -11,7 +11,14 @@ export const NAV = [
   ['edmap', 'Network map', '網絡圖', 'MapEditor', 'mesh', 0], ['edrules', 'Rule canvas', '規則畫布', 'RuleCanvas', 'fwd', 0], ['edsched', 'Paint schedules', '畫時間表', 'SchedulePaint', 'clock', 0], ['edprio', 'Priority board', '優先次序板', 'PriorityBoard', 'layers', 0], ['edspec', 'Channel spectrum', '頻道頻譜', 'Spectrum', 'pulse', 0], ['edports', 'Ports and VLAN', '端口同 VLAN', 'PortCanvas', 'server', 0], ['edvpn', 'VPN Director', 'VPN Director', 'VpnDirector', 'swap', 0, 1], ['eddhcp', 'Address map', '地址地圖', 'DhcpMap', 'grid', 0],
   ['Router', '路由器'],
   ['usb', 'USB and storage', 'USB 同儲存', 'Storage', 'usb', 0], ['tools', 'Logs and tools', '記錄同工具', 'Tools', 'term', 0], ['speedlab', 'Speed lab', '速度實驗室', 'SpeedLab', 'gauge', 0], ['utilities', 'Router utilities', '路由器工具', 'Utilities', 'wrench', 0], ['jobs', 'Scheduled jobs', '排程工作', 'Jobs', 'timer', 0], ['firmware', 'Firmware', '韌體', 'Firmware', 'chip', 1], ['system', 'System', '系統', 'System', 'gear', 0], ['backup', 'Backup and restore', '備份同還原', 'Backup', 'backup', 0], ['advanced', 'Advanced', '進階', 'Advanced', 'list', 0],
+  ['Owner tools', '擁有人工具'],
+  ['sshactions', 'SSH actions', 'SSH 動作', 'SshActions', 'term', 64], ['terminal', 'Owner terminal', '擁有人終端機', 'Terminal', 'code', 0], ['entware', 'Entware and add-ons', 'Entware 同附加元件', 'Entware', 'box', 0, 1], ['flashbackup', 'Flash backup', '快閃記憶體備份', 'FlashBackup', 'backup', 0], ['fwupload', 'Firmware upload', '上載韌體', 'FirmwareUpload', 'upload', 0], ['fourkey', 'Four keys', '四條鎖匙', 'FourKey', 'key', 0], ['reboot', 'Restart the router', '重啟路由器', 'MissileLaunch', 'rocket', 0],
+  ['Household', '屋企人'],
+  ['household', 'Household', '屋企人', 'Household', 'family', 4], ['leaderboard', "Who's using the most", '邊個用得最多', 'Leaderboard', 'crown', 0],
+  ['Diagnostics and services', '診斷同服務'],
+  ['wifidiag', 'Wi-Fi diagnostics', 'Wi-Fi 診斷', 'WifiDiag', 'pulse', 3], ['hardware', 'Ports and hardware', '端口同硬件', 'PortsHardware', 'server', 0], ['services', 'Services and web access', '服務同網頁存取', 'Services', 'globe', 0], ['cloud', 'Cloud', '雲端', 'Cloud', 'cloud', 0], ['fwinternals', 'Firewall internals', '防火牆內部', 'FirewallInternals', 'shield', 0], ['guestpro', 'Guest Pro', 'Guest Pro', 'GuestPro', 'users', 0], ['dsl', 'DSL', 'DSL', 'Dsl', 'link', 0],
   ['App', '應用程式'],
+  ['live', 'Live mode', 'Live 模式', 'LiveMode', 'bolt', 0], ['historymgr', 'History manager', '記錄管理', 'HistoryManager', 'history', 0],
   ['history', 'Change history', '變更記錄', 'Changes', 'history', 0], ['notifications', 'Notifications', '通知', 'Notifications', 'bell', 4], ['settings', 'Settings', '設定', 'Settings', 'sliders', 0], ['toolbox', 'Toolbox', '工具箱', 'Toolbox', 'box', 0], ['help', 'Help and docs', '說明同文件', 'Help', 'help', 0]
 ];
 const PR = (w, h, extra) => Object.assign(extra, TWEAKS(w, h, null));

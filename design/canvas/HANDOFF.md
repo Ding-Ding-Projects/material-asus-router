@@ -2,7 +2,7 @@
 
 This folder holds the design canvas for Material Asus Router, a self-hosted web app and Windows desktop app that manages an Asus router (stock ASUS or Asuswrt-Merlin) over SSH.
 
-- `design/canvas/project` is the canvas project: 58 boards (56 screens plus the two shared shell components), `theme.css` and `canvas.json`.
+- `design/canvas/project` is the canvas project: 79 boards (77 screens plus the two shared shell components), `theme.css` and `canvas.json`.
 - `design/canvas/generator` writes all of it. Run `node gen.mjs` in that folder. Nothing in `project` is edited by hand.
 - `HANDOFF.md` (this file) is also written by the generator, from `handoff-head.md`, the board specifications and `handoff-tail.md`.
 
@@ -21,6 +21,21 @@ The owner's verdict on the earlier canvas was "too plain", "looks like a documen
 - **Real controls.** There is no bare text box. Settings are switches, segmented buttons with a sliding indicator, sliders with units, steppers, a four-part IPv4 picker, a prefix stepper with a network-and-host bar, port pickers with presets, device pickers with MAC addresses, paintable grids, toggle chips and a password control with reveal and strength. The only typed fields are genuine free text (a network name, a host name, a mode name), each with a counter and, where it matters, a validation hint. The generator fails the build if any other kind of input appears.
 - **Motion.** Described in the next section and listed per board below.
 
+## Added in the second pass
+
+Twenty-one boards on eleven new pages, written by three new generator files (`boards6.mjs`, `boards7.mjs`, `boards8.mjs`) and a second theme part (`theme2.mjs`). Every one carries the same six Tweaks plus `stage`, has its sticky note, and sits on a category page with a title note.
+
+- **SSH** (page `ssh`): the SSH action catalogue, the owner terminal, Entware and add-ons, the read-only flash backup.
+- **Firmware upload** (page `fwup`): the upload with the dim sum moment, and the screen that shows only the words "Hong Kong Dim Sum".
+- **Live and history** (page `live`): Live mode with the undo toast, and the History manager (timeline, diff, compare, per-setting history, restore, statistics, a before-and-after simulation panel).
+- **Dangerous actions** (page `danger`): the four-key confirmation, the Level 3 "Prepare for brother mad" full-screen warning, the reboot launch sequence and the live reboot timeline.
+- **Household** (page `household`): the household screen (Your brother, painted protected hours, Home Assistant, the presence chip, Most brother madness allowed) and the "Who's using the most" leaderboard. The leaderboard has a second tab, "Who's uploading or downloading the most", which ranks the two directions separately.
+- **Diagnostics and services** (pages `wdiag`, `hardware`, `services`, `fwint`, `guest`, `dsl`): Wi-Fi diagnostics, ports and hardware, network services and web access, cloud, firewall internals, Guest Pro with the captive portal, and DSL.
+
+The rail gained three groups (Owner tools, Household, Diagnostics and services) and two App entries (Live mode, History manager). New shared parts in `theme2.mjs`: full-board takeovers, the launch scene, key locks, vertical and horizontal timelines, the bamboo steamer, undo toasts with a draining bar, the podium and ranked rows, in-board tabs, the back panel, chain boxes, the phone preview and tone bars. It also fixes the pipeline connector, which an unrelated phone rule was padding.
+
+The idea of a "brother level" runs through these boards: every action gets a level from 0 to 3, worked out from who is online and what they are doing. The Cantonese strings call the person 阿哥; the household screen lets the owner rename him.
+
 ## Tweaks carried by every board
 
 Every board, including the two shell components, declares the same Tweaks with the same names and defaults:
@@ -35,7 +50,7 @@ Every board, including the two shell components, declares the same Tweaks with t
 | `lang` | enum | `en` | `en`, `yue`, `both` |
 | `stage` | enum | `ready` | `loading`, `empty`, `ready`, `success`, `failure` |
 
-`stage` is on all 56 screen boards (not on the two shell components, which have no stages). The shell components add their own content props: `page` and `pending` on the rail; `title`, `tabs` and `active` on the top bar.
+`stage` is on all 77 screen boards (not on the two shell components, which have no stages). The shell components add their own content props: `page` and `pending` on the rail; `title`, `tabs` and `active` on the top bar.
 
 What each Tweak does on every board:
 
@@ -63,7 +78,11 @@ Motion lives in `theme.css` as keyframes and transitions. State computed in `ren
 - a conic-gradient border that rotates round the one focused action of each hero and the Apply action of the pending dock;
 - success: a burst of shapes and a tick that draws itself; failure: a shake, a red pulse and the reason sliding in;
 - the current pipeline step as a rotating cookie with a shimmering connector;
-- skeleton shimmer while loading.
+- skeleton shimmer while loading;
+- the Level 3 warning: the headline slams in, the screen shakes, hazard stripes scroll, a yellow frame breathes and an angry face shakes with steam;
+- the reboot launch: stars twinkle, the engine flickers, smoke billows, the count runs down from ten, and at lift-off the rocket climbs while the tower swings away and the scene shakes;
+- the dim sum moment: the steamer lid lifts and settles, steam drifts up, buns pop in and bob as stages finish;
+- keys that rotate a quarter turn in their locks, a timeline head that travels, a podium that grows from the floor, undo toasts whose bar drains.
 
 **Normal motion, everywhere:**
 
@@ -79,7 +98,7 @@ Nothing loops without a reason: the loops are the ambient hero aurora, live indi
 
 ## Interactive boards
 
-Every board is interactive: all 1 700 or so handlers are wired to board state, and the generator operates each one and re-renders the board as a check. The boards with their own logic beyond the shared controls:
+Every board is interactive: all 2 200 or so handlers are wired to board state, and the generator operates each one and re-renders the board as a check. The boards with their own logic beyond the shared controls:
 
 - **One-click modes**: opening a mode, the preview sheet with old and new values, apply, undo.
 - **Mode builder**: pick a palette card, drop it on the canvas, flip its value, remove it.
@@ -92,6 +111,21 @@ Every board is interactive: all 1 700 or so handlers are wired to board state, a
 - **VPN Director**: route a device to a way out.
 - **Address map**: move the pool ends by clicking cells, steppers and presets.
 - **Regex builder**: ready patterns and the ignore-case flag run against the sample log lines.
+
+- **SSH action catalogue**: filter by kind, open an action, run it or be sent to the four keys.
+- **Owner terminal**: one-tap commands append real-looking output; a restart is stopped; owner role only.
+- **Read-only flash backup**: copy part by part; the flash strip and checksums follow.
+- **Firmware upload**: five steps driven by the hero action, ending in the dim sum moment.
+- **Hong Kong Dim Sum only screen**: click the screen to lift it; show it again.
+- **Live mode**: flip a switch for an undo toast, or turn Live mode off and watch the change queue instead.
+- **History manager**: select, compare two points, restore, per-setting trail, simulation side.
+- **Four-key confirmation**: a switch, a pick, a dial and a final turn, with wrong answers handled.
+- **Level 3 warning**: preview each level; lift and show the takeover.
+- **Reboot launch sequence**: start, launch, abort, reset.
+- **Live reboot timeline**: step through the seven stages.
+- **Household**: presence states and the allowed level.
+- **Who's using the most**: two tabs, direction, period, slow down a device.
+- **Ports and hardware**, **Firewall internals**, **Guest Pro**: pick a socket, pick a chain, design the portal with a live phone preview.
 
 A drag is two clicks on the canvas (pick, then place) because the canvas runtime exposes click handlers. The app should offer pointer drag and keep the two-click route as the keyboard and switch-access path.
 
@@ -609,6 +643,238 @@ A drag is two clicks on the canvas (pick, then place) because the canvas runtime
 - Stands for: the help text every catalogue entry carries (shown beside each control).
 - Still unbuilt in the real app: Guided tours, shortcuts sheet and bundled offline docs are design only.
 
+### SSH action catalogue, owner terminal, Entware, flash backup (page id `ssh`)
+
+**SSH action catalogue** (`SshActions.dc.html`, 1440 wide, fills, interactive)
+
+- Shows: Every action the app can run on the router over SSH, as cards sorted into four lanes by how much confirmation each one needs: runs at once, preview first, preview and guard, four keys. A filter by kind, the exact command on every card, and a sheet that states what the command does, how it is confirmed, the brother level it carries and whether it can be undone.
+- Try: the kind filter chips (lanes refill), click any card (the sheet rises with the exact command), Run it (a toast confirms), open Restart the router (it sends you to the four keys instead of running), Tweaks > role viewer and operator, stage failure, lang.
+- Tweaks: accent, dark, motion, firmware, role, lang, plus `stage` (loading, empty, ready, success, failure; default ready).
+- Dramatic motion: Cards cascade into their lanes; the sheet rises with a scrim fade; the four-key lane has a rotating conic border on its action; the run toast bursts shapes and draws a tick; failure shakes.
+- Normal motion: staggered spring entrances for every tile and row, hover lift and tilt, press ripple and scale, spring switch thumbs, sliding segmented indicators, expanding chips, animated focus rings.
+- Stands for: the SSH command runner and the write path that already exist; the app already runs nvram, service and log commands.
+- Still unbuilt in the real app: The catalogue as one browsable list, the four lanes, the per-action sheet and the brother level per action are design only.
+
+**Owner terminal** (`Terminal.dc.html`, 1440 wide, fills, interactive)
+
+- Shows: A real shell on the router, for the owner role only: a large terminal with the session so far, one-tap commands that type and run themselves, a stop that catches dangerous commands and hands them to the four keys, session recording, an idle lock and a paste guard. Operators and viewers see a locked card with the reason.
+- Try: the one-tap commands (output is appended with a live cursor), Try to reboot (the app stops it), Clear, the recording switch, the idle slider, Tweaks > role operator (the terminal locks), firmware, lang.
+- Tweaks: accent, dark, motion, firmware, role, lang, plus `stage` (loading, empty, ready, success, failure; default ready).
+- Dramatic motion: Output lines arrive one by one with a blinking cursor; the stopped-command strip shakes with a red pulse; the hero action has a rotating conic border.
+- Normal motion: staggered spring entrances for every tile and row, hover lift and tilt, press ripple and scale, spring switch thumbs, sliding segmented indicators, expanding chips, animated focus rings.
+- Stands for: the SSH connection the app already holds; today it only runs catalogue commands.
+- Still unbuilt in the real app: The free terminal, the dangerous-command stop, recording, the idle lock and the paste guard are design only.
+
+**Entware and add-ons** (`Entware.dc.html`, 1440 wide, fills, interactive)
+
+- Shows: Extra software for Asuswrt-Merlin, kept on a USB drive: Entware health and space, a package shelf with install toggles, the well-known Merlin add-ons as cards with switches, updates waiting, the custom-script switches and the live package log. On stock firmware every tile shows locked with the reason.
+- Try: the package chips (each queues an install into pending changes), the add-on switches, Update all (success), Tweaks > firmware stock (tiles lock with the reason), stage empty and failure, lang.
+- Tweaks: accent, dark, motion, firmware, role, lang, plus `stage` (loading, empty, ready, success, failure; default ready).
+- Dramatic motion: Package tiles arrive staggered; the space gauge draws; log lines arrive one by one with a blinking cursor; Update all has a rotating conic border; success bursts and failure shakes.
+- Normal motion: staggered spring entrances for every tile and row, hover lift and tilt, press ripple and scale, spring switch thumbs, sliding segmented indicators, expanding chips, animated focus rings.
+- Stands for: nothing yet. The router side is plain SSH: opkg and the add-on installer scripts.
+- Still unbuilt in the real app: The whole area is design only: Entware setup, the package shelf, add-on cards and script switches.
+
+**Read-only flash backup** (`FlashBackup.dc.html`, 1440 wide, fills, interactive)
+
+- Shows: A byte-for-byte copy of the router flash, read over SSH and never written: the flash as a proportional strip of its six parts, each part as a timeline row with its size, what it holds and its checksum once verified, the copy rate, where the copy is kept and what it is for.
+- Try: Copy the next part (the strip fills, the row turns green and its checksum appears), Start again, Tweaks > stage success and failure, role viewer, lang.
+- Tweaks: accent, dark, motion, firmware, role, lang, plus `stage` (loading, empty, ready, success, failure; default ready).
+- Dramatic motion: The flash strip fills part by part with a shimmer on the part being read; the current row pulses; the percentage counts up; success bursts and failure shakes.
+- Normal motion: staggered spring entrances for every tile and row, hover lift and tilt, press ripple and scale, spring switch thumbs, sliding segmented indicators, expanding chips, animated focus rings.
+- Stands for: the SSH connection; the app already reads files from the router.
+- Still unbuilt in the real app: Reading the flash parts, the double-read check and the kept-copies list are design only.
+
+### Firmware upload, the dim sum moment and the three-word screen (page id `fwup`)
+
+**Firmware upload** (`FirmwareUpload.dc.html`, 1440 wide, fills, interactive)
+
+- Shows: Uploading a firmware file by hand, as five steps you can see: choose the file (a drop zone that is also a button), five checks that all must pass, the four keys, then the dim sum moment: while the router writes the image and restarts there is nothing useful to press, so the screen says so with a bamboo steamer, rising steam and five buns that fill in as the stages finish. Then the router is back.
+- Try: Start over, Choose the file, Run the five checks, Write it (the dim sum moment appears), The router is back; Try a file for another model (it opens the screen that shows three words); Tweaks > motion calm (steam stops, buns rest in place), stage success and failure, role viewer, lang.
+- Tweaks: accent, dark, motion, firmware, role, lang, plus `stage` (loading, empty, ready, success, failure; default ready).
+- Dramatic motion: The dim sum moment: the steamer lid lifts and settles, steam drifts up, buns pop in and bob as each stage completes, a wavy ring rotates round the minutes left. The current step is a rotating cookie; the hero action has a rotating conic border; success bursts and failure shakes.
+- Normal motion: staggered spring entrances for every tile and row, hover lift and tilt, press ripple and scale, spring switch thumbs, sliding segmented indicators, expanding chips, animated focus rings.
+- Stands for: the firmware domain: installed version and check-for-update.
+- Still unbuilt in the real app: Manual upload, the five checks, the dim sum moment and the back-online check are design only.
+
+**Hong Kong Dim Sum only screen** (`DimSumOnly.dc.html`, 1440 wide, fills, interactive)
+
+- Shows: The refusal screen. When a firmware file is for another model, or its signature has been changed, the whole app is replaced by one screen that says "Hong Kong Dim Sum" and nothing else: no reason, no alternative, no button. Under it (click anywhere, or change the stage Tweak) is the ordinary record of what was refused and proof that the router was not touched.
+- Try: click anywhere on the screen (it lifts and the record underneath shows), Show the screen again, Tweaks > stage (loading, empty, success and failure show the record page), motion calm (the steam stops), dark, accent, lang (the three words do not change).
+- Tweaks: accent, dark, motion, firmware, role, lang, plus `stage` (loading, empty, ready, success, failure; default ready).
+- Dramatic motion: The three words rise in with a glow; steam drifts up behind them; lifting the screen fades it out. Nothing else moves, on purpose.
+- Normal motion: staggered spring entrances for every tile and row, hover lift and tilt, press ripple and scale, spring switch thumbs, sliding segmented indicators, expanding chips, animated focus rings.
+- Stands for: nothing yet.
+- Still unbuilt in the real app: The whole refusal screen and the refusal record are design only.
+
+### Live mode and the History manager (page id `live`)
+
+**Live mode** (`LiveMode.dc.html`, 1440 wide, fills, interactive)
+
+- Shows: Live mode: an app-wide switch that writes each small change the moment you make it instead of collecting it for Apply. A hero with the big Live switch, six everyday switches to try it on, the undo toast with its eight-second bar, what is never live (anything that can cut the connection, anything with keys), a live feed and how long Live mode stays on.
+- Try: flip any of the six switches (a toast slides in with Undo and a draining bar; the row gets a live mark), Undo on the toast, Keep, turn Live mode off and flip again (the change waits in the pending dock instead), Tweaks > role viewer, motion calm, lang.
+- Tweaks: accent, dark, motion, firmware, role, lang, plus `stage` (loading, empty, ready, success, failure; default ready).
+- Dramatic motion: Toasts fly in from the right and their bar drains over eight seconds; the Live dot pulses; the hero number counts up; the Live switch has a rotating conic border while on.
+- Normal motion: staggered spring entrances for every tile and row, hover lift and tilt, press ripple and scale, spring switch thumbs, sliding segmented indicators, expanding chips, animated focus rings.
+- Stands for: the write path: today every change is previewed and applied on request.
+- Still unbuilt in the real app: Live mode, the undo toast and the never-live list are design only.
+
+**History manager** (`HistoryManager.dc.html`, 1440 wide, fills, interactive)
+
+- Shows: Everything the router has ever been told, as something you can work with: a timeline you can select from, a before-and-after diff of one change or of everything between two points, the life of one setting across months, restore to any point, statistics (who, what, when, how often undone) and a simulation panel that shows what a restore would do to the house before you run it.
+- Try: click a timeline entry (the diff follows), Compare with... then a second entry (the diff becomes everything between them), Clear, Restore to just before this (a banner confirms), the per-setting buttons (the value trail changes), Now and After restore in the simulation panel, Tweaks > role viewer, stage failure, lang.
+- Tweaks: accent, dark, motion, firmware, role, lang, plus `stage` (loading, empty, ready, success, failure; default ready).
+- Dramatic motion: Timeline entries cascade in and the selected one grows its marker; diff rows slide in one after another; bars and the undo gauge draw; the restore action has a rotating conic border; the restore banner bursts shapes and draws a tick.
+- Normal motion: staggered spring entrances for every tile and row, hover lift and tilt, press ripple and scale, spring switch thumbs, sliding segmented indicators, expanding chips, animated focus rings.
+- Stands for: the app change history with undo for single entries.
+- Still unbuilt in the real app: Compare between two points, per-setting history, restore to a point, statistics and the simulation panel are design only.
+
+### Four keys, the Level 3 warning, the reboot launch and its live timeline (page id `danger`)
+
+**Four-key confirmation** (`FourKey.dc.html`, 1440 wide, fills, interactive)
+
+- Shows: The confirmation for actions that cannot be undone (restart, firmware, factory reset): four keys in a row, each a different real control so that no single slip or habit gets through. Key 1 is a switch saying you know what will happen, key 2 is picking this router out of three, key 3 is setting a dial to the number shown, key 4 only turns after the other three. An arming bar fills as they turn, and the launch pad opens only when all four are on.
+- Try: turn key 1 off and on, pick a wrong router (key 2 goes back and says so), step the dial to 7 (key 3 turns), then Turn the last key (the bar fills and the launch pad opens), Pull all keys; Tweaks > role operator (owner only: the keys lock), stage success and failure, motion calm, lang.
+- Tweaks: accent, dark, motion, firmware, role, lang, plus `stage` (loading, empty, ready, success, failure; default ready).
+- Dramatic motion: Each key rotates a quarter turn in its lock and its card lifts and turns green; the next key to turn pulses; the arming bar grows through green, amber and red; the open launch pad action has a rotating conic border.
+- Normal motion: staggered spring entrances for every tile and row, hover lift and tilt, press ripple and scale, spring switch thumbs, sliding segmented indicators, expanding chips, animated focus rings.
+- Stands for: the two-key confirmation for destructive actions that the app already has.
+- Still unbuilt in the real app: Four keys, the three different key controls, the arming bar and the expiry are design only.
+
+**Level 3: Prepare for brother mad** (`BrotherMad.dc.html`, 1440 wide, fills, interactive)
+
+- Shows: The full-screen Level 3 warning, "Prepare for brother mad", which takes over the whole app when an action would cut someone off for minutes in the middle of something that matters: hazard stripes, an angry face that shakes and steams, exactly what he is doing and what he will lose, and three ways on (wait until he is done, warn him first, or accept it and go to the four keys). Under it: the four levels as cards and what decides the level.
+- Try: Wait until he is done (the warning lifts), Show the Level 3 warning again, the four level cards (the meter and the wording follow; only Level 3 has the takeover), I accept (goes to the four keys), Tweaks > motion standard and calm (stripes, shaking and steam stop), dark, accent, lang, stage.
+- Tweaks: accent, dark, motion, firmware, role, lang, plus `stage` (loading, empty, ready, success, failure; default ready).
+- Dramatic motion: The warning slams in and the screen shakes three times; hazard stripes scroll; a yellow frame breathes; the face shakes with steam puffing from both sides; the lines below rise in one after another; the top bar of the meter flickers like a flame.
+- Normal motion: staggered spring entrances for every tile and row, hover lift and tilt, press ripple and scale, spring switch thumbs, sliding segmented indicators, expanding chips, animated focus rings.
+- Stands for: nothing yet. The app knows which devices are online; it does not yet know what they are doing.
+- Still unbuilt in the real app: Levels, activity detection and the full-screen warning are design only.
+
+**Reboot missile launch sequence** (`MissileLaunch.dc.html`, 1440 wide, fills, interactive)
+
+- Shows: Restarting the router, staged as a launch so that it is impossible to do absent-mindedly: a night-sky launch pad with the rocket on it, a go or hold checklist, a ten-second count with Abort in reach the whole time, lift-off when the command is really sent, and then a hand-over to the live reboot timeline. Below: the sequence, what is actually sent, abort rules and how to switch the show off.
+- Try: Abort (the pad says nothing was sent), Reset, Start the count (flames and smoke start, the count runs), Launch now (lift-off: the rocket climbs, the tower falls away, the scene shakes), Watch the reboot live; Tweaks > motion calm (a still pad with a plain 10), role operator (owner only), stage success and failure, lang.
+- Tweaks: accent, dark, motion, firmware, role, lang, plus `stage` (loading, empty, ready, success, failure; default ready).
+- Dramatic motion: Stars twinkle; during the count the engine flickers, smoke billows and the rocket trembles while the number counts down from ten; at lift-off the flame triples, the rocket climbs, the tower swings away and the whole scene shakes; the launch action has a rotating conic border.
+- Normal motion: staggered spring entrances for every tile and row, hover lift and tilt, press ripple and scale, spring switch thumbs, sliding segmented indicators, expanding chips, animated focus rings.
+- Stands for: the reboot command behind the two-key confirmation.
+- Still unbuilt in the real app: The launch pad, the checklist, the count with abort and the hand-over to the timeline are design only.
+
+**Live reboot timeline** (`RebootTimeline.dc.html`, 1440 wide, fills, interactive)
+
+- Shows: What happens after lift-off, live: a hero with the elapsed time and a seven-point timeline whose marker travels as each stage is seen (command sent, SSH closed, radios down, system starting, internet up, Wi-Fi up, devices back), a ping strip that turns red while the router is silent, each stage with its expected and actual time, the devices rejoining one by one, how the brother level cools as things return, and what the app does if the router does not come back.
+- Try: Next stage (the marker travels, the ping strip grows, devices turn green, the level cools), Replay from the start, Tweaks > stage success and failure (not back after 5 minutes), motion calm, role viewer (can watch), lang.
+- Tweaks: accent, dark, motion, firmware, role, lang, plus `stage` (loading, empty, ready, success, failure; default ready).
+- Dramatic motion: The timeline head pulses and travels with a spring; stage markers pop in and the current one grows; ping bars rise one by one; the current stage row pulses; the elapsed number counts; the meter bar flickers while the level is high.
+- Normal motion: staggered spring entrances for every tile and row, hover lift and tilt, press ripple and scale, spring switch thumbs, sliding segmented indicators, expanding chips, animated focus rings.
+- Stands for: nothing yet: today the app simply loses its connection during a restart.
+- Still unbuilt in the real app: Listening for the router during a restart, the timeline, the ping strip and the rejoin list are design only.
+
+### Household and who is using the most (page id `household`)
+
+**Household** (`Household.dc.html`, 1440 wide, fills, interactive)
+
+- Shows: The people behind the devices. A hero card for "Your brother" with his presence chip and what he is doing right now, a tile for his name, devices and notices, "Most brother madness allowed" as a four-step control with a meter and a plain sentence for each step, protected hours painted on a week grid, the Home Assistant connection with entity pickers, the presence chip in its four states and everyone else in the house.
+- Try: the four presence states (the chip, the sentence and the level meter follow), Most brother madness allowed 0 to 3 (the sentence changes and the change queues), paint protected hours (click one cell then another), the presets, the device chips, the Home Assistant entity picker and switches, Tweaks > role viewer, stage failure, lang.
+- Tweaks: accent, dark, motion, firmware, role, lang, plus `stage` (loading, empty, ready, success, failure; default ready).
+- Dramatic motion: The brother avatar is a morphing shape; the presence chip pulses while live; the meter bars grow and the top one flickers like a flame at Level 3; grid cells pop as they are painted; tiles arrive staggered.
+- Normal motion: staggered spring entrances for every tile and row, hover lift and tilt, press ripple and scale, spring switch thumbs, sliding segmented indicators, expanding chips, animated focus rings.
+- Stands for: the device list with names.
+- Still unbuilt in the real app: People, the brother card, the allowed level, protected hours, the Home Assistant link and the presence chip are design only.
+
+**Who's using the most** (`Leaderboard.dc.html`, 1440 wide, fills, interactive)
+
+- Shows: A leaderboard of who is using the connection, with two tabs. "Who's using the most" ranks devices by download plus upload on a podium and a bar list. "Who's uploading or downloading the most" splits the two directions: a Downloading or Uploading switch re-ranks the podium, and two lists sit side by side, because the device that uploads the most (a camera, a backup) is rarely the one that downloads the most. Period buttons cover right now, today, 7 days and 30 days, and any row can be slowed down.
+- Try: the two tabs (the indicator springs across and the page changes), Downloading and Uploading on the second tab (the podium and the headline change), the period buttons (Right now switches to Mbps and reorders), Slow down on a row (it queues a limit into pending changes), Tweaks > role viewer, stage failure, lang.
+- Tweaks: accent, dark, motion, firmware, role, lang, plus `stage` (loading, empty, ready, success, failure; default ready).
+- Dramatic motion: Podium columns grow from the floor in order of rank and the crown bobs over first place; bar fills sweep out behind each row; the tab indicator springs across; the hero number counts up.
+- Normal motion: staggered spring entrances for every tile and row, hover lift and tilt, press ripple and scale, spring switch thumbs, sliding segmented indicators, expanding chips, animated focus rings.
+- Stands for: the device list; the router already keeps per-device traffic counters when statistics are on.
+- Still unbuilt in the real app: The ranking, both tabs, the periods and the one-tap limit are design only.
+
+### Wi-Fi diagnostics (page id `wdiag`)
+
+**Wi-Fi diagnostics** (`WifiDiag.dc.html`, 1440 wide, fills, interactive)
+
+- Shows: Why the Wi-Fi is slow, worked out for you: a health score with a radar of nearby networks, findings in order of how much they hurt with a one-tap fix on each, one device under the microscope (signal over the last hour with its roams), who is using the air on each band, retries by device, roaming and drop events as a timeline, a walk test that paints signal as you move, and how the test itself is run.
+- Try: the device picker (one device at a time), the band buttons, the fix buttons (success), the walk-test switch, the probe slider, Tweaks > stage failure (radio off), role viewer, motion calm (the radar stills), lang.
+- Tweaks: accent, dark, motion, firmware, role, lang, plus `stage` (loading, empty, ready, success, failure; default ready).
+- Dramatic motion: A radar sweeps with blips while the radios are listened to; the health number counts up; the signal line draws in with a gradient sweep; airtime bars grow; timeline rows cascade; the first fix has a rotating conic border.
+- Normal motion: staggered spring entrances for every tile and row, hover lift and tilt, press ripple and scale, spring switch thumbs, sliding segmented indicators, expanding chips, animated focus rings.
+- Stands for: the wireless domain: clients, signal and channel per band are already read.
+- Still unbuilt in the real app: The health score, findings with fixes, per-device history, airtime split, the roaming timeline and the walk test are design only.
+
+### Ports and hardware (page id `hardware`)
+
+**Ports and hardware** (`PortsHardware.dc.html`, 1440 wide, fills, interactive)
+
+- Shows: The box itself: the back panel drawn as real sockets you can click, with link lights and speeds; the selected port with its speed, what is plugged in and its settings; temperatures as gauges, the processor and memory over the last hour, the lights with a night schedule, what the buttons on the case do, the USB ports and power draw.
+- Try: click each socket on the back panel (the port card follows; LAN 3 shows the slow link, LAN 4 shows empty), the speed buttons, the lights switch and brightness, the WPS button role, Tweaks > firmware stock (the lights tile locks), stage failure, role viewer, lang.
+- Tweaks: accent, dark, motion, firmware, role, lang, plus `stage` (loading, empty, ready, success, failure; default ready).
+- Dramatic motion: Link lights blink at different rates; the selected socket lifts; temperature gauges draw; the processor line draws in with a gradient sweep; the fan icon spins at its real rate; tiles arrive staggered.
+- Normal motion: staggered spring entrances for every tile and row, hover lift and tilt, press ripple and scale, spring switch thumbs, sliding segmented indicators, expanding chips, animated focus rings.
+- Stands for: the system domain: model, uptime, load and memory.
+- Still unbuilt in the real app: The back panel, per-port speeds and settings, temperatures, lights, button roles and power draw are design only.
+
+### Network services, web access and cloud (page id `services`)
+
+**Network services and web access** (`Services.dc.html`, 1440 wide, fills, interactive)
+
+- Shows: Everything the router itself runs and who can reach it: each service as a card with a switch and its port, the question "who can open the router page" answered with three large choices, the certificate with its days left as a gauge, sign-in protection, the addresses allowed in from outside, and an outside check that lists what the internet can actually see.
+- Try: the service switches (each queues a change), the three web access choices, the port pickers with presets, the lock-out stepper, the allowed address picker, Check from outside (success), Tweaks > stage failure, role viewer, lang.
+- Tweaks: accent, dark, motion, firmware, role, lang, plus `stage` (loading, empty, ready, success, failure; default ready).
+- Dramatic motion: Service cards arrive staggered; the days-left gauge draws; the outside check has a rotating conic border and a radar sweep; success bursts and failure shakes.
+- Normal motion: staggered spring entrances for every tile and row, hover lift and tilt, press ripple and scale, spring switch thumbs, sliding segmented indicators, expanding chips, animated focus rings.
+- Stands for: the settings catalogue already covers SSH, web access and UPnP as plain fields.
+- Still unbuilt in the real app: The service cards, the outside check, the certificate gauge and sign-in protection are design only.
+
+**Cloud** (`Cloud.dc.html`, 1440 wide, fills, interactive)
+
+- Shows: Every way the router talks to somebody else's servers, in one place: a live map of the links that are on, each cloud feature as a card with a switch and a plain sentence about what it sends, a tile that lists what leaves the house and what never does, the linked account, and one switch that cuts all of them at once.
+- Try: the feature switches, Cut every cloud link (success), the data-sharing switches, Unlink the account (failure), Tweaks > firmware stock (the names change), role viewer, motion calm (packets stop), lang.
+- Tweaks: accent, dark, motion, firmware, role, lang, plus `stage` (loading, empty, ready, success, failure; default ready).
+- Dramatic motion: Packets travel along each link that is on; nodes pop in; feature cards arrive staggered; the cut-all action has a rotating conic border; success bursts and failure shakes.
+- Normal motion: staggered spring entrances for every tile and row, hover lift and tilt, press ripple and scale, spring switch thumbs, sliding segmented indicators, expanding chips, animated focus rings.
+- Stands for: nothing yet.
+- Still unbuilt in the real app: The whole cloud page is design only: the link map, feature cards, the data list and the cut-all switch.
+
+### Firewall internals (page id `fwint`)
+
+**Firewall internals** (`FirewallInternals.dc.html`, 1440 wide, fills, interactive)
+
+- Shows: What the firewall actually does, under the friendly rules: the path a packet takes through the five chains as boxes you can click, the real rules of the selected chain with how many packets each one has matched, the connection table as a gauge with its busiest devices, a packet tracer that shows which rule would decide a given connection, the dropped-packet log and, on Asuswrt-Merlin, custom rules.
+- Try: click each chain on the packet path (the rule list and its description change), the table buttons, the tracer device and port pickers, Trace (success), Tweaks > firmware stock (custom rules lock), role viewer, stage failure, lang.
+- Tweaks: accent, dark, motion, firmware, role, lang, plus `stage` (loading, empty, ready, success, failure; default ready).
+- Dramatic motion: Dashes run along the packet path between the chains; chain boxes pop in; bars sweep out behind each rule in proportion to its packets; the connection gauge draws; log lines arrive one by one.
+- Normal motion: staggered spring entrances for every tile and row, hover lift and tilt, press ripple and scale, spring switch thumbs, sliding segmented indicators, expanding chips, animated focus rings.
+- Stands for: the firewall domain as on or off settings and port forwards.
+- Still unbuilt in the real app: Reading chains and counters, the connection table, the tracer and custom rules are design only.
+
+### Guest Pro and captive portal (page id `guest`)
+
+**Guest Pro and captive portal** (`GuestPro.dc.html`, 1440 wide, fills, interactive)
+
+- Shows: Guest networks done properly: the five Guest Pro profiles as cards with switches (party, shop, kids, smart home, VPN), a designer for the page guests see before they get online with a live phone preview that follows every choice, three ways in (one tap, a passcode, printed vouchers), time and speed limits, vouchers with a QR code, and the guests online now with a way to end a visit.
+- Try: the portal style buttons (the phone preview changes title and colour), the three ways in (the preview button and field change), the terms switch, the limit sliders, Make vouchers, Publish (success), End visit on a guest, Tweaks > stage failure, role viewer, lang.
+- Tweaks: accent, dark, motion, firmware, role, lang, plus `stage` (loading, empty, ready, success, failure; default ready).
+- Dramatic motion: The phone preview rises in and its background shifts between styles; profile cards arrive staggered; the QR assembles; the hero number counts up; Publish has a rotating conic border; success bursts and failure shakes.
+- Normal motion: staggered spring entrances for every tile and row, hover lift and tilt, press ripple and scale, spring switch thumbs, sliding segmented indicators, expanding chips, animated focus rings.
+- Stands for: the guest Wi-Fi on or off setting per band.
+- Still unbuilt in the real app: Profiles, the captive portal and its designer, vouchers, limits and the live guest list are design only.
+
+### DSL (page id `dsl`)
+
+**DSL line** (`Dsl.dc.html`, 1440 wide, fills, interactive)
+
+- Shows: The phone-line side of a DSL router (the example is a DSL-AX82U; the RT-AX86U used elsewhere on the canvas has no DSL port, and its empty stage says so): sync speeds and margin as a hero, the tones that carry the data drawn one bar each with download and upload bands and a notch, margin over a day, error counters, the stability slider and line switches, what a resync costs, and line events as a timeline.
+- Try: the stability slider, the mode buttons, the line switches, Resync the line (success; the hero warns it costs a minute and asks at brother Level 2), Tweaks > stage empty (no DSL port on this model) and failure, role viewer, motion calm, lang.
+- Tweaks: accent, dark, motion, firmware, role, lang, plus `stage` (loading, empty, ready, success, failure; default ready).
+- Dramatic motion: A hundred and fifty tone bars rise one after another; the margin line draws in with a gradient sweep; gauges draw; the hero number counts up; Resync has a rotating conic border; success bursts and failure shakes.
+- Normal motion: staggered spring entrances for every tile and row, hover lift and tilt, press ripple and scale, spring switch thumbs, sliding segmented indicators, expanding chips, animated focus rings.
+- Stands for: nothing yet: the app has only been used with Ethernet-WAN models.
+- Still unbuilt in the real app: The whole DSL page is design only.
+
 ### Phone boards: where every desktop feature lands (page id `phone`)
 
 **Phone: home** (`Phone.dc.html`, 390 by 844, fixed root, interactive)
@@ -724,7 +990,9 @@ Everything else on the canvas is design only, as stated per board above. The lar
 3. One-click modes and the mode builder (they reuse the existing write path for several settings at once).
 4. The eight visual editors.
 5. Live data visuals: traffic chart, network map, heat maps, gauges.
-6. App-side areas: notifications centre, tabs, appearance and motion editor, language tone, app modes, locks and roles, regex builder, updates, toolbox, server manager, deploy assistant.
+6. The owner tools and safety sequence from the second pass: the SSH action catalogue, the owner terminal, the four keys, the brother level with its Level 3 warning, the launch sequence and the live reboot timeline, Live mode and the History manager.
+7. Household, the leaderboard, and the diagnostics and services pages (Wi-Fi diagnostics, ports and hardware, services, cloud, firewall internals, Guest Pro, DSL).
+8. App-side areas: notifications centre, tabs, appearance and motion editor, language tone, app modes, locks and roles, regex builder, updates, toolbox, server manager, deploy assistant.
 
 ## How the canvas was checked
 
@@ -735,7 +1003,10 @@ Everything else on the canvas is design only, as stated per board above. The lar
 
 - The boards were verified with a stand-in for the runtime, not inside the live canvas. `support.js` is not in the repository, so behaviour that depends on the real runtime (keeping DOM nodes between renders so that position transitions play, `onInput` on range sliders) was not observed there.
 - Board heights in `canvas.json` were measured from the static pre-render in a desktop browser. Desktop boards use `expand: fill`, so a difference only changes the empty space under a board.
-- The rail is long (five groups). It collapses the Visual editors group to one entry outside the editors, and the Router group to one entry inside them, so that no board is much shorter than its rail.
+- The leaderboard's second tab, and every other state that is reached by a click, was checked by rendering the board with that state set; the default captures show the first tab.
+- The DSL board uses a DSL-AX82U as its example because the RT-AX86U has no DSL port; its empty stage says so.
+- The Level 3 warning and the three-word screen cover the whole board, including the rail. In the canvas they cover the board frame, not the canvas.
+- The rail is long (eight groups). It collapses the Visual editors group to one entry outside the editors, and the Router group to one entry inside them, so that no board is much shorter than its rail.
 - A drag is pick-then-place (two clicks) on every editor.
 - Paint-grid cells are 30 px tall and the address-map cells are smaller still, below the 44 px target size. Both have full-size routes beside them: presets and steppers.
 - Count-up numbers are drawn with a CSS counter. Each carries an `aria-label` with the value, but the figure is not selectable text.

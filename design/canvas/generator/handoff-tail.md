@@ -9,7 +9,9 @@ Everything else on the canvas is design only, as stated per board above. The lar
 3. One-click modes and the mode builder (they reuse the existing write path for several settings at once).
 4. The eight visual editors.
 5. Live data visuals: traffic chart, network map, heat maps, gauges.
-6. App-side areas: notifications centre, tabs, appearance and motion editor, language tone, app modes, locks and roles, regex builder, updates, toolbox, server manager, deploy assistant.
+6. The owner tools and safety sequence from the second pass: the SSH action catalogue, the owner terminal, the four keys, the brother level with its Level 3 warning, the launch sequence and the live reboot timeline, Live mode and the History manager.
+7. Household, the leaderboard, and the diagnostics and services pages (Wi-Fi diagnostics, ports and hardware, services, cloud, firewall internals, Guest Pro, DSL).
+8. App-side areas: notifications centre, tabs, appearance and motion editor, language tone, app modes, locks and roles, regex builder, updates, toolbox, server manager, deploy assistant.
 
 ## How the canvas was checked
 
@@ -20,7 +22,10 @@ Everything else on the canvas is design only, as stated per board above. The lar
 
 - The boards were verified with a stand-in for the runtime, not inside the live canvas. `support.js` is not in the repository, so behaviour that depends on the real runtime (keeping DOM nodes between renders so that position transitions play, `onInput` on range sliders) was not observed there.
 - Board heights in `canvas.json` were measured from the static pre-render in a desktop browser. Desktop boards use `expand: fill`, so a difference only changes the empty space under a board.
-- The rail is long (five groups). It collapses the Visual editors group to one entry outside the editors, and the Router group to one entry inside them, so that no board is much shorter than its rail.
+- The leaderboard's second tab, and every other state that is reached by a click, was checked by rendering the board with that state set; the default captures show the first tab.
+- The DSL board uses a DSL-AX82U as its example because the RT-AX86U has no DSL port; its empty stage says so.
+- The Level 3 warning and the three-word screen cover the whole board, including the rail. In the canvas they cover the board frame, not the canvas.
+- The rail is long (eight groups). It collapses the Visual editors group to one entry outside the editors, and the Router group to one entry inside them, so that no board is much shorter than its rail.
 - A drag is pick-then-place (two clicks) on every editor.
 - Paint-grid cells are 30 px tall and the address-map cells are smaller still, below the 44 px target size. Both have full-size routes beside them: presets and steppers.
 - Count-up numbers are drawn with a CSS counter. Each carries an `aria-label` with the value, but the figure is not selectable text.
