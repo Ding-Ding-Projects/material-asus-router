@@ -46,11 +46,11 @@ function seed(router) {
   files.set("/tmp/mnt/usb1/notes.txt", file("hello from the usb drive\n"));
   files.set("/tmp/binary.bin", { content: Buffer.from([0, 1, 2, 3, 255, 254, 0, 9]), mode: "-rw-r--r--" });
   if (merlin) {
-    for (const d of ["/jffs/scripts", "/jffs/addons", "/jffs/addons/spdmerlin", "/jffs/addons/connmon", "/jffs/addons/amtm"]) dirs.add(d);
+    for (const d of ["/jffs/scripts", "/jffs/addons", "/jffs/addons/spdmerlin.d", "/jffs/addons/connmon.d", "/jffs/addons/amtm"]) dirs.add(d);
     files.set("/jffs/scripts/firewall-start", file("#!/bin/sh\n# Runs after the firewall starts\niptables -I INPUT -p tcp --dport 22 -j ACCEPT\n", "-rwxr-xr-x"));
     files.set("/jffs/scripts/services-start", file("#!/bin/sh\nlogger \"services started\"\n", "-rwxr-xr-x"));
-    files.set("/jffs/addons/spdmerlin/version.txt", file("4.4.8\n"));
-    files.set("/jffs/addons/connmon/version.txt", file("3.0.1\n"));
+    files.set("/jffs/addons/spdmerlin.d/version.txt", file("4.4.8\n"));
+    files.set("/jffs/addons/connmon.d/version.txt", file("3.0.1\n"));
   }
   return {
     files,
@@ -219,7 +219,6 @@ export function handler(command, router) {
     return { stdout: `Chain ${m[1] === "nat" ? "PREROUTING" : "INPUT"} (policy ACCEPT 0 packets, 0 bytes)\n pkts bytes target     prot opt in     out     source               destination\n  412 51200 ACCEPT     all  --  br0    *       198.51.100.0/24      0.0.0.0/0\n   12   720 DROP       all  --  eth0   *       0.0.0.0/0            0.0.0.0/0\n` };
   if (command === "head -n 200 /proc/net/nf_conntrack")
     return { stdout: "ipv4 2 tcp 6 431999 ESTABLISHED src=198.51.100.101 dst=203.0.113.9 sport=51234 dport=443 src=203.0.113.9 dst=100.64.12.34 sport=443 dport=51234 [ASSURED] mark=0 use=2\nipv4 2 udp 17 28 src=198.51.100.102 dst=1.1.1.1 sport=40111 dport=53 src=1.1.1.1 dst=100.64.12.34 sport=53 dport=40111 mark=0 use=2\n" };
-  if (command === "df -k") return { stdout: "Filesystem           1K-blocks      Used Available Use% Mounted on\nubi:rootfs_ubifs         38000     31000      7000  82% /\n/dev/sda1             15727616   2097152  13630464  13% /tmp/mnt/usb1\n" };
   if (w[0] === "wl" && w[1] === "-i" && w[3] === "deauthenticate" && w.length === 5) return (state.deauthed.push(w[4]), {});
 
   // ---- tools, jobs ------------------------------------------------------------

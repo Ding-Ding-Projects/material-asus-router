@@ -1,0 +1,39 @@
+/* Check a firmware file: the drop zone and the animated dim sum baskets. */
+.fw-zone{display:flex;flex-direction:column;align-items:center;gap:6px;padding:28px 20px;border:2px dashed var(--line);border-radius:28px;background:var(--surf-low);text-align:center;cursor:pointer;transition:background .25s cubic-bezier(.2,0,0,1),border-color .25s,transform .35s cubic-bezier(.3,1.4,.5,1)}
+.fw-zone:hover,.fw-zone:focus-visible,.fw-zone.over{background:var(--primary-c);border-color:var(--primary);transform:scale(1.01)}
+.fw-zone:focus-visible{outline:3px solid var(--primary);outline-offset:2px}
+.fw-zone.over .ms{animation:fw-bob .6s cubic-bezier(.3,1.4,.5,1) infinite alternate}
+@keyframes fw-bob{to{transform:translateY(-8px) scale(1.1)}}
+.fw-result{display:flex;flex-direction:column;gap:12px}
+.fw-result:empty{display:none}
+.fw-card-in{display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr);gap:20px;align-items:center;animation:fw-in .55s cubic-bezier(.2,0,0,1) both}
+@keyframes fw-in{from{opacity:0;transform:translateY(18px) scale(.97)}}
+@media (max-width:640px){.fw-card-in{grid-template-columns:1fr}.fw-basket{max-width:220px;margin:0 auto}}
+.fw-rows{display:flex;flex-direction:column}
+.fw-row{display:flex;flex-direction:column;gap:2px;padding:8px 0;border-top:1px solid var(--line);overflow-wrap:anywhere}
+.fw-row:first-child{border-top:0}
+.fw-only{display:flex;flex-direction:column;align-items:center;gap:14px;padding:18px 8px;animation:fw-in .6s cubic-bezier(.2,0,0,1) both}
+.fw-only .fw-svg{width:min(100%,300px)}
+.fw-title{font-size:30px;font-weight:800;letter-spacing:-.6px;text-align:center}
+.fw-svg{width:100%;height:auto;overflow:visible}
+.fw-shadow{fill:color-mix(in srgb,var(--text) 14%,transparent)}
+.fw-bamboo{stroke:#7a5a2e;stroke-width:2}
+.fw-bamboo-a{fill:#d9b37a}
+.fw-bamboo-b{fill:#e3c08a}
+.fw-bamboo-c{fill:#ecd0a0}
+.fw-slat{stroke:#9a7a46;stroke-width:2;stroke-linecap:round}
+.fw-band{fill:#a47c3e}
+.fw-knob{fill:#a47c3e;stroke:#7a5a2e;stroke-width:2}
+.fw-skin{fill:#fffaf0;stroke:#d8c9a8;stroke-width:2}
+.fw-pleat{stroke:#d8c9a8;stroke-width:2;stroke-linecap:round;fill:none}
+.fw-steam{stroke:color-mix(in srgb,var(--sub) 60%,transparent);stroke-width:5;stroke-linecap:round;stroke-dasharray:6 10;opacity:.7}
+.fw-lid{transform-origin:160px 124px;transform-box:view-box;animation:fw-lid 3.2s cubic-bezier(.3,1.4,.5,1) infinite}
+@keyframes fw-lid{0%,55%,100%{transform:translateY(0) rotate(0)}18%{transform:translateY(-26px) rotate(-5deg)}32%{transform:translateY(-18px) rotate(3deg)}45%{transform:translateY(-2px) rotate(0)}}
+.fw-inside{animation:fw-peek 3.2s ease-in-out infinite}
+@keyframes fw-peek{0%,55%,100%{opacity:0}18%,40%{opacity:1}}
+.fw-steam{animation:fw-steam 2.6s linear infinite}
+.fw-steam-1{animation-delay:-.8s}
+.fw-steam-2{animation-delay:-1.6s}
+@keyframes fw-steam{from{stroke-dashoffset:32;transform:translateY(6px);opacity:0}30%{opacity:.8}to{stroke-dashoffset:0;transform:translateY(-10px);opacity:0}}
+html[data-motion="reduced"] .fw-svg *,html.calm .fw-svg *{animation:none!important}
+html[data-motion="reduced"] .fw-inside,html.calm .fw-inside{opacity:0}

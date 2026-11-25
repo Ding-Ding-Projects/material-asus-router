@@ -24,7 +24,7 @@ export function installStyleShim(doc, SheetClass = globalThis.CSSStyleSheet) {
       text = String(value ?? "");
       ensure().replaceSync(text);
     };
-    for (const name of ["textContent", "innerHTML", "innerText"]) Object.defineProperty(el, name, { configurable: true, get: () => text, set: write });
+    Object.defineProperty(el, "textContent", { configurable: true, get: () => text, set: write });
     Object.defineProperty(el, "sheet", { configurable: true, get: ensure });
     return el;
   };
