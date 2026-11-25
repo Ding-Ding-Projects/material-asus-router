@@ -1,0 +1,26 @@
+/* Spectrum editor. Theme variables only, so light and dark both work. */
+.se-body{display:flex;flex-direction:column;gap:12px;min-width:0}
+.se-chart{width:100%;height:auto;display:block;max-height:380px;touch-action:none;user-select:none}
+.se-chart .grid{stroke:var(--line);stroke-width:1}
+.se-chart .axis{fill:var(--sub);font-size:11px}
+.se-chart .axis.cand{fill:var(--text);font-weight:700}
+.se-chart .axis.own{fill:var(--primary)}
+.se-chart .axis.name{fill:var(--primary);font-weight:800;font-size:12px}
+.se-chart .slot{fill:var(--bad)}
+.se-chart .net{fill-opacity:.24;stroke-width:1.5}
+.se-chart .net.s0{stroke:var(--primary);fill:var(--primary)}
+.se-chart .net.s1{stroke:var(--tertiary);fill:var(--tertiary)}
+.se-chart .net.s2{stroke:var(--good);fill:var(--good)}
+.se-chart .net.s3{stroke:var(--warn);fill:var(--warn)}
+.se-chart .net.s4{stroke:var(--bad);fill:var(--bad)}
+.se-chart .mine{fill:var(--primary);fill-opacity:.38;stroke:var(--primary);stroke-width:2.6;cursor:grab;transition:fill-opacity .2s}
+.se-chart .mine:hover{fill-opacity:.55}
+.se-chart .mine.ghost{fill:none;stroke-dasharray:6 5;cursor:default;pointer-events:none}
+.se-chart .handle{fill:var(--surf);stroke:var(--primary);stroke-width:3;cursor:ew-resize}
+.se-chart.dragging .mine{cursor:grabbing}
+.se-chart .own-curve:focus-visible{outline:none}
+.se-chart .own-curve:focus-visible .mine{stroke:var(--tertiary);stroke-width:4}
+.se-controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:12px;align-items:start}
+.se-controls .card{grid-column:1 / -1}
+.visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (prefers-reduced-motion:reduce){.se-chart .mine{transition:none}}
