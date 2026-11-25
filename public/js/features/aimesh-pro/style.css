@@ -1,0 +1,4 @@
+/* AiMesh nodes: one card per node with its connected devices. */
+.mesh-node { gap: 12px; }
+.mesh-clients { display: flex; flex-direction: column; gap: 2px; max-height: 280px; overflow: auto; }
+.mesh-clients .row { padding: 8px 0; }

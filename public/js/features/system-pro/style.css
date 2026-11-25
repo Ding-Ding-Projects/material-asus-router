@@ -1,0 +1,3 @@
+/* System tools: the temperature gauges. */
+.gauge { display: flex; flex-direction: column; gap: 8px; padding: 14px 16px; border-radius: 20px; background: var(--surf-low); min-width: 0; }
+.gauge .meter { height: 14px; }
