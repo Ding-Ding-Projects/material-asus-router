@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Firmware form of Material Asus Router for the ASUS RT-BE88U",
+  "fork": "https://github.com/Ding-Ding-Projects/asuswrt-merlin-material",
+  "upstream": "https://github.com/RMerl/asuswrt-merlin.ng",
+  "baseTag": "3006.102.7_2",
+  "baseCommit": "542f71114524e009773c124a89f438d53be1c6f5",
+  "model": "RT-BE88U",
+  "license": "GPL-2.0 (firmware source); the app itself is MIT"
+}
