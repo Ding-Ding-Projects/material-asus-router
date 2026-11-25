@@ -1,0 +1,13 @@
+/* List editor rows: stacked, labelled fields that wrap at any width. */
+.edtable-wrap{display:grid;gap:8px;min-width:0;width:100%}
+.edtable{display:grid;gap:10px;min-width:0}
+.edrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,140px),1fr));gap:8px;padding:12px;border-radius:16px;background:var(--surf-low);align-items:end;min-width:0}
+.edrow>.btn{justify-self:end}
+.edcell{display:grid;gap:4px;min-width:0}
+.edlabel{font-size:12px;font-weight:700;color:var(--sub)}
+.edcell .field,.setting .ctl .edcell .field{height:44px;width:100%;min-width:0}
+.edcell .field[aria-invalid=true]{border-color:var(--bad)}
+.edmsg{font-size:12.5px;color:var(--bad)}
+.edmsg:empty{display:none}
+.edactions{display:flex;gap:8px;flex-wrap:wrap}
+.setting .top .ctl:has(.edtable-wrap){flex:1 1 100%;width:100%}
