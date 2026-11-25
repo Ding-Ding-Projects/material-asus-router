@@ -1,0 +1,112 @@
+/* Wi-Fi diagnostics. Colours are the app theme variables, so light and dark both work.
+   Motion is expressive (springy entrances, sweeping gauges, rippling radar) and all of it stops
+   under reduced motion, where every value simply appears in its final place. */
+.wd-shell{gap:16px}
+.wd-tabs{align-self:flex-start;max-width:100%}
+.wd-tabs button{gap:6px}
+.wd-panel{display:block;min-width:0}
+.wd-swap{animation:wd-swap .38s cubic-bezier(.2,.9,.25,1.1) both}
+.wd-tab{display:flex;flex-direction:column;gap:16px;min-width:0}
+.wd-bar-row{align-items:center}
+.live-pill .dot{width:8px;height:8px}
+
+/* rows that arrive and leave */
+.wd-enter{animation:wd-rise .5s cubic-bezier(.2,.9,.25,1.1) both;animation-delay:calc(var(--i,0) * 45ms)}
+.wd-leave{animation:wd-leave .45s ease-in both}
+.wd-leave td{pointer-events:none}
+.wd-name{font-weight:700}
+.wd-mac{font-size:12px}
+.wd-sig{display:flex;gap:8px;align-items:center;margin-top:6px;font-variant-numeric:tabular-nums}
+.wd-weak{min-height:26px;padding:0 10px;font-size:12px}
+.wd-band{min-height:26px;padding:0 10px;font-size:12px;margin-top:4px}
+.wd-rate,.wd-now{font-variant-numeric:tabular-nums;white-space:nowrap}
+.wd-bar{height:10px;min-width:96px}
+.wd-bar.t i{background:var(--tertiary)}
+
+/* the busiest list */
+.wd-rank{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.wd-r{display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:16px;align-items:center;padding:16px 20px;border-radius:28px}
+.wd-r.first{background:var(--primary-c);color:var(--on-primary-c);box-shadow:var(--e2)}
+.wd-r.first .t2{color:inherit;opacity:.8}
+.wd-badge{display:grid;place-items:center;width:44px;height:44px;border-radius:22px;background:var(--surf-high);color:var(--text)}
+.wd-r.first .wd-badge{background:var(--primary);color:var(--on-primary)}
+.wd-r.first .wd-badge .ms{animation:wd-crown 1.6s ease-in-out infinite}
+.wd-num{font-weight:800;font-size:18px}
+.wd-rt{font-weight:750;font-size:17px;overflow-wrap:anywhere}
+.wd-lanes{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.wd-lane{display:grid;grid-template-columns:92px minmax(60px,1fr) minmax(130px,auto);gap:10px;align-items:center;font-size:13px;font-variant-numeric:tabular-nums}
+.wd-dir{display:inline-flex;gap:4px;align-items:center;font-weight:650}
+.wd-rside{display:flex;flex-direction:column;gap:8px;align-items:flex-end}
+.wd-sparkbox{display:block;width:96px;height:28px}
+.wd-spark{width:96px;height:28px;display:block}
+.wd-spark-line{stroke:var(--primary);stroke-width:2;stroke-linejoin:round;stroke-linecap:round;vector-effect:non-scaling-stroke}
+.wd-r.first .wd-spark-line{stroke:var(--on-primary-c)}
+.wd-nets{display:flex;flex-direction:column;gap:14px}
+.wd-net{display:flex;flex-direction:column;gap:6px}
+
+/* gauges */
+.wd-gauges{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:12px}
+.wd-gwrap{display:flex;flex-direction:column;align-items:center;text-align:center;gap:2px}
+.wd-gauge{width:100%;max-width:200px;height:auto;display:block}
+.wd-gauge .wd-track{stroke:var(--surf-high);stroke-width:10;stroke-linecap:round}
+.wd-gauge .wd-fill{stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset 1s cubic-bezier(.2,.9,.25,1.1),stroke .4s}
+.wd-gauge.good .wd-fill{stroke:var(--good)}
+.wd-gauge.warn .wd-fill{stroke:var(--warn)}
+.wd-gauge.bad .wd-fill{stroke:var(--bad)}
+.wd-gauge.off .wd-fill{stroke:var(--sub);opacity:.4}
+.wd-gauge .wd-val{fill:var(--text);font-size:22px;font-weight:800;font-variant-numeric:tabular-nums}
+.wd-gauge .wd-unit{fill:var(--sub);font-size:9px;font-weight:650}
+.wd-cap{font-weight:700;font-size:14px}
+.wd-dfs{display:flex;gap:8px;flex-wrap:wrap}
+.wd-mix{display:flex;height:14px;border-radius:7px;background:var(--surf-high);overflow:hidden;gap:2px}
+.wd-seg{display:block;height:100%;width:var(--w,0%);min-width:0;transition:width .8s cubic-bezier(.2,.9,.25,1.1)}
+.wd-seg.own,.wd-swatch.own{background:var(--primary)}
+.wd-seg.bss,.wd-swatch.bss{background:var(--tertiary)}
+.wd-seg.other,.wd-swatch.other{background:var(--warn)}
+.wd-seg.non,.wd-swatch.non{background:var(--bad)}
+.wd-slot{display:flex;flex-direction:column;gap:8px}
+
+/* the live timeline for anything slow */
+.wd-timeline{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.wd-step{display:grid;grid-template-columns:28px minmax(0,1fr);gap:4px 10px;align-items:center;font-size:14px;font-weight:600;transition:color .3s}
+.wd-step .wd-note{grid-column:2;font-weight:500;font-size:13px}
+.wd-step.wait{color:var(--sub)}
+.wd-step.work .ms{color:var(--primary);animation:wd-spin 1.1s linear infinite}
+.wd-step.done .ms{color:var(--good);animation:wd-pop .45s cubic-bezier(.2,.9,.25,1.4) both}
+.wd-step.bad{color:var(--bad)}
+.wd-step.bad .ms{color:var(--bad);animation:wd-pop .45s cubic-bezier(.2,.9,.25,1.4) both}
+.wd-clock{font-variant-numeric:tabular-nums}
+
+/* survey */
+.wd-radar{position:relative;height:84px;display:grid;place-items:center}
+.wd-radar i{position:absolute;width:24px;height:24px;border-radius:50%;border:2px solid var(--primary);opacity:0;animation:wd-ping 2.4s ease-out infinite}
+.wd-radar i:nth-child(2){animation-delay:.8s}
+.wd-radar i:nth-child(3){animation-delay:1.6s}
+.wd-srow{display:grid;grid-template-columns:minmax(120px,1.2fr) minmax(80px,2fr) 70px;gap:12px;align-items:center;font-size:13.5px}
+.wd-sname{overflow-wrap:anywhere;font-weight:650}
+.wd-sdb{text-align:right;font-variant-numeric:tabular-nums}
+
+@media (max-width:560px){
+  .wd-r{grid-template-columns:40px minmax(0,1fr);padding:14px}
+  .wd-rside{grid-column:1 / -1;flex-direction:row;justify-content:space-between;align-items:center}
+  .wd-lane{grid-template-columns:78px minmax(40px,1fr)}
+  .wd-lane>span:last-child{grid-column:1 / -1;font-size:12.5px;color:var(--sub)}
+  .wd-srow{grid-template-columns:minmax(0,1fr) 64px}
+  .wd-srow .meter{grid-column:1 / -1;order:3}
+  .wd-tabs{width:100%}
+  .wd-tabs button{flex:1 1 auto;justify-content:center;padding:0 10px}
+}
+
+@keyframes wd-rise{from{opacity:0;transform:translateY(16px) scale(.97)}}
+@keyframes wd-leave{to{opacity:0;transform:translateX(28px) scale(.96)}}
+@keyframes wd-swap{from{opacity:0;transform:translateY(10px)}}
+@keyframes wd-spin{to{transform:rotate(360deg)}}
+@keyframes wd-pop{from{transform:scale(.3);opacity:0}}
+@keyframes wd-crown{0%,100%{transform:translateY(0) rotate(0)}40%{transform:translateY(-4px) rotate(-8deg)}70%{transform:translateY(0) rotate(6deg)}}
+@keyframes wd-ping{0%{transform:scale(.4);opacity:.9}100%{transform:scale(3.4);opacity:0}}
+@media (prefers-reduced-motion:reduce){
+  .wd-enter,.wd-leave,.wd-swap,.wd-radar i,.wd-r.first .wd-badge .ms,.wd-step .ms{animation:none!important}
+  .wd-gauge .wd-fill,.wd-seg,.wd-step{transition:none!important}
+  .wd-leave{display:none}
+  .wd-radar{display:none}
+}

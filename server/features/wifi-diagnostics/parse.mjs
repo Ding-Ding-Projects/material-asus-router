@@ -106,3 +106,10 @@ export function rank(rows, by = "total", count = 10) {
   const sorted = [...rows].filter((r) => r.downBps !== null || r.upBps !== null).sort((a, b) => (key(b) ?? 0) - (key(a) ?? 0) || a.mac.localeCompare(b.mac));
   return sorted.slice(0, count);
 }
+
+// "wl channel": the channel the radio is on right now.
+export function parseChannel(text) {
+  const s = String(text);
+  const m = s.match(/current mac channel\s+(\d+)/i) ?? s.match(/target channel\s+(\d+)/i);
+  return m ? whole(m[1]) : null;
+}

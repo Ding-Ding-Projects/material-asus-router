@@ -5,7 +5,7 @@
 // tracks where anyone is: a device only appears while it is joined to a network.
 import { L, ON_OFF, macAddress, parseRows } from "../kit.mjs";
 import { fake } from "./fake.mjs";
-import { IFNAME, bandLabel, bytesPerSecond, parseAssoc, parseChanim, parseDfs, parseNumber, parseStaInfo, quality, rank } from "./parse.mjs";
+import { IFNAME, bandLabel, bytesPerSecond, parseAssoc, parseChanim, parseChannel, parseDfs, parseNumber, parseStaInfo, quality, rank } from "./parse.mjs";
 
 const bad = (message, status = 400) => Object.assign(new Error(message), { status });
 const TRAIL = 30;
@@ -138,7 +138,7 @@ async function radio(ctx, band) {
     return out.code === 0 ? parse(out.stdout) : null;
   };
   const five = band.nband !== "2";
-  const [noise, air, dfs, temperature] = await Promise.all([run("noise", parseNumber), run("chanim_stats", parseChanim), five ? run("dfs_status", parseDfs) : Promise.resolve(null), run("phy_tempsense", parseNumber)]);
+  const [noise, air, dfs, temperature, channel] = await Promise.all([run("noise", parseNumber), run("chanim_stats", parseChanim), five ? run("dfs_status", parseDfs) : Promise.resolve(null), run("phy_tempsense", parseNumber), run("channel", parseChannel)]);
   const chanspec = ctx.nvram.get(`wl${band.index}_chanspec`) ?? "";
   return {
     index: band.index,
@@ -153,6 +153,7 @@ async function radio(ctx, band) {
     dfs: five ? dfs : null,
     dfsApplies: five,
     temperature,
+    channel,
     unavailable: [noise === null && "noise", air === null && "air", five && dfs === null && "dfs", temperature === null && "temperature"].filter(Boolean),
   };
 }
@@ -276,7 +277,8 @@ export default {
         if ((book.get(`wl${index}_chanspec`) ?? "0") !== "0") throw bad("That band has a fixed channel. Set its channel to Auto first, then ask again.", 409);
         const read = async () => {
           const out = await exec(`wl -i ${b.ifname} channel`, { timeoutMs: 8000 }).catch(() => ({ stdout: "" }));
-          return (out.stdout.match(/current mac channel\s+(\d+)/i) ?? out.stdout.match(/target channel\s+(\d+)/i) ?? [])[1] ?? null;
+          const channel = parseChannel(out.stdout);
+          return channel === null ? null : String(channel);
         };
         const before = await read();
         let method = "autochannel";
