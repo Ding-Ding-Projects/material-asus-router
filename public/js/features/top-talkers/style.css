@@ -1,0 +1,24 @@
+/* Top talkers. Theme variables only, so light and dark both work. */
+.tt-status{display:flex;flex-direction:column;gap:10px}
+.tt-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.tt-row{border-radius:20px;background:var(--surf-low);border:2px solid transparent;transition:border-color .2s,background .2s,transform .3s cubic-bezier(.2,.9,.25,1.2);animation:tt-in .4s cubic-bezier(.2,.9,.25,1.1) both}
+.tt-row:nth-child(2){animation-delay:.04s}.tt-row:nth-child(3){animation-delay:.08s}.tt-row:nth-child(n+4){animation-delay:.12s}
+.tt-row.first{background:var(--primary-c);color:var(--on-primary-c)}
+.tt-row.sel{border-color:var(--primary)}
+.tt-pick{display:grid;grid-template-columns:36px minmax(100px,1.1fr) minmax(80px,2fr) 120px minmax(110px,auto);gap:12px;align-items:center;width:100%;min-height:56px;padding:8px 16px;border:0;background:transparent;color:inherit;text-align:left;border-radius:inherit}
+.tt-pick:focus-visible{outline:3px solid var(--tertiary);outline-offset:-3px}
+.tt-rank{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-weight:800;background:var(--surf);color:var(--text);font-variant-numeric:tabular-nums}
+.tt-row.first .tt-rank{background:var(--primary);color:var(--on-primary)}
+.tt-who{display:flex;flex-direction:column;min-width:0}
+.tt-who b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tt-row.first .t2{color:inherit;opacity:.78}
+.tt-bar{height:10px;border-radius:5px;background:var(--surf-high);overflow:hidden}
+.tt-bar i{display:block;height:100%;border-radius:5px;background:var(--tertiary);transition:width .6s cubic-bezier(.2,.9,.25,1.05)}
+.tt-row.first .tt-bar i{background:var(--primary)}
+.tt-spark{width:120px;height:28px}
+.tt-spark polyline{stroke:var(--primary);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.tt-val{display:flex;flex-direction:column;text-align:right;font-variant-numeric:tabular-nums}
+.tt-detail{gap:10px}
+@media (max-width:640px){.tt-pick{grid-template-columns:32px minmax(0,1fr) minmax(90px,auto);grid-template-areas:"rank who val" "bar bar bar"}.tt-rank{grid-area:rank}.tt-who{grid-area:who}.tt-val{grid-area:val}.tt-bar{grid-area:bar}.tt-spark{display:none}}
+@keyframes tt-in{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.tt-row{animation:none}.tt-row,.tt-bar i{transition:none}}
