@@ -33,7 +33,7 @@ test("firmware-pro: the screen data shows the version, the settings and why noth
     assert.equal(data.current.family, "merlin");
     assert.equal(data.current.display, "388.8_4");
     assert.equal(data.model, "RT-AX86U");
-    assert.deepEqual(data.entries.map((e) => [e.id, e.control, e.value]), [["firmware-pro.auto", "switch", "0"], ["firmware-pro.period", "stepper", "7"]]);
+    assert.deepEqual(data.entries.map((e) => [e.id, e.control, e.value]), [["firmware-pro.check", "switch", "1"], ["firmware-pro.auto", "switch", "0"], ["firmware-pro.period", "stepper", "7"]]);
     assert.equal(data.flashing.allowed, false);
     assert.equal(data.flashing.reasons.length, 3);
     assert.ok(data.flashing.reasons.every((r) => r.en && r.yue));
@@ -101,10 +101,10 @@ test("firmware-pro: stock firmware asks the router and reads what it reports", a
 test("firmware-pro: the auto-update setting goes through the change engine and the check needs write access", async () => {
   const t = await startApp();
   try {
-    const preview = await t.owner.post("/api/changes/preview", { changes: [{ id: "firmware-pro.auto", value: "1" }, { id: "firmware-pro.period", value: "14" }] });
+    const preview = await t.owner.post("/api/changes/preview", { changes: [{ id: "firmware-pro.check", value: "0" }, { id: "firmware-pro.auto", value: "1" }, { id: "firmware-pro.period", value: "14" }] });
     assert.equal(preview.status, 200, preview.text);
     assert.equal((await t.owner.post("/api/changes/apply", { previewId: preview.data.id })).status, 200);
-    assert.deepEqual([t.router.nvram.fw_auto_upgrade, t.router.nvram.fw_check_period], ["1", "14"]);
+    assert.deepEqual([t.router.nvram.firmware_check_enable, t.router.nvram.fw_auto_upgrade, t.router.nvram.fw_check_period], ["0", "1", "14"]);
     assert.equal((await t.owner.post("/api/changes/preview", { changes: [{ id: "firmware-pro.period", value: "99" }] })).status, 400);
 
     assert.equal((await t.client().get("/api/x/firmware-pro/latest")).status, 401);

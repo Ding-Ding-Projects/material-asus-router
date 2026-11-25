@@ -86,7 +86,7 @@ export default {
     e("upnp-clean", G.upnp, "upnp_clean", "switch", L("Clear old mappings", "清除舊嘅映射"), L("Removes ports that nobody has used for a while.", "移除一段時間冇人用過嘅端口。"), { values: ON_OFF, firmware: "merlin", risk: "low", restart: "restart_upnp", meta: { showWhen: { id: `${F}.upnp`, in: ["1"] } } }),
     e("upnp-interval", G.upnp, "upnp_clean_interval", "stepper", L("Clear every", "每隔幾耐清除"), L("Seconds between clean-ups.", "兩次清除之間嘅秒數。"), { min: 60, max: 86400, unit: "s", firmware: "merlin", risk: "low", restart: "restart_upnp", meta: { showWhen: [[{ id: `${F}.upnp`, in: ["1"] }, { id: `${F}.upnp-clean`, in: ["1"] }]] } }),
     e("upnp-threshold", G.upnp, "upnp_clean_threshold", "stepper", L("Start clearing above", "超過幾多個先清除"), L("Clean up only once there are more mappings than this.", "映射多過呢個數量先會清除。"), { min: 0, max: 1000, unit: "mappings", firmware: "merlin", risk: "low", restart: "restart_upnp", meta: { showWhen: [[{ id: `${F}.upnp`, in: ["1"] }, { id: `${F}.upnp-clean`, in: ["1"] }]] } }),
-    e("natpmp", G.upnp, "upnp_pmp", "switch", L("NAT-PMP", "NAT-PMP"), L("A simpler way for apps to open ports, used by some Apple and torrent software.", "俾應用程式開端口嘅簡單方法，部分 Apple 同下載軟件會用。"), { values: ON_OFF, firmware: "merlin", risk: "low", restart: "restart_upnp", meta: { showWhen: { id: `${F}.upnp`, in: ["1"] }, note: L("The key name upnp_pmp is not confirmed on every firmware build.", "upnp_pmp 呢個鍵名未必每個韌體版本都一樣。") } }),
+    e("natpmp", G.upnp, "upnp_mnp", "switch", L("NAT-PMP", "NAT-PMP"), L("A simpler way for apps to open ports, used by some Apple and torrent software.", "俾應用程式開端口嘅簡單方法，部分 Apple 同下載軟件會用。"), { values: ON_OFF, firmware: "merlin", risk: "low", restart: "restart_upnp", meta: { showWhen: { id: `${F}.upnp`, in: ["1"] } } }),
 
     e("trigger-enable", G.trigger, "autofw_enable_x", "switch", L("Use port triggering", "使用端口觸發"), L("Opens an inbound port only while a device is using a chosen outbound port, then closes it.", "只喺某部裝置用緊指定嘅出站端口期間，先開對應嘅入站端口，之後再關。"), { values: ON_OFF, ...fw }),
     e("triggers", G.trigger, "autofw_rulelist", "triggertable", L("Trigger rules", "觸發規則"), L("When any device sends out on the trigger port, the router opens the incoming port for it.", "任何裝置喺觸發端口送出資料，路由器就為佢開返入站端口。"), {
@@ -129,7 +129,7 @@ export default {
     nvram: {
       sr_enable_x: "1", sr_rulelist: "<203.0.113.0>255.255.255.0>198.51.100.2>1>LAN",
       fw_pt_pptp: "1", fw_pt_l2tp: "1", fw_pt_ipsec: "1", fw_pt_rtsp: "1", fw_pt_h323: "1", fw_pt_sip: "1", fw_pt_pppoerelay: "0",
-      upnp_enable: "1", upnp_secure: "1", upnp_clean: "1", upnp_clean_interval: "600", upnp_clean_threshold: "20", upnp_pmp: "0",
+      upnp_enable: "1", upnp_secure: "1", upnp_clean: "1", upnp_clean_interval: "600", upnp_clean_threshold: "20", upnp_mnp: "0",
       autofw_enable_x: "0", autofw_rulelist: "", dmz_ip: "",
     },
     handlers: [

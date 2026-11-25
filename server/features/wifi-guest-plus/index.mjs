@@ -54,7 +54,7 @@ export function guestEntries(band) {
         label: L("Access time limit", "使用時間限制"),
         help: L("The guest network switches itself off after this long. Pick No limit to keep it on until you turn it off.", "過咗呢段時間，訪客網絡會自動關閉。揀「冇限制」就一直開到你自己關。"),
       }),
-      entry("maxassoc", "maxassoc", { control: "stepper", min: 1, max: 128, unit: " devices", label: L("Most devices at once", "同時最多裝置"), help: L("The most devices allowed on this guest network together. Extra devices are refused until one leaves.", "呢個訪客網絡同時容許嘅最多裝置數目。超出嘅要等有裝置離開先連到。") }),
+      entry("maxassoc", "bss_maxassoc", { control: "stepper", min: 1, max: 128, unit: " devices", label: L("Most devices at once", "同時最多裝置"), help: L("The most devices allowed on this guest network together. Extra devices are refused until one leaves.", "呢個訪客網絡同時容許嘅最多裝置數目。超出嘅要等有裝置離開先連到。") }),
       entry("bw-on", "bw_enabled", { control: "switch", values: ON_OFF, label: L("Bandwidth limit", "頻寬限制"), help: L("Caps how much speed this guest network can use, so visitors cannot slow the rest of the home.", "限制呢個訪客網絡可以用幾多速度，免得訪客拖慢屋企其他裝置。") }),
       entry("bw-down", "bw_dl", { control: "stepper", min: 0, max: 1048576, step: 1000, unit: " kbps", label: L("Download limit", "下載限速"), help: L("The fastest download this guest network may use. Applies only when the bandwidth limit is on.", "呢個訪客網絡最快可以用幾多下載速度。淨係開咗頻寬限制先生效。") }),
       entry("bw-up", "bw_ul", { control: "stepper", min: 0, max: 1048576, step: 1000, unit: " kbps", label: L("Upload limit", "上傳限速"), help: L("The fastest upload this guest network may use. Applies only when the bandwidth limit is on.", "呢個訪客網絡最快可以用幾多上傳速度。淨係開咗頻寬限制先生效。") }),
@@ -68,7 +68,7 @@ function guestDefaults(band) {
   for (const n of GUESTS) {
     const p = `wl${band.index}.${n}`;
     Object.assign(out, {
-      [`${p}_auth_mode_x`]: "psk2", [`${p}_closed`]: "0", [`${p}_expire`]: "0", [`${p}_maxassoc`]: "32",
+      [`${p}_auth_mode_x`]: "psk2", [`${p}_closed`]: "0", [`${p}_expire`]: "0", [`${p}_bss_maxassoc`]: "32",
       [`${p}_bw_enabled`]: "0", [`${p}_bw_dl`]: "20000", [`${p}_bw_ul`]: "10000",
     });
     // Guest network 1 is created by the pretend router itself; 2 and 3 are ours.

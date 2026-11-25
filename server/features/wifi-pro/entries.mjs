@@ -72,7 +72,7 @@ export function bandEntries(index, nband) {
       help: L("When a device's signal falls below this level the router nudges it to a closer access point. Set 0 to turn the assistant off. -70 is a common choice.", "裝置訊號低過呢個數值，路由器會叫佢轉去較近嘅接入點。設 0 就關閉。-70 係常用值。"),
       meta: NEEDS_HARDWARE,
     }),
-    sw("rrm", roaming, "rrm", L("802.11k neighbour reports", "802.11k 鄰近報告"), L("Tells devices which other access points are nearby so they roam faster.", "話俾裝置知附近有邊啲接入點，等佢哋漫遊得快啲。"), { meta: NEEDS_HARDWARE }),
+    sw("rrm", roaming, "rrm", L("802.11k neighbour reports", "802.11k 鄰近報告"), L("Tells devices which other access points are nearby so they roam faster.", "話俾裝置知附近有邊啲接入點，等佢哋漫遊得快啲。"), { values: { on: "0x32", off: "0" } }),
     sw("wnm", roaming, "wnm", L("802.11v network-assisted roaming", "802.11v 網絡協助漫遊"), L("Lets the router suggest a better access point to a device.", "等路由器向裝置建議更好嘅接入點。"), { meta: NEEDS_HARDWARE }),
     sw("ft", roaming, "ft_enable", L("802.11r fast transition", "802.11r 快速轉換"), L("Cuts the pause when a device roams. A few devices fail to join when it is on.", "減少裝置漫遊時嘅停頓。少數裝置開咗會連唔到。"), { firmware: "merlin", meta: NEEDS_HARDWARE }),
     base("mfp", roaming, "mfp", {
@@ -163,7 +163,7 @@ export function bandDefaults(index, nband) {
   return {
     [`${p}_nmode_x`]: "0", [`${p}_11ax`]: "1", [`${p}_11be`]: "0", [`${p}_twt`]: "1",
     [`${p}_ofdma`]: "3", [`${p}_mumimo`]: "1", [`${p}_txbf`]: "1", [`${p}_itxbf`]: "1", [`${p}_atf`]: "0",
-    [`${p}_user_rssi`]: "-70", [`${p}_rrm`]: "1", [`${p}_wnm`]: "1", [`${p}_ft_enable`]: "0", [`${p}_mfp`]: "1",
+    [`${p}_user_rssi`]: "-70", [`${p}_rrm`]: "0x32", [`${p}_wnm`]: "1", [`${p}_ft_enable`]: "0", [`${p}_mfp`]: "1",
     [`${p}_nctrlsb`]: "lower",
     ...(five ? { [`${p}_acs_dfs`]: "1", [`${p}_bw_160`]: "0" } : {}),
     [`${p}_bcn`]: "100", [`${p}_dtim`]: "3", [`${p}_mrate_x`]: "0",
