@@ -25,6 +25,7 @@ export const SERVICES = [
   ["restart_diskmon", L("USB disk monitor", "USB 磁碟監察"), "low"],
   ["restart_syslogd", L("System log", "系統記錄"), "low"],
   ["restart_net_and_phy", L("The whole network side", "整個網絡部份"), "network"],
+  ["restart_allnet", L("Every network service at once", "所有網絡服務一次過"), "network"],
 ];
 
 export const TEST_DOWNLOADS = [
@@ -196,7 +197,7 @@ export const ACTIONS = [
     label: L("Mount a USB partition", "掛載 USB 分區"), help: L("Makes a USB partition available under /tmp/mnt.", "令一個 USB 分區喺 /tmp/mnt 下面用得。"),
     params: [
       { id: "device", type: "select", label: L("Partition", "分區"), source: "unmounted-partitions", required: true },
-      { id: "name", type: "name", label: L("Folder name under /tmp/mnt", "/tmp/mnt 下面嘅資料夾名"), pattern: "^[A-Za-z0-9_-]{1,20}$", default: "usb1", required: true },
+      { id: "name", type: "name", label: L("Folder name under /tmp/mnt", "/tmp/mnt 下面嘅資料夾名"), pattern: "^[A-Za-z0-9_-]{1,20}$", default: "usb2", required: true },
     ],
     async build(p, env) {
       const taken = (await env.exec("mount")).stdout.includes(` on /tmp/mnt/${p.name} `);

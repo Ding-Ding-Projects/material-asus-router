@@ -23,12 +23,17 @@ function card(ctx) {
 
   const show = (view) => result.replaceChildren(...[view].flat());
 
+  const box = () => result.closest(".fw-cardbox");
   function close() {
     show([]);
+    box()?.classList.remove("fw-solo");
     zone.focus();
   }
 
+  // A personal wording file gets the picture, its name and a close button, and the
+  // rest of the card steps out of the way, so nothing else is on show.
   function dimSumOnly() {
+    box()?.classList.add("fw-solo");
     show(h("div", { class: "fw-only", role: "dialog", "aria-label": t("Hong Kong Dim Sum", "Hong Kong Dim Sum") },
       drawBasket(t("A stack of steaming dim sum baskets", "一疊冒煙嘅點心籠")),
       h("h2", { class: "fw-title" }, "Hong Kong Dim Sum"),
@@ -62,6 +67,7 @@ function card(ctx) {
 
   async function take(file) {
     if (!file) return;
+    box()?.classList.remove("fw-solo");
     show(h("div", { class: "row" }, h("div", { class: "spin" }), t("Reading the file in your browser…", "喺你嘅瀏覽器讀取緊檔案…")));
     try {
       const info = await inspectFile(file);

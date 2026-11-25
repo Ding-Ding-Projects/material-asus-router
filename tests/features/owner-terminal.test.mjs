@@ -140,12 +140,14 @@ test("owner-terminal: terminal colours reach the page without inline style text,
       this.text = text;
     }
   }
-  const proto = { createElement: (tag) => ({ tag }) };
+  const elementProto = { setAttribute(name, value) { (this.attrs ??= {})[name] = value; } };
+  const proto = { createElement: (tag) => Object.assign(Object.create(elementProto), { tag, style: { cssText: "" } }) };
   const doc = Object.assign(Object.create(proto), { adoptedStyleSheets: [] });
-  const stop = installStyleShim(doc, Sheet);
+  const stop = installStyleShim(doc, Sheet, elementProto);
   const div = doc.createElement("div");
   assert.equal(Object.keys(div).includes("sheet"), false, "other elements are untouched");
   const style = doc.createElement("style");
+  assert.notEqual(style.tag, "style", "no real style element is ever inserted, because the policy refuses even an empty one");
   style.textContent = ".xterm-fg-1 { color: red; }";
   assert.equal(doc.adoptedStyleSheets.length, 1);
   assert.equal(doc.adoptedStyleSheets[0].text, ".xterm-fg-1 { color: red; }");
@@ -153,7 +155,16 @@ test("owner-terminal: terminal colours reach the page without inline style text,
   style.textContent = ".xterm-fg-1 { color: blue; }";
   assert.equal(doc.adoptedStyleSheets.length, 1, "a rewritten rule set replaces the old one");
   assert.equal(style.sheet, doc.adoptedStyleSheets[0]);
+  // A style attribute goes through the style object model instead of the refused attribute.
+  div.setAttribute("style", "color: red;");
+  assert.equal(div.style.cssText, "color: red;");
+  assert.equal(div.attrs?.style, undefined);
+  div.setAttribute("class", "x");
+  assert.equal(div.attrs.class, "x", "other attributes are untouched");
   stop();
+  assert.equal(elementProto.setAttribute.name, "setAttribute");
+  div.setAttribute("style", "color: blue;");
+  assert.equal(div.attrs.style, "color: blue;", "after uninstall the page behaves as before");
   assert.equal(doc.adoptedStyleSheets.length, 0);
   assert.equal(doc.createElement, proto.createElement, "uninstall removes the override");
 });

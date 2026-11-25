@@ -4,6 +4,7 @@
 .fw-zone:focus-visible{outline:3px solid var(--primary);outline-offset:2px}
 .fw-zone.over .ms{animation:fw-bob .6s cubic-bezier(.3,1.4,.5,1) infinite alternate}
 @keyframes fw-bob{to{transform:translateY(-8px) scale(1.1)}}
+.fw-solo>:not(.fw-result){display:none}
 .fw-result{display:flex;flex-direction:column;gap:12px}
 .fw-result:empty{display:none}
 .fw-card-in{display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr);gap:20px;align-items:center;animation:fw-in .55s cubic-bezier(.2,0,0,1) both}

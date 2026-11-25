@@ -44,7 +44,7 @@ export async function drawCatalogue(ctx, root, { title, lede }) {
     const cmdRow = h("div", { class: "sa-cmdrow" }, h("div", { class: "k" }, t("Exact command", "確實命令")), cmd);
     const run = h("button", { class: "btn f sa-run", disabled: true }, icon(a.viaEngine ? "fact_check" : "play_arrow", "sm"), a.viaEngine ? t("Review and apply", "檢查並套用") : a.view ? t("Show", "顯示") : t("Run", "執行"));
     const values = () => Object.fromEntries([...controls].map(([id, c]) => [id, c.get()]));
-    const card = h("article", { class: `card sa-card rise ${tone(a.risk)}`, "data-id": a.id, "data-group": a.group });
+    const card = h("article", { class: `card sa-card rise ${a.risk === "destructive" ? "sa-risk-bad" : a.risk === "network" ? "sa-risk-warn" : ""}`, "data-id": a.id, "data-group": a.group });
     card.style.setProperty("--i", String(index));
 
     let seq = 0;
@@ -52,7 +52,7 @@ export async function drawCatalogue(ctx, root, { title, lede }) {
       const mine = ++seq;
       showRisk(currentRisk());
       if ([...controls.values()].some((c) => c.problem())) {
-        cmd.textContent = t("Fix the highlighted choice to see the command.", "請先修正標示嘅選項，先會見到命令。");
+        cmd.textContent = t("Complete the options above to see the exact command.", "請先完成上面嘅選項，就會見到確實命令。");
         cmd.classList.add("sa-wait");
         run.disabled = true;
         return;

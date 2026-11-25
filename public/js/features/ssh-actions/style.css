@@ -7,8 +7,8 @@
 .sa-grid>[hidden]{display:none}
 .sa-card{gap:12px;transition:box-shadow .3s cubic-bezier(.2,0,0,1),transform .3s cubic-bezier(.2,0,0,1);animation-delay:calc(var(--i,0) * 35ms)}
 .sa-card:hover{box-shadow:var(--e2);transform:translateY(-2px)}
-.sa-card.warn{background:var(--surf);box-shadow:inset 4px 0 0 var(--warn),var(--e1)}
-.sa-card.bad{background:var(--surf);box-shadow:inset 4px 0 0 var(--bad),var(--e1)}
+.sa-card.sa-risk-warn{box-shadow:inset 4px 0 0 var(--warn),var(--e1)}
+.sa-card.sa-risk-bad{box-shadow:inset 4px 0 0 var(--bad),var(--e1)}
 .sa-card.sa-launch{animation:sa-launch .9s cubic-bezier(.2,0,0,1)}
 @keyframes sa-launch{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--primary) 55%,transparent)}40%{transform:scale(1.015)}100%{box-shadow:0 0 0 26px transparent;transform:none}}
 .sa-head{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}

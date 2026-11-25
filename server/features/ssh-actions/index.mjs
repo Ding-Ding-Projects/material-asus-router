@@ -109,7 +109,8 @@ async function execute(app, job, { action, built, risk, session, histId }) {
       if (state === "reverted") status = "reverted";
       else if (state === "unreachable") status = "unreachable";
       else if (dropped) status = "done";
-      await session.reconnect().catch(() => {});
+      // Only a link that really dropped is rebuilt, so a second job is never cut off for nothing.
+      if (dropped || state !== "ok") await session.reconnect().catch(() => {});
     }
     session.invalidate();
     finish(job, status, code);
@@ -127,7 +128,12 @@ export default {
   domains: {
     [ID]: async (ctx) => {
       const probes = await probesOf(ctx.exec);
-      return { groups: GROUPS.map(([id, label, icon]) => ({ id, label, icon })), actions: ACTIONS.map((a) => cardOf(a, probes)), probes, roots: ROOTS, uploadLimit: UPLOAD_LIMIT, downloadLimit: DOWNLOAD_LIMIT };
+      // The lights card starts on the opposite of what the router is doing now, the likely wish.
+      const lightsOff = ctx.nvram.get("led_disable") === "1";
+      const cards = ACTIONS.map((a) => cardOf(a, probes));
+      const led = cards.find((c) => c.id === "led");
+      if (led) led.params[0].default = lightsOff ? "on" : "off";
+      return { groups: GROUPS.map(([id, label, icon]) => ({ id, label, icon })), actions: cards, probes, roots: ROOTS, uploadLimit: UPLOAD_LIMIT, downloadLimit: DOWNLOAD_LIMIT };
     },
   },
 
