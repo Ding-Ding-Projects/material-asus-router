@@ -1,5 +1,5 @@
-// A semicircle gauge and a tiny sparkline, drawn with createElementNS (no
-// innerHTML, no inline style). Colours come from the classes in style.css.
+// A semicircle gauge and a tiny sparkline, built element by element with createElementNS.
+// No markup strings and no inline style. Colours come from the classes in style.css.
 const NS = "http://www.w3.org/2000/svg";
 
 function el(tag, attrs = {}, ...kids) {

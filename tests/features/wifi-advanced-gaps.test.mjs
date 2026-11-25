@@ -209,3 +209,22 @@ test("wifi-advanced-gaps: nothing here offers a flash write, a manufacturing com
 test("wifi-advanced-gaps: the browser module is well formed", () => {
   assert.equal(checkFeatureModule(feature, "wifi-advanced-gaps"), null);
 });
+
+test("wifi-advanced-gaps: the screen knows every mode the server offers, stills its motion and builds no markup strings", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const dir = new URL("../../public/js/features/wifi-advanced-gaps/", import.meta.url);
+  const source = await readFile(new URL("index.js", dir), "utf8");
+  for (const id of Object.keys(MODES)) {
+    const key = /^[a-z]+$/.test(id) ? id : `"${id}"`;
+    assert.ok(source.slice(source.indexOf("const MODE_TEXT")).includes(`  ${key}: [`), `the screen has no text for ${id}`);
+    assert.ok(source.slice(source.indexOf("const MODE_ICON"), source.indexOf("const MODE_TEXT")).includes(`${key}: "`), `the screen has no icon for ${id}`);
+  }
+  const css = await readFile(new URL("style.css", dir), "utf8");
+  assert.match(css, /prefers-reduced-motion:reduce/);
+  for (const file of ["index.js", "timeline.js"]) {
+    const text = await readFile(new URL(file, dir), "utf8");
+    assert.ok(!/innerHTML|outerHTML|insertAdjacentHTML|document\.write/.test(text), `${file} must not write HTML strings`);
+  }
+  assert.match(source, /superConfirm/, "the mode change goes through the typed model and held button");
+  assert.match(source, /\/api\/actions\/wifi-advanced-gaps\.set-mode/);
+});

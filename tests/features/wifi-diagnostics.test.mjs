@@ -208,3 +208,42 @@ test("wifi-diagnostics: nothing in the feature tracks where anyone is", async ()
 test("wifi-diagnostics: the browser module is well formed", () => {
   assert.equal(checkFeatureModule(feature, "wifi-diagnostics"), null);
 });
+
+test("wifi-diagnostics: the screen's number formatting, gauge tones and sorting", async () => {
+  const { duration, fraction, size, sortClients, speed, tone } = await import("../../public/js/features/wifi-diagnostics/format.js");
+  assert.equal(speed(4_200_000), "4.2 MB/s");
+  assert.equal(speed(25_000_000), "25 MB/s");
+  assert.equal(speed(800_000), "800 kB/s");
+  assert.equal(speed(512), "512 B/s");
+  assert.equal(speed(null), "…");
+  assert.equal(size(2_500_000_000), "2.50 GB");
+  assert.equal(size(1_500_000), "1.5 MB");
+  assert.equal(duration(45), "45 s");
+  assert.equal(duration(5400), "1 h 30 min");
+  assert.equal(duration(90_000), "1 d 1 h");
+  assert.equal(tone("air", 38), "good");
+  assert.equal(tone("air", 55), "warn");
+  assert.equal(tone("air", 90), "bad");
+  assert.equal(tone("noise", -92), "good");
+  assert.equal(tone("noise", -70), "bad");
+  assert.equal(tone("heat", null), "off");
+  assert.equal(fraction(-92, -100, -60), 20);
+  assert.equal(fraction(500, 0, 100), 100, "a gauge never goes past the end of its arc");
+  const rows = [{ mac: "B", name: "zeta", rssi: -40, downBps: 5, upBps: 5 }, { mac: "A", name: "alpha", rssi: -80, downBps: 900, upBps: 0 }, { mac: "C", name: "", rssi: null, downBps: null, upBps: null }];
+  assert.deepEqual(sortClients(rows, "name").map((r) => r.mac), ["A", "C", "B"], "an unnamed device sorts by its address");
+  assert.deepEqual(sortClients(rows, "signal").map((r) => r.mac), ["B", "A", "C"]);
+  assert.deepEqual(sortClients(rows, "speed").map((r) => r.mac), ["A", "B", "C"]);
+});
+
+test("wifi-diagnostics: motion stops under reduced motion and the browser code builds no markup strings", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const dir = new URL("../../public/js/features/wifi-diagnostics/", import.meta.url);
+  const css = await readFile(new URL("style.css", dir), "utf8");
+  assert.match(css, /prefers-reduced-motion:reduce/);
+  assert.match(css, /@keyframes wd-rise/);
+  for (const file of ["index.js", "charts.js", "timeline.js", "format.js"]) {
+    const source = await readFile(new URL(file, dir), "utf8");
+    assert.ok(!/innerHTML|outerHTML|insertAdjacentHTML|document\.write/.test(source), `${file} must not write HTML strings`);
+    assert.ok(!/setAttribute\(["']style["']|\bstyle:\s*["'`]/.test(source), `${file} must not use inline styles`);
+  }
+});
