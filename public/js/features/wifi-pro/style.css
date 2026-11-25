@@ -1,0 +1,14 @@
+/* Wi-Fi Pro. Every rule is scoped to a wp- class so nothing else on the page moves. */
+.wp-body { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.wp-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); gap: 12px; }
+.wp-tile { background: var(--surf-low); border-radius: 20px; padding: 14px 16px; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.wp-tile.good { background: var(--good-c); }
+.wp-tile.warn { background: var(--warn-c); }
+.wp-val { font-size: 18px; font-weight: 750; overflow-wrap: anywhere; }
+.wp-list { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; overflow-wrap: anywhere; }
+.wp-progress details { margin-top: 6px; }
+.wp-progress summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; }
+@media (max-width: 480px) {
+  .wp-tile { padding: 12px; }
+  .wp-val { font-size: 16px; }
+}

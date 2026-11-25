@@ -1,0 +1,11 @@
+/* WPS and MAC filter. Scoped to wm- and ml- classes. */
+.wm-body { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.wm-push { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.wm-count { min-height: 24px; font-weight: 650; }
+.wm-list { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; overflow-wrap: anywhere; }
+.ml { display: flex; flex-direction: column; gap: 10px; min-width: 0; width: 100%; }
+.ml-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.ml-chip { max-width: 100%; overflow-wrap: anywhere; }
+.ml-add { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.ml-add .field { flex: 1 1 180px; min-width: 0; }
+.ml-tools { display: flex; flex-wrap: wrap; gap: 8px; }
