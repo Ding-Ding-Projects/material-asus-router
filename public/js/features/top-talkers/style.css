@@ -1,0 +1,25 @@
+.tt-body{display:flex;flex-direction:column;gap:16px}
+.tt-controls{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.tt-seg button{min-width:48px;min-height:44px}
+.tt-leader{position:relative}
+.tt-crown{position:absolute;right:20px;top:18px;opacity:.9}
+.tt-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.tt-row{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:14px;align-items:center;padding:12px 16px;border-radius:24px;background:var(--surf)}
+.tt-pos{width:40px;height:40px;border-radius:20px;display:grid;place-items:center;font-weight:800;background:var(--surf-high);font-variant-numeric:tabular-nums}
+.tt-pos.p1{background:var(--primary);color:var(--on-primary)}
+.tt-pos.p2{background:var(--secondary-c);color:var(--on-secondary-c)}
+.tt-pos.p3{background:var(--tertiary-c);color:var(--on-tertiary-c)}
+.tt-who{min-width:0}
+.tt-who .t1,.tt-mono{overflow-wrap:anywhere}
+.tt-mono{font-family:ui-monospace,Consolas,monospace}
+.tt-who .meter{margin-top:6px;height:8px}
+.tt-num{text-align:right;font-variant-numeric:tabular-nums}
+.tt-val{font-weight:800;font-size:18px}
+/* A new order springs in row by row; a refresh that changes nothing stays calm. Reduced motion shows everything at once. */
+@keyframes tt-in{0%{transform:translateY(14px) scale(.98);opacity:0}100%{transform:none;opacity:1}}
+@keyframes tt-crown{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg) scale(1.08)}}
+.tt-row.tt-new{animation:tt-in .5s cubic-bezier(.2,.9,.25,1.1) both}
+.tt-row.tt-new:nth-child(2){animation-delay:.05s}.tt-row.tt-new:nth-child(3){animation-delay:.1s}.tt-row.tt-new:nth-child(4){animation-delay:.15s}.tt-row.tt-new:nth-child(n+5){animation-delay:.2s}
+.tt-leader.tt-new .tt-crown{animation:tt-crown 1.4s ease-in-out 2}
+@media (prefers-reduced-motion:reduce){.tt-row.tt-new,.tt-leader.tt-new .tt-crown{animation:none}.tt-who .meter i{transition:none}}
+@media (max-width:420px){.tt-row{grid-template-columns:36px minmax(0,1fr);padding:12px}.tt-pos{width:34px;height:34px}.tt-num{grid-column:1 / -1;text-align:left}}
