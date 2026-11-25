@@ -1,0 +1,177 @@
+<section class="hero" id="hero">
+  <div class="hero-copy reveal">
+    <p class="eyebrow"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-shield"/></svg>{{t:hero.eyebrow}}</p>
+    <h1>{{t:hero.title}}</h1>
+    <p class="lead">{{tb:hero.lead}}</p>
+    <div class="hero-actions">
+      <a class="filled-btn big" href="#install"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-terminal"/></svg>{{t:hero.cta.install}}</a>
+      <a class="tonal-btn big" href="#demo"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-play"/></svg>{{t:hero.cta.demo}}</a>
+    </div>
+    <ul class="hero-points">
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg>{{t:hero.p1}}</li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg>{{t:hero.p2}}</li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg>{{t:hero.p3}}</li>
+    </ul>
+  </div>
+  <div class="hero-art reveal" aria-hidden="true">
+    <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+    <div class="hero-card">
+      <div class="hc-row"><span class="dot ok"></span><span>{{t:hero.card.preview}}</span></div>
+      <div class="hc-row"><span class="dot warn"></span><span>{{t:hero.card.guard}}</span></div>
+      <div class="hc-row"><span class="dot ok"></span><span>{{t:hero.card.undo}}</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="tasks">
+  <div class="section-head reveal">
+    <h2>{{t:tasks.title}}</h2>
+    <p>{{tb:tasks.intro}}</p>
+  </div>
+  <div class="card-grid">
+    <a class="task-card reveal" href="{{href:setup/install|setup}}"><span class="task-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-terminal"/></svg></span><h3>{{t:task.install}}</h3><p>{{tb:task.install.d}}</p><span class="go">{{t:go}}<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+    <a class="task-card reveal" href="{{href:setup/connect-router|setup}}"><span class="task-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-router"/></svg></span><h3>{{t:task.connect}}</h3><p>{{tb:task.connect.d}}</p><span class="go">{{t:go}}<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+    <a class="task-card reveal" href="{{href:router/wifi|router}}"><span class="task-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wifi"/></svg></span><h3>{{t:task.wifi}}</h3><p>{{tb:task.wifi.d}}</p><span class="go">{{t:go}}<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+    <a class="task-card reveal" href="{{href:safety/undo-changes|safety}}"><span class="task-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-undo"/></svg></span><h3>{{t:task.undo}}</h3><p>{{tb:task.undo.d}}</p><span class="go">{{t:go}}<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+    <a class="task-card reveal" href="{{href:app/accounts-and-roles|app}}"><span class="task-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-people"/></svg></span><h3>{{t:task.family}}</h3><p>{{tb:task.family.d}}</p><span class="go">{{t:go}}<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+    <a class="task-card reveal" href="{{href:start/demo-router|start}}"><span class="task-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-play"/></svg></span><h3>{{t:task.demo}}</h3><p>{{tb:task.demo.d}}</p><span class="go">{{t:go}}<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+  </div>
+</section>
+
+<section class="section demo-section" id="demo">
+  <div class="section-head reveal">
+    <h2>{{t:demo.title}}</h2>
+    <p>{{tb:demo.intro}}</p>
+  </div>
+  <div class="demo-card reveal" id="demo-app" data-state="idle">
+    <p class="demo-banner"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-shield"/></svg><strong>{{t:demo.banner}}</strong></p>
+    <ol class="stepper" id="demo-steps" aria-label="{{en:demo.steps}}" data-i18n-attr="aria-label:demo.steps">
+      <li data-step="preview"><span class="n">1</span><span>{{t:demo.s.preview}}</span></li>
+      <li data-step="guard"><span class="n">2</span><span>{{t:demo.s.guard}}</span></li>
+      <li data-step="result"><span class="n">3</span><span>{{t:demo.s.result}}</span></li>
+    </ol>
+    <div class="demo-grid">
+      <div class="demo-panel">
+        <h3>{{t:demo.change.title}}</h3>
+        <p class="muted">{{tb:demo.change.desc}}</p>
+        <div class="table-wrap">
+          <table class="diff-table">
+            <thead><tr><th>{{t:demo.col.setting}}</th><th>{{t:demo.col.old}}</th><th>{{t:demo.col.new}}</th></tr></thead>
+            <tbody>
+              <tr><td>{{t:demo.row.name}}</td><td><code class="old">HomeNet</code></td><td><code class="new">HomeNet-Fast</code></td></tr>
+              <tr><td>{{t:demo.row.band}}</td><td><code class="old">2.4 GHz</code></td><td><code class="new">2.4 GHz</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p id="demo-status" class="demo-status" role="status" aria-live="polite"></p>
+        <div class="btn-row" id="demo-actions"></div>
+      </div>
+      <div class="demo-panel guard-panel">
+        <h3>{{t:demo.guard.title}}</h3>
+        <div class="ring-wrap">
+          <svg class="ring" viewBox="0 0 120 120" aria-hidden="true"><circle class="ring-bg" cx="60" cy="60" r="52"/><circle class="ring-fg" id="demo-ring" cx="60" cy="60" r="52"/></svg>
+          <div class="ring-text"><span id="demo-seconds">90</span><small>{{t:demo.seconds}}</small></div>
+        </div>
+        <p class="muted" id="demo-guard-note">{{tb:demo.guard.idle}}</p>
+        <div class="btn-row" id="demo-guard-actions"></div>
+      </div>
+      <div class="demo-panel log-panel">
+        <h3>{{t:demo.log.title}}</h3>
+        <ol class="demo-log" id="demo-log" role="log" aria-live="polite"></ol>
+      </div>
+    </div>
+    <p class="muted small">{{tb:demo.speed}}</p>
+  </div>
+</section>
+
+<section class="section" id="guard">
+  <div class="section-head reveal">
+    <h2>{{t:guard.title}}</h2>
+    <p>{{tb:guard.intro}}</p>
+  </div>
+  <div class="guard-diagram reveal" id="guard-diagram">
+    <ol class="flow" id="flow">
+      <li><button type="button" data-node="n1" aria-pressed="false"><span class="n">1</span><span class="lbl">{{t:guard.n1}}</span></button></li>
+      <li><button type="button" data-node="n2" aria-pressed="false"><span class="n">2</span><span class="lbl">{{t:guard.n2}}</span></button></li>
+      <li><button type="button" data-node="n3" aria-pressed="false"><span class="n">3</span><span class="lbl">{{t:guard.n3}}</span></button></li>
+      <li><button type="button" data-node="n4" aria-pressed="false"><span class="n">4</span><span class="lbl">{{t:guard.n4}}</span></button></li>
+      <li><button type="button" data-node="n5" aria-pressed="false"><span class="n">5</span><span class="lbl">{{t:guard.n5}}</span></button></li>
+    </ol>
+    <div class="flow-branch">
+      <button type="button" class="branch ok" data-node="n6a" aria-pressed="false"><span class="lbl">{{t:guard.n6a}}</span></button>
+      <button type="button" class="branch bad" data-node="n6b" aria-pressed="false"><span class="lbl">{{t:guard.n6b}}</span></button>
+    </div>
+    <div class="flow-detail" id="flow-detail" aria-live="polite">
+      <h3 id="flow-title"></h3>
+      <p id="flow-text"></p>
+      <div class="btn-row"><button type="button" class="tonal-btn" id="flow-prev">{{t:guard.prev}}</button><button type="button" class="filled-btn" id="flow-next">{{t:guard.next}}</button></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="features">
+  <div class="section-head reveal">
+    <h2>{{t:features.title}}</h2>
+    <p>{{tb:features.intro}}</p>
+    <p class="status-summary" id="status-summary">{{status_summary}}</p>
+  </div>
+  <div class="filter-row" role="group" aria-label="{{en:features.filter}}" data-i18n-attr="aria-label:features.filter">
+    <button type="button" class="filter-chip" data-filter="all" aria-pressed="true">{{t:features.all}}</button>
+    <button type="button" class="filter-chip" data-filter="ready" aria-pressed="false">{{t:status.ready}}</button>
+    <button type="button" class="filter-chip" data-filter="in-progress" aria-pressed="false">{{t:status.in-progress}}</button>
+  </div>
+  {{features}}
+</section>
+
+<section class="section" id="install">
+  <div class="section-head reveal">
+    <h2>{{t:install.title}}</h2>
+    <p>{{tb:install.intro}}</p>
+  </div>
+  <div class="install-grid">
+    <article class="install-card reveal">
+      <h3>{{t:install.one.title}}</h3>
+      <p>{{tb:install.one.d}}</p>
+      <div class="cmd"><pre><code id="cmd-setup">git clone https://github.com/Ding-Ding-Projects/material-asus-router.git
+cd material-asus-router
+powershell -ExecutionPolicy Bypass -File scripts\setup.ps1</code></pre><button type="button" class="copy-btn" data-copy="#cmd-setup"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-copy"/></svg><span class="copy-label">{{t:copy}}</span></button></div>
+      <p class="muted small">{{tb:install.one.note}}</p>
+    </article>
+    <article class="install-card reveal">
+      <h3>{{t:install.host.title}}</h3>
+      <p>{{tb:install.host.d}}</p>
+      <div class="cmd"><pre><code id="cmd-host">host.bat --detached</code></pre><button type="button" class="copy-btn" data-copy="#cmd-host"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-copy"/></svg><span class="copy-label">{{t:copy}}</span></button></div>
+      <div class="table-wrap"><table class="mini-table">
+        <tbody>
+          <tr><td><code>host.bat --logs</code></td><td>{{t:install.mode.logs}}</td></tr>
+          <tr><td><code>host.bat --stop</code></td><td>{{t:install.mode.stop}}</td></tr>
+          <tr><td><code>host.bat --remote user@host</code></td><td>{{t:install.mode.remote}}</td></tr>
+          <tr><td><code>host.bat --demo</code></td><td>{{t:install.mode.demo}}</td></tr>
+        </tbody>
+      </table></div>
+    </article>
+    <article class="install-card reveal">
+      <h3>{{t:install.compose.title}}</h3>
+      <p>{{tb:install.compose.d}}</p>
+      <div class="cmd"><pre><code id="cmd-compose">docker compose up -d</code></pre><button type="button" class="copy-btn" data-copy="#cmd-compose"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-copy"/></svg><span class="copy-label">{{t:copy}}</span></button></div>
+      <p class="muted small">{{t:install.image}} <code>ghcr.io/ding-ding-projects/material-asus-router</code> &middot; {{t:install.port}} <code>8790</code></p>
+    </article>
+  </div>
+  <p class="callout-line reveal"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-lock"/></svg><span>{{tb:install.secret}}</span></p>
+</section>
+
+<section class="section" id="download">
+  <div class="section-head reveal">
+    <h2>{{t:download.title}}</h2>
+    <p>{{tb:download.intro}}</p>
+  </div>
+  {{downloads}}
+</section>
+
+<section class="section" id="screenshots">
+  <div class="section-head reveal">
+    <h2>{{t:shots.title}}</h2>
+    <p>{{tb:shots.intro}}</p>
+  </div>
+  {{screenshots}}
+</section>

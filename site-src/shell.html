@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en" data-lang="en" data-theme="system" data-motion="full">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{title}}</title>
+<meta name="description" content="{{description}}">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="{{root}}assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="{{root}}assets/fonts/roboto-flex-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<script>
+(function () {
+  var root = document.documentElement;
+  root.classList.add('js');
+  function get(k, d) { try { var v = localStorage.getItem(k); return v === null ? d : v; } catch (e) { return d; } }
+  var lang = get('mar.lang', ''), theme = get('mar.theme', 'system'), motion = get('mar.motion', 'full'), hue = get('mar.hue', '');
+  if (!lang) { lang = /^zh/i.test(navigator.language || '') ? 'zh' : 'en'; }
+  root.setAttribute('data-lang', lang);
+  root.setAttribute('lang', lang === 'zh' ? 'zh-HK' : 'en');
+  root.setAttribute('data-theme', theme);
+  root.setAttribute('data-motion', motion);
+  if (hue) root.style.setProperty('--h', hue);
+})();
+</script>
+<link rel="stylesheet" href="{{root}}assets/style.css">
+</head>
+<body class="page-{{page}}" data-root="{{root}}">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-search" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.488.488 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></symbol>
+    <symbol id="i-undo" viewBox="0 0 24 24"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></symbol>
+    <symbol id="i-wifi" viewBox="0 0 24 24"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></symbol>
+    <symbol id="i-router" viewBox="0 0 24 24"><path d="M19 13h-2V9h-2v4H5c-1.1 0-2 .9-2 2v4c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-4c0-1.1-.9-2-2-2zM8 18H6v-2h2v2zm3.5 0h-2v-2h2v2zm3.5 0h-2v-2h2v2zM20.2 5.9l.8-.8C19.6 3.7 17.8 3 16 3s-3.6.7-4.9 2.1l.8.8C13 4.8 14.5 4.2 16 4.2s3 .6 4.2 1.7z"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></symbol>
+    <symbol id="i-people" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></symbol>
+    <symbol id="i-terminal" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V8h16v10zm-2-1h-6v-2h6v2zM7.5 17l-1.41-1.41L8.67 13l-2.59-2.59L7.5 9l4 4-4 4z"/></symbol>
+    <symbol id="i-image" viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></symbol>
+    <symbol id="i-timer" viewBox="0 0 24 24"><path d="M15 1H9v2h6V1zm-4 13h2V8h-2v6zm8.03-6.61l1.42-1.42c-.43-.51-.9-.99-1.41-1.41l-1.42 1.42A8.962 8.962 0 0012 4c-4.97 0-9 4.03-9 9s4.02 9 9 9a8.994 8.994 0 007.03-14.61zM12 20c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></symbol>
+    <symbol id="i-history" viewBox="0 0 24 24"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></symbol>
+  </defs>
+</svg>
+
+<a class="skip" href="#main">{{t:skip}}</a>
+
+<header class="appbar" id="top">
+  <div class="appbar-row">
+    <a class="brand" href="{{root}}index.html" aria-label="{{en:brand.home}}">
+      <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-router"/></svg>
+      <span class="brand-name">Material Asus Router</span>
+    </a>
+    <div class="search" role="search">
+      <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-search"/></svg>
+      <input id="q" type="search" autocomplete="off" spellcheck="false" enterkeyhint="search" data-i18n-attr="placeholder:search.placeholder;aria-label:search.label" placeholder="{{en:search.placeholder}}" aria-label="{{en:search.label}}" aria-controls="results" aria-expanded="false">
+      <button type="button" id="q-mode" class="chip-toggle" aria-pressed="false" data-i18n-attr="title:search.mode.title" title="{{en:search.mode.title}}"><span class="mode-text">{{t:search.mode.text}}</span><span class="mode-regex">{{t:search.mode.regex}}</span></button>
+      <button type="button" id="q-clear" class="icon-btn small" hidden data-i18n-attr="aria-label:search.clear" aria-label="{{en:search.clear}}"><svg viewBox="0 0 24 24"><use href="#i-close"/></svg></button>
+    </div>
+    <button type="button" id="rx-toggle" class="tonal-btn" aria-expanded="false" aria-controls="rx"><span class="rx-glyph" aria-hidden="true">.*</span><span class="btn-label">{{t:rx.toggle}}</span></button>
+    <button type="button" id="open-settings" class="icon-btn" data-i18n-attr="aria-label:settings.open;title:settings.open" aria-label="{{en:settings.open}}" title="{{en:settings.open}}"><svg viewBox="0 0 24 24"><use href="#i-settings"/></svg></button>
+  </div>
+  <nav class="primary-nav" aria-label="{{en:nav.label}}" data-i18n-attr="aria-label:nav.label">
+    <a href="{{root}}articles/index.html" data-nav="articles">{{t:nav.articles}}</a>
+    <a href="{{root}}wiki/index.html" data-nav="wiki">{{t:nav.wiki}}</a>
+    <a href="{{root}}index.html#demo" data-nav="demo">{{t:nav.demo}}</a>
+    <a href="{{root}}index.html#install" data-nav="install">{{t:nav.install}}</a>
+    <a href="{{root}}index.html#download" data-nav="download">{{t:nav.download}}</a>
+    <a href="{{root}}material-asus-router.pdf.html" data-nav="pdf">{{t:nav.pdf}}</a>
+  </nav>
+
+  <section id="rx" class="rx" hidden aria-labelledby="rx-title">
+    <div class="rx-head">
+      <h2 id="rx-title">{{t:rx.title}}</h2>
+      <p class="rx-note">{{tb:rx.note}}</p>
+    </div>
+    <div class="rx-grid">
+      <div class="rx-main">
+        <label class="rx-label" for="rx-pattern">{{t:rx.pattern}}</label>
+        <div class="rx-field"><span class="rx-slash" aria-hidden="true">/</span><input id="rx-pattern" type="text" spellcheck="false" autocomplete="off" autocapitalize="off" aria-describedby="rx-status"><span class="rx-slash" aria-hidden="true">/</span><span id="rx-flags-view" class="rx-flags-view" aria-hidden="true"></span></div>
+        <div class="rx-flags" role="group" aria-label="{{en:rx.flags}}" data-i18n-attr="aria-label:rx.flags">
+          <label class="flag"><input type="checkbox" data-flag="g"><span><b>g</b> {{t:rx.flag.g}}</span></label>
+          <label class="flag"><input type="checkbox" data-flag="i" checked><span><b>i</b> {{t:rx.flag.i}}</span></label>
+          <label class="flag"><input type="checkbox" data-flag="m"><span><b>m</b> {{t:rx.flag.m}}</span></label>
+          <label class="flag"><input type="checkbox" data-flag="s"><span><b>s</b> {{t:rx.flag.s}}</span></label>
+          <label class="flag"><input type="checkbox" data-flag="u"><span><b>u</b> {{t:rx.flag.u}}</span></label>
+        </div>
+        <p id="rx-status" class="rx-status" role="status" aria-live="polite"></p>
+        <div class="rx-tokens" role="group" aria-label="{{en:rx.tokens}}" data-i18n-attr="aria-label:rx.tokens" id="rx-tokens"></div>
+        <label class="rx-label" for="rx-sample">{{t:rx.sample}}</label>
+        <textarea id="rx-sample" rows="3" spellcheck="false" data-i18n-attr="placeholder:rx.sample.placeholder" placeholder="{{en:rx.sample.placeholder}}"></textarea>
+        <div id="rx-sample-out" class="rx-sample-out" aria-live="polite"></div>
+      </div>
+      <div class="rx-side">
+        <h3>{{t:rx.explain}}</h3>
+        <ol id="rx-explain" class="rx-explain"></ol>
+      </div>
+    </div>
+  </section>
+
+  <section id="results" class="results" hidden aria-label="{{en:results.label}}" data-i18n-attr="aria-label:results.label">
+    <div class="results-head">
+      <p id="results-summary" role="status" aria-live="polite"></p>
+      <button type="button" id="results-close" class="text-btn">{{t:results.close}}</button>
+    </div>
+    <ul id="results-list" class="results-list"></ul>
+  </section>
+</header>
+
+<dialog id="settings" class="sheet" aria-labelledby="settings-title">
+  <form method="dialog" class="sheet-body">
+    <div class="sheet-head">
+      <h2 id="settings-title">{{t:settings.title}}</h2>
+      <button class="icon-btn" value="close" data-i18n-attr="aria-label:settings.close" aria-label="{{en:settings.close}}"><svg viewBox="0 0 24 24"><use href="#i-close"/></svg></button>
+    </div>
+    <fieldset>
+      <legend>{{t:settings.language}}</legend>
+      <div class="seg" role="radiogroup">
+        <label><input type="radio" name="lang" value="en"><span>English</span></label>
+        <label><input type="radio" name="lang" value="zh"><span lang="zh-HK">廣東話</span></label>
+        <label><input type="radio" name="lang" value="both"><span>English + 廣東話</span></label>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>{{t:settings.theme}}</legend>
+      <div class="seg" role="radiogroup">
+        <label><input type="radio" name="theme" value="light"><span>{{t:settings.theme.light}}</span></label>
+        <label><input type="radio" name="theme" value="dark"><span>{{t:settings.theme.dark}}</span></label>
+        <label><input type="radio" name="theme" value="system"><span>{{t:settings.theme.system}}</span></label>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>{{t:settings.accent}}</legend>
+      <div class="swatches" id="swatches" role="radiogroup" aria-label="{{en:settings.accent}}"></div>
+      <label class="custom-accent"><span>{{t:settings.accent.custom}}</span><input type="color" id="accent-custom" value="#3a6ea5"></label>
+    </fieldset>
+    <fieldset>
+      <legend>{{t:settings.motion}}</legend>
+      <div class="seg" role="radiogroup">
+        <label><input type="radio" name="motion" value="full"><span>{{t:settings.motion.full}}</span></label>
+        <label><input type="radio" name="motion" value="reduced"><span>{{t:settings.motion.reduced}}</span></label>
+        <label><input type="radio" name="motion" value="none"><span>{{t:settings.motion.none}}</span></label>
+      </div>
+      <p class="hint">{{tb:settings.motion.hint}}</p>
+    </fieldset>
+    <div class="sheet-actions">
+      <button type="button" id="settings-reset" class="text-btn">{{t:settings.reset}}</button>
+      <button class="filled-btn" value="done">{{t:settings.done}}</button>
+    </div>
+  </form>
+</dialog>
+
+<main id="main" tabindex="-1">
+{{body}}
+</main>
+
+<footer class="footer">
+  <div class="footer-grid">
+    <div>
+      <p class="footer-title">Material Asus Router</p>
+      <p>{{tb:footer.tagline}}</p>
+    </div>
+    <div>
+      <p class="footer-title">{{t:footer.links}}</p>
+      <ul>
+        <li><a href="{{repo}}" rel="noopener noreferrer">{{t:footer.source}}</a></li>
+        <li><a href="{{repo}}/issues" rel="noopener noreferrer">{{t:footer.issues}}</a></li>
+        <li><a href="{{root}}material-asus-router.pdf.html">{{t:footer.pdf}}</a></li>
+        <li><a href="{{root}}release.json">{{t:footer.manifest}}</a></li>
+      </ul>
+    </div>
+    <div class="provenance">
+      <p class="footer-title">{{t:footer.version}}</p>
+      <p><strong>v{{version}}</strong></p>
+      <p>{{t:footer.updated}}: <time datetime="{{updated}}">{{updated_text}}</time></p>
+      <p class="muted">{{t:footer.commit}}: <code>{{commit}}</code></p>
+    </div>
+  </div>
+</footer>
+
+<script>window.__MAR={root:"{{root}}",index:"{{root}}search-index.js"};</script>
+<script src="{{root}}assets/i18n.js"></script>
+<script src="{{root}}assets/app.js" defer></script>
+{{extra_scripts}}
+</body>
+</html>

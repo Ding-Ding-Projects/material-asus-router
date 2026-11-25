@@ -1,0 +1,70 @@
+{
+  "defaultMissing": { "en": "Interface screens and verification are still being built.", "zh": "介面畫面同驗證仲喺開發中。" },
+  "groups": [
+    {
+      "id": "everyday",
+      "title": { "en": "Everyday", "zh": "日常使用" },
+      "items": [
+        { "id": "overview", "article": "router/overview", "status": "in-progress", "title": { "en": "Overview", "zh": "總覽" }, "summary": { "en": "Model, firmware, uptime, load and connection state at a glance.", "zh": "型號、韌體、運作時間、負載同連線狀態一眼睇晒。" } },
+        { "id": "devices", "article": "router/devices", "status": "in-progress", "title": { "en": "Devices", "zh": "裝置" }, "summary": { "en": "See every connected device, rename it, block it or reserve its address.", "zh": "睇到每部已連線嘅裝置，可以改名、封鎖或者保留位址。" } },
+        { "id": "wifi", "article": "router/wifi", "status": "in-progress", "title": { "en": "Wi-Fi", "zh": "Wi-Fi" }, "summary": { "en": "Name, password, security and channel per band, plus the guest network.", "zh": "每個頻段嘅名稱、密碼、加密同頻道，另加訪客網絡。" } },
+        { "id": "internet", "article": "router/internet", "status": "in-progress", "title": { "en": "Internet", "zh": "互聯網" }, "summary": { "en": "Connection type, DNS servers and dynamic DNS.", "zh": "連線類型、DNS 伺服器同動態 DNS。" } },
+        { "id": "local-network", "article": "router/local-network", "status": "in-progress", "title": { "en": "Local network", "zh": "區域網絡" }, "summary": { "en": "Router address, DHCP range and address reservations.", "zh": "路由器位址、DHCP 範圍同位址保留。" } }
+      ]
+    },
+    {
+      "id": "protect",
+      "title": { "en": "Protect and control", "zh": "保護同管控" },
+      "items": [
+        { "id": "port-forwarding", "article": "router/port-forwarding", "status": "in-progress", "title": { "en": "Port forwarding", "zh": "連接埠轉發" }, "summary": { "en": "Send outside traffic on a port to a device at home.", "zh": "將外面經某個連接埠嚟嘅流量轉去屋企部裝置。" } },
+        { "id": "firewall", "article": "router/firewall", "status": "in-progress", "title": { "en": "Firewall", "zh": "防火牆" }, "summary": { "en": "Firewall switches and rules, explained before you apply them.", "zh": "防火牆開關同規則，套用之前會先解釋清楚。" } },
+        { "id": "parental-controls", "article": "router/parental-controls", "status": "in-progress", "title": { "en": "Parental controls", "zh": "家長控制" }, "summary": { "en": "Time limits and filters for the devices you choose.", "zh": "為你揀嘅裝置設定時間限制同過濾。" } },
+        { "id": "vpn", "article": "router/vpn", "status": "in-progress", "title": { "en": "VPN", "zh": "VPN" }, "summary": { "en": "OpenVPN and WireGuard, on firmware that supports them.", "zh": "喺支援嘅韌體上使用 OpenVPN 同 WireGuard。" } }
+      ]
+    },
+    {
+      "id": "performance",
+      "title": { "en": "Performance and mesh", "zh": "效能同 Mesh" },
+      "items": [
+        { "id": "traffic-priority", "article": "router/traffic-priority", "status": "in-progress", "title": { "en": "Traffic priority (QoS)", "zh": "流量優先次序 (QoS)" }, "summary": { "en": "Decide which traffic gets bandwidth first.", "zh": "決定邊類流量優先使用頻寬。" } },
+        { "id": "aimesh", "article": "router/aimesh", "status": "in-progress", "title": { "en": "AiMesh", "zh": "AiMesh" }, "summary": { "en": "See mesh nodes and their state.", "zh": "睇到 Mesh 節點同佢哋嘅狀態。" } }
+      ]
+    },
+    {
+      "id": "storage-tools",
+      "title": { "en": "Storage and tools", "zh": "儲存同工具" },
+      "items": [
+        { "id": "usb-storage", "article": "router/usb-storage", "status": "in-progress", "title": { "en": "USB and storage", "zh": "USB 同儲存" }, "summary": { "en": "Attached drives and sharing settings.", "zh": "已接駁嘅硬碟同分享設定。" } },
+        { "id": "logs", "article": "router/logs", "status": "in-progress", "title": { "en": "Logs", "zh": "記錄" }, "summary": { "en": "Read the router log with search and filters.", "zh": "用搜尋同過濾睇路由器記錄。" } },
+        { "id": "network-tools", "article": "tools/network-tools", "status": "in-progress", "title": { "en": "Network tools", "zh": "網絡工具" }, "summary": { "en": "Ping, traceroute and name lookup from the router.", "zh": "由路由器執行 Ping、Traceroute 同域名查詢。" } },
+        { "id": "scheduled-jobs", "article": "router/scheduled-jobs", "status": "in-progress", "merlin": true, "title": { "en": "Scheduled jobs", "zh": "排程工作" }, "summary": { "en": "Run jobs on a schedule on Asuswrt-Merlin.", "zh": "喺 Asuswrt-Merlin 上按時間表執行工作。" } }
+      ]
+    },
+    {
+      "id": "maintain",
+      "title": { "en": "Maintenance", "zh": "維護" },
+      "items": [
+        { "id": "backup-restore", "article": "router/backup-restore", "status": "in-progress", "title": { "en": "Backup and restore", "zh": "備份同還原" }, "summary": { "en": "Save the router settings and restore them later.", "zh": "儲存路由器設定，之後可以還原。" } },
+        { "id": "firmware", "article": "router/firmware", "status": "in-progress", "title": { "en": "Firmware", "zh": "韌體" }, "summary": { "en": "Check the version and update with care.", "zh": "檢查版本，小心更新。" } },
+        { "id": "system", "article": "router/system", "status": "in-progress", "title": { "en": "System", "zh": "系統" }, "summary": { "en": "Time zone, administration and sign-in settings of the router.", "zh": "路由器嘅時區、管理同登入設定。" } },
+        { "id": "maintenance", "article": "router/maintenance", "status": "in-progress", "title": { "en": "Maintenance", "zh": "維護工作" }, "summary": { "en": "Reboot with a two-key confirmation, and other upkeep.", "zh": "需要兩個步驟確認嘅重新啟動，同其他保養工作。" } },
+        { "id": "merlin-extras", "article": "router/merlin-extras", "status": "in-progress", "merlin": true, "title": { "en": "Merlin extras", "zh": "Merlin 額外功能" }, "summary": { "en": "Controls that exist only on Asuswrt-Merlin.", "zh": "只有 Asuswrt-Merlin 先有嘅控制項。" } },
+        { "id": "advanced", "article": "router/advanced", "status": "in-progress", "title": { "en": "Advanced", "zh": "進階" }, "summary": { "en": "Every router value, with a friendly label first.", "zh": "路由器每個數值，先顯示易明嘅名稱。" } },
+        { "id": "change-history", "article": "safety/change-history", "status": "in-progress", "title": { "en": "Change history", "zh": "改動歷史" }, "summary": { "en": "Every change with its old and new values.", "zh": "每次改動連同舊值同新值。" } }
+      ]
+    },
+    {
+      "id": "app",
+      "title": { "en": "The app itself", "zh": "程式本身" },
+      "items": [
+        { "id": "safe-change", "article": "safety/safe-changes", "status": "in-progress", "title": { "en": "Preview, confirm, apply", "zh": "預覽、確認、套用" }, "summary": { "en": "Old and new values side by side; previous values saved first.", "zh": "舊值同新值並排顯示，先儲存舊值。" } },
+        { "id": "guard", "article": "safety/connection-guard", "status": "in-progress", "title": { "en": "Connection-loss guard", "zh": "斷線保護" }, "summary": { "en": "A router-side timed revert, 90 seconds by default.", "zh": "喺路由器上面運作嘅定時還原，預設 90 秒。" } },
+        { "id": "undo", "article": "safety/undo-changes", "status": "in-progress", "title": { "en": "One-click undo", "zh": "一鍵還原" }, "summary": { "en": "Put back the values a change replaced.", "zh": "還原改動所取代嘅數值。" } },
+        { "id": "roles", "article": "app/accounts-and-roles", "status": "in-progress", "title": { "en": "Owner, operators, viewers", "zh": "擁有者、操作員、檢視者" }, "summary": { "en": "The first account is the owner; add people with the access they need.", "zh": "第一個帳戶係擁有者，之後按需要加入其他人。" } },
+        { "id": "firmware-detect", "article": "setup/firmware-detection", "status": "in-progress", "title": { "en": "Firmware detection", "zh": "韌體偵測" }, "summary": { "en": "Merlin-only controls show as disabled, with the reason, on stock firmware.", "zh": "原廠韌體上，只限 Merlin 嘅控制項會顯示為停用並註明原因。" } },
+        { "id": "demo-mode", "article": "start/demo-router", "status": "in-progress", "title": { "en": "Demo router", "zh": "模擬路由器" }, "summary": { "en": "Try everything against a built-in pretend router.", "zh": "用內置嘅模擬路由器試晒所有功能。" } },
+        { "id": "desktop", "article": "delivery/desktop-app", "status": "in-progress", "title": { "en": "Windows desktop app", "zh": "Windows 桌面版" }, "missing": { "en": "Planned in the same release. Nothing to download yet.", "zh": "計劃喺同一個版本推出，暫時未有下載。" }, "summary": { "en": "The same app as a Windows program.", "zh": "同一個程式，以 Windows 程式形式提供。" } }
+      ]
+    }
+  ]
+}
