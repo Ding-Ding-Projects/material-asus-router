@@ -1,0 +1,37 @@
+/* Messages with three voices: plain (levels 1-2), friendly (3-4) and playful (5). The facts are identical in all three. */
+const m = (en, zh) => ({ en, zh });
+export const MSG = {
+  saved: m(['Saved.', 'Saved. This browser will remember it.', 'Saved. This browser took notes like a good student.'], ['已儲存。', '已儲存，呢個瀏覽器會記住。', '已儲存，瀏覽器好似乖學生咁記低咗。']),
+  reset: m(['Reset to the default.', 'Reset to the default value.', 'Back to the default. A fresh start, no questions asked.'], ['已還原預設值。', '已還原做預設值。', '已經打回原形，由頭嚟過。']),
+  copied: m(['Copied.', 'Copied to the clipboard.', 'Copied. Paste it wherever you like.'], ['已複製。', '已複製到剪貼簿。', '複製咗，隨便貼去邊度都得。']),
+  exported: m(['Export ready: {name}', 'Your export is ready: {name}', 'Export ready: {name}. Fresh out of the steamer.'], ['匯出完成：{name}', '匯出完成：{name}', '匯出完成：{name}，啱啱蒸好。']),
+  imported: m(['Import finished.', 'Import finished. Settings applied.', 'Import finished. Everything landed in the right basket.'], ['匯入完成。', '匯入完成，設定已套用。', '匯入完成，全部落啱籠。']),
+  invalid: m(['That file could not be used. Nothing was changed.', 'That file could not be used, so nothing changed.', 'That file did not pass the check, so nothing changed. Your old settings are safe.'], ['呢個檔案用唔到，冇改動任何嘢。', '呢個檔案用唔到，所以冇改動。', '呢個檔案過唔到關，所以乜都冇變，舊設定安全。']),
+  bookmarkOn: m(['Bookmarked.', 'Added to your bookmarks.', 'Bookmarked. Future you says thanks.'], ['已加書籤。', '已加入書籤。', '加咗書籤，將來嘅你會多謝你。']),
+  bookmarkOff: m(['Bookmark removed.', 'Removed from your bookmarks.', 'Bookmark removed. It left quietly.'], ['已移除書籤。', '已由書籤移除。', '書籤靜靜雞走咗。']),
+  narrationOn: m(['Reading aloud.', 'Reading this page aloud.', 'Reading aloud. Sit back, the page is talking.'], ['開始朗讀。', '開始朗讀呢一頁。', '開始朗讀，坐低慢慢聽。']),
+  narrationOff: m(['Reading stopped.', 'Reading stopped.', 'Reading stopped. The page went quiet.'], ['朗讀已停止。', '朗讀已停止。', '朗讀停咗，頁面靜晒。']),
+  narrationNone: m(['This browser has no speech voices.', 'This browser has no speech voices, so reading aloud is not available.', 'This browser has no speech voices, so the page cannot talk. Reading aloud is unavailable here.'], ['呢個瀏覽器冇語音。', '呢個瀏覽器冇語音，所以用唔到朗讀。', '呢個瀏覽器冇語音，頁面講唔到嘢，朗讀用唔到。']),
+  locked: m(['Locked.', 'Locked. This is a toy lock, just for fun.', 'Locked. It is a toy lock, so please do not guard state secrets with it.'], ['已鎖上。', '已鎖上，呢個只係玩具鎖。', '已鎖上，不過只係玩具鎖，唔好用佢保護國家機密。']),
+  unlocked: m(['Unlocked.', 'Unlocked.', 'Unlocked. Welcome back.'], ['已解鎖。', '已解鎖。', '解咗鎖，歡迎返嚟。']),
+  wrongCode: m(['That did not match. {left} tries left.', 'That did not match. You have {left} tries left.', 'Not quite. {left} tries left, so take a breath.'], ['唔啱，仲有 {left} 次機會。', '唔啱，仲有 {left} 次機會。', '就差少少，仲有 {left} 次機會，深呼吸先。']),
+  schoolOn: m(['School mode is on.', 'School mode is on. English only.', 'School mode is on. Plain English only, no jokes.'], ['學校模式已開。', '學校模式已開，只用英文。', '學校模式已開，淨係英文，唔講笑。']),
+  schoolOff: m(['School mode is off.', 'School mode is off.', 'School mode is off. Back to the full experience.'], ['學校模式已關。', '學校模式已關。', '學校模式關咗，返回完整體驗。']),
+  vocabOn: m(['Word list applied: {n} entries.', 'Your word list is applied: {n} entries.', 'Word list applied: {n} entries. The page now speaks your way.'], ['字詞表已套用：{n} 項。', '字詞表已套用：{n} 項。', '字詞表已套用：{n} 項，頁面而家跟你嘅講法。']),
+  vocabOff: m(['Word list cleared. Original wording is back.', 'Word list cleared. The original wording is back.', 'Word list cleared. The page is back to its old self.'], ['字詞表已清除，已還原原文。', '字詞表已清除，已還原原文。', '字詞表清走咗，頁面返晒原來嘅樣。']),
+  offline: m(['No connection. Showing saved information only.', 'No connection, so only saved information is shown.', 'No connection. Showing what was saved earlier, nothing invented.'], ['冇網絡，只顯示已儲存嘅資料。', '冇網絡，所以只顯示已儲存嘅資料。', '冇網絡，只顯示之前儲存嘅資料，冇亂作。']),
+  tabClosed: m(['Tab closed.', 'Tab closed.', 'Tab closed. One less thing to look at.'], ['已關閉分頁。', '已關閉分頁。', '關咗個分頁，少一樣嘢睇。']),
+  historyCleared: m(['Reading history cleared.', 'Reading history cleared from this browser.', 'Reading history cleared. No evidence left.'], ['已清除閱讀記錄。', '已由呢個瀏覽器清除閱讀記錄。', '閱讀記錄清晒，冇證據留低。']),
+  updateIdle: m(['No newer build is being made right now.', 'No newer build is being made right now.', 'No newer build is cooking right now.'], ['而家冇更新版本喺度製作。', '而家冇更新版本喺度製作。', '而家冇新版本喺廚房度蒸緊。']),
+  error: m(['Something went wrong: {why}', 'Something went wrong: {why}', 'That did not work: {why}. Nothing was broken.'], ['出錯：{why}', '出錯：{why}', '搞唔掂：{why}，但冇搞壞嘢。']),
+  scheduleOn: m(['Schedule "{name}" started.', 'Schedule "{name}" started.', 'Schedule "{name}" started right on time.'], ['排程「{name}」已開始。', '排程「{name}」已開始。', '排程「{name}」準時開始。']),
+  scheduleOff: m(['Schedule "{name}" ended. Earlier settings restored.', 'Schedule "{name}" ended and your earlier settings are back.', 'Schedule "{name}" ended. Your earlier settings are back.'], ['排程「{name}」已結束，已還原之前嘅設定。', '排程「{name}」已結束，之前嘅設定返晒嚟。', '排程「{name}」結束，之前嘅設定返晒嚟。']),
+};
+export const DISHES = [
+  { id: 'har-gow', en: 'Har gow (shrimp dumpling)', zh: '蝦餃', color: '#f6d6c4' },
+  { id: 'siu-mai', en: 'Siu mai (pork dumpling)', zh: '燒賣', color: '#f2c14e' },
+  { id: 'bao', en: 'Char siu bao (barbecue pork bun)', zh: '叉燒包', color: '#fff3df' },
+  { id: 'egg-tart', en: 'Egg tart', zh: '蛋撻', color: '#f7d56b' },
+  { id: 'cheung-fun', en: 'Cheung fun (rice noodle roll)', zh: '腸粉', color: '#f4efe7' },
+  { id: 'lo-bak-go', en: 'Turnip cake', zh: '蘿蔔糕', color: '#e9dcc0' },
+];
