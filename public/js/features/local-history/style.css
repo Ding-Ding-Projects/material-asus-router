@@ -1,0 +1,10 @@
+.lh{display:flex;flex-direction:column;gap:16px}
+.lh-filters{display:flex;gap:12px;flex-wrap:wrap}
+.lh-date{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:650;flex:1 1 160px}
+.lh-search{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.lh-search .field{flex:1 1 240px}
+.lh-rx{display:flex;gap:6px;align-items:center;font-weight:650}
+.lh-row.sel{background:var(--primary-c)}
+.lh-row input[type=checkbox]{width:22px;height:22px;accent-color:var(--primary)}
+.lh-paths{word-break:break-all}
+.lh-diff table{min-width:0}

@@ -1,0 +1,15 @@
+.ul-body{display:flex;flex-direction:column;gap:14px}
+.ul-dish{min-height:72px;flex-direction:column}
+.ul-emoji{font-size:32px;line-height:1}
+.ul-sum{display:flex;align-items:center;gap:8px;font-weight:700}
+.ul-sum .field{width:96px;height:44px}
+.ul-holes{display:grid;grid-template-columns:repeat(3,minmax(0,96px));gap:12px;justify-content:center}
+.ul-hole{aspect-ratio:1;border-radius:50%;border:2px solid var(--line);background:var(--surf-high);color:transparent;display:grid;place-items:center;min-width:48px;min-height:48px}
+.ul-hole.up{background:var(--primary);color:var(--on-primary);transform:scale(1.06)}
+.ul-clockwrap{display:flex;justify-content:center}
+.ul-clock{width:min(60vw,200px);height:auto}
+.ul-face{fill:var(--surf);stroke:var(--text);stroke-width:2}
+.ul-tick{stroke:var(--text);stroke-width:1.5}
+.ul-hour{stroke:var(--text);stroke-width:4;stroke-linecap:round}
+.ul-minute{stroke:var(--primary);stroke-width:2.5;stroke-linecap:round}
+.ul-note{font-size:13px}

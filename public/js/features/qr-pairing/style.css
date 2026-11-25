@@ -1,0 +1,5 @@
+.pair{display:flex;flex-direction:column;gap:16px}
+.qrwrap{display:flex;justify-content:center}
+.qr-svg{width:min(100%,280px);height:auto;border-radius:12px;background:#fff;box-shadow:var(--e1)}
+.pair .secret{font-size:18px;letter-spacing:1px;word-break:break-all;padding:12px 16px;border-radius:14px;background:var(--surf-high)}
+.pair label{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:650}

@@ -1,0 +1,4 @@
+.ex-checks{display:flex;gap:16px;flex-wrap:wrap}
+.ex-check{display:flex;gap:8px;align-items:center;font-weight:650}
+.ex-check input{width:22px;height:22px;accent-color:var(--primary)}
+.ex-back{display:flex;flex-direction:column;gap:10px}
