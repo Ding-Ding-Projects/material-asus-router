@@ -1,0 +1,19 @@
+{
+  "appId": "com.dingdingprojects.materialasusrouter",
+  "productName": "Material Asus Router",
+  "copyright": "MIT licence",
+  "electronVersion": "45.5.0",
+  "directories": { "app": "payload", "output": "dist/builder", "buildResources": "assets" },
+  "asar": true,
+  "npmRebuild": false,
+  "nodeGypRebuild": false,
+  "buildDependenciesFromSource": false,
+  "compression": "normal",
+  "win": {
+    "icon": "assets/icon.ico",
+    "signExecutable": false,
+    "target": [{ "target": "portable", "arch": ["x64"] }, { "target": "dir", "arch": ["x64"] }],
+    "artifactName": "Material-Asus-Router-${version}-portable.${ext}"
+  },
+  "portable": { "artifactName": "Material-Asus-Router-${version}-portable.exe" }
+}

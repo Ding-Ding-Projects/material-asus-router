@@ -1,0 +1,24 @@
+{
+  "name": "material-asus-router-desktop",
+  "productName": "Material Asus Router",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Windows desktop shell for Material Asus Router.",
+  "license": "MIT",
+  "author": "Ding Ding Projects",
+  "type": "module",
+  "main": "main.mjs",
+  "scripts": {
+    "start": "electron .",
+    "demo": "electron . --demo"
+  },
+  "devDependencies": {
+    "electron": "45.5.0",
+    "electron-builder": "26.18.0",
+    "electron-winstaller": "5.4.4"
+  },
+  "allowScripts": {
+    "electron-winstaller@5.4.0": true,
+    "electron-winstaller@5.4.4": true
+  }
+}

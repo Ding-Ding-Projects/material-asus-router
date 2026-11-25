@@ -1,0 +1,87 @@
+# Builds the Windows desktop app on every push to any branch and publishes a normal release
+# (never a draft or prerelease) with a unique tag. The workflow only triggers on branch pushes,
+# so the tag it creates cannot start another run.
+name: Release
+
+on:
+  push:
+    branches: ['**']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: windows-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Record the start time
+        id: meta
+        shell: pwsh
+        run: |
+          $version = (Get-Content package.json -Raw | ConvertFrom-Json).version
+          "version=$version" >> $env:GITHUB_OUTPUT
+          "tag=v$version-${{ github.run_number }}" >> $env:GITHUB_OUTPUT
+          "started=$([DateTime]::UtcNow.ToString('yyyy-MM-dd HH:mm:ss'))" >> $env:GITHUB_OUTPUT
+          "startticks=$([DateTime]::UtcNow.Ticks)" >> $env:GITHUB_OUTPUT
+      - name: Build the installer and the portable app
+        shell: pwsh
+        env:
+          BUILD_NUMBER: ${{ github.run_number }}
+        run: ./scripts/build-installer.ps1 -SkipTests
+      - name: Build the phone PDF when Chrome is present
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $chrome = Join-Path ${env:ProgramFiles} 'Google\Chrome\Application\chrome.exe'
+          if (-not (Test-Path $chrome)) { Write-Host 'Chrome is not installed, so no PDF is built.'; exit 0 }
+          $env:CHROME_PATH = $chrome
+          node scripts/build-site.mjs site
+          node scripts/build-pdf.mjs site
+      - name: Collect the release files
+        id: collect
+        shell: pwsh
+        run: |
+          $out = New-Item -ItemType Directory -Force release-files
+          Copy-Item desktop/dist/squirrel/Material-Asus-Router-Setup.exe, desktop/dist/squirrel/RELEASES, compose.yaml, host.bat, scripts/host.ps1, scripts/setup.ps1 $out
+          Copy-Item desktop/dist/squirrel/*-full.nupkg $out
+          Copy-Item desktop/dist/builder/*-portable.exe $out
+          if (Test-Path site/material-asus-router.pdf) { Copy-Item site/material-asus-router.pdf $out }
+          Push-Location $out
+          Get-ChildItem -File | Where-Object Name -ne 'SHA256SUMS.txt' | Sort-Object Name | ForEach-Object { '{0}  {1}' -f (Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLower(), $_.Name } | Set-Content SHA256SUMS.txt -Encoding ascii
+          Pop-Location
+          Get-ChildItem $out | Format-Table Name, Length
+      - name: Publish the release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $ended = [DateTime]::UtcNow
+          $duration = [TimeSpan]::FromTicks($ended.Ticks - [long]'${{ steps.meta.outputs.startticks }}')
+          $notes = @"
+          Windows desktop build of Material Asus Router ${{ steps.meta.outputs.version }}.
+
+          - Commit: ${{ github.sha }}
+          - Branch: ${{ github.ref_name }}
+          - Build started (UTC): ${{ steps.meta.outputs.started }}
+          - Build duration so far: $([int]$duration.TotalMinutes) min $($duration.Seconds) s
+
+          Files: Material-Asus-Router-Setup.exe (installer, keeps itself updated), the portable .exe (one file, no install), RELEASES and the .nupkg (the update feed), compose.yaml with host.bat and the setup scripts for hosting with Docker, the phone PDF of the documentation when it could be built, and SHA256SUMS.txt.
+
+          Warning: these installers are not signed. Windows SmartScreen will show an unknown publisher warning; check the SHA-256 sums before you run them.
+          "@
+          $notes = ($notes -split "`n" | ForEach-Object { $_.TrimStart() }) -join "`n"
+          gh release create '${{ steps.meta.outputs.tag }}' (Get-ChildItem release-files -File).FullName --title 'Material Asus Router ${{ steps.meta.outputs.version }} (build ${{ github.run_number }})' --notes $notes --target ${{ github.sha }} --latest
+          if ($LASTEXITCODE -ne 0) { throw 'Creating the release failed.' }
+          $check = gh release view '${{ steps.meta.outputs.tag }}' --json isDraft,isPrerelease | ConvertFrom-Json
+          if ($check.isDraft -or $check.isPrerelease) { throw 'The release is a draft or a prerelease.' }
