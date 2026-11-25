@@ -1,0 +1,6 @@
+/* IPv6 address boxes shrink to fit a narrow phone. */
+.ipv6box{display:grid;gap:6px;min-width:0;width:100%}
+.ipv6box .field{min-width:0;width:100%}
+.setting .ctl .ipv6box .field{width:100%}
+.ipv6box .field[aria-invalid=true]{border-color:var(--bad)}
+.ipv6out{white-space:pre-wrap;overflow-wrap:anywhere}
