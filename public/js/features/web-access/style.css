@@ -1,0 +1,10 @@
+.wa-stack{display:flex;flex-direction:column;gap:16px}
+.wa-exposure .wa-pulse{width:64px;height:64px;border-radius:32px;display:grid;place-items:center;background:var(--surf-high)}
+.wa-exposure.bad .wa-pulse{background:var(--bad);color:#fff;animation:wa-alarm 1.6s ease-in-out infinite}
+.wa-warning{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:20px;background:var(--bad-c);font-weight:600}
+.wa-cert{display:flex;flex-direction:column;gap:10px}
+.wa-mono{font-family:ui-monospace,Consolas,monospace;overflow-wrap:anywhere}
+.chiplist{display:flex;flex-direction:column;gap:8px;min-width:0;max-width:100%}
+/* A slow red pulse that says "this is open" without flashing; reduced motion makes it a still disc. */
+@keyframes wa-alarm{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--bad) 55%,transparent);transform:scale(1)}50%{box-shadow:0 0 0 18px transparent;transform:scale(1.06)}}
+@media (prefers-reduced-motion:reduce){.wa-exposure.bad .wa-pulse{animation:none}}

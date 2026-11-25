@@ -1,0 +1,8 @@
+.cl-stack{display:flex;flex-direction:column;gap:16px}
+.cl-ring{width:64px;height:64px;border-radius:32px;display:grid;place-items:center;background:var(--surf-high)}
+.cl-exposure.bad .cl-ring{background:var(--bad);color:#fff;animation:cl-rise 2.2s ease-in-out infinite}
+.cl-warning{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:20px;background:var(--bad-c);font-weight:600}
+.cl-mono{font-family:ui-monospace,Consolas,monospace;overflow-wrap:anywhere}
+/* The cloud lifts and settles while files are reachable; reduced motion keeps it still. */
+@keyframes cl-rise{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@media (prefers-reduced-motion:reduce){.cl-exposure.bad .cl-ring{animation:none}}
