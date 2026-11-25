@@ -1,0 +1,22 @@
+/* VPN Director canvas. Theme variables only, so light and dark both work. */
+.vd-lanes{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:14px;align-items:start}
+.vd-lane{background:var(--surf);border-radius:28px;padding:16px;box-shadow:var(--e1);display:flex;flex-direction:column;gap:8px;min-width:0;border:2px dashed transparent;transition:border-color .2s,background .2s,transform .25s cubic-bezier(.2,.9,.25,1.4);animation:vd-in .5s cubic-bezier(.2,.9,.25,1.1) both}
+.vd-lane:nth-child(2){animation-delay:.04s}.vd-lane:nth-child(3){animation-delay:.08s}.vd-lane:nth-child(4){animation-delay:.12s}.vd-lane:nth-child(n+5){animation-delay:.16s}
+.vd-lane.tray{background:var(--surf-low);box-shadow:none}
+.vd-lane.closed{opacity:.55}
+.vd-lane.drop-hot{border-color:var(--primary);background:var(--primary-c);transform:scale(1.02)}
+.vd-lanehead{display:flex;gap:8px;align-items:center;flex-wrap:wrap;min-width:0}
+.vd-dev{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 12px;border-radius:16px;background:var(--surf-low);border:1.5px solid var(--line);cursor:grab;min-width:0;transition:transform .2s cubic-bezier(.2,.9,.25,1.3),box-shadow .2s}
+.vd-dev:hover{transform:translateY(-2px);box-shadow:var(--e1)}
+.vd-dev.routed{background:var(--secondary-c);color:var(--on-secondary-c);border-color:transparent}
+.vd-dev.off{opacity:.6}
+.vd-dev.is-dragged{opacity:.35}
+.vd-name{font-weight:700;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.vd-select{height:40px;font-size:13px;flex:1 1 150px;min-width:0}
+.vd-none{color:var(--sub);font-size:13px;text-align:center;padding:10px}
+.vd-column{margin:0;padding-left:18px;font-size:13px}
+.me-field{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:650;color:var(--sub)}
+.visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.drag-ghost{position:fixed;z-index:9999;pointer-events:none;opacity:.92;box-shadow:var(--e2);transform:rotate(-2deg) scale(1.04)}
+@keyframes vd-in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.vd-lane{animation:none}.vd-lane,.vd-dev{transition:none}.vd-dev:hover,.vd-lane.drop-hot{transform:none}.drag-ghost{transform:none}}
