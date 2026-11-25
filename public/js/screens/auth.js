@@ -50,12 +50,15 @@ export function signInScreen(root, done) {
   root.replaceChildren(frame(h("form", { class: "card", onSubmit: async (e) => {
     e.preventDefault();
     err.textContent = "";
+    const button = e.target.querySelector("button[type=submit]");
+    if (button) { button.disabled = true; button.textContent = t("Signing in...", "登入緊..."); }
     try {
       const res = await api.post("/api/login", v);
       auth.csrf = res.csrf;
       done();
     } catch (error) {
       err.textContent = error.message;
+      if (button) { button.disabled = false; button.textContent = t("Sign in", "登入"); }
     }
   } },
     h("h1", { class: "disp" }, t("Sign in", "登入")),

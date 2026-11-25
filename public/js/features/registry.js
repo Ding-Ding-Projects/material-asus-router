@@ -23,7 +23,7 @@ function context(navigate) {
   return Object.freeze({ api, t, tt, h, icon, clear, toast, openDialog, confirmDialog, bus, getLang, state: app, dock, notice, controls: { ...controls }, navigate, page, notifications: { notice, toast } });
 }
 
-export async function loadFeatures({ navigate, reserved = new Set() }) {
+export async function loadFeatures({ navigate, reserved = new Set(), onProgress = null }) {
   for (const key of ["settings", "commands", "overlays", "toolbar", "errors", "loaded"]) featureState[key] = [];
   featureState.screens = new Map();
   const ctx = context(navigate);
@@ -36,10 +36,17 @@ export async function loadFeatures({ navigate, reserved = new Set() }) {
     return featureState;
   }
   for (const url of manifest.styles ?? []) document.head.append(h("link", { rel: "stylesheet", href: url, "data-feature": "" }));
-  for (const url of manifest.modules ?? []) {
+  // Fetch every feature module at once (a slow link would otherwise pay one round trip per module in turn),
+  // then register them in manifest order so the result does not depend on which arrived first.
+  const urls = manifest.modules ?? [];
+  let arrived = 0;
+  const imports = urls.map((url) => import(url).then((mod) => { arrived += 1; onProgress?.(arrived, urls.length); return { mod }; }, (error) => { arrived += 1; onProgress?.(arrived, urls.length); return { error }; }));
+  const results = await Promise.all(imports);
+  urls.forEach((url, i) => {
     const folder = url.split("/").slice(-2)[0];
     try {
-      const feature = (await import(url)).default;
+      if (results[i].error) throw results[i].error;
+      const feature = results[i].mod.default;
       const problem = checkFeatureModule(feature, folder);
       if (problem) throw new Error(problem);
       register(feature, ctx, reserved);
@@ -48,7 +55,7 @@ export async function loadFeatures({ navigate, reserved = new Set() }) {
       featureState.errors.push({ url, message: error.message });
       console.error(`[features] ${url}: ${error.message}`);
     }
-  }
+  });
   const screens = {};
   for (const [id, s] of featureState.screens) screens[id] = { id, icon: s.icon, label: s.label, group: s.group };
   if (featureState.settings.length) {

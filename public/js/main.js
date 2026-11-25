@@ -14,6 +14,7 @@ import { history } from "./screens/history.js";
 import { aimesh, backup, firmware, maintenance, merlin, system, usb } from "./screens/system.js";
 import { featureState, loadFeatures, mountOverlays } from "./features/registry.js";
 import { openPalette } from "./palette.js";
+import { installApiGuard, loadSafety, mountBadges, mountBar } from "./features/change-safety/safety.js";
 
 const root = $("#app");
 const generic = (id) => (el) => settingsScreen(el, id);
@@ -101,7 +102,30 @@ async function boot() {
   }
 }
 
+// A visible loading card, so a slow link never looks like a dead button.
+function loadingScreen(step, detail = "") {
+  const bar = h("div", { class: "load-bar", role: "progressbar", "aria-valuemin": "0", "aria-valuemax": "100" });
+  const card = h("section", { class: "card load-card", "aria-busy": "true" },
+    h("div", { class: "load-spin", "aria-hidden": "true" }),
+    h("h1", { class: "disp" }, t("Opening your router", "打開緊你嘅路由器")),
+    h("p", { class: "lede" }, step),
+    h("p", { class: "load-detail" }, detail),
+    bar);
+  root.replaceChildren(h("div", { class: "center" }, card));
+  return {
+    step: (text) => { card.querySelector(".lede").textContent = text; },
+    progress: (done, total) => {
+      const pct = total ? Math.round((done / total) * 100) : 0;
+      bar.style.setProperty("--pct", `${pct}%`);
+      bar.setAttribute("aria-valuenow", String(pct));
+      card.querySelector(".load-detail").textContent = t(`Loading features: ${done} of ${total}`, `載入功能：${done} / ${total}`);
+    },
+  };
+}
+
 async function enterApp() {
+  window.__marArmGuard?.();
+  const loading = loadingScreen(t("Reading the router's settings...", "讀緊路由器設定..."));
   try {
     app.catalog = await api.get("/api/catalog");
   } catch (error) {
@@ -111,7 +135,10 @@ async function enterApp() {
       h("h1", { class: "disp" }, t("Cannot reach the router", "連唔到路由器")), h("p", { class: "lede" }, error.message),
       h("div", { class: "actions" }, app.me.role === "owner" ? h("button", { class: "btn o", onClick: () => connectScreen(root, boot, { owner: true }) }, t("Change router", "更換路由器")) : null, h("button", { class: "btn f", onClick: boot }, icon("refresh", "sm"), t("Try again", "再試")))))));
   }
-  await loadFeatures({ navigate, reserved: CORE_SCREENS });
+  installApiGuard();
+  await loadSafety(app.me);
+  loading.step(t("Loading the app's features...", "載入緊程式功能..."));
+  await loadFeatures({ navigate, reserved: CORE_SCREENS, onProgress: loading.progress });
   for (const d of app.catalog.domains) if (!SCREENS[d.id]) SCREENS[d.id] = generic(d.id);
   for (const [id, screen] of featureState.screens) SCREENS[id] = screen.render;
   buildShell();
@@ -154,9 +181,11 @@ function buildShell() {
   const tabBar = h("div", { class: "tabs", role: "tablist", "aria-label": t("Open screens", "已開啟嘅畫面") });
   const results = h("div", { class: "results", hidden: true, role: "listbox" });
   const search = h("input", { type: "search", placeholder: t("Search settings and screens", "搜尋設定同畫面"), "aria-label": t("Search settings and screens", "搜尋設定同畫面"), autocomplete: "off", onInput: () => showResults(search, results), onKeydown: (e) => { if (e.key === "Escape") { search.value = ""; results.hidden = true; } if (e.key === "Enter") results.querySelector("button")?.click(); } });
+  const safetyHost = h("div", { class: "safety-bar" });
   const bell = h("button", { class: "icb", "aria-label": t("Notifications", "通知"), onClick: showNotices }, icon("notifications"), h("span", { class: "dotb", hidden: true }));
   const bar = h("div", { class: "bar" },
     h("label", { class: "search" }, icon("search"), search),
+    safetyHost,
     bell,
     h("button", { class: "icb", "aria-label": t("Command palette (Ctrl+K)", "指令面板（Ctrl+K）"), title: t("Command palette (Ctrl+K)", "指令面板（Ctrl+K）"), onClick: () => openPalette(paletteItems()) }, icon("bolt")),
     featureState.toolbar.map((b) => h("button", { class: "icb", "aria-label": tt(b.label), title: tt(b.label), onClick: () => b.onClick(featureState.ctx) }, icon(b.icon))),
@@ -179,9 +208,11 @@ function buildShell() {
   drawTabs();
   drawBell();
   renderDock(dockEl);
-  const offs = [bus.on("dock", () => renderDock(dockEl)), bus.on("notices", drawBell), bus.on("lang", () => { shell.dispose(); buildShell(); navigate(app.route, { replace: true }); }), bus.on("changed", () => api.get("/api/catalog").then((c) => { app.catalog = c; if (app.route !== "overview") navigate(app.route, { replace: true, keepScroll: true }); }).catch(() => {}))];
+  const offs = [bus.on("dock", () => renderDock(dockEl)), bus.on("notices", drawBell), bus.on("lang", () => queueMicrotask(() => { shell.dispose(); buildShell(); navigate(app.route, { replace: true }); })), bus.on("changed", () => api.get("/api/catalog").then((c) => { app.catalog = c; if (app.route !== "overview") navigate(app.route, { replace: true, keepScroll: true }); }).catch(() => {}))];
   const stopOverlays = mountOverlays();
-  shell.dispose = () => { offs.forEach((f) => f()); stopOverlays(); };
+  const stopSafety = mountBar(safetyHost, { onOpenHistory: (id) => navigate(id) });
+  const stopBadges = mountBadges(() => app.catalog.entries);
+  shell.dispose = () => { offs.forEach((f) => f()); stopOverlays(); stopSafety(); stopBadges(); };
   document.addEventListener("click", (e) => { if (!results.contains(e.target) && e.target !== search) results.hidden = true; }, { capture: true });
 }
 

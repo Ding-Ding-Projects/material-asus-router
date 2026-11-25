@@ -8,10 +8,13 @@ import { fileURLToPath } from "node:url";
 import { COOKIE, Sessions, checkPassword, hashPassword } from "./auth.mjs";
 import { ACTIONS, generateKey, installKeyChange, publicKey, runAction, runFeatureAction } from "./actions.mjs";
 import { ChangeEngine, validateRaw } from "./changes/engine.mjs";
+import { impactOfEntry } from "./changes/impact.mjs";
+import { defineSafetyRoutes } from "./changes/routes.mjs";
+import { SafetyService } from "./changes/safety.mjs";
 import { DOMAINS, findByKey, validate } from "./router/catalog.mjs";
-import { describeEntry, readDomain } from "./router/domains.mjs";
+import { describeEntry, readDevices, readDomain } from "./router/domains.mjs";
 import { suggestedRouter } from "./features/onboarding-wizard/index.mjs";
-import { features, featureAction, featureDomainMeta, mountFeatureRoutes } from "./features/registry.mjs";
+import { features, featureAction, featureActionNames, featureDomainMeta, mountFeatureRoutes } from "./features/registry.mjs";
 import { MASK, isSecret } from "./router/secrets.mjs";
 import { RouterSession, VAULT_PASSWORD, VAULT_PUBLIC_KEY } from "./router/session.mjs";
 import { hostTarget } from "./router/shell.mjs";
@@ -63,6 +66,8 @@ export async function createApp(options = {}) {
   const session = new RouterSession({ store, vault, verifyTimeoutMs: options.verifyTimeoutMs ?? 8000, cacheTtlMs: options.cacheTtlMs ?? 3000 });
   const engine = new ChangeEngine({ session, store, vault, guardSeconds: options.guardSeconds ?? 90, pollMs: options.pollMs ?? 3000, watchDeadlineMs: options.watchDeadlineMs ?? null });
   const app = { store, vault, sessions, session, engine, pendingHostKey: null, demoRouter: null };
+  const areaLabel = (id) => [...DOMAINS, ...featureDomainMeta()].find((d) => d.id === id)?.label ?? { en: id, yue: id };
+  app.safety = new SafetyService({ store, vault, session, engine, dataDir, options: { ...options, pollMs: options.pollMs ?? 3000 }, areaLabel, readDevices, actionInfo: featureAction });
 
   if (options.demo) {
     app.demoRouter = await new FakeRouter({ firmware: options.demoFirmware ?? "merlin", profile: options.demoProfile ?? null }).listen(0, "127.0.0.1");
@@ -103,6 +108,7 @@ export async function createApp(options = {}) {
         }),
       ),
     async close() {
+      app.safety.close();
       engine.close();
       session.close();
       server.closeAllConnections?.();
@@ -141,7 +147,7 @@ function sendError(res, error, log) {
     status = error.code === "AUTH_FAILED" ? 401 : 502;
     body.code = error.code === "AUTH_FAILED" ? "ROUTER_AUTH_FAILED" : error.code;
   }
-  for (const field of ["fingerprint", "signIn", "skipped"]) if (error[field] !== undefined) body[field] = error[field];
+  for (const field of ["fingerprint", "signIn", "skipped", "detail", "yue"]) if (error[field] !== undefined) body[field] = error[field];
   if (!status) {
     status = 500;
     body.error = "Something went wrong on the server.";
@@ -402,7 +408,7 @@ function defineRoutes(app, route) {
     return {
       info: ctx.info,
       domains: [...DOMAINS, ...featureDomainMeta().filter((m) => !DOMAINS.some((d) => d.id === m.id))].map((d) => domainView(d, ctx.info)),
-      entries: ctx.catalog.map((e) => describeEntry(e, ctx.nvram)),
+      entries: ctx.catalog.map((e) => ({ ...describeEntry(e, ctx.nvram), impact: impactOfEntry(e) })),
     };
   });
 
@@ -424,27 +430,35 @@ function defineRoutes(app, route) {
     return { value: ctx.nvram.get(key) ?? "" };
   });
 
-  route("GET", "/api/settings", () => ({ guardSeconds: engine.guardSeconds }));
+  route("GET", "/api/settings", () => ({ guardSeconds: engine.guardSeconds, liveMode: app.safety.liveMode }));
   route("POST", "/api/settings", async ({ body }) => {
-    const seconds = Number(body.guardSeconds);
-    if (!Number.isInteger(seconds) || seconds < 20 || seconds > 600) throw bad("The safety timer can be 20 to 600 seconds.");
-    await store.update((s) => void (s.settings.guardSeconds = seconds));
-    return { guardSeconds: seconds };
+    if (body.guardSeconds === undefined && body.liveMode === undefined) throw bad("Say which setting to change.");
+    if (body.guardSeconds !== undefined) {
+      const seconds = Number(body.guardSeconds);
+      if (!Number.isInteger(seconds) || seconds < 20 || seconds > 600) throw bad("The safety timer can be 20 to 600 seconds.");
+      await store.update((s) => void (s.settings.guardSeconds = seconds));
+    }
+    if (body.liveMode !== undefined) {
+      if (typeof body.liveMode !== "boolean") throw bad("Live mode is on or off.");
+      await app.safety.setLiveMode(body.liveMode);
+    }
+    return { guardSeconds: engine.guardSeconds, liveMode: app.safety.liveMode };
   });
 
   // -- changing --
-  route("POST", "/api/changes/preview", async ({ body, who }) => engine.preview(body, { user: who.name }));
-  route("POST", "/api/changes/apply", async ({ body, who }) => engine.apply(String(body.previewId ?? ""), { user: who.name, verifyHost: body.verifyHost || null }));
+  route("POST", "/api/changes/preview", async ({ body, who }) => app.safety.previewChange(body, who, { mode: app.safety.liveMode ? "live" : "review" }));
+  route("POST", "/api/changes/apply", async ({ body, who }) => app.safety.commit(String(body.previewId ?? ""), { who, confirmation: body.confirmation, override: body.override === true, verifyHost: body.verifyHost || null }));
   route("GET", "/api/changes/history", () => ({ items: engine.history() }));
   route("GET", "/api/changes/history/:id", ({ params }) => {
     const record = engine.get(params.id);
     if (!record) throw bad("That change is not in the history.", 404);
     return record;
   });
-  route("POST", "/api/changes/:id/undo", async ({ params, who }) => engine.undo(params.id, { user: who.name }));
+  route("POST", "/api/changes/:id/undo", async ({ params, who }) => app.safety.decorate(await engine.undo(params.id, { user: who.name, meta: { mode: app.safety.liveMode ? "live" : "review", userId: who.userId } })));
 
   route("POST", "/api/actions/:name", async ({ params, body, who }) => {
     const custom = featureAction(params.name);
+    if (custom || ACTIONS.includes(params.name)) await app.safety.gateAction(params.name, body, who);
     if (custom) {
       const info = await session.info();
       return runFeatureAction(custom, body, { session, info, who, exec: (c, o) => session.exec(c, o), nvram: () => session.nvram({ fresh: true }), preview: (input) => engine.preview(input, { user: who.name }) });
@@ -453,11 +467,14 @@ function defineRoutes(app, route) {
     if (params.name === "install-key") {
       if (who.role !== "owner") throw bad("Only the owner can allow a new SSH key.", 403);
       const input = await installKeyChange({ vault, session });
-      return engine.preview(input, { user: who.name });
+      return app.safety.previewChange(input, who);
     }
     const info = await session.info();
     return runAction(params.name, body, { session, info });
   });
+
+  // -- change safety and the household: live mode, impact, history, undo, quiet apply, reboot launch --
+  defineSafetyRoutes(app, route, { liveContext, readDevices, actionNames: featureActionNames, actionInfo: featureAction, ACTIONS, http, httpRaw });
 
   // -- features: every folder in server/features adds its own routes under /api/x/<id> --
   // They go through the same table as every route above, so sign-in, CSRF
@@ -517,7 +534,7 @@ function defineRoutes(app, route) {
       }
     }
     if (!changes.length) throw bad("Nothing in that backup differs from the router.", 400, { skipped });
-    return { preview: await engine.preview({ changes }, { user: who.name }), skipped };
+    return { preview: await app.safety.previewChange({ changes }, who, { source: "restore" }), skipped };
   }, { limit: 6 * 1024 * 1024 });
 }
 
@@ -526,8 +543,15 @@ function defineRoutes(app, route) {
 async function sendFile(req, res, file, cache) {
   const info = await stat(file).catch(() => null);
   if (!info?.isFile()) return false;
+  // A fingerprint from size and change time lets a browser re-check a file cheaply: unchanged files answer 304.
+  const etag = `W/"${info.size.toString(36)}-${Math.floor(info.mtimeMs).toString(36)}"`;
+  if (req.headers["if-none-match"] === etag) {
+    res.writeHead(304, { ETag: etag, "Cache-Control": cache });
+    res.end();
+    return true;
+  }
   const body = await readFile(file);
-  res.writeHead(200, { "Content-Type": MIME[path.extname(file)] ?? "application/octet-stream", "Content-Length": body.length, "Cache-Control": cache });
+  res.writeHead(200, { ETag: etag, "Content-Type": MIME[path.extname(file)] ?? "application/octet-stream", "Content-Length": body.length, "Cache-Control": cache });
   res.end(req.method === "HEAD" ? undefined : body);
   return true;
 }

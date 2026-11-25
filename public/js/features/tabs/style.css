@@ -1,6 +1,6 @@
 .mar-tabs{display:flex;gap:6px;background:var(--surf-low);padding:8px;min-width:0;white-space:normal;--g:var(--primary)}
 .mar-tabs[data-dock=left],.mar-tabs[data-dock=right]{flex:0 0 232px;width:232px;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;align-self:flex-start}
-.mar-tabs[data-dock=top],.mar-tabs[data-dock=bottom]{flex-direction:row;align-items:center;overflow-x:auto}
+.mar-tabs[data-dock=top],.mar-tabs[data-dock=bottom]{flex-direction:row;align-items:center;overflow-x:auto;max-width:100%;contain:inline-size}
 .mar-bar{display:flex;gap:2px;flex:none}
 .mar-tabs[data-dock=left] .mar-bar,.mar-tabs[data-dock=right] .mar-bar{justify-content:flex-start}
 .mar-btn{width:36px;height:36px;border-radius:18px;border:0;background:transparent;color:var(--sub);display:grid;place-items:center;padding:0}
@@ -31,7 +31,7 @@
 .mar-preview{display:flex;flex-direction:column;gap:8px;min-height:48px}
 .mar-swatch.on{outline:2px solid var(--text)}
 @media (max-width:900px){
-  .mar-tabs[data-dock]{flex:none;width:auto;height:auto;position:static;flex-direction:row;align-items:center;overflow-x:auto;overflow-y:hidden;padding:6px 12px}
+  .mar-tabs[data-dock]{flex:none;width:auto;max-width:100%;min-width:0;align-self:stretch;contain:inline-size;overscroll-behavior-x:contain;height:auto;position:static;flex-direction:row;align-items:center;overflow-x:auto;overflow-y:hidden;padding:6px 12px}
   .mar-tabs[data-dock] .mar-list{flex-direction:row;align-items:center;flex-wrap:nowrap}
   .mar-tabs[data-dock] .mar-gwrap{flex-direction:row;align-items:center;margin:0 6px}
   .mar-tabs[data-dock] .mar-gtabs{flex-direction:row;padding:0}

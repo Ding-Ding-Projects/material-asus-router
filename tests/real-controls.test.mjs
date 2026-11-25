@@ -82,7 +82,8 @@ const ROUTERS = [
 ];
 for (const [firmware, startOptions] of ROUTERS) {
   test(`every catalogue entry on a ${firmware} router is a real control that reads, writes and undoes`, async () => {
-    const t = await startApp(startOptions);
+    // The local history is checked by its own tests; recording a version for each of hundreds of changes here only adds minutes.
+    const t = await startApp({ ...startOptions, safety: { history: false } });
     try {
       const definitions = await t.app.session.catalog({ fresh: true });
       const shown = new Map((await t.owner.get("/api/catalog")).data.entries.map((e) => [e.id, e]));

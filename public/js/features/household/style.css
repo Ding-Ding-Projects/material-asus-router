@@ -1,0 +1,29 @@
+/* Household: the weekly painting grid, presence cards and the top talkers ranking. */
+.hh-body{display:flex;flex-direction:column;gap:14px}
+.member-head{display:flex;gap:12px;align-items:center}
+.sg-wrap{overflow-x:auto;padding-bottom:6px}
+.sg{display:flex;flex-direction:column;gap:3px;min-width:560px;touch-action:none;user-select:none}
+.sg-row{display:grid;grid-template-columns:44px repeat(24,minmax(16px,1fr));gap:2px;align-items:center}
+.sg-day{font-size:12px;font-weight:700;color:var(--sub)}
+.sg-hr{font-size:10px;color:var(--sub);text-align:left}
+.sg-cell{height:26px;min-width:16px;border:0;padding:0;border-radius:6px;background:var(--surf-high);transition:background .18s,transform .18s}
+.sg-cell:hover:not(:disabled){transform:scale(1.15)}
+.sg-cell.k-work{background:var(--tertiary)}
+.sg-cell.k-sleep{background:var(--primary)}
+.sg-cell.k-home{background:var(--good)}
+.sg-cell:focus-visible{outline:3px solid var(--text);outline-offset:1px;z-index:1;position:relative}
+.presence.home{border-left:6px solid var(--warn)}
+.presence.away{border-left:6px solid var(--good)}
+.presence.unknown{border-left:6px solid var(--line)}
+.seg.madness button{display:inline-flex;align-items:center;gap:6px}
+.talkers{display:flex;flex-direction:column;gap:14px}
+.talkers-head{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:8px 0}
+.rank{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.rank-row{display:flex;gap:12px;align-items:center;animation:rise .3s ease both}
+.rank-n{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--primary-c);color:var(--on-primary-c);font-weight:800;flex:none}
+.rank-row:first-child .rank-n{background:var(--primary);color:var(--on-primary)}
+.rank-track{display:block;height:10px;border-radius:5px;background:var(--surf-high);overflow:hidden;margin-top:4px}
+.rank-fill{display:block;height:100%;width:var(--w,0%);background:var(--primary);border-radius:5px;transition:width .6s cubic-bezier(.2,.9,.25,1.1)}
+.rank-val{text-align:right;min-width:92px;font-variant-numeric:tabular-nums}
+.rank-person{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+@media (max-width:480px){.rank-val{min-width:72px}.sg{min-width:520px}}
