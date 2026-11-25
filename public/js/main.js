@@ -85,11 +85,20 @@ async function boot() {
     return void root.replaceChildren(h("div", { class: "center" }, h("div", { class: "card" }, h("h1", { class: "disp" }, t("Cannot reach the app", "連唔到程式")), h("p", { class: "lede" }, error.message), h("button", { class: "btn f", onClick: boot }, t("Try again", "再試")))));
   }
   auth.csrf = session.csrf ?? "";
+  // The sign-in and connect screens count as started; the full app sets this again once its shell is up.
+  window.__marStarted = !(session.signedIn && session.router?.configured);
   if (session.setup === "needed") return setupScreen(root, async () => (await boot()));
   if (!session.signedIn) return signInScreen(root, boot);
   Object.assign(app, { me: session.user, canWrite: session.canWrite, router: session.router });
   if (!session.router.configured) return connectScreen(root, boot, { owner: session.user.role === "owner", setup: true });
-  await enterApp();
+  try {
+    await enterApp();
+  } catch (error) {
+    // Never leave a blank page: show what failed and the ways out.
+    console.error(error);
+    root.replaceChildren();
+    window.__marBootFailed?.(error);
+  }
 }
 
 async function enterApp() {
@@ -107,6 +116,7 @@ async function enterApp() {
   for (const [id, screen] of featureState.screens) SCREENS[id] = screen.render;
   buildShell();
   navigate(location.hash.replace(/^#\//, "") || "overview", { replace: true });
+  window.__marStarted = true;
 }
 
 // ---- shell ------------------------------------------------------------------
