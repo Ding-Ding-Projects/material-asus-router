@@ -2,11 +2,16 @@
 // rate comes from two readings, names come from the router, and a router
 // without byte counting is reported honestly.
 import assert from "node:assert/strict";
+import { mkdtemp } from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
 import { test } from "node:test";
 import { checkFeatureModule } from "../../public/js/features/validate.js";
 import feature, { sizeText, sortRows, speedText } from "../../public/js/features/device-traffic/index.js";
 import { lanTest, parseConntrack, rates } from "../../server/features/device-traffic/conntrack.mjs";
 import { startApp } from "../helpers.mjs";
+
+process.env.DATA_DIR = await mkdtemp(path.join(os.tmpdir(), "mar-traffic-"));
 
 const LAN = { lanIp: "198.51.100.1", lanMask: "255.255.255.0" };
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -71,13 +76,16 @@ test("device-traffic: the sample route warms up, then shows rates and names; an 
 
     // A router that lists connections without byte counts.
     await t.owner.post("/api/x/device-traffic/reset");
-    t.router.nvram.mar_fake_conntrack_acct = "0";
+    t.router.conntrackAcct = false;
     assert.equal((await t.owner.get("/api/x/device-traffic/sample")).data.accounting, false);
 
-    // A setting changes through the change engine and is read back.
-    const preview = await t.owner.post("/api/changes/preview", { changes: [{ id: "device-traffic.unit", value: "bytes" }] });
-    assert.equal((await t.owner.post("/api/changes/apply", { previewId: preview.data.id })).status, 200);
+    // The view settings are preferences of this app: saved by the app, read back, and never written to the router.
+    assert.deepEqual((await t.owner.get("/api/catalog")).data.entries.filter((e) => e.feature === "device-traffic"), []);
+    const saved = await t.owner.request("PUT", "/api/x/device-traffic/prefs", { changes: [{ id: "device-traffic.unit", value: "bytes" }] });
+    assert.equal(saved.status, 200, saved.text);
     assert.equal((await t.owner.get("/api/domain/device-traffic")).data.unit, "bytes");
+    assert.equal((await t.owner.request("PUT", "/api/x/device-traffic/prefs", { changes: [{ id: "device-traffic.top", value: "99" }] })).status, 400);
+    assert.ok(!t.router.commands.some((c) => c.startsWith("nvram set")), "nothing was written to the router");
   } finally {
     await t.stop();
   }

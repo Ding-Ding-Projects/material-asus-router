@@ -3,11 +3,47 @@
 // from an in-memory settings table. Tests and demo mode use it, so nothing in
 // this project needs a real router to prove its behaviour.
 import { createHash } from "node:crypto";
+import { readFileSync } from "node:fs";
 import ssh2 from "ssh2";
 import { featureFakeHandlers, featureNvram } from "../features/registry.mjs";
 import { generateEd25519 } from "./keys.mjs";
 
 const { Server, utils } = ssh2;
+
+// A profile is a faithful model of one real router: it has exactly the settings (names) that router has, and
+// nothing else, so a control for a setting the router lacks is found out here the same way it would be there.
+export const PROFILES = ["rt-be88u-merlin-3006"];
+const profileCache = new Map();
+function readProfile(id) {
+  if (!profileCache.has(id)) {
+    if (!PROFILES.includes(id)) throw new Error(`Unknown router profile "${id}".`);
+    profileCache.set(id, JSON.parse(readFileSync(new URL(`./profiles/${id}.json`, import.meta.url), "utf8")));
+  }
+  return profileCache.get(id);
+}
+
+// Keeps the demo values of every setting the profile's router has, adds the rest with an empty value, and drops
+// the settings that router does not have.
+function applyProfile(id, nvram) {
+  const profile = readProfile(id);
+  const out = {};
+  for (const name of profile.names) out[name] = nvram[name] ?? "";
+  Object.assign(out, {
+    productid: profile.model,
+    firmver: profile.firmver,
+    buildno: profile.buildno,
+    extendno: profile.extendno,
+    "3rd-party": "merlin",
+    jffs2_scripts: "1",
+    rc_support: profile.rc_support,
+    wl_ifnames: "wl0 wl1",
+    wl0_ifname: "wl0",
+    wl1_ifname: "wl1",
+    wl0_nband: "2",
+    wl1_nband: "1",
+  });
+  return out;
+}
 
 const STOCK = { firmver: "3.0.0.4", buildno: "388", extendno: "24198-g2f1a4b6", "3rd-party": "" };
 const MERLIN = { firmver: "3.0.0.4", buildno: "388.8", extendno: "4", "3rd-party": "merlin", jffs2_scripts: "1" };
@@ -102,7 +138,7 @@ export function defaultNvram({ firmware = "merlin", model = "RT-AX86U" } = {}) {
     sshd_enable: "2",
     sshd_port: "22",
     sshd_authkeys: "",
-    led_disable: "0",
+    AllLED: "1",
     usb_path1: "storage",
     usb_path1_manufacturer: "SanDisk",
     usb_path1_product: "Ultra Fit",
@@ -161,11 +197,13 @@ function unquote(text) {
 }
 
 export class FakeRouter {
-  constructor({ firmware = "merlin", model, password = "router-password", username = "admin", guardScale = 1 } = {}) {
+  constructor({ firmware = "merlin", model, profile = null, password = "router-password", username = "admin", guardScale = 1 } = {}) {
     this.username = username;
     this.password = password;
     // Feature folders add their own default settings (fakeRouter.nvram).
-    this.nvram = { ...defaultNvram({ firmware, model }), ...featureNvram({ firmware, model }) };
+    const base = { ...defaultNvram({ firmware, model }), ...featureNvram({ firmware, model, profile }) };
+    this.profile = profile;
+    this.nvram = profile ? applyProfile(profile, base) : base;
     this.committed = { ...this.nvram };
     this.services = [];
     this.commands = [];
@@ -189,6 +227,11 @@ export class FakeRouter {
   get hostKeyFingerprint() {
     const blob = utils.parseKey(this.hostKey).getPublicSSH();
     return `SHA256:${createHash("sha256").update(blob).digest("base64").replace(/=+$/, "")}`;
+  }
+
+  // The radio name of a demo device's band: the demo devices sit on band 0 (eth6) or band 1 (eth7).
+  ifname(demoIface) {
+    return (demoIface === "eth6" ? this.nvram.wl0_ifname : this.nvram.wl1_ifname) || demoIface;
   }
 
   // The router is unreachable while its address or SSH service no longer
@@ -322,10 +365,10 @@ export class FakeRouter {
     if (cmd === "head -n 100000 /proc/meminfo") return { stdout: "MemTotal:        1018332 kB\nMemFree:          301204 kB\nBuffers:           20480 kB\nCached:           180224 kB\n" };
     if (cmd === "head -n 100000 /proc/net/dev") return { stdout: this.#netdev() };
     if (cmd === "head -n 100000 /sys/class/thermal/thermal_zone0/temp") return { stdout: `${61000 + Math.floor(Math.random() * 3000)}\n` };
-    if ((m = cmd.match(/^wl -i (eth\d) phy_tempsense$/))) return { stdout: `${m[1] === "eth6" ? 48 : 53} (0x30)\n` };
-    if ((m = cmd.match(/^wl -i (eth\d) assoclist$/)))
-      return { stdout: DEVICES.filter((d) => d.iface === m[1]).map((d) => `assoclist ${d.mac}\n`).join("") };
-    if ((m = cmd.match(/^wl -i (eth\d) rssi ([0-9A-F:]+)$/i)))
+    if ((m = cmd.match(/^wl -i ((?:eth|wl)\d) phy_tempsense$/))) return { stdout: `${m[1] === this.nvram.wl0_ifname ? 48 : 53} (0x30)\n` };
+    if ((m = cmd.match(/^wl -i ((?:eth|wl)\d) assoclist$/)))
+      return { stdout: DEVICES.filter((d) => d.iface && this.ifname(d.iface) === m[1]).map((d) => `assoclist ${d.mac}\n`).join("") };
+    if ((m = cmd.match(/^wl -i ((?:eth|wl)\d) rssi ([0-9A-F:]+)$/i)))
       return { stdout: `${DEVICES.find((d) => d.mac === m[2].toUpperCase())?.rssi ?? -90}\n` };
     if (cmd === "head -n 100000 /var/lib/misc/dnsmasq.leases")
       return { stdout: DEVICES.map((d) => `${Math.floor(Date.now() / 1000) + 40000} ${d.mac.toLowerCase()} ${d.ip} ${d.host} *\n`).join("") };

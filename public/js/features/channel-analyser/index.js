@@ -41,7 +41,7 @@ export function spectrum(ctx, band, scan) {
 
 async function screen(ctx) {
   const { api, h, icon, t, tt } = ctx;
-  const data = await api.get("/api/domain/channel-analyser");
+  let data = await api.get("/api/domain/channel-analyser");
   const page = ctx.page(label, { en: "See which channels your neighbours use, and pick a quiet one for your own Wi-Fi.", yue: "睇吓鄰居用邊啲頻道，再幫你嘅 Wi-Fi 揀個靜啲嘅。" });
   ctx.root.append(page);
   let current = data.bands[0]?.index ?? 0;
@@ -100,13 +100,13 @@ async function screen(ctx) {
   }
 
   drawTabs();
-  page.append(h("section", { class: "card rise" }, tabs, body), ...ctx.controls.settingGroups(data.entries).map((g) => ctx.controls.groupCard(g.label, g.entries)));
+  page.append(h("section", { class: "card rise" }, tabs, body), ...ctx.controls.appGroupCards("channel-analyser", data.entries, async () => { data = await api.get("/api/domain/channel-analyser"); }));
   draw();
 }
 
 export default {
   id: "channel-analyser",
   screens: [{ id: "channel-analyser", group: { en: "Network", yue: "網絡" }, icon: "wifi_find", label, render: screen }],
-  settings: [{ id: "channel-analyser", icon: "wifi_find", label, async render(ctx) { const data = await ctx.api.get("/api/domain/channel-analyser"); return ctx.controls.settingGroups(data.entries).map((g) => ctx.controls.groupCard(g.label, g.entries)); } }],
+  settings: [{ id: "channel-analyser", icon: "wifi_find", label, async render(ctx) { const data = await ctx.api.get("/api/domain/channel-analyser"); return ctx.controls.appGroupCards("channel-analyser", data.entries); } }],
   commands: [{ id: "channel-analyser.open", icon: "wifi_find", label: { en: "Analyse Wi-Fi channels", yue: "分析 Wi-Fi 頻道" }, keywords: "wifi channel scan neighbour interference 頻道 掃描 干擾", run: (ctx) => ctx.navigate("channel-analyser") }],
 };

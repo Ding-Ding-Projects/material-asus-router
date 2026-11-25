@@ -33,7 +33,7 @@ async function card(ctx, root) {
       h("div", { class: "big" }, duration(data.seconds)),
       h("div", { class: "t2" }, warn ? t(`Longer than ${data.warnDays} days. A restart may help.`, `超過 ${data.warnDays} 日，可以考慮重啟。`) : t(`Restart reminder after ${data.warnDays} days.`, `${data.warnDays} 日後提醒重啟。`)),
       mark),
-    ...ctx.controls.settingGroups(data.entries).map((g) => ctx.controls.groupCard(g.label, g.entries)),
+    ...ctx.controls.appGroupCards("example-uptime", data.entries),
   );
 }
 
@@ -63,7 +63,7 @@ export default {
       label,
       async render(ctx) {
         const data = await ctx.api.get("/api/domain/example-uptime");
-        return ctx.controls.settingGroups(data.entries).map((g) => ctx.controls.groupCard(g.label, g.entries));
+        return ctx.controls.appGroupCards("example-uptime", data.entries);
       },
     },
   ],

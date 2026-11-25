@@ -74,9 +74,15 @@ async function applyChange(t, body, label) {
   return { preview: preview.data, record };
 }
 
-for (const firmware of ["merlin", "stock"]) {
+// Every router the pretend router can be: the two generic ones and a faithful model of one real router.
+const ROUTERS = [
+  ["merlin", { firmware: "merlin" }],
+  ["stock", { firmware: "stock" }],
+  ["rt-be88u-merlin-3006", { profile: "rt-be88u-merlin-3006" }],
+];
+for (const [firmware, startOptions] of ROUTERS) {
   test(`every catalogue entry on a ${firmware} router is a real control that reads, writes and undoes`, async () => {
-    const t = await startApp({ firmware });
+    const t = await startApp(startOptions);
     try {
       const definitions = await t.app.session.catalog({ fresh: true });
       const shown = new Map((await t.owner.get("/api/catalog")).data.entries.map((e) => [e.id, e]));
@@ -96,6 +102,8 @@ for (const firmware of ["merlin", "stock"]) {
         assert.ok(view, `${label}: missing from /api/catalog`);
 
         if (entry.disabled) {
+          // A setting the router does not have is switched off with a reason, never written.
+          if (!(entry.key in t.router.nvram)) assert.ok(entry.disabled.en.includes(`This router does not have the setting ${entry.key}`) || entry.disabled.en.includes("Merlin") || entry.disabled.en.includes("model does not support"), `${label}: absent setting ${entry.key} needs the missing-setting reason`);
           const refused = await t.owner.post("/api/changes/preview", { changes: [{ id: entry.id, value: sampleValue(entry, "") }] });
           assert.equal(refused.status, 400, `${label}: a disabled entry must refuse changes`);
           continue;
@@ -146,6 +154,8 @@ for (const firmware of ["merlin", "stock"]) {
         assert.equal(t.router.nvram[entry.key], original, `${label}: undo left ${JSON.stringify(t.router.nvram[entry.key])} instead of ${JSON.stringify(original)}`);
         written += 1;
       }
+      for (const entry of definitions) if (!entry.disabled) assert.ok(entry.key in t.router.nvram, `${entry.id}: an available control needs setting ${entry.key} on the router`);
+      for (const entry of definitions) if (!entry.disabled) assert.ok(entry.key in t.router.nvram, `${entry.id}: an available control needs setting ${entry.key} on the router`);
       assert.ok(written >= 40, `only ${written} entries were written and undone; the loop is not covering the catalogue`);
     } finally {
       await t.stop();

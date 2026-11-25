@@ -100,7 +100,7 @@ export default {
       run: async ({ body, exec, nvram }) => {
         if (typeof body.off !== "boolean") throw bad("Say whether the light should be off.");
         if (!isIpv4(body.ip)) throw bad("Choose a node.");
-        const { node, command } = nodeCommand(await nvram(), body.ip, `nvram set led_disable=${body.off ? 1 : 0}; nvram commit; service restart_leds`);
+        const { node, command } = nodeCommand(await nvram(), body.ip, `nvram set AllLED=${body.off ? 0 : 1}; nvram commit; service restart_leds`);
         const out = await exec(command, { timeoutMs: 20000 });
         return { ok: out.code === 0, mac: node.mac, off: body.off, message: out.code === 0 ? (body.off ? "The node light is off." : "The node light is on.") : "The node did not accept the command. Check that SSH is on for the node and that this router may sign in to it." };
       },

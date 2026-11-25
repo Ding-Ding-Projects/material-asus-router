@@ -5,7 +5,6 @@ import { checkMerlin, currentVersion, readStock } from "./releases.mjs";
 
 const ID = "firmware-pro";
 const GROUP = L("Updates", "更新");
-const NOTE = L("This setting name is the one recent ASUS builds use; confirm it on your model after applying.", "呢個設定名稱係近期 ASUS 版本用嘅；套用後請喺你部機確認。");
 
 const NO_FLASH = [
   { icon: "memory", en: "A failed flash can leave the router unable to start. Recovery then needs a cable, a computer and the vendor's recovery tool.", yue: "刷韌體失敗可能令路由器開唔到機，要用網線、電腦同廠商嘅還原工具先救到。" },
@@ -16,9 +15,11 @@ const NO_FLASH = [
 export default {
   id: ID,
   catalog: () => [
-    { id: `${ID}.auto`, domain: ID, group: "updates", groupLabel: GROUP, key: "fw_auto_upgrade", control: "switch", values: ON_OFF, risk: "low", meta: { note: NOTE },
+    { id: `${ID}.check`, domain: ID, group: "updates", groupLabel: GROUP, key: "firmware_check_enable", control: "switch", values: ON_OFF, risk: "low",
+      label: L("Look for new firmware by itself", "自動搵新韌體"), help: L("The router asks the maker now and then whether a new version exists, and tells you on its own page. It does not install anything.", "路由器會定時問廠商有冇新版本，並喺自己嘅網頁通知你。唔會自動安裝。") },
+    { id: `${ID}.auto`, domain: ID, group: "updates", groupLabel: GROUP, key: "fw_auto_upgrade", control: "switch", values: ON_OFF, risk: "low",
       label: L("Install firmware updates by itself", "自動安裝韌體更新"), help: L("The router installs new firmware at a quiet hour. Turn it off if you want to read the release notes first.", "路由器會喺清靜時段自動安裝新韌體。想先睇更新內容就關閉。") },
-    { id: `${ID}.period`, domain: ID, group: "updates", groupLabel: GROUP, key: "fw_check_period", control: "stepper", min: 1, max: 30, risk: "low", meta: { note: NOTE },
+    { id: `${ID}.period`, domain: ID, group: "updates", groupLabel: GROUP, key: "fw_check_period", control: "stepper", min: 1, max: 30, risk: "low",
       label: L("Look for new firmware every (days)", "幾耐搵一次新韌體（日數）"), help: L("How often the router asks whether a new version exists.", "路由器幾耐問一次有冇新版本。") },
   ],
   domainMeta: [{ id: ID, icon: "system_update_alt", label: L("Firmware updates", "韌體更新"), group: { en: "Router", yue: "路由器" } }],
@@ -51,5 +52,6 @@ export default {
       return { current: current.display, family: current.family, asked: out.code === 0, ...readStock(current, ctx.nvram, ctx.info.model) };
     });
   },
-  fakeRouter: { nvram: { fw_auto_upgrade: "0", fw_check_period: "7", webs_state_update: "0", webs_state_info: "" } },
+  // fw_auto_upgrade and fw_check_period belong to older builds; a router that lacks them shows those two controls switched off.
+  fakeRouter: { nvram: { firmware_check_enable: "1", fw_auto_upgrade: "0", fw_check_period: "7", webs_state_update: "0", webs_state_info: "" } },
 };

@@ -8,16 +8,17 @@ import { dayKey, clock, dueAt } from "./schedule.mjs";
 export const IFACES = ["br0", "br1"];
 const LOG_LIMIT = 60;
 
-export function settingsOf(nvram) {
-  const repeat = Number(nvram.get("mar_wol_repeat") ?? 2);
+export function settingsOf(prefs) {
+  const repeat = Number(prefs.get("repeat") ?? 2);
   return {
-    iface: IFACES.includes(nvram.get("mar_wol_iface")) ? nvram.get("mar_wol_iface") : "br0",
+    iface: IFACES.includes(prefs.get("iface")) ? prefs.get("iface") : "br0",
     repeat: Number.isInteger(repeat) && repeat >= 1 && repeat <= 5 ? repeat : 2,
-    scheduled: (nvram.get("mar_wol_enabled") ?? "1") === "1",
+    scheduled: (prefs.get("enabled") ?? "1") === "1",
   };
 }
 
-export function createRunner({ store, tickMs = 15000 }) {
+// prefs: { read() } gives the saved preferences (a Map); they are the app's own, never router settings.
+export function createRunner({ store, prefs, tickMs = 15000 }) {
   let live = null;
   let timer = null;
   let lastError = null;
@@ -26,7 +27,7 @@ export function createRunner({ store, tickMs = 15000 }) {
 
   async function wake(ctx, mac, { source, name = "" }) {
     const address = macAddress(mac);
-    const s = settingsOf(ctx.nvram);
+    const s = settingsOf(await prefs.read());
     let ok = true;
     let detail = "";
     for (let i = 0; i < s.repeat; i += 1) {
@@ -48,7 +49,7 @@ export function createRunner({ store, tickMs = 15000 }) {
   // Looks at the clock once and wakes whatever is due this minute.
   async function tick(ctx, date = new Date()) {
     lastTick = date.toISOString();
-    if (!settingsOf(ctx.nvram).scheduled) return [];
+    if (!settingsOf(await prefs.read()).scheduled) return [];
     const { schedules } = await store.read();
     const sent = [];
     for (const { schedule, key } of dueAt(schedules, date)) {

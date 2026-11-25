@@ -174,7 +174,7 @@ const STATIC = [
   { id: "sys.ssh", domain: "system", group: "access", groupLabel: L("Router access", "路由器存取"), key: "sshd_enable", control: "select", restart: "restart_sshd", risk: "network",
     options: [["2", L("Home network only", "只限屋企網絡")], ["1", L("Home network and internet", "屋企網絡同互聯網")], ["0", L("Off (this app stops working)", "關閉（呢個程式會停止運作）")]],
     label: L("SSH access", "SSH 存取"), help: L("This app manages the router over SSH. Turning it off disconnects the app; the guard puts it back if the router can no longer be reached.", "呢個程式靠 SSH 管理路由器。關咗會斷線；如果之後連唔返，保護機制會自動還原。") },
-  { id: "sys.led", domain: "system", group: "lights", groupLabel: L("Lights", "燈號"), key: "led_disable", control: "switch", values: ON_OFF, restart: "", risk: "low",
+  { id: "sys.led", domain: "system", group: "lights", groupLabel: L("Lights", "燈號"), key: "AllLED", control: "switch", values: { on: "0", off: "1" }, restart: "", risk: "low",
     label: L("Turn the lights off", "關燈"), help: L("Useful when the router is in a bedroom.", "路由器放喺睡房時好有用。") },
   // Merlin
   { id: "merlin.scripts", domain: "merlin", group: "scripts", groupLabel: L("Custom scripts", "自訂腳本"), key: "jffs2_scripts", control: "switch", values: ON_OFF, restart: "", risk: "low", firmware: "merlin",
@@ -202,6 +202,9 @@ export function buildCatalog(info) {
       disabled = L("Needs Asuswrt-Merlin firmware. This router runs the stock ASUS firmware.", "要用 Asuswrt-Merlin 韌體先有。呢部路由器用緊原廠 ASUS 韌體。");
     else if (entry.requires && !info.capabilities.includes(entry.requires))
       disabled = L(`This router model does not support this (${entry.requires} is missing).`, `呢個型號唔支援（缺少 ${entry.requires}）。`);
+    // The router's own settings list decides what can be written: a setting it does not have is never created.
+    else if (info.settingKeys && !info.settingKeys.has(entry.key))
+      disabled = L(`This router does not have the setting ${entry.key}`, `呢部路由器冇 ${entry.key} 呢個設定`);
     return { ...entry, disabled };
   });
 }

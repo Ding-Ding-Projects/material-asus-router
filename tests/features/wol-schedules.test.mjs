@@ -51,16 +51,17 @@ test("wol-schedules: a spec is checked and the due blocks are found exactly at t
 
 test("wol-schedules: the runner wakes a due schedule once per minute with the chosen network and repeat", async () => {
   const sent = [];
-  const ctx = { nvram: new Map([["mar_wol_iface", "br1"], ["mar_wol_repeat", "3"], ["mar_wol_enabled", "1"]]), exec: async (command) => (sent.push(command), { code: 0, stdout: "", stderr: "" }) };
+  const saved = new Map([["iface", "br1"], ["repeat", "3"], ["enabled", "1"]]);
+  const ctx = { exec: async (command) => (sent.push(command), { code: 0, stdout: "", stderr: "" }) };
   const store = featureState("wol-runner-test", { schedules: [], log: [] });
   await store.update((s) => s.schedules.push({ id: "x1", mac: "AC:5A:F0:01:02:03", name: "TV", spec: "12345@08:00-17:00", enabled: true, lastKey: null, lastRun: null }));
-  const runner = createRunner({ store });
+  const runner = createRunner({ store, prefs: { read: async () => saved } });
   const at = new Date(2026, 10, 23, 8, 0, 5);
   assert.equal((await runner.tick(ctx, at)).length, 1);
   assert.deepEqual(sent, Array(3).fill("ether-wake -i br1 AC:5A:F0:01:02:03"));
   assert.equal((await runner.tick(ctx, new Date(2026, 10, 23, 8, 0, 35))).length, 0, "the same minute never fires twice");
   assert.equal((await runner.tick(ctx, new Date(2026, 10, 24, 8, 0, 5))).length, 1, "the next day fires again");
-  ctx.nvram.set("mar_wol_enabled", "0");
+  saved.set("enabled", "0");
   assert.equal((await runner.tick(ctx, new Date(2026, 10, 25, 8, 0, 5))).length, 0, "scheduled wakes can be paused");
   const { log, schedules } = await store.read();
   assert.deepEqual(log.map((e) => [e.name, e.source, e.ok, e.iface]), [["TV", "schedule", true, "br1"], ["TV", "schedule", true, "br1"]]);
@@ -68,7 +69,7 @@ test("wol-schedules: the runner wakes a due schedule once per minute with the ch
   const failing = { ...ctx, exec: async () => ({ code: 1, stdout: "", stderr: "ether-wake: sendto: No such device\n" }) };
   const entry = await runner.wake(failing, "AC:5A:F0:01:02:03", { source: "manual" });
   assert.deepEqual([entry.ok, entry.detail], [false, "ether-wake: sendto: No such device"]);
-  assert.deepEqual(settingsOf(new Map([["mar_wol_iface", "eth0"], ["mar_wol_repeat", "99"]])), { iface: "br0", repeat: 2, scheduled: true });
+  assert.deepEqual(settingsOf(new Map([["iface", "eth0"], ["repeat", "99"]])), { iface: "br0", repeat: 2, scheduled: true });
   runner.stop();
 });
 
@@ -100,9 +101,12 @@ test("wol-schedules: schedules are kept by the app, shown with the next wake, ed
     const status = (await t.owner.get("/api/x/wol-schedules/status")).data;
     assert.deepEqual(status.log.map((e) => [e.ok, e.source]), [[false, "manual"], [true, "manual"]], "newest first");
 
-    // The router settings change through the change engine.
-    const preview = await t.owner.post("/api/changes/preview", { changes: [{ id: "wol-schedules.iface", value: "br1" }, { id: "wol-schedules.repeat", value: "1" }] });
-    assert.equal((await t.owner.post("/api/changes/apply", { previewId: preview.data.id })).status, 200);
+    // How packets are sent is a preference of this app: saved by the app, never written to the router.
+    assert.deepEqual((await t.owner.get("/api/catalog")).data.entries.filter((e) => e.feature === "wol-schedules"), []);
+    const saved = await t.owner.request("PUT", "/api/x/wol-schedules/prefs", { changes: [{ id: "wol-schedules.iface", value: "br1" }, { id: "wol-schedules.repeat", value: "1" }] });
+    assert.equal(saved.status, 200, saved.text);
+    assert.equal((await t.owner.request("PUT", "/api/x/wol-schedules/prefs", { changes: [{ id: "wol-schedules.iface", value: "eth0" }] })).status, 400);
+    assert.ok(!t.router.commands.some((c) => c.startsWith("nvram set")), "nothing was written to the router");
     await t.owner.post("/api/actions/wol-schedules.wake", { mac: "AC:5A:F0:01:02:03" });
     assert.equal(t.router.commands.filter((c) => c === "ether-wake -i br1 AC:5A:F0:01:02:03").length, 1);
 

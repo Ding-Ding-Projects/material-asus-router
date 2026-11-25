@@ -151,7 +151,7 @@ async function screen(ctx) {
       ...(tab === "now" ? drawNow() : tab === "schedules" ? drawSchedules() : drawLog()));
   }
 
-  page.append(h("section", { class: "card rise" }, tabs, body), ...ctx.controls.settingGroups(settings.entries).map((g) => ctx.controls.groupCard(g.label, g.entries)));
+  page.append(h("section", { class: "card rise" }, tabs, body), ...ctx.controls.appGroupCards("wol-schedules", settings.entries, () => load()));
   await load();
 }
 
@@ -171,6 +171,6 @@ export default {
   id: "wol-schedules",
   overlays: [overlay],
   screens: [{ id: "wol-schedules", group: { en: "Network", yue: "網絡" }, icon: "power_settings_new", label, render: screen }],
-  settings: [{ id: "wol-schedules", icon: "power_settings_new", label, async render(ctx) { const data = await ctx.api.get("/api/domain/wol-schedules"); return ctx.controls.settingGroups(data.entries).map((g) => ctx.controls.groupCard(g.label, g.entries)); } }],
+  settings: [{ id: "wol-schedules", icon: "power_settings_new", label, async render(ctx) { const data = await ctx.api.get("/api/domain/wol-schedules"); return ctx.controls.appGroupCards("wol-schedules", data.entries); } }],
   commands: [{ id: "wol-schedules.open", icon: "power_settings_new", label: { en: "Wake a device or edit wake schedules", yue: "喚醒裝置或者編輯喚醒排程" }, keywords: "wake on lan wol schedule power on magic packet 喚醒 排程 開機", run: (ctx) => ctx.navigate("wol-schedules") }],
 };

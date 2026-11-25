@@ -100,7 +100,7 @@ test("routing: the DMZ host can be switched off by emptying it, and the UPnP cle
   try {
     await change(t, [{ id: "routing.dmz", value: "198.51.100.20" }]);
     await change(t, [{ id: "routing.dmz", value: "" }, { id: "routing.upnp-interval", value: "900" }, { id: "routing.upnp-threshold", value: "50" }, { id: "routing.natpmp", value: "1" }]);
-    assert.deepEqual([t.router.nvram.dmz_ip, t.router.nvram.upnp_clean_interval, t.router.nvram.upnp_clean_threshold, t.router.nvram.upnp_pmp], ["", "900", "50", "1"]);
+    assert.deepEqual([t.router.nvram.dmz_ip, t.router.nvram.upnp_clean_interval, t.router.nvram.upnp_clean_threshold, t.router.nvram.upnp_mnp], ["", "900", "50", "1"]);
   } finally {
     await t.stop();
   }

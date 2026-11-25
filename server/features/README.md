@@ -33,6 +33,26 @@ if it has a screen, `public/js/features/<id>/` (see `public/js/features/README.m
    network is `198.51.100.0/24` (router `198.51.100.1`); use `203.0.113.x` or `192.0.2.x` for outside
    addresses. Never write a real or private-range address.
 
+## A router only ever gets settings it already has
+
+The catalogue is checked against the router's own list of settings every time it is built. An entry whose
+`key` is not in that list is shown switched off with the reason "This router does not have the setting
+<key>" and a change to it is refused before anything is sent, so another model or firmware is judged by
+what it really has. Never invent a router setting to remember something for the app.
+
+- **The app's own preferences** (a test server, a refresh rate, how a card looks) are not router settings.
+  Declare them with `appPrefs(featureId, defs)` from the kit: each def has the shape of an entry plus `key`
+  (the name it is saved under) and `default`. Call `prefs.routes(api)` in `routes`, read them with
+  `await prefs.read()` (a Map) and hand `prefs.entries(values)` to the browser, which draws them with
+  `ctx.controls.appGroupCards(featureId, entries, onSaved)`. They are saved in the data folder, through
+  `GET` and `PUT /api/x/<id>/prefs`, with the same checks as a router setting.
+- **Entries for numbered slots** (guest networks, VPN clients) are made from `info.settingKeys`, the router's
+  own settings list, so a router shows the slots it has and no others. See `guest-network-pro`.
+- **Test against a faithful router.** `startApp({ profile: "rt-be88u-merlin-3006" })` is a pretend RT-BE88U
+  on Merlin 3006 with exactly that router's setting names (`server/ssh/profiles`). A `fakeRouter.nvram`
+  function receives `{ firmware, model, profile }`, so demo values for a feature that only a profile has
+  can be given to the profile alone. `tests/real-controls.test.mjs` runs on every profile.
+
 ## The default export
 
 ```js

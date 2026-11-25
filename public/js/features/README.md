@@ -54,7 +54,7 @@ id may not equal a stock screen id or another feature's.
 
 | Name | What it is |
 | --- | --- |
-| `ctx.api` | `get(url)`, `post(url, body)`, `patch(url, body)`, `del(url)`. Sends the CSRF token, throws an `Error` with `status` and `code`. Feature routes are under `/api/x/<id>/...`; one-off actions are `POST /api/actions/<id>.<name>`; a screen's data is `GET /api/domain/<id>`. |
+| `ctx.api` | `get(url)`, `post(url, body)`, `put(url, body)`, `patch(url, body)`, `del(url)`. Sends the CSRF token, throws an `Error` with `status` and `code`. Feature routes are under `/api/x/<id>/...`; one-off actions are `POST /api/actions/<id>.<name>`; a screen's data is `GET /api/domain/<id>`. |
 | `ctx.t(en, yue)`, `ctx.tt({ en, yue })` | Text in the language the person chose (English, Cantonese or both). |
 | `ctx.getLang()` | `"en"`, `"yue"` or `"both"`. |
 | `ctx.h(tag, props, ...kids)` | Builds an element. Props: `class`, `onClick` (any `on...` event), `value`, `checked`, `disabled`, `hidden`, other attributes as strings. Kids may be nodes, strings or arrays. |

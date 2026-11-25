@@ -77,7 +77,7 @@ test("aimesh-pro: the node light needs the hold button and sends one fixed comma
     const out = await t.owner.post("/api/actions/aimesh-pro.node-led", { ip: "198.51.100.2", off: true, hold: true });
     assert.equal(out.status, 200, out.text);
     assert.deepEqual([out.data.ok, out.data.off], [true, true]);
-    assert.deepEqual(t.router.nodeCommands, [{ user: "pat-router", ip: "198.51.100.2", remote: "nvram set led_disable=1; nvram commit; service restart_leds" }]);
+    assert.deepEqual(t.router.nodeCommands, [{ user: "pat-router", ip: "198.51.100.2", remote: "nvram set AllLED=0; nvram commit; service restart_leds" }]);
   } finally {
     await t.stop();
   }

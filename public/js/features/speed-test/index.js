@@ -110,7 +110,7 @@ async function screen(ctx) {
   page.append(
     h("section", { class: "card rise" }, h("div", { class: "st-top" }, gaugeBox, h("div", { class: "st-side" }, results, h("div", { class: "chips" }, start, clearHistory), status))),
     h("section", { class: "card rise" }, h("h2", { class: "h2" }, t("History", "記錄")), historyBox),
-    ...ctx.controls.settingGroups(data.entries).map((g) => ctx.controls.groupCard(g.label, g.entries)));
+    ...ctx.controls.appGroupCards("speed-test", data.entries, async () => { data = { ...(await api.get("/api/domain/speed-test")) }; drawResults(); }));
   drawGauge();
   drawResults();
   drawHistory();
@@ -121,6 +121,6 @@ async function screen(ctx) {
 export default {
   id: "speed-test",
   screens: [{ id: "speed-test", group: { en: "Monitor", yue: "監察" }, icon: "speed", label, render: screen }],
-  settings: [{ id: "speed-test", icon: "speed", label, async render(ctx) { const data = await ctx.api.get("/api/domain/speed-test"); return ctx.controls.settingGroups(data.entries).map((g) => ctx.controls.groupCard(g.label, g.entries)); } }],
+  settings: [{ id: "speed-test", icon: "speed", label, async render(ctx) { const data = await ctx.api.get("/api/domain/speed-test"); return ctx.controls.appGroupCards("speed-test", data.entries); } }],
   commands: [{ id: "speed-test.open", icon: "speed", label: { en: "Run a speed test", yue: "做個測速" }, keywords: "speed test download upload bandwidth 測速 速度", run: (ctx) => ctx.navigate("speed-test") }],
 };

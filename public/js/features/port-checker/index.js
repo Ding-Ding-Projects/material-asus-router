@@ -14,7 +14,7 @@ export const REASONS = {
 
 async function screen(ctx) {
   const { api, h, icon, t } = ctx;
-  const data = await api.get("/api/domain/port-checker");
+  let data = await api.get("/api/domain/port-checker");
   const page = ctx.page(label, { en: "Find out whether a port you opened can really be reached from the internet.", yue: "睇吓你開咗嘅端口，喺互聯網真係連到未。" });
   ctx.root.append(page);
   const results = new Map();
@@ -63,13 +63,13 @@ async function screen(ctx) {
   if (data.behindSharedAddress) notices.push(h("div", { class: "card warn" }, h("div", { class: "k" }, t("Address cannot be reached from outside", "地址由外面連唔到")), h("div", { class: "t1" }, t(`Your router's internet address is ${data.wanIp}, which is a private or shared address.`, `你路由器嘅互聯網地址係 ${data.wanIp}，屬於私人或者共用地址。`)),
     h("div", { class: "t2" }, t("Port forwarding cannot work from the internet until your provider gives you a public address.", "要等供應商俾你公共地址，端口轉發先可以由互聯網用到。"))));
   page.append(...notices, h("section", { class: "card rise" }, h("h2", { class: "h2" }, t("Your forwarding rules", "你嘅轉發規則")), rows), h("section", { class: "card rise" }, h("h2", { class: "h2" }, t("Any other port", "其他端口")), manual, manualResult),
-    ...ctx.controls.settingGroups(data.entries).map((g) => ctx.controls.groupCard(g.label, g.entries)));
+    ...ctx.controls.appGroupCards("port-checker", data.entries, async () => { data = await api.get("/api/domain/port-checker"); }));
   draw();
 }
 
 export default {
   id: "port-checker",
   screens: [{ id: "port-checker", group: { en: "Network", yue: "網絡" }, icon: "travel_explore", label, render: screen }],
-  settings: [{ id: "port-checker", icon: "travel_explore", label, async render(ctx) { const data = await ctx.api.get("/api/domain/port-checker"); return ctx.controls.settingGroups(data.entries).map((g) => ctx.controls.groupCard(g.label, g.entries)); } }],
+  settings: [{ id: "port-checker", icon: "travel_explore", label, async render(ctx) { const data = await ctx.api.get("/api/domain/port-checker"); return ctx.controls.appGroupCards("port-checker", data.entries); } }],
   commands: [{ id: "port-checker.open", icon: "travel_explore", label: { en: "Check an open port", yue: "檢查開咗嘅端口" }, keywords: "port open forwarding reachable check 端口 轉發", run: (ctx) => ctx.navigate("port-checker") }],
 };

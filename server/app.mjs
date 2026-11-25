@@ -64,7 +64,7 @@ export async function createApp(options = {}) {
   const app = { store, vault, sessions, session, engine, pendingHostKey: null, demoRouter: null };
 
   if (options.demo) {
-    app.demoRouter = await new FakeRouter({ firmware: options.demoFirmware ?? "merlin" }).listen(0, "127.0.0.1");
+    app.demoRouter = await new FakeRouter({ firmware: options.demoFirmware ?? "merlin", profile: options.demoProfile ?? null }).listen(0, "127.0.0.1");
     options.preconfigure = { host: "127.0.0.1", port: app.demoRouter.port, username: app.demoRouter.username, authType: "password", password: app.demoRouter.password, hostKey: app.demoRouter.hostKeyFingerprint };
   }
   if (options.preconfigure) await saveRouter(app, options.preconfigure);
