@@ -1,0 +1,33 @@
+/* Rule canvas. Theme variables only, so light and dark both work. */
+.rc-head{align-items:center}
+.rc-banner{display:flex;flex-direction:column;gap:8px}
+.rc-banner:empty{display:none}
+.rc-lanes{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;align-items:start}
+.rc-lane{background:var(--surf);border-radius:32px;padding:20px;box-shadow:var(--e1);display:flex;flex-direction:column;gap:10px;min-width:0;animation:rc-in .5s cubic-bezier(.2,.9,.25,1.1) both}
+.rc-lane:nth-child(2){animation-delay:.06s}.rc-lane:nth-child(3){animation-delay:.12s}
+.rc-lane .h2{display:flex;gap:8px;align-items:center}
+.rc-card{position:relative;display:flex;flex-direction:column;gap:8px;padding:12px 14px 12px 40px;border-radius:18px;background:var(--surf-low);border:1.5px solid transparent;min-width:0;transition:transform .2s cubic-bezier(.2,.9,.25,1.3),border-color .2s,box-shadow .2s}
+.rc-card.movable{cursor:grab}
+.rc-card.movable:hover{transform:translateY(-2px);box-shadow:var(--e1)}
+.rc-card.conflict{border-color:var(--bad);animation:rc-shake .5s ease 1}
+.rc-card.waiting{border-style:dashed;border-color:var(--primary)}
+.rc-card.exposed{background:var(--warn-c)}
+.rc-card.is-dragged{opacity:.35}
+.rc-num{position:absolute;left:10px;top:12px;font-size:12px;font-weight:800;color:var(--sub)}
+.rc-line{display:flex;gap:8px;align-items:center;flex-wrap:wrap;min-width:0}
+.rc-port,.rc-proto{min-height:32px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--surf);color:var(--text);font-weight:700;font-size:13px;font-variant-numeric:tabular-nums}
+.rc-port.static{border-style:dashed}
+.rc-proto{background:var(--secondary-c);color:var(--on-secondary-c);border-color:transparent}
+.rc-edit{height:36px;width:120px;font-size:13px}
+.rc-move{height:40px;font-size:13px;flex:1 1 140px;min-width:0}
+.rc-device{border:2px dashed var(--line);border-radius:22px;padding:12px;display:flex;flex-direction:column;gap:8px;min-width:0;transition:background .2s,border-color .2s,transform .25s cubic-bezier(.2,.9,.25,1.4)}
+.rc-device.unknown{border-color:var(--warn)}
+.rc-device.drop-hot{border-color:var(--primary);background:var(--primary-c);transform:scale(1.02)}
+.rc-devhead{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.rc-fw{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.rc-card .btn.icon{margin-left:auto}
+.visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.drag-ghost{position:fixed;z-index:9999;pointer-events:none;opacity:.92;box-shadow:var(--e2);transform:rotate(-2deg) scale(1.04)}
+@keyframes rc-in{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes rc-shake{0%,100%{transform:none}20%{transform:translateX(-5px)}40%{transform:translateX(5px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
+@media (prefers-reduced-motion:reduce){.rc-lane,.rc-card.conflict{animation:none}.rc-card,.rc-device{transition:none}.rc-card.movable:hover,.rc-device.drop-hot{transform:none}.drag-ghost{transform:none}}
