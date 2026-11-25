@@ -11,3 +11,4 @@ dist
 site
 tests
 *.log
+firmware/
