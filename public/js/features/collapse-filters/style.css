@@ -1,0 +1,7 @@
+.cf{display:flex;flex-direction:column;gap:10px;border-radius:calc(20px * var(--shape,1));background:var(--surf-low);padding:6px 8px 10px;min-width:0}
+.cf-head{display:flex;align-items:center;gap:10px;min-height:44px;padding:0 12px;border:0;background:none;border-radius:calc(16px * var(--shape,1));font-weight:700;font-size:15px;text-align:left;width:100%;flex-wrap:wrap}
+.cf-head:hover{background:var(--surf-high)}
+.cf-head .ms{transition:transform var(--mo-tab-change-d,200ms) var(--mo-tab-change-ease,ease)}
+.cf.collapsed .cf-head .ms{transform:rotate(-90deg)}
+.cf-title{flex:1 1 140px;min-width:0}
+.cf-body{display:flex;flex-direction:column;gap:12px;padding:4px 12px 6px;min-width:0}
