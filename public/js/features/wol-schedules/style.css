@@ -1,0 +1,12 @@
+/* The weekly grid: 7 days by 48 half-hour cells, scrolls sideways on narrow screens. */
+.wg-scroll{overflow-x:auto;padding:4px 0;max-width:100%}
+.wg{display:flex;flex-direction:column;gap:3px;min-width:max-content;touch-action:none;user-select:none}
+.wg-row{display:flex;align-items:center;gap:2px}
+.wg-day{width:34px;flex:none;font-size:12px;font-weight:700;color:var(--sub)}
+.wg-hour{width:18px;flex:none;font-size:10px;color:var(--sub);overflow:visible;white-space:nowrap}
+.wg-cell{width:18px;height:28px;flex:none;padding:0;border:1px solid var(--line);border-radius:5px;background:var(--surf-low)}
+.wg-cell.on{background:var(--primary);border-color:var(--primary)}
+.wg-cell:focus-visible{outline:3px solid var(--primary);outline-offset:1px;position:relative;z-index:1}
+/* The stock stepper (minus, number, plus, unit) is wider than a phone card; keep it inside. */
+.setting .ctl.stepper{flex-wrap:wrap}
+.setting .ctl.stepper .field.num{width:84px;min-width:64px}

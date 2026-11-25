@@ -1,0 +1,9 @@
+.sc-bits{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0}
+.sc-octet{display:flex;flex-direction:column;align-items:flex-start;gap:2px}
+.sc-cells{display:flex;gap:2px}
+.sc-cells span{width:12px;height:22px;border-radius:4px;border:1.5px solid var(--primary);box-sizing:border-box}
+.sc-cells .sc-net{background:var(--primary)}
+.sc-cells .sc-host{background:transparent}
+.sc-val{word-break:break-all}
+.sc-test{min-height:36px;display:flex;align-items:center}
+@media (max-width:420px){.sc-cells span{width:9px}.sc-bits{gap:6px}}

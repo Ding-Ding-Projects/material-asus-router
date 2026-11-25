@@ -1,0 +1,20 @@
+/* Chart colours: the app's own theme variables, so light and dark both work. */
+.mchart{width:100%;height:auto;display:block;max-height:340px}
+.mchart .grid{stroke:var(--line);stroke-width:1}
+.mchart .axis{fill:var(--sub);font-size:11px}
+.mchart .val{fill:var(--text);font-size:12px;font-weight:650}
+.mchart .line{fill:none;stroke-width:2.4;stroke-linejoin:round;stroke-linecap:round}
+.mchart .s0{stroke:var(--primary);fill:var(--primary)}
+.mchart .s1{stroke:var(--tertiary);fill:var(--tertiary)}
+.mchart .s2{stroke:var(--good);fill:var(--good)}
+.mchart .s3{stroke:var(--warn);fill:var(--warn)}
+.mchart .s4{stroke:var(--bad);fill:var(--bad)}
+.mchart .line.s0,.mchart .line.s1,.mchart .line.s2,.mchart .line.s3,.mchart .line.s4{fill:none}
+.mchart .gap{stroke:none;opacity:.9}
+.mchart .bar{stroke:none}
+.lm-legend{display:flex;gap:8px;flex-wrap:wrap}
+.lm-dot{display:inline-block;width:10px;height:10px;border-radius:5px;background:var(--primary)}
+.lm-dot.s1{background:var(--tertiary)}
+.lm-dot.s2{background:var(--good)}
+.lm-dot.s3{background:var(--warn)}
+.lm-dot.s4{background:var(--bad)}
