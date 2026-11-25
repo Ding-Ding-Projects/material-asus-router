@@ -201,7 +201,7 @@ export class FakeRouter {
     this.username = username;
     this.password = password;
     // Feature folders add their own default settings (fakeRouter.nvram).
-    const base = { ...defaultNvram({ firmware, model }), ...featureNvram({ firmware, model }) };
+    const base = { ...defaultNvram({ firmware, model }), ...featureNvram({ firmware, model, profile }) };
     this.profile = profile;
     this.nvram = profile ? applyProfile(profile, base) : base;
     this.committed = { ...this.nvram };
