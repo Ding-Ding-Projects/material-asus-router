@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "source": "Ding-Ding-Projects/dim-sum-photos",
+  "rule": "Each release takes one dish from the public catalogue, using the dish's exact English and Traditional Chinese names. Only dishes whose picture is published qualify, and a dish is used for one release only.",
+  "releases": {
+    "0.1.0": {
+      "id": "hk-dish-0001",
+      "en": "Classic Har Gow",
+      "zhHant": "蝦餃",
+      "photoTag": "catalog-v1",
+      "photoFile": "hk-dish-0001-classic-har-gow.png",
+      "revision": "7e180e19f9a117ea38e30955e8ff111a870bdfa2",
+      "recorded": "2026-11-25"
+    }
+  }
+}

@@ -1,0 +1,155 @@
+// 廣東話文字。Keys 同 strings-en.js 一樣；缺咗嘅 key 會自動用英文。
+export const YUE = {
+  // 共用
+  cancel: "取消", continue: "繼續", save: "儲存", saved: "已儲存。", reset: "還原", edit: "編輯", delete: "刪除", loading: "載入緊…",
+  moveUp: "上移", moveDown: "下移", inProgress: "進行中", tocLabel: "呢個畫面嘅分區",
+  schoolLeftOut: "校園模式開咗，所以唔會顯示。",
+
+  // 面板標題
+  panelLanguage: "語言", panelTone: "搞笑程度", panelWording: "個人用詞", panelSounds: "動作音效", panelNarration: "朗讀",
+  panelLook: "外觀同動態", panelSchedule: "排程設定", panelName: "程式名稱", panelComfort: "ADHD 模式", panelDimsum: "點心",
+  panelHistory: "紀錄", panelAbout: "關於",
+
+  // 語言
+  languageLede: "揀英文、廣東話或者兩樣一齊。你嘅選擇會儲起，之後每個畫面、訊息、對話框同錯誤都跟住行。",
+  languageMode: "語言模式", languageModeHelp: "兩樣一齊模式下，每個標籤同時顯示英文同廣東話，窄畫面會自動換行。",
+  languageSample: "呢一行會跟你揀嘅語言轉。", languageSampleHelp: "試下三種模式，睇住呢張卡點變。",
+
+  // 語氣
+  toneLede: "兩條滑桿決定程式講嘢有幾玩味，英文同廣東話各有一條。佢哋只會改訊息嘅語氣，永遠唔會改事實。",
+  toneEnglish: "英文搞笑程度", toneYue: "廣東話搞笑程度",
+  toneEnglishHelp: "1 係認真，乜都唔加。5 係最玩味。", toneYueHelp: "1 係認真，乜都唔加。5 係最玩味。",
+  toneEmoji: "對話框顯示 emoji", toneEmojiHelp: "每個對話框標題加一個純裝飾 emoji。唔會出現喺按鈕、標籤或者朗讀嘅名稱度。",
+  toneDisclosure: "預設係第 5 級，所以一開箱程式已經好玩味。將滑桿拉到 1，嗰種語言就變返認真樸實。錯誤、有風險嘅操作、安全同無障礙訊息都跟呢兩條滑桿。",
+  tonePreview: "以現時級數，每種訊息會加咩", toneNothingAdded: "呢一級乜都唔加",
+  toneDisclosureTitle: "呢個程式有搞笑嘅一面", toneDisclosureBody: "訊息可以帶一句輕鬆嘅旁白。你可以喺「聲音同舒適」入面為每種語言調低或者關咗佢。訊息入面嘅事實永遠唔會變。",
+  toneDisclosureKeep: "就咁用", toneDisclosureOpen: "打開滑桿",
+  kind_error: "錯誤", kind_success: "成功", kind_confirm: "有風險嘅操作", kind_security: "安全", kind_access: "無障礙", kind_empty: "空白畫面",
+
+  // 個人用詞
+  wordingLede: "載入一個你自己嘅細 JSON 檔案，程式就會用你嘅用詞取代原本嘅字。檔案只會留喺呢個瀏覽器。",
+  vocabStatus: "個人用詞", vocabNone: "未載入檔案", vocabLoaded: "已載入：{count} 項",
+  vocabChoose: "揀檔案", vocabReplace: "更換檔案", vocabClear: "清除個人用詞",
+  vocabClearTitle: "清除個人用詞？", vocabClearBody: "會還原原本嘅用詞，而且呢個瀏覽器入面儲起嘅副本會被刪除。",
+  vocabDrop: "你亦可以將檔案拖放到視窗任何位置。任何一項檢查唔通過，都唔會改動任何嘢。",
+  vocabLocal: "只喺本機。檔案唔會傳去任何地方，亦唔會出現喺紀錄、匯出或者歷史入面。指令同識別碼永遠保持原樣。",
+  vocabSchema: "檔案格式", vocabLimits: "限制：{bytes} KiB、巢狀深度 {depth}、鍵最多 {key} 字、值最多 {value} 字、{entries} 項、唔可以有重複嘅鍵。",
+  vocabApplied: "個人用詞已套用", vocabDamagedNotice: "儲起嘅個人用詞已損毀，已經移除。而家顯示返原本用詞。",
+  vocabError_TOO_BIG: "檔案太大，上限係 256 KiB。", vocabError_EMPTY: "檔案係空嘅。", vocabError_NOT_JSON: "呢個唔係 JSON 檔案。",
+  vocabError_NOT_OBJECT: "檔案必須係一個 JSON 物件。", vocabError_UNKNOWN_FIELD: "檔案入面有個欄位唔屬於呢個格式。",
+  vocabError_BAD_VERSION: "檔案必須寫明 \"version\": 1。", vocabError_NO_WORDS: "檔案入面冇可以套用嘅字。", vocabError_BAD_NAME: "檔案入面嘅名稱唔啱。",
+  vocabError_BAD_KEY: "其中一個字唔啱。", vocabError_BAD_VALUE: "其中一個取代字唔啱。", vocabError_DUPLICATE_KEY: "同一個字出現咗兩次。",
+  vocabError_TOO_DEEP: "檔案嵌套太深。", vocabError_TOO_MANY: "檔案項目太多。", vocabError_SCHOOL: "校園模式開咗，個人用詞唔會顯示。",
+  vocabError_ONE_FILE: "請只拖放一個檔案。", vocabError_BAD: "呢個檔案用唔到。",
+
+  // 音效
+  soundsLede: "為有意義嘅操作配上短音效，即場生成，冇任何音效檔案。音效永遠取代唔到你睇到或者讀屏軟件讀出嘅內容。",
+  soundsOn: "動作音效", soundsOnHelp: "一次過開關所有音效。", soundsMute: "靜音", soundsMuteHelp: "唔改上面個開關，直接令所有音效無聲。",
+  soundsVolume: "音量", soundsReduced: "精簡音效", soundsReducedHelp: "只播放錯誤同警告音效。",
+  soundsQuiet: "靜音時段", soundsQuietHelp: "喺呢段時間入面冇音效，可以跨越午夜。", soundsTo: "至",
+  soundsMap: "邊個動作播邊個音效", soundsProvenance: "每個音效都係用振盪器參數即場生成，冇錄音、冇取樣、冇下載。",
+  soundsTest: "播放", soundsPlayed: "已播放：{cue}", soundsNotPlayed: "{cue} 冇播：{why}",
+  soundsUnavailable: "呢個瀏覽器啟動唔到音訊。所有操作嘅結果仍然完全一樣。",
+  soundsNowOn: "動作音效已開啟。", soundsNowOff: "動作音效已關閉。", soundsMuted: "已靜音。", soundsUnmuted: "已取消靜音。",
+  why_ok: "已經播放", "why_switched-off": "音效開關關咗", why_muted: "已靜音", "why_volume-zero": "音量係零", "why_quiet-hours": "喺靜音時段",
+  "why_reduced-sound": "精簡音效只容許錯誤同警告", "why_too-soon": "同上一個音效相隔太近", "why_unknown-cue": "未知音效", "why_audio-unavailable": "冇音訊可用",
+
+  // 朗讀
+  narrationLede: "朗讀會用英文、廣東話或者兩樣一齊讀出程式嘅訊息。預設關閉，而且一次只讀一句。",
+  narrationUnavailable: "呢個瀏覽器冇語音引擎，所以朗讀講唔到嘢。",
+  narrationOn: "朗讀", narrationOnHelp: "將提示、對話框標題同畫面標題讀出嚟。", narrationOnSpoken: "朗讀已開啟。",
+  narrationNowOn: "朗讀已開啟。", narrationNowOff: "朗讀已關閉。",
+  narrationScreenReader: "我用緊讀屏軟件", narrationScreenReaderHelp: "網頁分辨唔到有冇讀屏軟件運行，所以呢度你自己開，朗讀就會靜晒，等讀屏軟件去講。",
+  narrationVoiceEn: "英文聲音", narrationVoiceYue: "廣東話聲音", narrationAuto: "自動選擇",
+  narrationEffective: "而家用緊 {name}（{lang}）", narrationNoEn: "未安裝英文聲音，英文唔會被讀出。", narrationNoYue: "呢部裝置未安裝香港廣東話聲音，所以廣東話唔會被讀出。請喺系統嘅語音設定安裝一個。",
+  narrationNoVoice: "暫時搵唔到聲音", narrationTest: "試聽", narrationSampleEn: "This is the English narrator.", narrationSampleYue: "呢度係廣東話朗讀。",
+  narrationRate: "速度", narrationPitch: "音調",
+  narrationRules: "一次只讀一句。重複嘅訊息會跳過，太密會限速，但錯誤永遠唔會被擋住。", narrationRefresh: "再搵一次聲音",
+
+  // 外觀
+  lookLede: "密度、字體大細、強調色同動態。下面可以排程。",
+  lookDensity: "密度", densityComfortable: "舒適", densityCompact: "緊湊", lookFont: "文字", lookFontHelp: "大字會放大成個程式。系統字體會用你部機自己嘅字體。",
+  fontDefault: "預設", fontLarge: "較大", fontSystem: "系統字體", lookAccent: "強調色", lookAccentHelp: "成個程式嘅色調會跟住轉。",
+  lookMotion: "動態", lookMotionHelp: "減少動態會停止動畫同過場。你系統嘅減少動態設定亦會一直被尊重。", motionFull: "完整", motionReduced: "減少",
+  lookTheme: "主題", lookThemeHelp: "跟系統，或者揀淺色或深色。", themeAuto: "自動", themeLight: "淺色", themeDark: "深色",
+
+  // 排程
+  scheduleLede: "按時間、按日子，或者另一個系統話開就開，自動切換語言、主題、密度、顏色、字體大細或者動態。",
+  scheduleBase: "排程只係借用設定。規則一完，就會還返你自己嘅選擇。規則重疊嘅時候，排喺上面嗰條贏。",
+  scheduleEmpty: "仲未有規則。", scheduleAdd: "新增規則", scheduleNewRule: "新規則", scheduleEditRule: "編輯規則", scheduleDeleteTitle: "刪除呢條規則？",
+  scheduleName: "名稱", scheduleSource: "運作方式", scheduleSourceLocal: "喺指定時間", scheduleSourceApi: "網址話開嗰陣", scheduleSourceHa: "Home Assistant 開關開住嗰陣",
+  scheduleDays: "日子", scheduleDaysHelp: "全部唔揀就係每日。", scheduleEveryDay: "每日", scheduleAllDay: "成日",
+  scheduleStart: "由", scheduleEnd: "到", scheduleMidnight: "如果「到」早過「由」，規則會跨過午夜，而且算喺開始嗰日。",
+  scheduleZone: "時區", scheduleZoneLocal: "呢部裝置嘅時區", scheduleFrom: "第一日（可選）", scheduleTo: "最後一日（可選）",
+  scheduleApply: "切換呢啲設定", scheduleNoChange: "保持原狀", set_language: "語言", set_theme: "主題", set_density: "密度", set_font: "文字", set_motion: "動態", set_accent: "強調色",
+  val_en: "英文", val_yue: "廣東話", val_both: "兩樣", val_auto: "自動", val_light: "淺色", val_dark: "深色", val_comfortable: "舒適", val_compact: "緊湊",
+  val_default: "預設", val_large: "較大", val_system: "系統字體", val_full: "完整", val_reduced: "減少",
+  scheduleWhenApi: "網址話開嗰陣", scheduleWhenHa: "Home Assistant 開關開住嗰陣", scheduleFromApi: "設定由網址提供",
+  scheduleApiRuleHelp: "網址來源入面嘅網址話開，呢條規則就開。如果回覆帶有設定就用嗰啲，否則用你喺下面揀嘅設定。",
+  scheduleHaRuleHelp: "Home Assistant 來源入面嘅開關開住，呢條規則就開。",
+  scheduleActiveNow: "而家開住", scheduleActiveList: "而家開住：{names}", scheduleNoneActive: "而家冇規則開住。", scheduleSwitched: "排程規則轉咗你嘅設定。",
+  scheduleFix: "請修正：", scheduleErr_name: "名稱", scheduleErr_time: "開始同結束時間", "scheduleErr_same-time": "開始同結束唔可以一樣", scheduleErr_tz: "時區", scheduleErr_date: "日期", "scheduleErr_date-order": "最後一日早過第一日",
+  scheduleErr_accent: "顏色", scheduleErr_apply: "最少揀一項設定", scheduleErr_id: "規則編號", scheduleErr_days: "日子", scheduleErr_language: "語言", scheduleErr_theme: "主題", scheduleErr_density: "密度", scheduleErr_font: "文字", scheduleErr_motion: "動態", scheduleErr_unknown: "未知設定", "scheduleErr_too-many": "規則太多（上限 40 條）",
+  scheduleApiTitle: "網址來源", scheduleApiHelp: "一個安全（https）嘅網址，回覆一份細細嘅 JSON 排程。由呢個程式嘅伺服器檢查，唔係由頁面檢查。",
+  scheduleApiPlaceholder: "安全網址", scheduleHaTitle: "Home Assistant 來源", scheduleHaHelp: "一個 Home Assistant 開關實體。請用你 Home Assistant 個人檔案入面嘅長期存取權杖。",
+  scheduleHaPlaceholder: "Home Assistant 位址", scheduleUrl: "位址", scheduleEntity: "實體", scheduleToken: "存取權杖（網址來源可選）", scheduleTokenSaved: "權杖已儲存喺呢個瀏覽器",
+  scheduleTokenHelp: "權杖只存喺呢個瀏覽器，每次檢查先傳去呢個程式嘅伺服器，永遠唔會入紀錄、匯出或者日誌。網頁冇辦法提供更強嘅安全儲存。",
+  scheduleRefresh: "每隔幾耐檢查（分鐘）", scheduleCheckNow: "即刻檢查", scheduleForgetToken: "忘記權杖",
+  scheduleStateIdle: "仲未檢查", scheduleStateChecking: "檢查緊…", scheduleStateOk: "上次檢查成功：{state}", scheduleStateFailed: "上次檢查失敗（{code}）。", scheduleStale: "仲用緊上一次成功嘅回覆。",
+  scheduleOn: "開", scheduleOff: "關",
+  scheduleApiFailed: "讀唔到排程網址。", scheduleHaFailed: "讀唔到 Home Assistant。",
+  daySun: "日", dayMon: "一", dayTue: "二", dayWed: "三", dayThu: "四", dayFri: "五", daySat: "六",
+
+  // 名稱
+  nameLede: "改程式對自己嘅稱呼。只會改顯示。", nameField: "顯示名稱", nameHelp: "最多 60 個字。留空就用原本名稱。",
+  nameApply: "用呢個名", nameReset: "還原原本名稱", nameSaved: "名稱已更改。", nameWasReset: "已還原原本名稱。",
+  nameCosmetic: "只會改標題列、頁面、側欄同通知嘅顯示。資料夾、套件同容器名稱、更新來源同診斷資料都保持原本名稱。",
+  nameDiagnostics: "複製診斷資料", nameDiagnosticsCopied: "已複製診斷資料。", nameDiagnosticsFailed: "複製唔到診斷資料。",
+
+  // ADHD 模式
+  comfortLede: "五個獨立嘅舒適模式，開啟之前全部關住。用字樸實，冇連勝、冇分數。",
+  adhdFocus: "專注", adhdFocusHelp: "收埋側欄、分頁同多餘按鈕。畫面會一直有個「顯示全部」按鈕。",
+  adhdLow: "低刺激", adhdLowHelp: "停止動畫、柔和強烈顏色同降低音效。同你系統嘅減少動態設定一齊生效。",
+  adhdTime_: "時間意識", adhdTimeHelp: "顯示而家時間、你喺呢個畫面停咗幾耐，同今次使用咗幾耐。",
+  adhdOne: "一次一件事", adhdOneHelp: "長畫面一次只顯示一張卡，帶「上一張」、「下一張」同「顯示全部」。",
+  adhdMomentumTitle: "進度感", adhdMomentumHelp: "顯示今次已套用幾多項改動，同仲有幾多項等緊。",
+  adhdNotMedical: "呢啲係顯示選項，唔係醫療建議或者治療。", adhdSchoolKids: "校園模式唔會關閉呢啲模式，因為佢哋係舒適設定。呢個程式暫時未有兒童模式；有嘅時候，呢啲模式會疊加喺上面。",
+  adhdShowEverything: "顯示全部", adhdLessThanMinute: "唔夠一分鐘", adhdMinutes: "{n} 分鐘",
+  adhdTime: "而家 {now} · 呢個畫面 {screen} · 今次使用 {visit}", adhdMomentum: "今次：已套用 {done} 項改動 · {waiting} 項等緊",
+  adhdOneLabel: "一次一件事", adhdOneOf: "第 {i} 張，共 {n} 張", adhdPrevious: "上一張", adhdNext: "下一張", adhdShowAll: "顯示全部",
+  adhdNowOn: "呢個舒適模式已開啟。", adhdNowOff: "呢個舒適模式已關閉。",
+
+  // 校園模式
+  schoolLede: "校園模式令程式只用樸實英文：冇廣東話、搞笑程度、個人用詞同點心。即時生效，而且所有分頁共用。",
+  schoolOnHelp: "已開啟。關閉要輸入 PIN 或者密碼。", schoolOffHelp: "已關閉。第一次開啟要設定 PIN 或者密碼。",
+  schoolUnreadable: "儲起嘅校園模式紀錄讀唔到，所以狀態未知，程式而家顯示預設。喺度改設定會寫入新紀錄。",
+  schoolLockKind: "鎖嘅類型", schoolLockKindHelp: "第一次開啟校園模式嗰陣揀一次。", schoolPin: "PIN（4 至 12 位數字）", schoolPassword: "密碼",
+  schoolSetTitle: "開啟{name}", schoolSetPinBody: "請揀一個 4 至 12 位數字嘅 PIN。關閉呢個模式嗰陣要用。", schoolSetPasswordBody: "請揀一個密碼。關閉呢個模式嗰陣要用。",
+  schoolEnterToStart: "請輸入 PIN 或者密碼嚟開始。", schoolOffTitle: "關閉{name}", schoolOffBody: "請輸入 PIN 或者密碼。",
+  schoolRename: "呢個模式嘅名稱", schoolRenameHelp: "可以改成啱你用嘅名，例如「小朋友角落」。新名稱到處都會顯示。",
+  schoolChangeLock: "更改 PIN 或者密碼", schoolLockIs: "目前嘅鎖：{kind}", schoolCurrentTitle: "目前嘅 PIN 或者密碼", schoolCurrentBody: "請先輸入目前嗰個。", schoolNewTitle: "新嘅 PIN 或者密碼",
+  schoolNotSecurity: "呢個鎖係用戶體驗鎖，唔係保安。佢防止你一不小心就關咗個模式。任何人只要用到呢個瀏覽器嘅儲存空間，就可以移除佢。",
+  schoolPasskey: "通行密鑰", schoolPasskeyHelp: "通行密鑰需要有伺服器驗證，而呢個只喺瀏覽器入面嘅鎖冇伺服器。",
+  schoolWhatChanges: "開住嘅時候，語言只會係英文，而搞笑程度、個人用詞同點心都唔會顯示。", schoolWillOmit: "開啟之後會強制用英文，並且唔顯示廣東話、搞笑程度、個人用詞同點心。關閉之後會還返。",
+  schoolPinRules: "密碼長度係 {min} 至 {max} 個字。", schoolErr_WRONG: "PIN 或者密碼唔啱。", schoolErr_pin: "PIN 要係 4 至 12 位數字。", schoolErr_password: "密碼最少要 6 個字。", schoolErr_kind: "請揀鎖嘅類型。",
+
+  // 點心
+  dimsumLede: "間唔中，公開點心圖庫入面嘅一款點心會嚟同你打招呼。",
+  dimsumAllow: "允許點心驚喜", dimsumAllowHelp: "大約十次啟動出現一次。試下關佢。",
+  dimsumTroll: "好嘢，不過點心關唔到㗎。", dimsumSpringsBack: "點心個開關彈返開咗。",
+  dimsumRules: "每次啟動最多出現一次，第一次啟動、出錯、更新或者有工作進行緊嗰陣都唔會出現，而且會自己消失。校園模式下唔會出現。",
+  dimsumSource: "圖片只來自公開嘅 Ding-Ding-Projects dim-sum-photos 圖庫，由呢個程式嘅伺服器攞。呢個專案入面唔會儲存任何圖片。冇圖片嘅點心會被剔除並且報告。",
+  dimsumToday: "點心驚喜", dimsumClose: "關閉", dimsumSkippedNoPicture: "點心驚喜被略過，因為冇圖片可用。", dimsumSkippedUnavailable: "點心驚喜被略過，因為連唔到圖庫。",
+  dimsumCodeName: "版本代號", codenameFor: "版本 {version}", codenameNone: "版本 {version} 暫時未有記錄代號。", codenameNoPicture: "冇圖片：{why}。", codenameUnavailable: "載入唔到版本代號。", catalogueUnavailable: "連唔到圖庫",
+
+  // 紀錄同關於
+  historyLede: "呢度做過嘅改動嘅永久清單。只會增加，唔會刪改，亦唔會記錄你嘅用詞、權杖或者 PIN。", historyEmpty: "仲未有紀錄。",
+  aboutShown: "顯示名稱", aboutShipped: "原本名稱", aboutShippedHelp: "資料夾、套件、更新來源同診斷資料用嘅名稱。",
+  exportSettings: "匯出設定同紀錄", exportHelp: "匯出唔包括個人用詞、權杖同鎖。",
+  histUnknown: "已記錄改動：{kind}", hist_setting: "設定 {name} 而家係 {value}", hist_look: "外觀：{setting} 而家係 {value}（{by}）", hist_rename: "程式名稱由 {from} 改成 {to}", "hist_rename-reset": "程式名稱已還原成 {to}",
+  "hist_vocab-applied": "已套用個人用詞：{count} 項（{source}）", "hist_vocab-refused": "拒絕咗一個個人用詞檔案：{code}（{source}）", "hist_vocab-cleared": "已清除個人用詞", "hist_vocab-purged": "已移除損毀嘅個人用詞：{why}",
+  "hist_school-on": "{label}已開啟", "hist_school-off": "{label}已關閉", "hist_school-off-refused": "有人輸入錯誤嘅 PIN 或密碼嚟關閉校園模式", "hist_school-lock-changed": "校園模式嘅鎖已更改", "hist_school-renamed": "校園模式由 {from} 改名做 {to}",
+  hist_adhd: "ADHD 模式 {mode}：{on}", "hist_schedule-applied": "排程切換咗設定：套用 {applied}，還原 {restored}", "hist_schedule-source-failed": "排程來源 {source} 失敗：{code}", "hist_schedule-source-changed": "排程來源 {source} 已更改",
+  "hist_schedule-rule-added": "已新增排程規則：{rule}", "hist_schedule-rule-changed": "已更改排程規則：{rule}", "hist_schedule-rule-removed": "已移除排程規則：{rule}", "hist_schedule-rule-moved": "排程規則 {rule} 已移到第 {to} 位",
+  "hist_dimsum-shown": "點心驚喜已出現", "hist_dimsum-omitted": "點心驚喜被略過：{why}", "hist_dimsum-troll": "有人想關閉點心",
+};
