@@ -75,6 +75,50 @@
       "name": "Documentation website and offline docs"
     },
     {
+      "id": "ssh",
+      "name": "SSH action catalogue, owner terminal, Entware, flash backup"
+    },
+    {
+      "id": "fwup",
+      "name": "Firmware upload, the dim sum moment and the three-word screen"
+    },
+    {
+      "id": "live",
+      "name": "Live mode and the History manager"
+    },
+    {
+      "id": "danger",
+      "name": "Four keys, the Level 3 warning, the reboot launch and its live timeline"
+    },
+    {
+      "id": "household",
+      "name": "Household and who is using the most"
+    },
+    {
+      "id": "wdiag",
+      "name": "Wi-Fi diagnostics"
+    },
+    {
+      "id": "hardware",
+      "name": "Ports and hardware"
+    },
+    {
+      "id": "services",
+      "name": "Network services, web access and cloud"
+    },
+    {
+      "id": "fwint",
+      "name": "Firewall internals"
+    },
+    {
+      "id": "guest",
+      "name": "Guest Pro and captive portal"
+    },
+    {
+      "id": "dsl",
+      "name": "DSL"
+    },
+    {
       "id": "phone",
       "name": "Phone boards: where every desktop feature lands"
     },
@@ -564,6 +608,216 @@
       "is_interactive": true,
       "expand": "fill"
     },
+    "SshActions.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 1710,
+      "title": "SSH action catalogue",
+      "page": "ssh",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "Terminal.dc.html": {
+      "x": 2080,
+      "y": 0,
+      "w": 1440,
+      "h": 1720,
+      "title": "Owner terminal",
+      "page": "ssh",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "Entware.dc.html": {
+      "x": 4160,
+      "y": 0,
+      "w": 1440,
+      "h": 1810,
+      "title": "Entware and add-ons",
+      "page": "ssh",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "FlashBackup.dc.html": {
+      "x": 0,
+      "y": 2010,
+      "w": 1440,
+      "h": 1720,
+      "title": "Read-only flash backup",
+      "page": "ssh",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "FirmwareUpload.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 2600,
+      "title": "Firmware upload",
+      "page": "fwup",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "DimSumOnly.dc.html": {
+      "x": 2080,
+      "y": 0,
+      "w": 1440,
+      "h": 1260,
+      "title": "Hong Kong Dim Sum only screen",
+      "page": "fwup",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "LiveMode.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 1620,
+      "title": "Live mode",
+      "page": "live",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "HistoryManager.dc.html": {
+      "x": 2080,
+      "y": 0,
+      "w": 1440,
+      "h": 2870,
+      "title": "History manager",
+      "page": "live",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "FourKey.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 1860,
+      "title": "Four-key confirmation",
+      "page": "danger",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "BrotherMad.dc.html": {
+      "x": 2080,
+      "y": 0,
+      "w": 1440,
+      "h": 1420,
+      "title": "Level 3: Prepare for brother mad",
+      "page": "danger",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "MissileLaunch.dc.html": {
+      "x": 4160,
+      "y": 0,
+      "w": 1440,
+      "h": 1510,
+      "title": "Reboot missile launch sequence",
+      "page": "danger",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "RebootTimeline.dc.html": {
+      "x": 0,
+      "y": 2060,
+      "w": 1440,
+      "h": 1850,
+      "title": "Live reboot timeline",
+      "page": "danger",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "Household.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 2380,
+      "title": "Household",
+      "page": "household",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "Leaderboard.dc.html": {
+      "x": 2080,
+      "y": 0,
+      "w": 1440,
+      "h": 1690,
+      "title": "Who's using the most",
+      "page": "household",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "WifiDiag.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 2450,
+      "title": "Wi-Fi diagnostics",
+      "page": "wdiag",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "PortsHardware.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 1910,
+      "title": "Ports and hardware",
+      "page": "hardware",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "Services.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 2120,
+      "title": "Network services and web access",
+      "page": "services",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "Cloud.dc.html": {
+      "x": 2080,
+      "y": 0,
+      "w": 1440,
+      "h": 1720,
+      "title": "Cloud",
+      "page": "services",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "FirewallInternals.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 2190,
+      "title": "Firewall internals",
+      "page": "fwint",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "GuestPro.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 2010,
+      "title": "Guest Pro and captive portal",
+      "page": "guest",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "Dsl.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 2290,
+      "title": "DSL line",
+      "page": "dsl",
+      "is_interactive": true,
+      "expand": "fill"
+    },
     "Phone.dc.html": {
       "x": 0,
       "y": 0,
@@ -640,7 +894,7 @@
       "x": 0,
       "y": 0,
       "w": 272,
-      "h": 970,
+      "h": 1110,
       "title": "Navigation rail (shared component)",
       "page": "components",
       "is_interactive": true
@@ -704,6 +958,27 @@
     "Deploy.dc.html",
     "Docs.dc.html",
     "Help.dc.html",
+    "SshActions.dc.html",
+    "Terminal.dc.html",
+    "Entware.dc.html",
+    "FlashBackup.dc.html",
+    "FirmwareUpload.dc.html",
+    "DimSumOnly.dc.html",
+    "LiveMode.dc.html",
+    "HistoryManager.dc.html",
+    "FourKey.dc.html",
+    "BrotherMad.dc.html",
+    "MissileLaunch.dc.html",
+    "RebootTimeline.dc.html",
+    "Household.dc.html",
+    "Leaderboard.dc.html",
+    "WifiDiag.dc.html",
+    "PortsHardware.dc.html",
+    "Services.dc.html",
+    "Cloud.dc.html",
+    "FirewallInternals.dc.html",
+    "GuestPro.dc.html",
+    "Dsl.dc.html",
     "Phone.dc.html",
     "PhoneWifi.dc.html",
     "PhoneNav.dc.html",
@@ -1243,6 +1518,273 @@
       "maxW": 4020,
       "page": "docs",
       "text": "Documentation website and offline docs"
+    },
+    "s_sshactions": {
+      "x": 1500,
+      "y": 0,
+      "w": 440,
+      "page": "ssh",
+      "fill": "red",
+      "text": "Every action the app can run on the router over SSH, as cards sorted into four lanes by how much confirmation each one needs: runs at once, preview first, preview and guard, four keys. A filter by kind, the exact command on every card, and a sheet that states what the command does, how it is confirmed, the brother level it carries and whether it can be undone. Try: the kind filter chips (lanes refill), click any card (the sheet rises with the exact command), Run it (a toast confirms), open Restart the router (it sends you to the four keys instead of running), Tweaks > role viewer and operator, stage failure, lang. Stands for: the SSH command runner and the write path that already exist; the app already runs nvram, service and log commands. Unbuilt in the app: The catalogue as one browsable list, the four lanes, the per-action sheet and the brother level per action are design only."
+    },
+    "s_terminal": {
+      "x": 3580,
+      "y": 0,
+      "w": 440,
+      "page": "ssh",
+      "fill": "red",
+      "text": "A real shell on the router, for the owner role only: a large terminal with the session so far, one-tap commands that type and run themselves, a stop that catches dangerous commands and hands them to the four keys, session recording, an idle lock and a paste guard. Operators and viewers see a locked card with the reason. Try: the one-tap commands (output is appended with a live cursor), Try to reboot (the app stops it), Clear, the recording switch, the idle slider, Tweaks > role operator (the terminal locks), firmware, lang. Stands for: the SSH connection the app already holds; today it only runs catalogue commands. Unbuilt in the app: The free terminal, the dangerous-command stop, recording, the idle lock and the paste guard are design only."
+    },
+    "s_entware": {
+      "x": 5660,
+      "y": 0,
+      "w": 440,
+      "page": "ssh",
+      "fill": "red",
+      "text": "Extra software for Asuswrt-Merlin, kept on a USB drive: Entware health and space, a package shelf with install toggles, the well-known Merlin add-ons as cards with switches, updates waiting, the custom-script switches and the live package log. On stock firmware every tile shows locked with the reason. Try: the package chips (each queues an install into pending changes), the add-on switches, Update all (success), Tweaks > firmware stock (tiles lock with the reason), stage empty and failure, lang. Stands for: nothing yet. The router side is plain SSH: opkg and the add-on installer scripts. Unbuilt in the app: The whole area is design only: Entware setup, the package shelf, add-on cards and script switches."
+    },
+    "s_flashbackup": {
+      "x": 1500,
+      "y": 2010,
+      "w": 440,
+      "page": "ssh",
+      "fill": "red",
+      "text": "A byte-for-byte copy of the router flash, read over SSH and never written: the flash as a proportional strip of its six parts, each part as a timeline row with its size, what it holds and its checksum once verified, the copy rate, where the copy is kept and what it is for. Try: Copy the next part (the strip fills, the row turns green and its checksum appears), Start again, Tweaks > stage success and failure, role viewer, lang. Stands for: the SSH connection; the app already reads files from the router. Unbuilt in the app: Reading the flash parts, the double-read check and the kept-copies list are design only."
+    },
+    "t_ssh": {
+      "kind": "title1",
+      "x": 0,
+      "y": -300,
+      "w": 1900,
+      "maxW": 6100,
+      "page": "ssh",
+      "text": "SSH action catalogue, owner terminal, Entware, flash backup"
+    },
+    "s_firmwareupload": {
+      "x": 1500,
+      "y": 0,
+      "w": 440,
+      "page": "fwup",
+      "fill": "orange",
+      "text": "Uploading a firmware file by hand, as five steps you can see: choose the file (a drop zone that is also a button), five checks that all must pass, the four keys, then the dim sum moment: while the router writes the image and restarts there is nothing useful to press, so the screen says so with a bamboo steamer, rising steam and five buns that fill in as the stages finish. Then the router is back. Try: Start over, Choose the file, Run the five checks, Write it (the dim sum moment appears), The router is back; Try a file for another model (it opens the screen that shows three words); Tweaks > motion calm (steam stops, buns rest in place), stage success and failure, role viewer, lang. Stands for: the firmware domain: installed version and check-for-update. Unbuilt in the app: Manual upload, the five checks, the dim sum moment and the back-online check are design only."
+    },
+    "s_dimsumonly": {
+      "x": 3580,
+      "y": 0,
+      "w": 440,
+      "page": "fwup",
+      "fill": "orange",
+      "text": "The refusal screen. When a firmware file is for another model, or its signature has been changed, the whole app is replaced by one screen that says \"Hong Kong Dim Sum\" and nothing else: no reason, no alternative, no button. Under it (click anywhere, or change the stage Tweak) is the ordinary record of what was refused and proof that the router was not touched. Try: click anywhere on the screen (it lifts and the record underneath shows), Show the screen again, Tweaks > stage (loading, empty, success and failure show the record page), motion calm (the steam stops), dark, accent, lang (the three words do not change). Stands for: nothing yet. Unbuilt in the app: The whole refusal screen and the refusal record are design only."
+    },
+    "t_fwup": {
+      "kind": "title1",
+      "x": 0,
+      "y": -300,
+      "w": 1900,
+      "maxW": 4020,
+      "page": "fwup",
+      "text": "Firmware upload, the dim sum moment and the three-word screen"
+    },
+    "s_livemode": {
+      "x": 1500,
+      "y": 0,
+      "w": 440,
+      "page": "live",
+      "fill": "pink",
+      "text": "Live mode: an app-wide switch that writes each small change the moment you make it instead of collecting it for Apply. A hero with the big Live switch, six everyday switches to try it on, the undo toast with its eight-second bar, what is never live (anything that can cut the connection, anything with keys), a live feed and how long Live mode stays on. Try: flip any of the six switches (a toast slides in with Undo and a draining bar; the row gets a live mark), Undo on the toast, Keep, turn Live mode off and flip again (the change waits in the pending dock instead), Tweaks > role viewer, motion calm, lang. Stands for: the write path: today every change is previewed and applied on request. Unbuilt in the app: Live mode, the undo toast and the never-live list are design only."
+    },
+    "s_historymanager": {
+      "x": 3580,
+      "y": 0,
+      "w": 440,
+      "page": "live",
+      "fill": "pink",
+      "text": "Everything the router has ever been told, as something you can work with: a timeline you can select from, a before-and-after diff of one change or of everything between two points, the life of one setting across months, restore to any point, statistics (who, what, when, how often undone) and a simulation panel that shows what a restore would do to the house before you run it. Try: click a timeline entry (the diff follows), Compare with... then a second entry (the diff becomes everything between them), Clear, Restore to just before this (a banner confirms), the per-setting buttons (the value trail changes), Now and After restore in the simulation panel, Tweaks > role viewer, stage failure, lang. Stands for: the app change history with undo for single entries. Unbuilt in the app: Compare between two points, per-setting history, restore to a point, statistics and the simulation panel are design only."
+    },
+    "t_live": {
+      "kind": "title1",
+      "x": 0,
+      "y": -300,
+      "w": 1900,
+      "maxW": 4020,
+      "page": "live",
+      "text": "Live mode and the History manager"
+    },
+    "s_fourkey": {
+      "x": 1500,
+      "y": 0,
+      "w": 440,
+      "page": "danger",
+      "fill": "red",
+      "text": "The confirmation for actions that cannot be undone (restart, firmware, factory reset): four keys in a row, each a different real control so that no single slip or habit gets through. Key 1 is a switch saying you know what will happen, key 2 is picking this router out of three, key 3 is setting a dial to the number shown, key 4 only turns after the other three. An arming bar fills as they turn, and the launch pad opens only when all four are on. Try: turn key 1 off and on, pick a wrong router (key 2 goes back and says so), step the dial to 7 (key 3 turns), then Turn the last key (the bar fills and the launch pad opens), Pull all keys; Tweaks > role operator (owner only: the keys lock), stage success and failure, motion calm, lang. Stands for: the two-key confirmation for destructive actions that the app already has. Unbuilt in the app: Four keys, the three different key controls, the arming bar and the expiry are design only."
+    },
+    "s_brothermad": {
+      "x": 3580,
+      "y": 0,
+      "w": 440,
+      "page": "danger",
+      "fill": "red",
+      "text": "The full-screen Level 3 warning, \"Prepare for brother mad\", which takes over the whole app when an action would cut someone off for minutes in the middle of something that matters: hazard stripes, an angry face that shakes and steams, exactly what he is doing and what he will lose, and three ways on (wait until he is done, warn him first, or accept it and go to the four keys). Under it: the four levels as cards and what decides the level. Try: Wait until he is done (the warning lifts), Show the Level 3 warning again, the four level cards (the meter and the wording follow; only Level 3 has the takeover), I accept (goes to the four keys), Tweaks > motion standard and calm (stripes, shaking and steam stop), dark, accent, lang, stage. Stands for: nothing yet. The app knows which devices are online; it does not yet know what they are doing. Unbuilt in the app: Levels, activity detection and the full-screen warning are design only."
+    },
+    "s_missilelaunch": {
+      "x": 5660,
+      "y": 0,
+      "w": 440,
+      "page": "danger",
+      "fill": "red",
+      "text": "Restarting the router, staged as a launch so that it is impossible to do absent-mindedly: a night-sky launch pad with the rocket on it, a go or hold checklist, a ten-second count with Abort in reach the whole time, lift-off when the command is really sent, and then a hand-over to the live reboot timeline. Below: the sequence, what is actually sent, abort rules and how to switch the show off. Try: Abort (the pad says nothing was sent), Reset, Start the count (flames and smoke start, the count runs), Launch now (lift-off: the rocket climbs, the tower falls away, the scene shakes), Watch the reboot live; Tweaks > motion calm (a still pad with a plain 10), role operator (owner only), stage success and failure, lang. Stands for: the reboot command behind the two-key confirmation. Unbuilt in the app: The launch pad, the checklist, the count with abort and the hand-over to the timeline are design only."
+    },
+    "s_reboottimeline": {
+      "x": 1500,
+      "y": 2060,
+      "w": 440,
+      "page": "danger",
+      "fill": "red",
+      "text": "What happens after lift-off, live: a hero with the elapsed time and a seven-point timeline whose marker travels as each stage is seen (command sent, SSH closed, radios down, system starting, internet up, Wi-Fi up, devices back), a ping strip that turns red while the router is silent, each stage with its expected and actual time, the devices rejoining one by one, how the brother level cools as things return, and what the app does if the router does not come back. Try: Next stage (the marker travels, the ping strip grows, devices turn green, the level cools), Replay from the start, Tweaks > stage success and failure (not back after 5 minutes), motion calm, role viewer (can watch), lang. Stands for: nothing yet: today the app simply loses its connection during a restart. Unbuilt in the app: Listening for the router during a restart, the timeline, the ping strip and the rejoin list are design only."
+    },
+    "t_danger": {
+      "kind": "title1",
+      "x": 0,
+      "y": -300,
+      "w": 1900,
+      "maxW": 6100,
+      "page": "danger",
+      "text": "Four keys, the Level 3 warning, the reboot launch and its live timeline"
+    },
+    "s_household": {
+      "x": 1500,
+      "y": 0,
+      "w": 440,
+      "page": "household",
+      "fill": "teal",
+      "text": "The people behind the devices. A hero card for \"Your brother\" with his presence chip and what he is doing right now, a tile for his name, devices and notices, \"Most brother madness allowed\" as a four-step control with a meter and a plain sentence for each step, protected hours painted on a week grid, the Home Assistant connection with entity pickers, the presence chip in its four states and everyone else in the house. Try: the four presence states (the chip, the sentence and the level meter follow), Most brother madness allowed 0 to 3 (the sentence changes and the change queues), paint protected hours (click one cell then another), the presets, the device chips, the Home Assistant entity picker and switches, Tweaks > role viewer, stage failure, lang. Stands for: the device list with names. Unbuilt in the app: People, the brother card, the allowed level, protected hours, the Home Assistant link and the presence chip are design only."
+    },
+    "s_leaderboard": {
+      "x": 3580,
+      "y": 0,
+      "w": 440,
+      "page": "household",
+      "fill": "teal",
+      "text": "A leaderboard of who is using the connection, with two tabs. \"Who's using the most\" ranks devices by download plus upload on a podium and a bar list. \"Who's uploading or downloading the most\" splits the two directions: a Downloading or Uploading switch re-ranks the podium, and two lists sit side by side, because the device that uploads the most (a camera, a backup) is rarely the one that downloads the most. Period buttons cover right now, today, 7 days and 30 days, and any row can be slowed down. Try: the two tabs (the indicator springs across and the page changes), Downloading and Uploading on the second tab (the podium and the headline change), the period buttons (Right now switches to Mbps and reorders), Slow down on a row (it queues a limit into pending changes), Tweaks > role viewer, stage failure, lang. Stands for: the device list; the router already keeps per-device traffic counters when statistics are on. Unbuilt in the app: The ranking, both tabs, the periods and the one-tap limit are design only."
+    },
+    "t_household": {
+      "kind": "title1",
+      "x": 0,
+      "y": -300,
+      "w": 1900,
+      "maxW": 4020,
+      "page": "household",
+      "text": "Household and who is using the most"
+    },
+    "s_wifidiag": {
+      "x": 1500,
+      "y": 0,
+      "w": 440,
+      "page": "wdiag",
+      "fill": "teal",
+      "text": "Why the Wi-Fi is slow, worked out for you: a health score with a radar of nearby networks, findings in order of how much they hurt with a one-tap fix on each, one device under the microscope (signal over the last hour with its roams), who is using the air on each band, retries by device, roaming and drop events as a timeline, a walk test that paints signal as you move, and how the test itself is run. Try: the device picker (one device at a time), the band buttons, the fix buttons (success), the walk-test switch, the probe slider, Tweaks > stage failure (radio off), role viewer, motion calm (the radar stills), lang. Stands for: the wireless domain: clients, signal and channel per band are already read. Unbuilt in the app: The health score, findings with fixes, per-device history, airtime split, the roaming timeline and the walk test are design only."
+    },
+    "t_wdiag": {
+      "kind": "title1",
+      "x": 0,
+      "y": -300,
+      "w": 1900,
+      "maxW": 1940,
+      "page": "wdiag",
+      "text": "Wi-Fi diagnostics"
+    },
+    "s_portshardware": {
+      "x": 1500,
+      "y": 0,
+      "w": 440,
+      "page": "hardware",
+      "fill": "orange",
+      "text": "The box itself: the back panel drawn as real sockets you can click, with link lights and speeds; the selected port with its speed, what is plugged in and its settings; temperatures as gauges, the processor and memory over the last hour, the lights with a night schedule, what the buttons on the case do, the USB ports and power draw. Try: click each socket on the back panel (the port card follows; LAN 3 shows the slow link, LAN 4 shows empty), the speed buttons, the lights switch and brightness, the WPS button role, Tweaks > firmware stock (the lights tile locks), stage failure, role viewer, lang. Stands for: the system domain: model, uptime, load and memory. Unbuilt in the app: The back panel, per-port speeds and settings, temperatures, lights, button roles and power draw are design only."
+    },
+    "t_hardware": {
+      "kind": "title1",
+      "x": 0,
+      "y": -300,
+      "w": 1900,
+      "maxW": 1940,
+      "page": "hardware",
+      "text": "Ports and hardware"
+    },
+    "s_services": {
+      "x": 1500,
+      "y": 0,
+      "w": 440,
+      "page": "services",
+      "fill": "green",
+      "text": "Everything the router itself runs and who can reach it: each service as a card with a switch and its port, the question \"who can open the router page\" answered with three large choices, the certificate with its days left as a gauge, sign-in protection, the addresses allowed in from outside, and an outside check that lists what the internet can actually see. Try: the service switches (each queues a change), the three web access choices, the port pickers with presets, the lock-out stepper, the allowed address picker, Check from outside (success), Tweaks > stage failure, role viewer, lang. Stands for: the settings catalogue already covers SSH, web access and UPnP as plain fields. Unbuilt in the app: The service cards, the outside check, the certificate gauge and sign-in protection are design only."
+    },
+    "s_cloud": {
+      "x": 3580,
+      "y": 0,
+      "w": 440,
+      "page": "services",
+      "fill": "green",
+      "text": "Every way the router talks to somebody else's servers, in one place: a live map of the links that are on, each cloud feature as a card with a switch and a plain sentence about what it sends, a tile that lists what leaves the house and what never does, the linked account, and one switch that cuts all of them at once. Try: the feature switches, Cut every cloud link (success), the data-sharing switches, Unlink the account (failure), Tweaks > firmware stock (the names change), role viewer, motion calm (packets stop), lang. Stands for: nothing yet. Unbuilt in the app: The whole cloud page is design only: the link map, feature cards, the data list and the cut-all switch."
+    },
+    "t_services": {
+      "kind": "title1",
+      "x": 0,
+      "y": -300,
+      "w": 1900,
+      "maxW": 4020,
+      "page": "services",
+      "text": "Network services, web access and cloud"
+    },
+    "s_firewallinternals": {
+      "x": 1500,
+      "y": 0,
+      "w": 440,
+      "page": "fwint",
+      "fill": "red",
+      "text": "What the firewall actually does, under the friendly rules: the path a packet takes through the five chains as boxes you can click, the real rules of the selected chain with how many packets each one has matched, the connection table as a gauge with its busiest devices, a packet tracer that shows which rule would decide a given connection, the dropped-packet log and, on Asuswrt-Merlin, custom rules. Try: click each chain on the packet path (the rule list and its description change), the table buttons, the tracer device and port pickers, Trace (success), Tweaks > firmware stock (custom rules lock), role viewer, stage failure, lang. Stands for: the firewall domain as on or off settings and port forwards. Unbuilt in the app: Reading chains and counters, the connection table, the tracer and custom rules are design only."
+    },
+    "t_fwint": {
+      "kind": "title1",
+      "x": 0,
+      "y": -300,
+      "w": 1900,
+      "maxW": 1940,
+      "page": "fwint",
+      "text": "Firewall internals"
+    },
+    "s_guestpro": {
+      "x": 1500,
+      "y": 0,
+      "w": 440,
+      "page": "guest",
+      "fill": "purple",
+      "text": "Guest networks done properly: the five Guest Pro profiles as cards with switches (party, shop, kids, smart home, VPN), a designer for the page guests see before they get online with a live phone preview that follows every choice, three ways in (one tap, a passcode, printed vouchers), time and speed limits, vouchers with a QR code, and the guests online now with a way to end a visit. Try: the portal style buttons (the phone preview changes title and colour), the three ways in (the preview button and field change), the terms switch, the limit sliders, Make vouchers, Publish (success), End visit on a guest, Tweaks > stage failure, role viewer, lang. Stands for: the guest Wi-Fi on or off setting per band. Unbuilt in the app: Profiles, the captive portal and its designer, vouchers, limits and the live guest list are design only."
+    },
+    "t_guest": {
+      "kind": "title1",
+      "x": 0,
+      "y": -300,
+      "w": 1900,
+      "maxW": 1940,
+      "page": "guest",
+      "text": "Guest Pro and captive portal"
+    },
+    "s_dsl": {
+      "x": 1500,
+      "y": 0,
+      "w": 440,
+      "page": "dsl",
+      "fill": "gray",
+      "text": "The phone-line side of a DSL router (the example is a DSL-AX82U; the RT-AX86U used elsewhere on the canvas has no DSL port, and its empty stage says so): sync speeds and margin as a hero, the tones that carry the data drawn one bar each with download and upload bands and a notch, margin over a day, error counters, the stability slider and line switches, what a resync costs, and line events as a timeline. Try: the stability slider, the mode buttons, the line switches, Resync the line (success; the hero warns it costs a minute and asks at brother Level 2), Tweaks > stage empty (no DSL port on this model) and failure, role viewer, motion calm, lang. Stands for: nothing yet: the app has only been used with Ethernet-WAN models. Unbuilt in the app: The whole DSL page is design only."
+    },
+    "t_dsl": {
+      "kind": "title1",
+      "x": 0,
+      "y": -300,
+      "w": 1900,
+      "maxW": 1940,
+      "page": "dsl",
+      "text": "DSL"
     },
     "s_phone": {
       "x": 450,

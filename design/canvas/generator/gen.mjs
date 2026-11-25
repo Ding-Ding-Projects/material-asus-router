@@ -12,14 +12,18 @@ import { B2 } from './boards2.mjs';
 import { B3 } from './boards3.mjs';
 import { B4 } from './boards4.mjs';
 import { B5 } from './boards5.mjs';
+import { B6 } from './boards6.mjs';
+import { B7 } from './boards7.mjs';
+import { B8 } from './boards8.mjs';
+import { CSS2 } from './theme2.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const PROJ = path.join(here, '..', 'project');
 const PREV = process.env.PREVIEW_DIR || '';
-const SPECS = [...B1, ...B2, ...B3, ...B4, ...B5];
+const SPECS = [...B1, ...B2, ...B3, ...B4, ...B5, ...B6, ...B7, ...B8];
 const errors = [];
 
-fs.writeFileSync(path.join(PROJ, 'theme.css'), CSS);
+fs.writeFileSync(path.join(PROJ, 'theme.css'), CSS + CSS2);
 fs.writeFileSync(path.join(PROJ, 'Rail.dc.html'), rail());
 fs.writeFileSync(path.join(PROJ, 'TopBar.dc.html'), topbar());
 const keep = new Set(['Rail.dc.html', 'TopBar.dc.html', ...SPECS.map(s => s.file)]);
@@ -116,6 +120,10 @@ const PAGES = [
   ['router', 'Firmware, system, maintenance, backup, advanced, Merlin', 'orange', ['Firmware', 'System', 'Backup', 'Advanced']], ['changes', 'Change history, write stages, takeovers, exports', 'pink', ['Changes', 'Takeover', 'Records']],
   ['app', 'Settings, tabs, appearance, language, modes, locks, regex, updates', 'purple', ['Settings', 'Tabs', 'Appearance', 'Language', 'Focus', 'Locks', 'Regex', 'Updates']],
   ['toolbox', 'Toolbox and server manager', 'green', ['Toolbox', 'ServerManager']], ['deploy', 'Deploy assistant and instances', 'gray', ['Deploy']], ['docs', 'Documentation website and offline docs', 'gray', ['Docs', 'Help']],
+  ['ssh', 'SSH action catalogue, owner terminal, Entware, flash backup', 'red', ['SshActions', 'Terminal', 'Entware', 'FlashBackup']], ['fwup', 'Firmware upload, the dim sum moment and the three-word screen', 'orange', ['FirmwareUpload', 'DimSumOnly']],
+  ['live', 'Live mode and the History manager', 'pink', ['LiveMode', 'HistoryManager']], ['danger', 'Four keys, the Level 3 warning, the reboot launch and its live timeline', 'red', ['FourKey', 'BrotherMad', 'MissileLaunch', 'RebootTimeline']],
+  ['household', 'Household and who is using the most', 'teal', ['Household', 'Leaderboard']], ['wdiag', 'Wi-Fi diagnostics', 'teal', ['WifiDiag']], ['hardware', 'Ports and hardware', 'orange', ['PortsHardware']],
+  ['services', 'Network services, web access and cloud', 'green', ['Services', 'Cloud']], ['fwint', 'Firewall internals', 'red', ['FirewallInternals']], ['guest', 'Guest Pro and captive portal', 'purple', ['GuestPro']], ['dsl', 'DSL', 'gray', ['Dsl']],
   ['phone', 'Phone boards: where every desktop feature lands', 'pink', ['Phone', 'PhoneWifi', 'PhoneNav', 'PhoneDevices', 'PhoneGuard', 'PhoneTools', 'PhoneSetup', 'PhoneSettings']], ['components', 'Shared shell components', 'gray', ['Rail', 'TopBar']]
 ];
 const heights = fs.existsSync(path.join(here, 'heights.json')) ? JSON.parse(fs.readFileSync(path.join(here, 'heights.json'), 'utf8')) : {};

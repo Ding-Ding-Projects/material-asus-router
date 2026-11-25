@@ -2,7 +2,7 @@
 
 This folder holds the design canvas for Material Asus Router, a self-hosted web app and Windows desktop app that manages an Asus router (stock ASUS or Asuswrt-Merlin) over SSH.
 
-- `design/canvas/project` is the canvas project: 58 boards (56 screens plus the two shared shell components), `theme.css` and `canvas.json`.
+- `design/canvas/project` is the canvas project: 79 boards (77 screens plus the two shared shell components), `theme.css` and `canvas.json`.
 - `design/canvas/generator` writes all of it. Run `node gen.mjs` in that folder. Nothing in `project` is edited by hand.
 - `HANDOFF.md` (this file) is also written by the generator, from `handoff-head.md`, the board specifications and `handoff-tail.md`.
 
@@ -21,6 +21,21 @@ The owner's verdict on the earlier canvas was "too plain", "looks like a documen
 - **Real controls.** There is no bare text box. Settings are switches, segmented buttons with a sliding indicator, sliders with units, steppers, a four-part IPv4 picker, a prefix stepper with a network-and-host bar, port pickers with presets, device pickers with MAC addresses, paintable grids, toggle chips and a password control with reveal and strength. The only typed fields are genuine free text (a network name, a host name, a mode name), each with a counter and, where it matters, a validation hint. The generator fails the build if any other kind of input appears.
 - **Motion.** Described in the next section and listed per board below.
 
+## Added in the second pass
+
+Twenty-one boards on eleven new pages, written by three new generator files (`boards6.mjs`, `boards7.mjs`, `boards8.mjs`) and a second theme part (`theme2.mjs`). Every one carries the same six Tweaks plus `stage`, has its sticky note, and sits on a category page with a title note.
+
+- **SSH** (page `ssh`): the SSH action catalogue, the owner terminal, Entware and add-ons, the read-only flash backup.
+- **Firmware upload** (page `fwup`): the upload with the dim sum moment, and the screen that shows only the words "Hong Kong Dim Sum".
+- **Live and history** (page `live`): Live mode with the undo toast, and the History manager (timeline, diff, compare, per-setting history, restore, statistics, a before-and-after simulation panel).
+- **Dangerous actions** (page `danger`): the four-key confirmation, the Level 3 "Prepare for brother mad" full-screen warning, the reboot launch sequence and the live reboot timeline.
+- **Household** (page `household`): the household screen (Your brother, painted protected hours, Home Assistant, the presence chip, Most brother madness allowed) and the "Who's using the most" leaderboard. The leaderboard has a second tab, "Who's uploading or downloading the most", which ranks the two directions separately.
+- **Diagnostics and services** (pages `wdiag`, `hardware`, `services`, `fwint`, `guest`, `dsl`): Wi-Fi diagnostics, ports and hardware, network services and web access, cloud, firewall internals, Guest Pro with the captive portal, and DSL.
+
+The rail gained three groups (Owner tools, Household, Diagnostics and services) and two App entries (Live mode, History manager). New shared parts in `theme2.mjs`: full-board takeovers, the launch scene, key locks, vertical and horizontal timelines, the bamboo steamer, undo toasts with a draining bar, the podium and ranked rows, in-board tabs, the back panel, chain boxes, the phone preview and tone bars. It also fixes the pipeline connector, which an unrelated phone rule was padding.
+
+The idea of a "brother level" runs through these boards: every action gets a level from 0 to 3, worked out from who is online and what they are doing. The Cantonese strings call the person 阿哥; the household screen lets the owner rename him.
+
 ## Tweaks carried by every board
 
 Every board, including the two shell components, declares the same Tweaks with the same names and defaults:
@@ -35,7 +50,7 @@ Every board, including the two shell components, declares the same Tweaks with t
 | `lang` | enum | `en` | `en`, `yue`, `both` |
 | `stage` | enum | `ready` | `loading`, `empty`, `ready`, `success`, `failure` |
 
-`stage` is on all 56 screen boards (not on the two shell components, which have no stages). The shell components add their own content props: `page` and `pending` on the rail; `title`, `tabs` and `active` on the top bar.
+`stage` is on all 77 screen boards (not on the two shell components, which have no stages). The shell components add their own content props: `page` and `pending` on the rail; `title`, `tabs` and `active` on the top bar.
 
 What each Tweak does on every board:
 
@@ -63,7 +78,11 @@ Motion lives in `theme.css` as keyframes and transitions. State computed in `ren
 - a conic-gradient border that rotates round the one focused action of each hero and the Apply action of the pending dock;
 - success: a burst of shapes and a tick that draws itself; failure: a shake, a red pulse and the reason sliding in;
 - the current pipeline step as a rotating cookie with a shimmering connector;
-- skeleton shimmer while loading.
+- skeleton shimmer while loading;
+- the Level 3 warning: the headline slams in, the screen shakes, hazard stripes scroll, a yellow frame breathes and an angry face shakes with steam;
+- the reboot launch: stars twinkle, the engine flickers, smoke billows, the count runs down from ten, and at lift-off the rocket climbs while the tower swings away and the scene shakes;
+- the dim sum moment: the steamer lid lifts and settles, steam drifts up, buns pop in and bob as stages finish;
+- keys that rotate a quarter turn in their locks, a timeline head that travels, a podium that grows from the floor, undo toasts whose bar drains.
 
 **Normal motion, everywhere:**
 
@@ -79,7 +98,7 @@ Nothing loops without a reason: the loops are the ambient hero aurora, live indi
 
 ## Interactive boards
 
-Every board is interactive: all 1 700 or so handlers are wired to board state, and the generator operates each one and re-renders the board as a check. The boards with their own logic beyond the shared controls:
+Every board is interactive: all 2 200 or so handlers are wired to board state, and the generator operates each one and re-renders the board as a check. The boards with their own logic beyond the shared controls:
 
 - **One-click modes**: opening a mode, the preview sheet with old and new values, apply, undo.
 - **Mode builder**: pick a palette card, drop it on the canvas, flip its value, remove it.
@@ -92,5 +111,20 @@ Every board is interactive: all 1 700 or so handlers are wired to board state, a
 - **VPN Director**: route a device to a way out.
 - **Address map**: move the pool ends by clicking cells, steppers and presets.
 - **Regex builder**: ready patterns and the ignore-case flag run against the sample log lines.
+
+- **SSH action catalogue**: filter by kind, open an action, run it or be sent to the four keys.
+- **Owner terminal**: one-tap commands append real-looking output; a restart is stopped; owner role only.
+- **Read-only flash backup**: copy part by part; the flash strip and checksums follow.
+- **Firmware upload**: five steps driven by the hero action, ending in the dim sum moment.
+- **Hong Kong Dim Sum only screen**: click the screen to lift it; show it again.
+- **Live mode**: flip a switch for an undo toast, or turn Live mode off and watch the change queue instead.
+- **History manager**: select, compare two points, restore, per-setting trail, simulation side.
+- **Four-key confirmation**: a switch, a pick, a dial and a final turn, with wrong answers handled.
+- **Level 3 warning**: preview each level; lift and show the takeover.
+- **Reboot launch sequence**: start, launch, abort, reset.
+- **Live reboot timeline**: step through the seven stages.
+- **Household**: presence states and the allowed level.
+- **Who's using the most**: two tabs, direction, period, slow down a device.
+- **Ports and hardware**, **Firewall internals**, **Guest Pro**: pick a socket, pick a chain, design the portal with a live phone preview.
 
 A drag is two clicks on the canvas (pick, then place) because the canvas runtime exposes click handlers. The app should offer pointer drag and keep the two-click route as the keyboard and switch-access path.
