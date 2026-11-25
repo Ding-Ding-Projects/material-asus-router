@@ -11,7 +11,6 @@ import { memberCard } from "./people.js";
 import { talkersPanel } from "./talkers.js";
 
 const label = { en: "Household", yue: "屋企" };
-const talkersLabel = { en: "Top talkers", yue: "邊個用最多" };
 const errText = (e) => e?.message ?? String(e);
 const TABS = [["people", "groups", "People", "人"], ["presence", "sensors", "Who is home", "邊個喺屋企"], ["homeassistant", "home_iot_device", "Home Assistant", "Home Assistant"], ["networks", "wifi", "Home Wi-Fi", "屋企 Wi-Fi"], ["talkers", "swap_vert", "Who uses the most", "邊個用最多"]];
 
@@ -148,12 +147,6 @@ export default {
   id: "household",
   screens: [
     { id: "household", group: { en: "Safety", yue: "安全" }, icon: "family_restroom", label, render: (ctx) => render(ctx, "people") },
-    { id: "top-talkers", group: { en: "Monitor", yue: "監察" }, icon: "swap_vert", label: talkersLabel, async render(ctx) {
-      const page = h("div", { class: "page" }, h("div", { class: "rise" }, h("h1", { class: "disp" }, tt(talkersLabel))));
-      ctx.root.append(page);
-      const members = (await api.get("/api/household").catch(() => ({ members: [] }))).members;
-      return talkersPanel(page, { members });
-    } },
   ],
   settings: [{ id: "household", icon: "family_restroom", label, async render(ctx) {
     const data = await api.get("/api/household");

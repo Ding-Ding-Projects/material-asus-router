@@ -8,6 +8,9 @@ Every release of Material Asus Router, newest first. Each change names the full 
 
 - Five feature folders with real controls for Guest Network Pro, Wi-Fi 7 multi-link, per-band radio extras, OpenVPN client details and IPv6, plus PPP keep-alive: the controls on the RT-BE88U model now cover 696 of its 5,493 settings, up from 404. (7b8b49ba00a873f792941be417d92b3b59976b11)
 - A pretend router that models one real router (an RT-BE88U on Asuswrt-Merlin 3006, with its real setting names), and a control that is switched off, with the reason, whenever the router does not have its setting. (0e88388de9c6948fbd99287ba5e52f864e750fc5)
+- One-click modes: seven ready-made modes (Gaming, Bedtime, Guest party, Work from home, Privacy DNS, Lock it down, Away) as real bundles of changes with exact old and new values, one-tap apply and undo, and a live "is it on" check. (f451a6fa35d7a63f3de301e36be206fb436a2614)
+- The mode builder: compose your own mode from any catalogue setting with its real control. (8ea985db77a81e9508deea1baccd33347bc83253)
+- A Top talkers screen that ranks who is uploading or downloading the most. (7053b5e1c7f61f1999ae653e564bbaa18b3cbd1b)
 - Feature folders with rich controls and a check that every control really works. (9358d7f2d562b2f9761df8835355f719e4546668)
 - Safety and records features: two-key super confirmation, element locks, the unlock ladder, support tickets, a built-in authenticator, QR pairing, local version history, exports, bulk actions, a changelog viewer, an offline documentation browser, update progress, front-screen provenance and a setup guide. These are on the safety-records branch and have no commit on the default branch yet.
 

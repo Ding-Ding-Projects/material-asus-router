@@ -129,7 +129,7 @@ test("top talkers: people are totalled, and devices nobody owns are grouped toge
 test("the household screens exist: people, presence, Home Assistant, home Wi-Fi and the top talkers tab", async () => {
   const index = await readFile(path.join(FEATURES, "household", "index.js"), "utf8");
   for (const tab of ["people", "presence", "homeassistant", "networks", "talkers"]) assert.ok(index.includes(`["${tab}"`), `the ${tab} tab`);
-  assert.match(index, /id: "top-talkers"/, "the ranking is also its own screen and workspace tab");
+  assert.match(index, /navigate\("top-talkers"\)/, "the ranking's own screen is the Top talkers feature; the household links to it");
   assert.match(index, /Most brother madness allowed/);
   assert.match(index, /Your brother|brother/);
   const talkers = await readFile(path.join(FEATURES, "household", "talkers.js"), "utf8");
