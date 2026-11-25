@@ -188,3 +188,17 @@ test("every picture kind has a builder and no client file breaks the project's r
     assert.ok(!/\b(10\.\d+\.\d+\.\d+|192\.168\.\d+\.\d+|172\.(1[6-9]|2\d|3[01])\.\d+\.\d+)\b/.test(text), `${rel} has no private address`);
   }
 });
+
+test("the shell wires in the safety bar, the badges and the api guard, and rebuilds on a language change without looping", async () => {
+  const main = await readFile(path.join(ROOT, "public", "js", "main.js"), "utf8");
+  assert.match(main, /installApiGuard\(\)/);
+  assert.match(main, /mountBar\(safetyHost/);
+  assert.match(main, /mountBadges\(/);
+  // The event bus walks a Set while handlers run. A handler that rebuilds the shell registers a new handler,
+  // and a Set walk visits what is added during it, so the rebuild has to wait until the walk is over.
+  assert.match(main, /bus\.on\("lang", \(\) => queueMicrotask\(\(\) => \{ shell\.dispose\(\); buildShell\(\)/);
+  const dock = await readFile(path.join(ROOT, "public", "js", "dock.js"), "utf8");
+  assert.match(dock, /Apply now/);
+  assert.match(dock, /Review and apply/);
+  assert.match(dock, /preview\.allowance\.ok/, "the allowance verdict is the boolean ok, and allowed is the level");
+});
