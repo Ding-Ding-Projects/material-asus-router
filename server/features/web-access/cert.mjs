@@ -35,6 +35,9 @@ export function parseCertificate(text, now = Date.now()) {
 const OCTET = "(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)";
 const ADDRESS = new RegExp(`^${OCTET}(\\.${OCTET}){3}(/(\\d|[12]\\d|3[0-2]))?$`);
 
+// The same rule as a pattern, so the browser's guided forms can check one row without the server.
+export const CLIENT_PATTERN = `^${OCTET}(\\.${OCTET}){3}(/([89]|[12]\\d|3[0-2]))?$`;
+
 // One allowed address or network, such as 198.51.100.20 or 198.51.100.0/24. Networks wider than /8 are refused,
 // because "everyone" is what the list exists to prevent.
 export function isAllowedClient(item) {

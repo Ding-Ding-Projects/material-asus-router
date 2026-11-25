@@ -8,7 +8,7 @@
 // of this feature is a typed control over a real nvram value; one the router
 // does not have is shown locked with the reason and is never written.
 import { L, ON_OFF, quote } from "../kit.mjs";
-import { clientItems, isAllowedClient, parseCertificate } from "./cert.mjs";
+import { CLIENT_PATTERN, clientItems, isAllowedClient, parseCertificate } from "./cert.mjs";
 
 const ID = "web-access";
 const G = {
@@ -22,7 +22,7 @@ const CERT_FILE = "/etc/cert.pem";
 
 export const catalog = () => [
   e("autologout", "session", "http_autologout", "stepper", L("Sign out automatically after (minutes)", "閒置幾多分鐘後自動登出"), L("The router's page signs you out when nobody touches it. 0 keeps you signed in, which is not advised on a shared computer.", "冇人操作嘅時候，路由器頁面會自動登出。0 代表唔會登出，共用電腦唔建議。"), { min: 0, max: 480, unit: "min" }),
-  e("clientlist", "allow", "http_clientlist", "clientlist", L("Addresses allowed to open the page", "容許開頁面嘅地址"), L("When the list is switched on in System tools, only these addresses can open the router's page. Add your own address first, or you lock yourself out; the safety net would put it back.", "喺系統工具開咗名單之後，只有呢啲地址開到路由器頁面。要先加你自己嘅地址，否則會鎖住自己；安全網會幫你還原。"), { optional: true, risk: "network", maxItems: 16 }),
+  e("clientlist", "allow", "http_clientlist", "clientlist", L("Addresses allowed to open the page", "容許開頁面嘅地址"), L("When the list is switched on in System tools, only these addresses can open the router's page. Add your own address first, or you lock yourself out; the safety net would put it back.", "喺系統工具開咗名單之後，只有呢啲地址開到路由器頁面。要先加你自己嘅地址，否則會鎖住自己；安全網會幫你還原。"), { optional: true, risk: "network", maxItems: 16, columns: [{ kind: "client", label: L("Address", "地址"), maxLength: 18, pattern: CLIENT_PATTERN }] }),
   e("le.enable", "tls", "le_enable", "switch", L("Free certificate from Let's Encrypt", "Let's Encrypt 免費證書"), L("Gets a trusted certificate so browsers stop warning about the router's HTTPS page. It needs a name from Dynamic DNS that points to this router.", "攞一張可信嘅證書，瀏覽器就唔會再警告路由器嘅 HTTPS 頁面。需要一個指向呢部路由器嘅動態 DNS 名稱。"), { values: ON_OFF, restart: "restart_letsencrypt", risk: "network" }),
   e("le.domain", "tls", "le_domain", "hostname", L("Name for the certificate", "證書用嘅名稱"), L("The Dynamic DNS name the certificate is made for, for example router.example.test.", "證書針對嘅動態 DNS 名稱，例如 router.example.test。"), { optional: true, restart: "restart_letsencrypt" }),
   e("le.staging", "tls", "le_staging", "switch", L("Practice mode (no real certificate)", "練習模式（唔會攞真證書）"), L("Uses the Let's Encrypt practice server, so a mistake does not count against the weekly limit. The certificate it gives is not trusted by browsers.", "用 Let's Encrypt 嘅練習伺服器，打錯嘢唔會用咗每週名額。佢畀嘅證書瀏覽器唔會信。"), { values: ON_OFF, restart: "restart_letsencrypt" }),

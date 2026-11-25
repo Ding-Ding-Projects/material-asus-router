@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { checkFeatureModule } from "../../public/js/features/validate.js";
 import feature, { CONFIRM_WORD, allowedClient, certificateState, splitClients } from "../../public/js/features/web-access/index.js";
-import { clientItems, isAllowedClient, parseCertificate, parseOpensslDate } from "../../server/features/web-access/cert.mjs";
+import { CLIENT_PATTERN, clientItems, isAllowedClient, parseCertificate, parseOpensslDate } from "../../server/features/web-access/cert.mjs";
 import { startApp } from "../helpers.mjs";
 
 test("web-access: openssl dates and certificates are read, with honest warning levels", () => {
@@ -23,6 +23,8 @@ test("web-access: openssl dates and certificates are read, with honest warning l
 test("web-access: the allowed-address rule refuses everyone-sized networks on both sides", () => {
   for (const ok of ["198.51.100.20", "198.51.100.0/24", "198.51.100.0/8"]) assert.equal(isAllowedClient(ok) && allowedClient(ok), true, ok);
   for (const no of ["0.0.0.0/0", "198.51.100.0/7", "999.1.1.1", "198.51.100.1/33", "a.b.c.d", "198.51.100.1<198.51.100.2"]) assert.equal(isAllowedClient(no) || allowedClient(no), false, no);
+  const pattern = new RegExp(CLIENT_PATTERN);
+  for (const item of ["198.51.100.20", "198.51.100.0/24", "198.51.100.0/8", "0.0.0.0/0", "198.51.100.0/7", "999.1.1.1", "198.51.100.1/33"]) assert.equal(pattern.test(item), isAllowedClient(item), `the pattern and the rule agree on ${item}`);
   assert.deepEqual(clientItems("<a<b"), ["a", "b"]);
   assert.deepEqual(splitClients(""), []);
 });
