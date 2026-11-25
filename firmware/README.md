@@ -17,19 +17,42 @@ A research pass compared a custom firmware image with an add-on and chose the ad
 
 The fork named in `source.json` is kept for reference only and is not used by the add-on.
 
-## Planned behaviour
+## How it behaves
 
-- Installed from a normal release: an archive, `install.sh`, `uninstall.sh` and checksums.
-  Nothing is flashed.
+- Installed from a normal release: `material-asus-router-addon.tar.gz` holds `install.sh`,
+  `uninstall.sh`, `mar.sh`, the router web page and the app with its packages. Nothing is flashed.
 - Needs JFFS custom scripts turned on, a USB drive with Entware, and Entware's Node.js.
-- Off by default. One switch on a page added to the router's own web interface turns it on;
-  every feature lives in the app itself, not in the router's stock pages.
+- Off by default. A **Material Router** page under the router's Tools menu has the on/off switch
+  and the port; every feature lives in the app itself, not in the router's stock pages.
 - Two choices on that page: the Material version (the full modern app) and the Advanced version
-  (every control, the action catalogue and the terminal). The choice is remembered per browser.
-- Listens on the home network only, on its own port, and needs its own sign-in.
-- Updates from this repository's releases into a spare slot and switches over only after a
-  health check, so a bad update rolls back by itself. Updates never restart the router.
+  (it opens the action catalogue with every control and the terminal). The choice is remembered by
+  each browser.
+- Listens only on the router's home network address, on its own port, and needs its own sign-in.
+- Switching it on or off restarts only the app. The router, Wi-Fi and internet are not touched.
+- Updates go into a spare slot and switch over only after the new version answers its health
+  check. A version that does not answer is removed and the old one starts again. Because the spare
+  slot held the version before, a failed update also means there is no older version left to roll
+  back to, and the add-on says so. Updates never restart the router.
 - Known limit: the router's own web page still allows only one administrator signed in at a
   time. This app allows any number of people signed in at once.
 
-Status: in progress. No add-on release has been published yet.
+## Installing
+
+1. Turn on **Enable JFFS custom scripts and configs** (Administration, System) and let the router
+   reboot.
+2. Plug in a USB drive and install Entware with `amtm`, then `opkg update && opkg install node`.
+3. Copy `material-asus-router-addon.tar.gz` to the router, check it against `SHA256SUMS.txt` from
+   the same release, then:
+
+   ```sh
+   mkdir -p /tmp/mar && tar -xzf material-asus-router-addon.tar.gz -C /tmp/mar && sh /tmp/mar/install.sh
+   ```
+
+4. Open Tools, Material Router, switch it on and press Apply.
+
+Other commands: `sh /jffs/addons/material-asus-router/mar.sh status|update|rollback`, and
+`sh /jffs/addons/material-asus-router/uninstall.sh` (add `--purge` to delete the app's data too).
+
+Status: the package is built and attached to every release, and its install, update, automatic
+rollback and uninstall are tested end to end on Linux. It has not been installed on a real router
+yet.

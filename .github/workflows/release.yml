@@ -38,6 +38,9 @@ jobs:
         env:
           BUILD_NUMBER: ${{ github.run_number }}
         run: ./scripts/build-installer.ps1 -SkipTests
+      - name: Build the router add-on archive
+        shell: pwsh
+        run: node scripts/build-addon.mjs
       - name: Build the phone PDF when Chrome is present
         shell: pwsh
         env:
@@ -56,6 +59,7 @@ jobs:
           Copy-Item desktop/dist/squirrel/Material-Asus-Router-Setup.exe, desktop/dist/squirrel/RELEASES, compose.yaml, host.bat, scripts/host.ps1, scripts/setup.ps1 $out
           Copy-Item desktop/dist/squirrel/*-full.nupkg $out
           Copy-Item desktop/dist/builder/*-portable.exe $out
+          Copy-Item dist/addon/material-asus-router-addon.tar.gz $out
           if (Test-Path site/material-asus-router.pdf) { Copy-Item site/material-asus-router.pdf $out }
           Push-Location $out
           Get-ChildItem -File | Where-Object Name -ne 'SHA256SUMS.txt' | Sort-Object Name | ForEach-Object { '{0}  {1}' -f (Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLower(), $_.Name } | Set-Content SHA256SUMS.txt -Encoding ascii
@@ -76,7 +80,7 @@ jobs:
           - Build started (UTC): ${{ steps.meta.outputs.started }}
           - Build duration so far: $([int]$duration.TotalMinutes) min $($duration.Seconds) s
 
-          Files: Material-Asus-Router-Setup.exe (installer, keeps itself updated), the portable .exe (one file, no install), RELEASES and the .nupkg (the update feed), compose.yaml with host.bat and the setup scripts for hosting with Docker, the phone PDF of the documentation when it could be built, and SHA256SUMS.txt.
+          Files: Material-Asus-Router-Setup.exe (installer, keeps itself updated), the portable .exe (one file, no install), RELEASES and the .nupkg (the update feed), compose.yaml with host.bat and the setup scripts for hosting with Docker, material-asus-router-addon.tar.gz (the add-on that runs the app on an Asuswrt-Merlin router; see firmware/README.md), the phone PDF of the documentation when it could be built, and SHA256SUMS.txt.
 
           Warning: these installers are not signed. Windows SmartScreen will show an unknown publisher warning; check the SHA-256 sums before you run them.
           "@

@@ -7,5 +7,6 @@
   "baseCommit": "542f71114524e009773c124a89f438d53be1c6f5",
   "model": "RT-BE88U",
   "license": "GPL-2.0 (firmware source); the app itself is MIT",
-  "forkStatus": "kept for reference; the add-on does not use it"
+  "forkStatus": "kept for reference; the add-on does not use it",
+  "addon": "addon/ (built by scripts/build-addon.mjs, attached to every release)"
 }
