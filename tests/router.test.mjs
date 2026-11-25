@@ -76,7 +76,12 @@ test("the app's own key can be generated, allowed on the router, and used to con
     assert.equal(connect.data.authType, "key");
     const overview = await t.owner.get("/api/domain/overview");
     assert.equal(overview.status, 200);
-    assert.equal((await t.owner.post("/api/router/key", {})).status, 409, "replacing a key in use needs confirmation");
+    const again = await t.owner.post("/api/router/key", {});
+    assert.equal(again.status, 200);
+    assert.equal(again.data.publicKey, key.data.publicKey, "asking again shows the same key instead of making a new one");
+    assert.equal(again.data.existing, true);
+    const replaced = await t.owner.post("/api/router/key", { replace: true });
+    assert.notEqual(replaced.data.publicKey, key.data.publicKey, "only an explicit replace makes a new key");
   } finally {
     await t.stop();
   }
@@ -170,6 +175,31 @@ test("the safety timer length is a setting with limits", async () => {
     const preview = await t.owner.post("/api/changes/preview", { changes: [{ id: "wl0.ssid", value: "Timer test" }] });
     assert.equal(preview.data.guard.seconds, 120);
     assert.equal((await t.owner.post("/api/settings", { guardSeconds: 5 })).status, 400);
+  } finally {
+    await t.stop();
+  }
+});
+
+test("approving the host key uses the sign-in method chosen now, and refusals say what to do", async () => {
+  const t = await startApp({ configure: false });
+  try {
+    const key = await t.owner.post("/api/router/key", {});
+    t.router.nvram.sshd_authkeys = key.data.publicKey;
+    // First attempt with a wrong password stops at the unknown host key.
+    const first = await t.owner.post("/api/router/connect", { host: "127.0.0.1", port: t.router.port, username: "admin", authType: "password", password: "not-the-password" });
+    assert.equal(first.data.code, "HOST_KEY_UNKNOWN");
+    // Switching to the key before approving must use the key, not the stored password attempt.
+    const approved = await t.owner.post("/api/router/approve-host-key", { fingerprint: first.data.fingerprint, authType: "key" });
+    assert.equal(approved.status, 200, approved.text);
+    assert.equal(approved.data.authType, "key");
+    assert.equal((await t.owner.post("/api/router/key", {})).data.publicKey, key.data.publicKey, "the key did not change");
+
+    // A refused password explains what to do next.
+    await t.owner.post("/api/router/forget", {});
+    const again = await t.owner.post("/api/router/connect", { host: "127.0.0.1", port: t.router.port, username: "admin", authType: "password", password: "nope" });
+    const approve = await t.owner.post("/api/router/approve-host-key", { fingerprint: again.data.fingerprint, authType: "password", password: "nope" });
+    assert.notEqual(approve.status, 200);
+    assert.match(approve.data.error ?? approve.text, /This app's key/);
   } finally {
     await t.stop();
   }

@@ -64,7 +64,7 @@ async function render(ctx) {
     run.busy = true;
     draw();
     try {
-      await api.post("/api/router/approve-host-key", { fingerprint: run.pending.fingerprint });
+      await api.post("/api/router/approve-host-key", { fingerprint: run.pending.fingerprint, authType: form.authType, password: form.authType === "password" ? form.password : undefined });
       form.password = "";
       run.pending = null;
       run.connected = true;

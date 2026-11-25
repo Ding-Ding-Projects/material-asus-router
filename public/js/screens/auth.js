@@ -128,7 +128,7 @@ export function connectScreen(root, done, { owner = true, warning = null, setup 
   async function approve() {
     err.textContent = "";
     try {
-      await api.post("/api/router/approve-host-key", { fingerprint: pending.fingerprint });
+      await api.post("/api/router/approve-host-key", { fingerprint: pending.fingerprint, authType: v.authType, password: v.authType === "password" ? v.password : undefined });
       toast(t("Router connected.", "已連接路由器。"));
       done();
     } catch (error) {

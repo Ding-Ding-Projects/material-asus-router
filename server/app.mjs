@@ -344,7 +344,7 @@ function defineRoutes(app, route) {
       await connection.connect();
     } catch (error) {
       if (error instanceof HostKeyError) app.pendingHostKey = { ...config, fingerprint: error.fingerprint, at: Date.now(), changed: error.code === "HOST_KEY_CHANGED" };
-      throw Object.assign(error, error instanceof HostKeyError ? { status: 409 } : {});
+      throw error instanceof HostKeyError ? Object.assign(error, { status: 409 }) : explainRefusal(error, authType);
     }
     connection.close();
     await saveRouter(app, { ...config, hostKey });
@@ -357,19 +357,31 @@ function defineRoutes(app, route) {
     const pending = app.pendingHostKey;
     if (!pending || Date.now() - pending.at > 5 * 60 * 1000) throw bad("Connect to the router first.", 409, { code: "NO_PENDING_KEY" });
     if (body.fingerprint !== pending.fingerprint) throw bad("That does not match the key the router showed.", 409);
-    const privateKey = pending.authType === "key" ? vault.get("router.privateKey") : undefined;
-    const connection = new RouterConnection({ host: pending.host, port: pending.port, username: pending.username, password: pending.password ?? undefined, privateKey, hostKey: pending.fingerprint, readyTimeoutMs: 10000 });
-    await connection.connect();
+    // Use the sign-in method chosen now, which may differ from the first attempt.
+    const authType = body.authType === "key" || body.authType === "password" ? body.authType : pending.authType;
+    const password = authType === "password" ? (body.password ? String(body.password) : pending.password) : undefined;
+    if (authType === "password" && !password) throw bad("Enter the router's SSH password.");
+    const privateKey = authType === "key" ? vault.get("router.privateKey") : undefined;
+    if (authType === "key" && !privateKey) throw bad("Make this app's key first, then allow it on the router.", 409, { code: "NO_KEY" });
+    const connection = new RouterConnection({ host: pending.host, port: pending.port, username: pending.username, password, privateKey, hostKey: pending.fingerprint, readyTimeoutMs: 10000 });
+    try {
+      await connection.connect();
+    } catch (error) {
+      throw explainRefusal(error, authType);
+    }
     connection.close();
-    await saveRouter(app, { ...pending, hostKey: pending.fingerprint });
+    await saveRouter(app, { ...pending, authType, password, hostKey: pending.fingerprint });
     app.pendingHostKey = null;
     await session.ensure();
     return routerView(app);
   });
 
+  // The app's key is made once and then stays the same, so the copy added to the
+  // router keeps working. Only an explicit replace makes a new one.
   route("POST", "/api/router/key", async ({ body }) => {
-    if (store.read().router?.authType === "key" && body.replace !== true) throw bad("The router is using this key now. Replacing it needs confirmation.", 409, { code: "KEY_IN_USE" });
-    return { publicKey: await generateKey(vault) };
+    const existingKey = publicKey(vault);
+    if (existingKey && body.replace !== true) return { publicKey: existingKey, existing: true };
+    return { publicKey: await generateKey(vault), existing: false };
   });
 
   route("POST", "/api/router/forget", async () => {
@@ -535,4 +547,13 @@ async function serveStatic(req, res, pathname) {
   if (await sendFile(req, res, file, "no-cache")) return;
   if (!path.extname(relative) && (await sendFile(req, res, path.join(PUBLIC_DIR, "index.html"), "no-cache"))) return;
   throw bad("That page does not exist.", 404);
+}
+
+// Turns the router's refusal into a message that says what to do next.
+function explainRefusal(error, authType) {
+  if (error?.code !== "AUTH_FAILED") return error;
+  error.message = authType === "key"
+    ? "The router did not accept this app's key. Add the key shown under \"This app's key\" to the router's Authorized Keys (Administration, System), press Apply there, then try again."
+    : "The router refused the password. If password login for SSH is turned off on the router (Administration, System), choose \"This app's key\" instead.";
+  return error;
 }
