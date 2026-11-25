@@ -1,0 +1,31 @@
+/* DHCP address map. Theme variables only, so light and dark both work. */
+.dm-pool{display:flex;gap:16px;flex-wrap:wrap}
+.dm-step{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.dm-ip{min-width:112px;text-align:center}
+.dm-warn{display:flex;flex-direction:column;gap:8px}
+.dm-warn:empty{display:none}
+.dm-grid{display:flex;flex-direction:column;gap:3px;overflow-x:auto;padding:6px 4px 10px;min-width:0}
+.dm-row{display:grid;grid-template-columns:repeat(16,minmax(26px,1fr));gap:3px;min-width:440px}
+.dm-cell{position:relative;min-height:34px;border-radius:8px;border:2px solid transparent;background:var(--surf-low);color:var(--sub);font-size:11px;font-weight:700;padding:0;font-variant-numeric:tabular-nums;transition:transform .18s cubic-bezier(.2,.9,.25,1.5),background .2s,border-color .2s,box-shadow .2s;animation:dm-in .35s ease both}
+.dm-cell:hover:not(:disabled){transform:scale(1.14);z-index:2}
+.dm-cell.pool{border-color:color-mix(in srgb,var(--tertiary) 70%,transparent);background:color-mix(in srgb,var(--tertiary-c) 70%,var(--surf-low))}
+.dm-cell.leased{background:var(--secondary-c);color:var(--on-secondary-c)}
+.dm-cell.reserved{background:var(--primary);color:var(--on-primary);box-shadow:inset 0 0 0 3px color-mix(in srgb,var(--on-primary) 55%,transparent)}
+.dm-cell.router{background:var(--text);color:var(--bg)}
+.dm-cell.edge{background:transparent;border:1px dashed var(--line);opacity:.5}
+.dm-cell.sel{outline:3px solid var(--primary);outline-offset:1px;z-index:3}
+.dm-cell.waiting{border-style:dashed;border-color:var(--primary)}
+.dm-cell.is-dragged{opacity:.35}
+.dm-cell.drop-hot{background:var(--good-c);border-color:var(--good);transform:scale(1.2);z-index:4}
+.dm-cell:focus-visible{outline:3px solid var(--tertiary);outline-offset:1px}
+.dm-handle{position:absolute;top:-8px;width:14px;height:14px;border-radius:50%;background:var(--surf);border:3px solid var(--primary);cursor:ew-resize;z-index:5}
+.dm-handle.start{left:-6px}
+.dm-handle.end{right:-6px}
+.dm-handle.is-dragged{opacity:.35}
+.dm-trays{margin-top:8px}
+.dm-release{display:flex;align-items:center;justify-content:center;gap:8px;min-height:52px;border:2px dashed var(--line);border-radius:18px;color:var(--sub);font-weight:650;font-size:13.5px;transition:background .2s,border-color .2s}
+.dm-release.drop-hot{border-color:var(--primary);background:var(--primary-c);color:var(--on-primary-c)}
+.dm-panel{gap:10px}
+.drag-ghost{position:fixed;z-index:9999;pointer-events:none;opacity:.92;box-shadow:var(--e2);transform:rotate(-2deg) scale(1.04)}
+@keyframes dm-in{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.dm-cell{animation:none}.dm-cell,.dm-release{transition:none}.dm-cell:hover:not(:disabled),.dm-cell.drop-hot{transform:none}.drag-ghost{transform:none}}
