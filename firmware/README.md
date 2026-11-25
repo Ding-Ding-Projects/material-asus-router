@@ -1,23 +1,35 @@
-# Router firmware form
+# Running on the router itself
 
-Material Asus Router can also run on the router itself, as part of a custom firmware for the
-ASUS RT-BE88U. This folder pins the firmware source; the source lives in its own repository
-because it is a large third-party GPL project that is built on Linux.
+Material Asus Router can also run on the router, as an add-on for Asuswrt-Merlin on the
+ASUS RT-BE88U. The router's firmware is not changed: the add-on installs next to it.
 
-- Source: `source.json` names the fork, the upstream project, and the exact tag and commit
-  (Asuswrt-Merlin 3006.102.7_2) the build starts from.
-- Status: in progress. The build, the size budget and the dual-image fallback are still being
-  worked out. No firmware image has been published.
+## Why an add-on and not a custom firmware
 
-Planned behaviour:
+A research pass compared a custom firmware image with an add-on and chose the add-on:
 
-- The app is off by default. One switch on the router's own web page turns it on, and from then
-  on every feature lives in the app, not in the router's stock pages.
+- **Risk:** the firmware is untouched, so a problem in the add-on cannot stop the router from
+  starting. Removing the add-on is one command.
+- **Upkeep:** no firmware build tree, and no rebuilding for every Merlin release. The add-on
+  lives on the router's JFFS storage and a USB drive, which survive firmware upgrades.
+- **Space:** the RT-BE88U has 256 MB of flash holding two firmware copies. Node.js and the app
+  live on a USB drive under Entware instead of inside the firmware.
+- **Licence:** the add-on ships only this project's own code.
+
+The fork named in `source.json` is kept for reference only and is not used by the add-on.
+
+## Planned behaviour
+
+- Installed from a normal release: an archive, `install.sh`, `uninstall.sh` and checksums.
+  Nothing is flashed.
+- Needs JFFS custom scripts turned on, a USB drive with Entware, and Entware's Node.js.
+- Off by default. One switch on a page added to the router's own web interface turns it on;
+  every feature lives in the app itself, not in the router's stock pages.
 - Two choices on that page: the Material version (the full modern app) and the Advanced version
-  (every control, the action catalogue and the terminal). The choice is remembered in each browser.
-- The firmware is flashed into the router's inactive firmware slot, and the router falls back to
-  the previous firmware if its own networking is not healthy after the update.
-- The app updates from this repository's releases without reflashing, into a spare app slot,
-  and switches over only after a health check.
-- You flash the firmware yourself through the router's firmware page. Read the recovery steps
-  before you do.
+  (every control, the action catalogue and the terminal). The choice is remembered per browser.
+- Listens on the home network only, on its own port, and needs its own sign-in.
+- Updates from this repository's releases into a spare slot and switches over only after a
+  health check, so a bad update rolls back by itself. Updates never restart the router.
+- Known limit: the router's own web page still allows only one administrator signed in at a
+  time. This app allows any number of people signed in at once.
+
+Status: in progress. No add-on release has been published yet.
