@@ -38,9 +38,9 @@ export class Client {
   }
 }
 
-export async function startApp({ firmware = "merlin", configure = true, guardScale = 0.1, guardSeconds = 30, ...options } = {}) {
+export async function startApp({ firmware = "merlin", profile = null, configure = true, guardScale = 0.1, guardSeconds = 30, ...options } = {}) {
   const dir = await mkdtemp(path.join(os.tmpdir(), "mar-test-"));
-  const router = await new FakeRouter({ firmware, guardScale }).listen(0, "127.0.0.1");
+  const router = await new FakeRouter({ firmware, profile, guardScale }).listen(0, "127.0.0.1");
   const app = await createApp({
     dataDir: dir,
     guardSeconds,

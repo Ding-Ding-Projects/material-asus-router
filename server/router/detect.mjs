@@ -85,7 +85,7 @@ export async function detect(values, exec) {
     }));
   const buildno = get("buildno");
   const extendno = get("extendno");
-  return {
+  const info = {
     model: get("productid") || get("odmpid") || "Unknown model",
     firmware: [get("firmver"), buildno && `.${buildno}`, extendno && `_${extendno}`].filter(Boolean).join("") || "unknown",
     merlin,
@@ -93,4 +93,8 @@ export async function detect(values, exec) {
     capabilities: get("rc_support").split(/\s+/).filter(Boolean),
     lan: { ip: get("lan_ipaddr"), mask: get("lan_netmask") },
   };
+  // Every setting name this router really has. The catalogue uses it to switch off controls whose setting the
+  // router does not have. Not enumerable, so it never travels in a JSON answer to the browser.
+  Object.defineProperty(info, "settingKeys", { value: new Set(values.keys()), enumerable: false });
+  return info;
 }
