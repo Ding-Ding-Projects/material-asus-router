@@ -25,6 +25,8 @@ Start from the symptom, not from a setting. Each section gives the quick checks 
 
 ## Wi-Fi is slow
 
+Start with the [My Wi-Fi is slow](../wireless/slow-wifi.md) screen: it checks the router and fixes what it can.
+
 | Check | What it tells you |
 | --- | --- |
 | Wired test on the same line | If wired is fast, Wi-Fi is the problem. If wired is slow too, it is the line or provider |

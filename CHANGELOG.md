@@ -6,6 +6,7 @@ Every release of Material Asus Router, newest first. Each change names the full 
 
 ### Added
 
+- A "My Wi-Fi is slow" screen: it reads each band's air, noise, temperature and devices plus the router's settings, lists problems to fix and recommendations, and sends each fix to the pending-changes bar so it goes through the usual preview, keys and undo. (c03a9a27723c6f797b7b684762242789521d2afb)
 - Staying signed in: a sign-in lasts 90 days from the last use and survives a restart or an update of the app. Sign-ins are saved as a hash of each session cookie, never the cookie itself. (9e9894956b58c3bc69dc41e38f5fb46cf1ba0b18)
 - Five feature folders with real controls for Guest Network Pro, Wi-Fi 7 multi-link, per-band radio extras, OpenVPN client details and IPv6, plus PPP keep-alive: the controls on the RT-BE88U model now cover 696 of its 5,493 settings, up from 404. (7b8b49ba00a873f792941be417d92b3b59976b11)
 - A pretend router that models one real router (an RT-BE88U on Asuswrt-Merlin 3006, with its real setting names), and a control that is switched off, with the reason, whenever the router does not have its setting. (0e88388de9c6948fbd99287ba5e52f864e750fc5)
@@ -25,6 +26,9 @@ Every release of Material Asus Router, newest first. Each change names the full 
 
 ### Fixed
 
+- The page no longer scrolls past the end of the app, which slid the side navigation away and left an empty band below it. (7a023210cf630eb904aa9d32aa03917b079c1f51)
+- With nobody set up in the household, the four-key confirmation asks to acknowledge every device at home instead of naming the placeholder member. (20113e7c0794a7094ec9630004ed5636808716d6)
+- The Postman collection lists every action again. (c03a9a27723c6f797b7b684762242789521d2afb)
 - The pending-changes bar follows the Live and Review switch at once instead of at the next edit. (9e9894956b58c3bc69dc41e38f5fb46cf1ba0b18)
 - The documentation site deployment and the publication language check. (4947429ea58beaf880fd7251a292cfadce109fd7)
 

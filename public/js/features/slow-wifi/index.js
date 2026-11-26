@@ -58,7 +58,7 @@ function findingCard(ctx, f, after) {
         if (queued) {
           btn.disabled = true;
           btn.replaceChildren(icon("pending_actions", "sm"), t("Waiting in pending changes", "喺待處理變更度等緊"));
-          ctx.toast(t(`${queued} setting${queued === 1 ? "" : "s"} added to pending changes. Review and apply them there.`, `已將 ${queued} 個設定加入待處理變更，請喺嗰度檢查同套用。`), "good");
+          ctx.toast(t(`${queued} setting${queued === 1 ? "" : "s"} sent to the pending changes bar.`, `已將 ${queued} 個設定送去待處理變更列。`), "good");
         }
         if (missing.length) ctx.toast(t(`This router could not take: ${missing.join(", ")}.`, `呢部路由器用唔到：${missing.join("、")}。`), "bad");
       },
@@ -135,7 +135,7 @@ async function screen(ctx) {
         }
         fixAll.disabled = true;
         for (const b of body.querySelectorAll(".sw-finding .btn.f")) if (fixable.some((f) => b.closest(`[data-finding="${f.id}"]`))) b.disabled = true;
-        ctx.toast(t(`${queued} setting${queued === 1 ? "" : "s"} added to pending changes. Review and apply them together.`, `已將 ${queued} 個設定加入待處理變更，請一次過檢查同套用。`), "good");
+        ctx.toast(t(`${queued} setting${queued === 1 ? "" : "s"} sent to the pending changes bar together.`, `已將 ${queued} 個設定一次過送去待處理變更列。`), "good");
         if (missing.length) ctx.toast(t(`This router could not take: ${missing.join(", ")}.`, `呢部路由器用唔到：${missing.join("、")}。`), "bad");
       },
     }, icon("auto_fix_high", "sm"), t(`Fix everything I can (${fixable.length})`, `修正所有做得到嘅（${fixable.length}）`));
