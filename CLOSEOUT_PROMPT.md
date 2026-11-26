@@ -19,7 +19,7 @@ Open:
 1. Match the screens for Kick and ban, Unkick, Lock IP, Routers, loading and start-up error, and the router
    add-on page to their canvas round 4 boards (merged into main; node design/canvas/generator/gen.mjs passes).
 2. Branch ai/feature/20261125-merlin-addon (643bdb9) is an unmerged duplicate of the merged add-on work.
-   Its commit message has wording that should not be public. Ask the owner before deleting it.
+   The owner chose to keep it; do not delete it.
 3. Installing the add-on on the real router needs a USB drive with Entware and Node.js, JFFS custom scripts
    turned on, and the owner's go-ahead.
 5. Extend the phone check to dialogs and deeper states.
