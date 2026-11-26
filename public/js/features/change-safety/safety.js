@@ -169,7 +169,7 @@ export async function confirmDialog(detail, context = {}) {
   const level = detail.impact ?? context.level ?? 1;
   if (level >= 3 && !context.skipWarning && !(await warnLevel3())) return null;
   const people = detail.steps?.acknowledge?.people ?? [];
-  const input = { acked: [], typed: "", holdMs: 0, chord: false, noPeopleAck: people.length === 0 ? false : true };
+  const input = { acked: [], typed: "", holdMs: 0, chord: false, tapNext: 1, noPeopleAck: people.length === 0 ? false : true };
   const minMs = detail.steps?.hold?.minMs ?? 1500;
   const keys = detail.steps?.chord?.keys ?? SHORTCUTS.confirm;
   let holdStart = 0;
@@ -182,7 +182,7 @@ export async function confirmDialog(detail, context = {}) {
     const s = status();
     const mark = (ok) => h("span", { class: `key-ok ${ok ? "on" : ""}`, "aria-hidden": "true" }, icon(ok ? "check_circle" : "radio_button_unchecked", "sm"));
     const ackBox = people.length
-      ? people.map((p) => h("label", { class: "row" }, h("input", { type: "checkbox", checked: input.acked.includes(p.id), onChange: (e) => { input.acked = e.target.checked ? [...input.acked, p.id] : input.acked.filter((x) => x !== p.id); render(); } }), h("span", {}, t(`I know ${p.name}'s devices will be affected.`, `我知道${p.nameYue ?? p.name}嘅裝置會受影響。`))))
+      ? people.map((p) => h("label", { class: "row" }, h("input", { type: "checkbox", checked: input.acked.includes(p.id), onChange: (e) => { input.acked = e.target.checked ? [...input.acked, p.id] : input.acked.filter((x) => x !== p.id); render(); } }), h("span", {}, t(`I know ${p.name.replace(/^Your /, "your ").replace(/^My /, "my ")}'s devices will be affected.`, `我知道${p.nameYue ?? p.name}嘅裝置會受影響。`))))
       : [h("label", { class: "row" }, h("input", { type: "checkbox", checked: input.noPeopleAck, onChange: (e) => { input.noPeopleAck = e.target.checked; render(); } }), h("span", {}, t("I know everyone at home may be affected.", "我知道屋企所有人都可能受影響。")))];
     holdFill = h("span", { class: "hold-fill" });
     const holdBtn = h("button", { class: `btn hold ${s.keys.hold ? "ok" : ""}`, type: "button", "aria-describedby": "hold-help",
@@ -202,7 +202,17 @@ export async function confirmDialog(detail, context = {}) {
         h("section", { class: "key" }, h("div", { class: "key-h" }, typedMark, h("b", {}, t("Key 2 · Type the name", "第 2 把 · 輸入名稱"))), h("div", { class: "t2" }, t("Type exactly:", "請原字輸入："), " ", h("span", { class: "mono" }, s.shortName)), typed),
         h("section", { class: "key" }, h("div", { class: "key-h" }, mark(s.keys.hold), h("b", {}, t("Key 3 · Hold", "第 3 把 · 撳住"))), h("div", { id: "hold-help", class: "t2" }, t(`Hold for ${(minMs / 1000).toFixed(1)} seconds.`, `撳住 ${(minMs / 1000).toFixed(1)} 秒。`)), holdBtn),
         h("section", { class: "key" }, h("div", { class: "key-h" }, mark(s.keys.chord), h("b", {}, t("Key 4 · Key combination", "第 4 把 · 組合鍵"))), h("div", { class: "t2" }, t("Press", "撳"), " ", h("kbd", {}, keys), t(" together.", " 一齊。")),
-          h("button", { class: `btn ${s.keys.chord ? "ok" : "t"}`, type: "button", onClick: () => { toast(t(`Press ${keys} on the keyboard.`, `用鍵盤撳 ${keys}。`)); } }, icon("keyboard", "sm"), s.keys.chord ? t("Pressed", "已撳") : t("Waiting for the keys", "等緊組合鍵")))),
+          h("button", { class: `btn ${s.keys.chord ? "ok" : "t"}`, type: "button", onClick: () => { toast(t(`Press ${keys} on the keyboard.`, `用鍵盤撳 ${keys}。`)); } }, icon("keyboard", "sm"), s.keys.chord ? t("Pressed", "已撳") : t("Waiting for the keys", "等緊組合鍵")),
+          // A phone has no keyboard: tapping 1, 2 and 3 in order is the touch form of the same key.
+          // A wrong tap starts the sequence again, so it still takes a deliberate effort.
+          s.keys.chord ? null : h("div", { class: "tap-seq", role: "group", "aria-label": t("On a touch screen: tap 1, 2 and 3 in order", "觸控螢幕：順序撳 1、2、3") },
+            h("span", { class: "t2" }, t("No keyboard? Tap in order:", "冇鍵盤？順序撳：")),
+            [3, 1, 2].map((n) => h("button", { type: "button", class: `btn sm ${input.tapNext > n ? "ok" : "o"}`, "aria-label": t(`Tap ${n}`, `撳 ${n}`), onClick: () => {
+              if (n === input.tapNext) input.tapNext += 1;
+              else input.tapNext = n === 1 ? 2 : 1;
+              if (input.tapNext > 3) input.chord = true;
+              render();
+            } }, String(n)))))),
       simulateChange ? simulationHost(context) : null,
       h("div", { class: "actions" }, h("button", { class: "btn o", onClick: () => close(null) }, icon("close", "sm"), t("Cancel", "取消")), go),
     ];

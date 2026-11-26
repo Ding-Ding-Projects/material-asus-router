@@ -1,2 +1,6 @@
 .fp-chip{margin-top:auto;display:flex;align-items:center;gap:8px;min-height:48px;padding:8px 14px;border:0;border-radius:16px;background:var(--surf-high);color:var(--sub);font-size:12px;font-weight:650;text-align:left;line-height:1.3;white-space:normal;word-break:break-word}
 .fp-chip:hover{color:var(--text)}
+@media (max-width:900px){
+  /* In the bottom bar the chip is one compact item: one line, never taller than the other buttons. */
+  .rail .fp-chip{flex:none;margin-top:0;align-self:center;min-height:44px;max-height:56px;white-space:nowrap;word-break:normal;padding:6px 12px}
+}

@@ -394,13 +394,32 @@ function parentalScene(data) {
 
 // ---- devices on the network map --------------------------------------------------------------------------------------------------------
 
+// Describes a change to a router device list (rows like <MAC>address>>name) by what was added and
+// removed, instead of quoting two long strings that often start the same.
+export function deviceListSummary(data) {
+  const rows = (v) => String(v ?? "").split("<").map((r) => r.trim()).filter(Boolean);
+  const before = rows(data.old);
+  const after = rows(data.new);
+  const added = after.filter((r) => !before.includes(r));
+  const removed = before.filter((r) => !after.includes(r));
+  const count = (n) => `${n} ${n === 1 ? "entry" : "entries"}`;
+  const describe = (r) => {
+    const [mac, ip, , name] = r.split(">");
+    return [name, ip, mac].filter(Boolean).join(" · ");
+  };
+  if (!added.length && !removed.length) return { en: `The device list is rewritten with the same ${count(after.length)}.`, zh: `裝置清單用同樣嘅 ${after.length} 項重新寫入。` };
+  const en = [added.length ? `Adds ${added.map(describe).join("; ")}` : "", removed.length ? `removes ${removed.map(describe).join("; ")}` : ""].filter(Boolean).join(", and ");
+  const zh = [added.length ? `加入 ${added.map(describe).join("；")}` : "", removed.length ? `移除 ${removed.map(describe).join("；")}` : ""].filter(Boolean).join("，");
+  return { en: `${en.charAt(0).toUpperCase()}${en.slice(1)}. ${count(after.length)} in all.`, zh: `${zh}。總共 ${after.length} 項。` };
+}
+
 function devicesScene(data) {
   const ips = (v) => String(v ?? "").match(/\d{1,3}(?:\.\d{1,3}){3}/g) ?? [];
   const io = ips(data.old);
   const inn = ips(data.new);
   const names = (v) => String(v ?? "").split(/[<>]/).filter((x) => x && !/^[0-9A-Fa-f:.]+$/.test(x)).slice(0, 4);
   return scene("devices", data, {
-    summary: { en: `A device entry changes from "${short(data.old, 36)}" to "${short(data.new, 36)}".`, zh: `一項裝置設定由「${short(data.old, 36)}」改為「${short(data.new, 36)}」。` },
+    summary: deviceListSummary(data),
     label: { en: "Devices on the network before and after", zh: "網絡上嘅裝置改動前後" },
     view: [640, 280],
     build(ui) {

@@ -192,3 +192,5 @@ figure.sim{margin:0;background:var(--surf-low);border:1px solid var(--line);bord
 .cell{stroke:none}
 .s-drag{cursor:grab}
 .statbar.lv0{}
+.tap-seq{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px}
+.tap-seq .btn{min-width:48px;min-height:48px}

@@ -231,7 +231,7 @@ pre.out{margin:0;padding:16px;border-radius:16px;background:var(--surf-high);fon
 /* narrow screens: the rail becomes a scrolling bar at the bottom, nothing is removed */
 @media (max-width:900px){
   .shell{flex-direction:column}
-  .rail{position:fixed;bottom:0;left:0;right:0;top:auto;width:auto;height:auto;flex-direction:row;overflow-x:auto;overflow-y:hidden;padding:6px 8px calc(6px + env(safe-area-inset-bottom));z-index:40;box-shadow:0 -2px 12px rgba(10,12,30,.12);gap:2px;flex:none}
+  .rail{position:fixed;bottom:0;left:0;right:0;top:auto;width:auto;height:auto;flex-direction:row;overflow-x:auto;overflow-y:hidden;padding:6px 8px calc(6px + env(safe-area-inset-bottom));z-index:40;box-shadow:0 -2px 12px rgba(10,12,30,.12);gap:2px;flex:none;align-items:center;max-height:calc(84px + env(safe-area-inset-bottom))}
   .rail .brandrow,.rail .navsec{display:none}
   .navi{flex-direction:column;gap:2px;min-width:72px;width:auto;min-height:56px;padding:6px 8px;font-size:11px;justify-content:center;text-align:center;border-radius:16px;flex:none}
   .navi .ct{position:absolute;top:2px;right:6px;margin:0}
