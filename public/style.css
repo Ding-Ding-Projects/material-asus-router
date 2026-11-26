@@ -40,7 +40,10 @@
 }
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%}
-body{font-family:var(--font);color:var(--text);background:var(--bg);font-optical-sizing:auto;-webkit-font-smoothing:antialiased;white-space:pre-line;line-height:1.4}
+body{font-family:var(--font);color:var(--text);background:var(--bg);font-optical-sizing:auto;-webkit-font-smoothing:antialiased;line-height:1.4}
+/* Line breaks inside the app's own text are kept, but the line breaks between the page's top-level
+   elements in index.html are not: kept, they became blank lines that let the page scroll past the app. */
+body>*{white-space:pre-line}
 button{font-family:inherit;cursor:pointer;color:inherit}
 button:disabled,input:disabled,select:disabled{cursor:not-allowed;opacity:.55}
 a{color:var(--primary)}
