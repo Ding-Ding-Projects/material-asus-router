@@ -26,7 +26,7 @@ real browser. Unticked items say what is still missing.
 - [x] Slow a device down instead: the Kick sheet points to per-device speed limits, with the QoS impact stated
 - [x] Top talkers and device traffic
 - [x] AiMesh nodes: list, devices per node, names, backhaul priority, light and restart
-- [ ] Reserve the second 3D printer's address: waiting for the printer to be online
+- [x] Reserve the owner's second 3D printer's address on the real router (done over SSH once it was online, read back from the router)
 
 ## Settings coverage
 

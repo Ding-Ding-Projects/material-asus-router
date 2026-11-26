@@ -22,7 +22,6 @@ Open:
    Its commit message has wording that should not be public. Ask the owner before deleting it.
 3. Installing the add-on on the real router needs a USB drive with Entware and Node.js, JFFS custom scripts
    turned on, and the owner's go-ahead.
-4. Reserve the second 3D printer's address when it is online.
 5. Extend the phone check to dialogs and deeper states.
 
 Rules: every router write goes through server/changes/engine.mjs; secrets stay in the vault; tests use the
