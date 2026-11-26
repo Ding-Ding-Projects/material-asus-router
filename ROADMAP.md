@@ -41,7 +41,8 @@ real browser. Unticked items say what is still missing.
 - [x] The page never grows wider than the screen; the tab strip scrolls inside itself
 - [x] The bottom bar is one short row
 - [x] The fourth confirmation key can be turned by tapping 1, 2 and 3 in order
-- [ ] Check every screen at 360 pixels with a feature-parity sweep (only Kick and ban, Devices, the Unkick page and the confirmation were checked by hand)
+- [x] Every one of the 125 screens fits at 360 pixels: no screen widens the page and nothing sticks out outside a scrolling area (checked in a browser on 2026-11-25)
+- [ ] Prove every action reachable at desktop width is also reachable at 360 pixels (only Kick and ban, Devices with Lock IP, the Unkick page and the confirmation were driven by hand)
 
 ## Delivery
 
