@@ -69,14 +69,16 @@ function flatten(node, depth, into, path = "") {
     if (typeof value !== "string") throw new VocabError("BAD_VALUE", `${path}${key}`);
     if (!key.trim() || chars(key) > LIMITS.keyChars || CONTROL.test(key) || !WORDLIKE.test(key)) throw new VocabError("BAD_KEY", key.slice(0, 40));
     if (!value.trim() || chars(value) > LIMITS.valueChars || /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/.test(value)) throw new VocabError("BAD_VALUE", key.slice(0, 40));
-    const folded = key.trim().normalize("NFC").toLowerCase();
-    if (into.has(folded)) throw new VocabError("DUPLICATE_KEY", key.slice(0, 40));
-    into.set(folded, value.trim());
+    // Keys keep their spelling: "Pages" and "pages" may mean different things and have different
+    // replacements. Only the very same spelling twice is a duplicate.
+    const exact = key.trim().normalize("NFC");
+    if (into.has(exact)) throw new VocabError("DUPLICATE_KEY", key.slice(0, 40));
+    into.set(exact, value.trim());
     if (into.size > LIMITS.entries) throw new VocabError("TOO_MANY");
   }
 }
 
-// Returns { name, entries: Map(lowercase ordinary -> replacement), count } or throws a VocabError.
+// Returns { name, entries: Map(ordinary word as written -> replacement), count } or throws a VocabError.
 export function parseVocabulary(input) {
   const source = String(input ?? "").replace(/^﻿/, "");
   if (new TextEncoder().encode(source).length > LIMITS.bytes) throw new VocabError("TOO_BIG");
@@ -89,8 +91,10 @@ export function parseVocabulary(input) {
   }
   scan(source);
   if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) throw new VocabError("NOT_OBJECT");
-  for (const key of Object.keys(parsed)) if (!["version", "name", "words", "entries"].includes(key)) throw new VocabError("UNKNOWN_FIELD", key.slice(0, 40));
-  if (parsed.version !== 1) throw new VocabError("BAD_VERSION");
+  // The shared vocabulary file names its version schemaVersion; older files call it version.
+  for (const key of Object.keys(parsed)) if (!["version", "schemaVersion", "name", "words", "entries"].includes(key)) throw new VocabError("UNKNOWN_FIELD", key.slice(0, 40));
+  if ("version" in parsed && "schemaVersion" in parsed) throw new VocabError("UNKNOWN_FIELD", "schemaVersion");
+  if ((parsed.version ?? parsed.schemaVersion) !== 1) throw new VocabError("BAD_VERSION");
   if ("words" in parsed && "entries" in parsed) throw new VocabError("UNKNOWN_FIELD", "entries");
   const words = parsed.words ?? parsed.entries;
   if (!words || typeof words !== "object" || Array.isArray(words)) throw new VocabError("NO_WORDS");
@@ -128,7 +132,17 @@ export function compile(entries) {
     return `${start}${escapeRegExp(key)}${end}`;
   });
   const re = new RegExp(parts.join("|"), "giu");
-  return (value) => (value && typeof value === "string" ? value.replace(re, (match) => entries.get(match.normalize("NFC").toLowerCase()) ?? match) : value);
+  // An exact spelling wins; any other capitalisation falls back to the lower-case entry, or else to
+  // the first entry with that spelling in any case.
+  const folded = new Map();
+  for (const [key, value] of entries) {
+    const f = key.toLowerCase();
+    if (key === f || !folded.has(f)) folded.set(f, value);
+  }
+  return (value) => (value && typeof value === "string" ? value.replace(re, (match) => {
+    const m = match.normalize("NFC");
+    return entries.get(m) ?? folded.get(m.toLowerCase()) ?? match;
+  }) : value);
 }
 
 // Reads the stored copy again and re-validates it. Anything wrong purges it.

@@ -33,3 +33,9 @@ test("a change to a device list says what it adds and removes", () => {
   assert.equal(remove.en, "Removes nas · 198.51.100.20 · B8:27:EB:11:22:33. 0 entries in all.");
   assert.match(deviceListSummary({ old: "<A>198.51.100.5>>x", new: "<A>198.51.100.5>>x" }).en, /the same 1 entry\./);
 });
+
+test("rebuilding the shell first removes the previous shell's listeners, so nothing is handled twice", async () => {
+  const src = await read("public/js/main.js");
+  const body = src.slice(src.indexOf("function buildShell() {"));
+  assert.match(body.slice(0, 400), /shell\.dispose\(\);\s*shell\.dispose = \(\) => \{\};/, "buildShell starts by disposing the previous shell");
+});

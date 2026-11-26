@@ -174,6 +174,10 @@ const saveTabs = () => {
 };
 
 function buildShell() {
+  // A rebuilt shell (after signing in again, switching routers or trying again) must not leave the
+  // previous one's window-wide listeners behind, or a dropped file would be handled twice.
+  shell.dispose();
+  shell.dispose = () => {};
   loadTabs();
   const rail = h("nav", { class: "rail", "aria-label": t("Sections", "版面") },
     h("div", { class: "brandrow" }, h("div", { class: "logo" }, icon("router", "lg")), h("div", { class: "brand" }, "Material Asus Router", h("small", {}, `${app.catalog.info.model} · ${app.catalog.info.merlin ? "Merlin" : t("Stock firmware", "原廠韌體")}`))),

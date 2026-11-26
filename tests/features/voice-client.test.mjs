@@ -177,8 +177,8 @@ test("vocabulary: malformed, duplicate and unexpected input is refused and nothi
   refuses('{"version":1,"words":{"a1":"b","\\u0061\\u0031":"c"}}', "DUPLICATE_KEY");
   refuses('{"version":1,"words":{"g":{"a1":"b","a1":"c"}}}', "DUPLICATE_KEY");
   refuses('{"version":1,"version":1,"words":{"a1":"b"}}', "DUPLICATE_KEY");
-  refuses('{"version":1,"words":{"Router":"a","router":"b"}}', "DUPLICATE_KEY");
-  refuses('{"version":1,"words":{"x":{"router":"a"},"y":{"Router":"b"}}}', "DUPLICATE_KEY");
+  refuses('{"version":1,"words":{"Router":"a","nested":{"Router":"b"}}}', "DUPLICATE_KEY"); // the same spelling twice (capitals alone may differ: see voice-vocab-format)
+  refuses('{"version":1,"words":{"x":{"router":"a"},"y":{"router":"b"}}}', "DUPLICATE_KEY");
 });
 
 test("vocabulary: words are swapped whole, in one pass, in any case, and Chinese phrases anywhere", () => {
