@@ -6,7 +6,7 @@ import { readFile, readdir, stat } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { COOKIE, Sessions, checkPassword, hashPassword } from "./auth.mjs";
-import { ACTIONS, generateKey, installKeyChange, publicKey, runAction, runFeatureAction } from "./actions.mjs";
+import { ACTIONS, generateKey, installKeyChange, publicKey, runAction, runFeatureAction, uploadKey } from "./actions.mjs";
 import { ChangeEngine, validateRaw } from "./changes/engine.mjs";
 import { impactOfEntry } from "./changes/impact.mjs";
 import { defineSafetyRoutes } from "./changes/routes.mjs";
@@ -236,8 +236,30 @@ function routerView(app) {
     hasKey: app.vault.has(VAULT_PUBLIC_KEY),
     publicKey: publicKey(app.vault),
     suggested: config?.host ? null : suggestedRouter(),
+    // Which saved router this is (name and Main or Testing), shown to everyone signed in.
+    active: savedRouterOf(app),
     demo: Boolean(app.demoRouter),
   };
+}
+
+// ---- saved routers -----------------------------------------------------------
+// The owner can keep several routers, for example the main one and a Testing router, and
+// switch between them. The router in use is still s.router; each saved router keeps its own
+// address, user, sign-in method and host key, and its password sits in the vault under its id.
+
+const ROUTER_ROLES = ["main", "testing"];
+const routerPasswordKey = (id) => `routers.${id}.password`;
+const sameRouter = (a, b) => Boolean(a && b) && a.host === b.host && Number(a.port ?? 22) === Number(b.port ?? 22) && a.username === b.username;
+
+function savedRouterOf(app) {
+  const s = app.store.read();
+  const found = (s.routers ?? []).find((r) => sameRouter(r, s.router));
+  return found ? { id: found.id, name: found.name, role: found.role } : null;
+}
+
+function savedRoutersView(app) {
+  const s = app.store.read();
+  return (s.routers ?? []).map((r) => ({ id: r.id, name: r.name, role: r.role, host: r.host, port: r.port, username: r.username, authType: r.authType, hasHostKey: Boolean(r.hostKey), active: sameRouter(r, s.router), savedAt: r.savedAt }));
 }
 
 async function liveContext(app) {
@@ -405,6 +427,63 @@ function defineRoutes(app, route) {
     const existingKey = publicKey(vault);
     if (existingKey && body.replace !== true) return { publicKey: existingKey, existing: true };
     return { publicKey: await generateKey(vault), existing: false };
+  });
+
+  route("POST", "/api/router/key/upload", async ({ body }) => {
+    const line = await uploadKey(vault, body.privateKey);
+    session.close();
+    session.invalidate();
+    return { publicKey: line, uploaded: true };
+  }, { limit: 32 * 1024 });
+
+  route("GET", "/api/routers", () => ({ routers: savedRoutersView(app), roles: ROUTER_ROLES }));
+
+  // Saves the router in use under a name, as Main or Testing. Saving again renames it.
+  route("POST", "/api/routers", async ({ body }) => {
+    const current = store.read().router;
+    if (!current?.host) throw bad("Connect a router first, then save it.", 409);
+    const name = String(body.name ?? "").replace(/\s+/g, " ").trim().slice(0, 40);
+    if (!name) throw bad("Give the router a name, such as Living room or Testing.");
+    const role = ROUTER_ROLES.includes(body.role) ? body.role : "main";
+    let id;
+    await store.update((s) => {
+      s.routers ??= [];
+      if (s.routers.length >= 8 && !s.routers.some((r) => sameRouter(r, current))) throw bad("Up to 8 routers can be saved.");
+      const existing = s.routers.find((r) => sameRouter(r, current));
+      id = existing?.id ?? crypto.randomUUID();
+      const entry = { id, name, role, host: current.host, port: current.port ?? 22, username: current.username, authType: current.authType, hostKey: current.hostKey, savedAt: new Date().toISOString() };
+      s.routers = existing ? s.routers.map((r) => (r.id === id ? entry : r)) : [...s.routers, entry];
+    });
+    const password = vault.get(VAULT_PASSWORD);
+    if (password) await vault.set(routerPasswordKey(id), password);
+    return { routers: savedRoutersView(app) };
+  });
+
+  // Switches to a saved router: the connection is closed and the next request opens the new one.
+  // The router's host key must still match the one approved when it was saved.
+  route("POST", "/api/routers/:id/use", async ({ params }) => {
+    const target = (store.read().routers ?? []).find((r) => r.id === params.id);
+    if (!target) throw bad("That router is not saved.", 404);
+    const password = vault.get(routerPasswordKey(target.id));
+    await store.update((s) => {
+      s.router = { host: target.host, port: target.port, username: target.username, authType: target.authType, hostKey: target.hostKey, savedAt: new Date().toISOString() };
+    });
+    if (password) await vault.set(VAULT_PASSWORD, password);
+    else await vault.delete(VAULT_PASSWORD);
+    session.close();
+    session.invalidate();
+    return routerView(app);
+  });
+
+  route("DELETE", "/api/routers/:id", async ({ params }) => {
+    let removed = null;
+    await store.update((s) => {
+      removed = (s.routers ?? []).find((r) => r.id === params.id) ?? null;
+      s.routers = (s.routers ?? []).filter((r) => r.id !== params.id);
+    });
+    if (!removed) throw bad("That router is not saved.", 404);
+    await vault.delete(routerPasswordKey(removed.id));
+    return { routers: savedRoutersView(app) };
   });
 
   route("POST", "/api/router/forget", async () => {
