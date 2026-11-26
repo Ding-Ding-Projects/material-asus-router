@@ -307,7 +307,7 @@ test("change-safety: the four-key confirmation is checked by the server, step by
     assert.ok(previewId && begin.nonce);
     assert.equal(begin.steps.hold.minMs, 1500);
     assert.equal(begin.steps.chord.keys, "Ctrl+Shift+Enter");
-    assert.equal(begin.steps.acknowledge.people[0].name, "Your brother");
+    assert.deepEqual(begin.steps.acknowledge.people.map((p) => p.id), ["household"], "with nobody set up, the household as a whole is acknowledged, never the placeholder member");
     assert.equal(begin.steps.typeName.shortName, "Upload speed");
     assert.ok(begin.yue === undefined && first.data.yue.length > 0, "the refusal carries a Cantonese line too");
 
