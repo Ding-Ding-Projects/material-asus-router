@@ -39,7 +39,12 @@ export class RouterConnection {
           resolve(this);
         }
       };
-      client.on("ready", () => done());
+      client.on("ready", () => {
+        // Commands are short request/answer exchanges. With Nagle's algorithm on, each one waited on the
+        // other side's delayed acknowledgement, about 40 ms a packet and about 175 ms a command.
+        client.setNoDelay(true);
+        done();
+      });
       client.on("error", (error) => {
         if (this.hostKeyError) return done(this.hostKeyError);
         const friendly = new Error(
