@@ -1,5 +1,6 @@
 # Own-address mode: the app takes its own address on the home network through a macvlan
-# network, so people open http://<ROUTER_APP_LAN_IP>:8790/ instead of a port on the host.
+# network, so people open http://<ROUTER_APP_LAN_IP>/ (port 80) or http://<ROUTER_APP_LAN_IP>:8790/
+# instead of a port on the host.
 # Use it together with compose.yaml, which stays the default (published port):
 #
 #   docker compose -f compose.yaml -f compose.lan.yaml up -d
@@ -11,6 +12,13 @@ services:
   asus-router:
     # Own address instead of a published port.
     ports: !reset []
+    # Also serve on port 80, so a plain http://<address>/ works. Port 80 is a privileged port, so
+    # this one container (and nothing else on the host) lets unprivileged users bind it; the app
+    # still runs as the unprivileged node user with every capability dropped.
+    environment:
+      EXTRA_PORT: ${ROUTER_APP_EXTRA_PORT:-80}
+    sysctls:
+      net.ipv4.ip_unprivileged_port_start: "80"
     networks:
       lan:
         ipv4_address: ${ROUTER_APP_LAN_IP:?set ROUTER_APP_LAN_IP to the address the app should take}
