@@ -9,3 +9,5 @@
 .seg.wrap{flex-wrap:wrap}
 @keyframes kick-shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
 @media (prefers-reduced-motion:reduce){.kick-impact.mad{animation:none}}
+.kick-slow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:8px 12px;border-radius:14px;border:1px dashed var(--outline,#79747e);margin:6px 0;font-size:13px}
+.kick-slow span{flex:1 1 200px}

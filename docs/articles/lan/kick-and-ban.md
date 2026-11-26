@@ -50,5 +50,6 @@ running pauses back and removes finished ones every 30 seconds while the screen 
 - A device that changes its MAC address (private Wi-Fi address) is a new device to the router.
 - Name-lookup blocking only covers lookups sent to the router. A device set to use another
   resolver over an encrypted connection is not affected; use **Pause internet** for those.
-- Slowing a device down instead of pausing it needs the router's bandwidth limiter, which changes
-  the QoS mode for the whole network. It is not offered here yet.
+- Slowing a device down instead of pausing it uses the router's bandwidth limiter, which turns on
+  QoS for the whole network. The Kick sheet links to **Priority and limits**, where per-device speed
+  limits are set as a normal change with its impact shown.

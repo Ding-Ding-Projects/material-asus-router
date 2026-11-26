@@ -130,6 +130,11 @@ async function screen(ctx) {
         h("div", { class: "k" }, t("How", "點樣")),
         h("div", { class: "seg wrap", role: "radiogroup", "aria-label": t("How to pause", "點樣暫停") }, Object.entries(data.methods).map(([id, m]) => radio(choice.method === id, tt(m.label), () => { choice.method = id; redraw(); }))),
         h("p", { class: "t2" }, tt(data.methods[choice.method]?.about)),
+        // Slowing a device down uses the router's bandwidth limiter, which switches QoS on for the
+        // whole network, so it is its own screen with its own impact rather than a quiet option here.
+        h("div", { class: "kick-slow" }, icon("speed", "sm"),
+          h("span", {}, t("Want to slow it down instead of pausing it? That uses the router's bandwidth limiter, which turns on QoS for the whole network.", "想減慢佢而唔係暫停？要用路由器嘅頻寬限制，會為成個網絡開啟 QoS。")),
+          h("button", { class: "btn t sm", type: "button", onClick: () => { done(false); ctx.navigate("qos-pro"); } }, t("Set a speed limit", "設定速度上限"))),
         timed ? h("div", { class: "k" }, t("For how long", "幾耐")) : null,
         timed ? h("div", { class: "seg wrap", role: "radiogroup", "aria-label": t("For how long", "幾耐") },
           data.durations.map((m) => radio(!choice.ban && choice.minutes === m, minutesText(m, t), () => { choice.ban = false; choice.minutes = m; redraw(); })),
