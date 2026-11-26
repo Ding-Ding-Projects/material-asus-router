@@ -6,7 +6,7 @@ import { hashPassword } from "./auth.mjs";
 
 export const ROLES = ["operator", "viewer"];
 const USERNAME = /^[A-Za-z0-9][A-Za-z0-9._-]{1,39}$/;
-const OWNER_ONLY = [/^\/api\/users(\/|$)/, /^\/api\/router\/(connect|approve-host-key|forget|key)$/];
+const OWNER_ONLY = [/^\/api\/users(\/|$)/, /^\/api\/router\/(connect|approve-host-key|forget|key|key\/upload)$/, /^\/api\/routers(\/|$)/];
 
 export function roleAllows(role, method, route) {
   if (role === "owner") return true;

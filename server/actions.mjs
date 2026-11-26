@@ -1,8 +1,11 @@
 // One-off actions: network tools, wake-on-LAN, service restarts, reboot and
 // the app's own SSH key. Every router command is built from validated input.
+import ssh2 from "ssh2";
 import { generateEd25519 } from "./ssh/keys.mjs";
 import { VAULT_PRIVATE_KEY, VAULT_PUBLIC_KEY } from "./router/session.mjs";
 import { hostTarget, macAddress, service } from "./router/shell.mjs";
+
+const { utils } = ssh2;
 
 const KEY_COMMENT = "material-asus-router";
 const SERVICES = new Set(["restart_wireless", "restart_dnsmasq", "restart_firewall", "restart_httpd", "restart_time", "restart_ddns", "restart_qos", "restart_vpnd", "restart_wgs", "restart_nasapps", "restart_sshd"]);
@@ -26,6 +29,26 @@ export async function generateKey(vault) {
 }
 
 export const publicKey = (vault) => vault.get(VAULT_PUBLIC_KEY);
+
+// Uses a private key the owner already has for the router (for example the one whose public half
+// is in the router's Authorized Keys) instead of the app's own. It is checked to be a real,
+// unencrypted private key and kept only in the vault; its public half is shown so it can be matched.
+export async function uploadKey(vault, text) {
+  const pem = String(text ?? "").replace(/\r\n/g, "\n").trim();
+  if (!pem || pem.length > 16384) throw bad("Choose the router's private key file (an OpenSSH or PEM key).", 400);
+  if (/^ssh-(ed25519|rsa|dss) |^ecdsa-sha2-/.test(pem)) throw bad("That is a public key. Upload the private key file, the one without .pub.", 400);
+  const parsed = utils.parseKey(pem);
+  if (parsed instanceof Error) {
+    if (/encrypted|passphrase/i.test(parsed.message)) throw Object.assign(bad("This key is protected by a passphrase. Remove the passphrase (ssh-keygen -p -f <file>) or use this app's own key.", 400), { code: "KEY_ENCRYPTED" });
+    throw bad("That file is not a private key the app can use.", 400);
+  }
+  const key = Array.isArray(parsed) ? parsed[0] : parsed;
+  if (!key.isPrivateKey()) throw bad("That is a public key. Upload the private key file, the one without .pub.", 400);
+  const publicLine = `${key.type} ${key.getPublicSSH().toString("base64")} uploaded-key`;
+  await vault.set(VAULT_PRIVATE_KEY, `${pem}\n`);
+  await vault.set(VAULT_PUBLIC_KEY, publicLine);
+  return publicLine;
+}
 
 // Builds the change that adds the app's public key to the router's list of
 // allowed SSH keys. The change engine then previews and applies it.
