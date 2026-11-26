@@ -27,7 +27,7 @@ chown "$APP_UID" "$DIR" 2>/dev/null || true
 chmod 755 "$DIR"
 
 now() { date -u +%Y-%m-%dT%H:%M:%SZ; }
-clean() { printf '%s' "$1" | tr -cd 'A-Za-z0-9 ._:/@()-' | cut -c1-200; }
+clean() { printf '%s' "$1" | tr -cd 'A-Za-z0-9 ,._:/@()-' | cut -c1-200; }
 
 # status key=value lines, replaced as a whole
 status() { # status state step message [extra lines]

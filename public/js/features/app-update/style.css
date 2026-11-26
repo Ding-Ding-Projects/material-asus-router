@@ -1,0 +1,14 @@
+.upd{display:grid;gap:12px}
+.upd-latest{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:6px}
+.upd-cmd{white-space:pre-wrap;overflow-wrap:anywhere;padding:10px;border-radius:12px;background:var(--surf-high);font-size:12px}
+.upd-steps{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.upd-step{display:flex;gap:8px;align-items:center;padding:8px 12px;border-radius:12px;background:var(--surf-high)}
+.upd-step.todo{opacity:.6}
+.upd-step.failed{background:color-mix(in srgb,var(--error,#b3261e) 16%,var(--surf,#fff))}
+.upd-step.now .icon,.upd-step.now .material-symbols-rounded{animation:upd-spin 1.2s linear infinite}
+.upd .card.good{background:color-mix(in srgb,var(--ok,#2e7d32) 14%,var(--surf,#fff))}
+.upd .card.bad{background:color-mix(in srgb,var(--error,#b3261e) 14%,var(--surf,#fff))}
+.upd-history{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:4px;font-size:13px}
+.upd-history time{opacity:.7;font-variant-numeric:tabular-nums}
+@keyframes upd-spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.upd-step.now .icon,.upd-step.now .material-symbols-rounded{animation:none}}

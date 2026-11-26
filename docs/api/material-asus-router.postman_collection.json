@@ -2092,6 +2092,89 @@
       ]
     },
     {
+      "name": "Features / app-update",
+      "item": [
+        {
+          "name": "POST /api/x/app-update/check",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-csrf",
+                "value": "{{csrf}}",
+                "description": "The token from the sign-in answer; every write needs it."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/x/app-update/check",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "x",
+                "app-update",
+                "check"
+              ]
+            },
+            "description": "Source: server/features/app-update/index.mjs"
+          }
+        },
+        {
+          "name": "POST /api/x/app-update/apply",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-csrf",
+                "value": "{{csrf}}",
+                "description": "The token from the sign-in answer; every write needs it."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/x/app-update/apply",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "x",
+                "app-update",
+                "apply"
+              ]
+            },
+            "description": "Source: server/features/app-update/index.mjs"
+          }
+        },
+        {
+          "name": "PUT /api/x/app-update/auto",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "x-csrf",
+                "value": "{{csrf}}",
+                "description": "The token from the sign-in answer; every write needs it."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/x/app-update/auto",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "x",
+                "app-update",
+                "auto"
+              ]
+            },
+            "description": "Source: server/features/app-update/index.mjs"
+          }
+        }
+      ]
+    },
+    {
       "name": "Features / authenticator",
       "item": [
         {
