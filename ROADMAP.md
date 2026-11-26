@@ -50,7 +50,7 @@ real browser. Unticked items say what is still missing.
 - [x] Router add-on package: install, on/off switch on the router's page, Material or Advanced version per browser, A/B updates with automatic rollback, uninstall; tested end to end on Linux
 - [ ] Install the add-on on the real router: needs a USB drive, JFFS custom scripts turned on, and the owner's go-ahead
 - [x] Desktop app build (installer and portable) in the release workflow
-- [ ] Install and launch the desktop app on this Windows computer and record the result
+- [x] Install and launch the desktop app on Windows: release v0.1.0-45 installs and opens on its first-run screen (`docs/evidence/`)
 - [x] Documentation site with articles in English and Cantonese, and a phone PDF
 
 ## Design and records
@@ -58,4 +58,4 @@ real browser. Unticked items say what is still missing.
 - [x] Design canvas rounds 1 to 3
 - [ ] Canvas boards for Kick and ban, the Unkick page, Lock IP, Routers, the loading card and the start-up error
 - [ ] Replace the README captures with captures of the current build
-- [ ] Postman collection for the HTTP API
+- [x] Postman collection for the HTTP API, generated from the source and checked against every live route (`docs/api/`)
