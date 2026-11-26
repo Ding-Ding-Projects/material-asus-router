@@ -52,7 +52,7 @@ real browser. Unticked items say what is still missing.
 - [x] Router add-on package: install, on/off switch on the router's page, Material or Advanced version per browser, A/B updates with automatic rollback, uninstall; tested end to end on Linux
 - [ ] Install the add-on on the real router: needs a USB drive, JFFS custom scripts turned on, and the owner's go-ahead
 - [x] Update the app from its own screen with automatic rollback, and optionally every night (owner only; updater service in `compose.update.yaml`; tested with a stand-in for docker)
-- [ ] Run the updater on the live host
+- [x] The updater runs on the live host next to the app; a real check through the shared folder answered "up to date" and changed nothing
 - [x] Personal wording loads the shared file format, keeps capital-only differences apart, and a dropped file is handled once
 - [x] Desktop app build (installer and portable) in the release workflow
 - [x] Install and launch the desktop app on Windows: release v0.1.0-45 installs and opens on its first-run screen (`docs/evidence/`)
