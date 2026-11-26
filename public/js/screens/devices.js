@@ -104,7 +104,9 @@ export async function devices(root) {
           h("button", { class: "btn t icon", title: d.blocked ? t("Unblock", "解除封鎖") : t("Block", "封鎖"), "aria-label": `${d.blocked ? t("Unblock", "解除封鎖") : t("Block", "封鎖")} ${d.name}`, onClick: () => { toggleBlock(d, !d.blocked); paint(); } }, icon(d.blocked ? "lock_open" : "block", "sm")),
           h("button", { class: "btn t icon", title: t("Wake", "喚醒"), "aria-label": `${t("Wake", "喚醒")} ${d.name}`, onClick: async () => { try { await api.post("/api/actions/wake", { mac: d.mac }); toast(t("Wake signal sent.", "已發出喚醒訊號。")); } catch (e) { toast(e.message, "bad"); } } }, icon("power_settings_new", "sm"))) : null));
     });
-    clear(body).append(list.length ? tableOf([all, t("Device", "裝置"), t("Status", "狀態"), t("Address", "地址"), "MAC", t("Connection", "連線"), ""], rows) : h("div", { class: "card tone" }, h("div", { class: "empty" }, icon("devices_off", "lg"), t("No devices match.", "冇符合嘅裝置。"))));
+    clear(body).append(list.length ? tableOf([all, t("Device", "裝置"), t("Status", "狀態"), t("Address", "地址"), "MAC", t("Connection", "連線"), ""], rows) : h("div", { class: "card tone" }, h("div", { class: "empty" }, icon("devices_off", "lg"), data.devices.length
+      ? t("No devices match.", "冇符合嘅裝置。")
+      : [h("b", {}, t("No devices to lock yet", "未有裝置可以鎖定")), h("div", { class: "t2" }, t("Devices appear a few seconds after they join. Lock IP keeps a device on the same address every time.", "裝置連線之後幾秒就會出現。鎖定 IP 會令部裝置每次都用同一個地址。"))])));
   }
 
   root.append(h("div", { class: "page" }, header("devices"), h("div", { class: "card" }, search, chips, summary, bulk), body));

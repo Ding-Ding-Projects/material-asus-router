@@ -17,15 +17,15 @@ const DNS_CHAIN = "MAR_NAMES"; // name lookups to the router from paused devices
 export const METHODS = {
   pause: {
     label: L("Pause internet", "暫停上網"),
-    about: L("The router drops this device's internet traffic. Things at home, like printers, still work.", "路由器會截停呢部裝置嘅上網流量。屋企入面嘅嘢，例如打印機，照用得。"),
+    about: L("The device stays on Wi-Fi and can still reach the printer and the TV. Only the internet stops.", "部裝置仲連住 Wi-Fi，照樣用到打印機同電視，淨係上唔到網。"),
   },
   names: {
     label: L("Block name lookups", "封鎖網址查詢"),
-    about: L("The router stops answering this device's name lookups, so websites and most apps stop loading. Anything that uses an address directly still works.", "路由器唔再答呢部裝置查網址，所以網站同大部分 app 都會載入唔到。直接用位址嘅嘢照用得。"),
+    about: L("Sites stop opening because their names cannot be looked up. Apps that are already connected may carry on for a while.", "查唔到網址，所以開唔到網站。已經連緊線嘅應用程式可能仲用得一陣。"),
   },
   disconnect: {
     label: L("Disconnect from Wi-Fi once", "斷開 Wi-Fi 一次"),
-    about: L("Sends the device off the Wi-Fi once. It can rejoin straight away.", "叫部裝置離開 Wi-Fi 一次。佢可以即刻連返。"),
+    about: L("Drops the device from Wi-Fi one time. It can join again straight away, so this is a nudge, not a pause.", "將部裝置踢出 Wi-Fi 一次。佢即刻可以連返，所以只係提一提，唔算暫停。"),
   },
 };
 export const DURATIONS = [15, 30, 60, 120, 240];
@@ -59,9 +59,11 @@ export async function reconcile(exec, holds, t = now()) {
   const have = new Set(String(listed).split("\n").map((l) => l.trim()).filter((l) => l.startsWith("-A ") && l.includes("--mac-source")));
   const want = new Set(holds.filter((h) => running(h, t)).flatMap((h) => rulesFor(h.mac, h.method)));
   let changed = 0;
+  const refused = [];
   for (const rule of want) {
     if (have.has(rule)) continue;
-    await exec(`iptables ${rule}`);
+    const added = await exec(`iptables ${rule}`);
+    if (added.code !== 0) { refused.push(rule); continue; }
     if (rule.startsWith(`-A ${CHAIN} `)) await exec(`ip6tables ${rule} 2>/dev/null`);
     changed++;
   }
@@ -72,6 +74,7 @@ export async function reconcile(exec, holds, t = now()) {
     if (rule.startsWith(`-A ${CHAIN} `)) await exec(`ip6tables ${remove} 2>/dev/null`);
     changed++;
   }
+  reconcile.refused = refused;
   return changed;
 }
 
@@ -157,6 +160,15 @@ export default {
         return s.holds;
       });
       await reconcile(ctx.exec, holds, t);
+      // If the router refused the rule, nothing was paused: take the hold back out so the list never
+      // claims a pause that is not there.
+      if (reconcile.refused.some((rule) => rule.includes(record.mac))) {
+        await store.update((s) => {
+          s.holds = s.holds.filter((h) => h.id !== record.id);
+          s.log = s.log.filter((e, i) => !(i === 0 && e.mac === record.mac));
+        });
+        throw bad("The router did not accept the rule, so nothing was changed. The device is still online.", 502);
+      }
       return { ok: true, hold: record };
     });
     api.delete("/hold/:id", async ({ params, bad, who, live }) => {
@@ -198,6 +210,8 @@ export default {
         if ((m = command.match(/^iptables -S (MAR_\w+) 2>\/dev\/null$/))) return { stdout: (fw.chains.get(m[1]) ?? []).map((r) => `-A ${m[1]} ${r}\n`).join(""), stderr: "", code: 0 };
         if ((m = command.match(/^iptables -([AD]) (MAR_\w+) (.+)$/))) {
           const list = fw.chains.get(m[2]) ?? [];
+          // A test can set router.firewall.refuse to make the router turn new rules down.
+          if (m[1] === "A" && fw.refuse) return { stdout: "", stderr: "iptables: No chain/target/match by that name.", code: 1 };
           if (m[1] === "A") list.push(m[3]);
           else if (list.includes(m[3])) list.splice(list.indexOf(m[3]), 1);
           else return { stdout: "", stderr: "iptables: Bad rule (does a matching rule exist in that chain?).", code: 1 };

@@ -11,3 +11,8 @@
 @media (prefers-reduced-motion:reduce){.kick-impact.mad{animation:none}}
 .kick-slow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:8px 12px;border-radius:14px;border:1px dashed var(--outline,#79747e);margin:6px 0;font-size:13px}
 .kick-slow span{flex:1 1 200px}
+.kick-result:empty{display:none}
+.kick-result .card{margin-bottom:12px}
+.kick-result-h{display:flex;gap:8px;align-items:center}
+.kick-result .card.good{background:color-mix(in srgb,var(--ok,#2e7d32) 14%,var(--surf,#fff))}
+.kick-result .card.bad{background:color-mix(in srgb,var(--error,#b3261e) 14%,var(--surf,#fff))}

@@ -37,6 +37,14 @@ function initial() {
   var radio = document.getElementById("mar_v_" + choice);
   if (radio) radio.checked = true;
   updateLink();
+  // After Apply the page reloads; say what was saved, once.
+  var saved = null;
+  try { saved = sessionStorage.getItem("mar.saved"); sessionStorage.removeItem("mar.saved"); } catch (e) {}
+  if (saved) {
+    var note = document.getElementById("mar_saved");
+    note.textContent = "Saved. The app is switched " + (on ? "on" : "off") + ". Nothing else on the router changed.";
+    note.style.display = "block";
+  }
 }
 function chosenVersion() {
   return document.getElementById("mar_v_advanced").checked ? "advanced" : "material";
@@ -62,6 +70,7 @@ function applySettings() {
   custom_settings.mar_enabled = document.getElementById("mar_on").checked ? "1" : "0";
   custom_settings.mar_port = String(port);
   document.form.amng_custom.value = JSON.stringify(custom_settings);
+  try { sessionStorage.setItem("mar.saved", "1"); } catch (e) {}
   showLoading();
   document.form.submit();
 }
@@ -90,6 +99,7 @@ function applySettings() {
 <tr><td bgcolor="#4D595D" valign="top">
 <div class="formfonttitle">Material Router</div>
 <div style="margin:10px 0 10px 5px;" class="splitLine"></div>
+<div id="mar_saved" class="mar-note" role="status" style="display:none;margin:8px 0"></div>
 <div class="formfontdesc">A modern app for this router, running on the router itself. It is off unless you switch it on here. Every feature lives in the app, not on these pages.</div>
 
 <div class="mar-row">

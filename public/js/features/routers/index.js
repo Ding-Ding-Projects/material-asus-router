@@ -11,7 +11,20 @@ async function screen(ctx) {
   ctx.root.append(page);
   const list = h("section", { class: "card", "aria-live": "polite" });
   const save = h("section", { class: "card tone" });
-  page.append(save, list);
+  const result = h("div", { class: "routers-result", "aria-live": "polite" });
+  page.append(result, save, list);
+  const showResult = (ok, title, text) => clear(result).append(h("section", { class: `card ${ok ? "good" : "bad"}`, role: ok ? "status" : "alert" }, h("b", {}, title), h("p", {}, text)));
+  // A switch reloads the app; the result is kept for the one reload that follows.
+  try {
+    const done = sessionStorage.getItem("mar.routers.switched");
+    if (done) {
+      sessionStorage.removeItem("mar.routers.switched");
+      const r = JSON.parse(done);
+      showResult(true, t(`Now using ${r.name}`, `而家用緊 ${r.name}`), r.role === "testing"
+        ? t(`The app signed in to ${r.name} with its own saved sign-in and approved host key. The Testing badge shows while it is in use.`, `程式用 ${r.name} 自己儲存咗嘅登入資料同已核准嘅主機金鑰登入咗。用緊佢嗰陣會顯示測試用標記。`)
+        : t(`The app signed in to ${r.name} with its own saved sign-in and approved host key. The Testing badge is gone.`, `程式用 ${r.name} 自己儲存咗嘅登入資料同已核准嘅主機金鑰登入咗。測試用標記已經冇咗。`));
+    }
+  } catch {}
   const form = { name: "", role: "main", busy: false };
 
   async function load() {
@@ -40,7 +53,7 @@ async function screen(ctx) {
         load();
       } }, icon("save", "sm"), current.active ? t("Update this router", "更新呢部路由器") : t("Save this router", "儲存呢部路由器"))));
     clear(list).append(h("div", { class: "k" }, t("Saved routers", "已儲存嘅路由器")));
-    if (!routers.length) return list.append(h("p", { class: "t2" }, t("No router is saved yet. Save the one in use above.", "未儲存任何路由器。喺上面儲存而家用緊嗰部。")));
+    if (!routers.length) return list.append(h("p", { class: "t1" }, t("No router saved yet", "未儲存任何路由器")), h("p", { class: "t2" }, t("Connect to a router and save it here. Keep more than one, for example the main one and a Testing router, and switch between them.", "連接一部路由器再喺度儲存。可以儲存多過一部，例如主路由器同測試用路由器，再喺佢哋之間切換。")));
     list.append(h("ul", { class: "routers-list" }, routers.map((r) => h("li", { class: `routers-row ${r.role}` },
       icon(r.role === "testing" ? "science" : "router"),
       h("div", { class: "grow" },
@@ -50,9 +63,11 @@ async function screen(ctx) {
         : h("button", { class: "btn o sm", onClick: async () => {
             try {
               await api.post(`/api/routers/${encodeURIComponent(r.id)}/use`, {});
-              ctx.toast(t(`Switched to ${r.name}.`, `已切換到 ${r.name}。`));
+              try { sessionStorage.setItem("mar.routers.switched", JSON.stringify({ name: r.name, role: r.role })); } catch {}
               location.reload();
-            } catch (error) { ctx.toast(error.message, "bad"); }
+            } catch (error) {
+              showResult(false, t("Could not switch routers", "切換唔到路由器"), `${t("Nothing was left half-applied. The router is as it was before.", "冇做咗一半嘅改動，路由器同之前一樣。")} ${error.message}`);
+            }
           } }, icon("swap_horiz", "sm"), t("Use this router", "用呢部路由器")),
       r.active ? null : h("button", { class: "btn t icon", "aria-label": `${t("Remove", "移除")} ${r.name}`, title: t("Remove", "移除"), onClick: async () => {
         if (!(await ctx.confirmDialog({ title: t(`Remove ${r.name}?`, `移除 ${r.name}？`), body: t("The app forgets this router and its stored password. The router itself is not changed.", "程式會忘記呢部路由器同佢嘅密碼，路由器本身唔會改。"), confirm: t("Remove", "移除"), danger: true }))) return;

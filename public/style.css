@@ -296,3 +296,4 @@ pre.out{margin:0;padding:16px;border-radius:16px;background:var(--surf-high);fon
 
 .visually-hidden{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 label.btn:focus-within{outline:2px solid var(--primary);outline-offset:2px}
+.key-choices{margin:6px 0;padding-left:18px;display:grid;gap:4px}

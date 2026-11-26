@@ -14,10 +14,25 @@ export function untilText(hold, t, now = Date.now()) {
   return t(`until ${at}, ${left} min left`, `直到 ${at}，仲有 ${left} 分鐘`);
 }
 
+// One line of the log, written the way the design board writes it: what happened and how.
+export function logLine(e, t, tt, methods) {
+  const verbs = { kick: t("kicked", "踢走"), ban: t("banned", "封鎖"), unkick: t("unkicked", "解除暫停"), unban: t("unbanned", "解除封鎖"), disconnect: t("disconnected from Wi-Fi", "斷開 Wi-Fi") };
+  const how = tt(methods?.[e.method]?.label) || "";
+  const by = t(`by ${e.by}`, `由 ${e.by}`);
+  let detail;
+  if ((e.event === "unkick" || e.event === "unban") && e.by === "the device itself") detail = t("Lifted from the Unkick page on that device", "喺嗰部裝置嘅解除暫停頁解除");
+  else if (e.event === "kick") detail = `${how}, ${minutesText(e.minutes, t)}, ${by}`;
+  else if (e.event === "ban") detail = `${how}, ${by}`;
+  else if (e.event === "disconnect") detail = t(`Once, by ${e.by}`, `一次，由 ${e.by}`);
+  else detail = by;
+  return { verb: verbs[e.event] ?? e.event, detail };
+}
+
 async function screen(ctx) {
   const { api, h, icon, t, tt, clear } = ctx;
   const page = ctx.page(label, { en: "Pause a device's internet to share the connection fairly. The person on that device can always lift it themselves from the Unkick page.", yue: "暫停一部裝置上網，令大家公平咁用網絡。用緊嗰部裝置嘅人永遠可以喺「解除暫停」頁自己解除。" });
   ctx.root.append(page);
+  const resultBox = h("div", { class: "kick-result", "aria-live": "polite" });
   const holdsBox = h("section", { class: "card kick-holds", "aria-live": "polite" });
   const devicesBox = h("section", { class: "card" });
   const logBox = h("section", { class: "card" });
@@ -29,7 +44,13 @@ async function screen(ctx) {
       h("div", { class: "actions" },
         h("a", { class: "btn o", href: link, target: "_blank", rel: "noopener" }, icon("open_in_new", "sm"), t("Open the Unkick page", "打開解除暫停頁")),
         h("button", { class: "btn t", onClick: () => ctx.copyText ? ctx.copyText(link) : navigator.clipboard?.writeText(link) }, icon("content_copy", "sm"), t("Copy the link", "複製連結")))),
-    holdsBox, devicesBox, logBox);
+    resultBox, holdsBox, devicesBox, logBox);
+  const showResult = (ok, title, text, retry) => {
+    clear(resultBox).append(h("section", { class: `card ${ok ? "good" : "bad"}`, role: ok ? "status" : "alert" },
+      h("div", { class: "kick-result-h" }, icon(ok ? "check_circle" : "error"), h("b", {}, title)),
+      h("p", {}, text),
+      retry ? h("div", { class: "actions" }, h("button", { class: "btn o sm", onClick: retry }, t("Try again", "再試"))) : null));
+  };
 
   let data = { methods: {}, durations: [], holds: [], log: [] };
   let devices = [];
@@ -40,7 +61,10 @@ async function screen(ctx) {
 
   function drawHolds() {
     clear(holdsBox).append(h("div", { class: "k" }, t("Paused now", "而家暫停緊")));
-    if (!data.holds.length) return holdsBox.append(h("p", { class: "t2" }, t("Nobody is paused.", "冇人被暫停。")));
+    if (!data.holds.length) return holdsBox.append(
+      h("p", { class: "t1" }, t("Nobody is paused", "冇人被暫停")),
+      h("p", { class: "t2" }, t("Pick a device to pause its internet for a while. The person on it can always lift the pause from the Unkick page.", "揀一部裝置，暫停佢上網一陣。用緊嗰部裝置嘅人隨時可以喺解除暫停頁自己解除。")),
+      h("div", { class: "actions" }, h("button", { class: "btn t sm", onClick: () => devicesBox.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" }) }, icon("devices", "sm"), t("Show the devices", "顯示裝置"))));
     holdsBox.append(h("ul", { class: "kick-list" }, data.holds.map((hold) => h("li", { class: "kick-row" },
       icon(hold.ban ? "block" : "pan_tool"),
       h("div", { class: "grow" },
@@ -68,9 +92,13 @@ async function screen(ctx) {
   function drawLog() {
     clear(logBox).append(h("div", { class: "k" }, t("Recent", "最近")));
     if (!data.log.length) return logBox.append(h("p", { class: "t2" }, t("Nothing yet.", "未有紀錄。")));
-    const words = { kick: t("kicked", "踢走"), ban: t("banned", "封鎖"), unkick: t("unkicked", "解除暫停"), unban: t("unbanned", "解除封鎖"), disconnect: t("disconnected from Wi-Fi", "斷開 Wi-Fi") };
-    logBox.append(h("ul", { class: "kick-log" }, data.log.slice(0, 20).map((e) => h("li", {},
-      h("time", { datetime: e.at }, new Date(e.at).toLocaleString([], { hour12: false })), ` ${e.by} ${words[e.event] ?? e.event} ${e.name || e.mac}`))));
+    logBox.append(h("ul", { class: "kick-log" }, data.log.slice(0, 20).map((e) => {
+      const line = logLine(e, t, tt, data.methods);
+      return h("li", {},
+        h("time", { datetime: e.at }, new Date(e.at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false })),
+        h("span", {}, ` ${e.name || e.mac} `, h("b", {}, line.verb)),
+        h("span", { class: "t2" }, ` · ${line.detail}`));
+    })));
   }
 
   async function load() {
@@ -112,10 +140,18 @@ async function screen(ctx) {
         redraw();
         try {
           const out = await api.post("/api/x/bandwidth-control/hold", { mac: device.mac, name: device.name || device.hostname || "", method: choice.method, minutes: choice.minutes, ban: choice.ban, note: choice.note });
-          ctx.toast(out.disconnected ? t("Disconnected from Wi-Fi once.", "已斷開 Wi-Fi 一次。") : choice.ban ? t("Banned until lifted.", "已封鎖，直到解除。") : t(`Kicked for ${minutesText(choice.minutes, t)}.`, `已踢走 ${minutesText(choice.minutes, t)}。`));
+          const at = out.hold?.until ? new Date(out.hold.until).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false }) : "";
+          if (out.disconnected) showResult(true, t(`Disconnected: ${who}`, `已斷開：${who}`), t("It was sent off the Wi-Fi once and can join again straight away.", "佢已經被踢出 Wi-Fi 一次，可以即刻連返。"));
+          else if (choice.ban) showResult(true, t(`Banned: ${who}`, `已封鎖：${who}`), t("Its internet is paused until someone lifts it. Nobody else is affected, and the ban is in the log.", "佢上唔到網，直到有人解除。其他人唔受影響，封鎖亦已經記低。"));
+          else showResult(true, t(`Kicked: ${who}`, `已踢走：${who}`), t(`Its internet is paused until ${at}. Nobody else is affected, and the pause is in the log.`, `佢上唔到網，直到 ${at}。其他人唔受影響，暫停亦已經記低。`));
           done(true);
           await load();
         } catch (error) {
+          if (error.status === 502) {
+            done(false);
+            showResult(false, t("The device was not paused", "暫停唔到部裝置"), t("The router did not accept the rule, so nothing was changed. The device is still online.", "路由器冇接受條規則，所以乜都冇改。部裝置仲在線。"), () => sheet(device));
+            return;
+          }
           choice.busy = false;
           choice.error = error.message;
           redraw();

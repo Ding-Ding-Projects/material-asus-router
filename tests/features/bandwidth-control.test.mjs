@@ -7,7 +7,7 @@ import os from "node:os";
 import path from "node:path";
 import { test } from "node:test";
 import { checkFeatureModule } from "../../public/js/features/validate.js";
-import client, { minutesText, untilText } from "../../public/js/features/bandwidth-control/index.js";
+import client, { logLine, minutesText, untilText } from "../../public/js/features/bandwidth-control/index.js";
 import { reconcile, selfService } from "../../server/features/bandwidth-control/index.mjs";
 import { startApp } from "../helpers.mjs";
 
@@ -159,4 +159,31 @@ test("bandwidth-control: the screen module, the Unkick page and their wording", 
   assert.match(screenSource, /api\.del\(`\/api\/x\/bandwidth-control\/hold\//, "Unkick in the app uses the API helper's delete");
   assert.doesNotMatch(screenSource, /api\.delete\(/, "the API helper has no api.delete");
   assert.match(js, /never shows anyone else's devices/);
+});
+
+test("bandwidth-control: a rule the router refuses leaves nothing paused and says so", async () => {
+  const t = await start();
+  try {
+    await t.owner.get("/api/domain/bandwidth-control");
+    t.router.firewall ??= { chains: new Map(), hooks: new Set(), deauth: [], v6: [] };
+    t.router.firewall.refuse = true;
+    const refused = await t.owner.post("/api/x/bandwidth-control/hold", { mac: TV, method: "pause", minutes: 15 });
+    assert.equal(refused.status, 502);
+    assert.match(refused.data.error, /did not accept the rule, so nothing was changed/);
+    const view = (await t.owner.get("/api/domain/bandwidth-control")).data;
+    assert.deepEqual(view.holds, [], "the list never claims a pause that is not there");
+    assert.equal(view.log.some((e) => e.event === "kick"), false, "and the log does not record it");
+  } finally {
+    await t.stop();
+  }
+});
+
+test("bandwidth-control: the log says what happened and how, like the design board", () => {
+  const t = (en) => en;
+  const tt = (p) => p?.en ?? "";
+  const methods = { pause: { label: { en: "Pause internet" } }, names: { label: { en: "Block name lookups" } } };
+  assert.deepEqual(logLine({ event: "kick", method: "pause", minutes: 30, by: "Pat" }, t, tt, methods), { verb: "kicked", detail: "Pause internet, 30 min, by Pat" });
+  assert.deepEqual(logLine({ event: "ban", method: "names", by: "Pat" }, t, tt, methods), { verb: "banned", detail: "Block name lookups, by Pat" });
+  assert.deepEqual(logLine({ event: "unkick", method: "pause", by: "the device itself" }, t, tt, methods), { verb: "unkicked", detail: "Lifted from the Unkick page on that device" });
+  assert.deepEqual(logLine({ event: "disconnect", method: "disconnect", by: "Pat" }, t, tt, methods), { verb: "disconnected from Wi-Fi", detail: "Once, by Pat" });
 });

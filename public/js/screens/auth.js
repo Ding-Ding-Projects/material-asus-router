@@ -93,6 +93,9 @@ export function connectScreen(root, done, { owner = true, warning = null, setup 
         ? h("label", { class: "lbl" }, t("Router password", "路由器密碼"), h("input", { class: "field", type: "password", autocomplete: "off", value: v.password, onInput: (e) => (v.password = e.target.value) }))
         : h("div", { class: "card tone" },
             h("div", { class: "t2" }, t("Create a key here, then paste its public half into the router: Administration, System, Authorized Keys.", "喺度建立金鑰，再將公開部分貼入路由器：「管理」→「系統」→「Authorized Keys」。")),
+            h("ul", { class: "key-choices t2" },
+              h("li", {}, h("b", {}, publicKey ? t("Make a new key", "重新建立金鑰") : t("Create a key", "建立金鑰")), ": ", publicKey ? t("Replaces the key this app made. It asks first.", "會取代程式建立嘅金鑰，會先問你。") : t("The app makes a key and shows the public half to paste into the router.", "程式會建立金鑰，並顯示要貼入路由器嘅公開部分。")),
+              h("li", {}, h("b", {}, t("Use a key I already have", "用我已有嘅金鑰")), ": ", t("Choose a private key file. It goes straight into the vault.", "揀一個私人金鑰檔案，會直接放入保險庫。"))),
             publicKey ? h("div", { class: "fp" }, publicKey) : null,
             h("div", { class: "actions" },
               // Creating never replaces a key the router may already trust; making a new one asks first.
@@ -102,7 +105,7 @@ export function connectScreen(root, done, { owner = true, warning = null, setup 
                     try { publicKey = (await api.post("/api/router/key", { replace: true })).publicKey; draw(); } catch (e) { err.textContent = e.message; }
                   } }, icon("key", "sm"), t("Make a new key", "重新建立金鑰"))
                 : h("button", { class: "btn t sm", type: "button", onClick: async () => { try { publicKey = (await api.post("/api/router/key", {})).publicKey; draw(); } catch (e) { err.textContent = e.message; } } }, icon("key", "sm"), t("Create a key", "建立金鑰")),
-              publicKey ? h("button", { class: "btn t sm", type: "button", onClick: () => copyText(publicKey) }, icon("content_copy", "sm"), t("Copy", "複製")) : null,
+              publicKey ? h("button", { class: "btn t sm", type: "button", onClick: () => copyText(publicKey) }, icon("content_copy", "sm"), t("Copy the public half", "複製公開部分")) : null,
               h("label", { class: "btn t sm" }, icon("upload_file", "sm"), t("Use a key I already have", "用我已有嘅金鑰"),
                 h("input", { type: "file", class: "visually-hidden", "aria-label": t("Choose the router's private key file", "揀路由器嘅私人金鑰檔案"), onChange: async (e) => {
                   const file = e.target.files?.[0];
@@ -112,7 +115,7 @@ export function connectScreen(root, done, { owner = true, warning = null, setup 
                   try {
                     publicKey = (await api.post("/api/router/key/upload", { privateKey: await file.text() })).publicKey;
                     err.textContent = "";
-                    toast(t("Key saved. The app will sign in to the router with it.", "已儲存金鑰，程式會用佢登入路由器。"));
+                    toast(t("Key accepted. It is stored only in the vault.", "已接受金鑰，只會儲存喺保險庫。"));
                     draw();
                   } catch (error) { err.textContent = error.message; }
                 } })))),

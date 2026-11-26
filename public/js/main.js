@@ -118,7 +118,7 @@ function loadingScreen(step, detail = "") {
       const pct = total ? Math.round((done / total) * 100) : 0;
       bar.style.setProperty("--pct", `${pct}%`);
       bar.setAttribute("aria-valuenow", String(pct));
-      card.querySelector(".load-detail").textContent = t(`Loading features: ${done} of ${total}`, `載入功能：${done} / ${total}`);
+      card.querySelector(".load-detail").textContent = done >= total ? t(`Features loaded: ${total}`, `功能已載入：${total}`) : t(`Loading features: ${done} of ${total}`, `載入功能：${done} / ${total}`);
     },
   };
 }
@@ -144,6 +144,12 @@ async function enterApp() {
   buildShell();
   navigate(location.hash.replace(/^#\//, "") || "overview", { replace: true });
   window.__marStarted = true;
+  try {
+    if (sessionStorage.getItem("mar.boot.cleared")) {
+      sessionStorage.removeItem("mar.boot.cleared");
+      toast(t("Saved settings on this browser were cleared. Your sign-in and the router were not touched.", "已清除呢個瀏覽器儲存嘅設定。你嘅登入同路由器都冇改過。"));
+    }
+  } catch {}
 }
 
 // ---- shell ------------------------------------------------------------------

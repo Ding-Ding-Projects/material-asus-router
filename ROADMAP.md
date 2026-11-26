@@ -59,6 +59,6 @@ real browser. Unticked items say what is still missing.
 
 - [x] Design canvas rounds 1 to 3
 - [x] Design canvas round 4: boards for Kick and ban, the Unkick page, Lock IP, Routers, the loading card, the start-up error and the router add-on page
-- [ ] Match those screens to their round 4 boards
+- [x] Match those screens to their round 4 boards: method wording, the Kick and ban log, empty, success and failure states, the Routers results and key choices, the start-up cleared message and the add-on page's saved message (the board text was compared with the app source; a Routers board line about saving on connect was left out because the app saves only when asked)
 - [x] README with current captures of the demo at desktop and phone size (`docs/captures/`, provenance in `docs/evidence/`)
 - [x] Postman collection for the HTTP API, generated from the source and checked against every live route (`docs/api/`)

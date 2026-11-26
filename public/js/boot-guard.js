@@ -24,6 +24,7 @@
       for (var j = 0; j < keys.length; j++) localStorage.removeItem(keys[j]);
     } catch (e) {}
     try { sessionStorage.clear(); } catch (e) {}
+    // (the flag that says settings were cleared is set again right after, by the button)
   }
 
   function show(reason, force) {
@@ -38,7 +39,7 @@
     var actions = el("div", "actions");
     var clear = el("button", "btn o", "Clear saved settings and retry");
     clear.type = "button";
-    clear.onclick = function () { clearSaved(); location.reload(); };
+    clear.onclick = function () { clearSaved(); try { sessionStorage.setItem("mar.boot.cleared", "1"); } catch (e) {} location.reload(); };
     var retry = el("button", "btn f", "Try again");
     retry.type = "button";
     retry.onclick = function () { location.reload(); };
