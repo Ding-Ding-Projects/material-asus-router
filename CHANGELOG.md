@@ -6,6 +6,7 @@ Every release of Material Asus Router, newest first. Each change names the full 
 
 ### Added
 
+- Staying signed in: a sign-in lasts 90 days from the last use and survives a restart or an update of the app. Sign-ins are saved as a hash of each session cookie, never the cookie itself. (9e9894956b58c3bc69dc41e38f5fb46cf1ba0b18)
 - Five feature folders with real controls for Guest Network Pro, Wi-Fi 7 multi-link, per-band radio extras, OpenVPN client details and IPv6, plus PPP keep-alive: the controls on the RT-BE88U model now cover 696 of its 5,493 settings, up from 404. (7b8b49ba00a873f792941be417d92b3b59976b11)
 - A pretend router that models one real router (an RT-BE88U on Asuswrt-Merlin 3006, with its real setting names), and a control that is switched off, with the reason, whenever the router does not have its setting. (0e88388de9c6948fbd99287ba5e52f864e750fc5)
 - One-click modes: seven ready-made modes (Gaming, Bedtime, Guest party, Work from home, Privacy DNS, Lock it down, Away) as real bundles of changes with exact old and new values, one-tap apply and undo, and a live "is it on" check. (f451a6fa35d7a63f3de301e36be206fb436a2614)
@@ -16,12 +17,15 @@ Every release of Material Asus Router, newest first. Each change names the full 
 
 ### Changed
 
+- Live mode applies every change by itself after a short pause, with nothing to review; a change that needs the four keys waits until you leave the field, then asks for them once. (9e9894956b58c3bc69dc41e38f5fb46cf1ba0b18)
+- The four keys are asked only above the level the household chose or above what it allows right now. With the default choice of Level 1, a Level 1 change no longer asks for them. An owner override and a reboot still do. (9e9894956b58c3bc69dc41e38f5fb46cf1ba0b18)
 - The speed test, DNS benchmark, port checker, device traffic, channel analyser, Wi-Fi QR, Wake-on-LAN and uptime example keep their own preferences in the app and no longer create settings on the router. (7cf23e89c229ab501b27c7aebc5fc9a651cbf8fe)
 - NAT-PMP, 802.11k roaming, the guest device limit, the lights switch and the firmware check follow the names and values the 3006 firmware uses. (d4855154b25a97c638a35d76099d72823fbf936a)
 - Ports screen: live port jacks with link, speed and duplex read from the switch chip, the chip named, port roles, hardware acceleration, jumbo frame size and IPTV multicast settings. Hardware screen: live processor, radio and fan dials, light schedule, RGB colour for gaming models and the button settings. A "who uses the most" tab on Device traffic ranks top downloaders and uploaders. Settings whose names may not exist on every firmware are offered only when the router lists them.
 
 ### Fixed
 
+- The pending-changes bar follows the Live and Review switch at once instead of at the next edit. (9e9894956b58c3bc69dc41e38f5fb46cf1ba0b18)
 - The documentation site deployment and the publication language check. (4947429ea58beaf880fd7251a292cfadce109fd7)
 
 ## [0.1.0] - 2026-11-25
