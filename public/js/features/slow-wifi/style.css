@@ -1,0 +1,30 @@
+/* "My Wi-Fi is slow": theme variables only, so light and dark both work. */
+.sw-body{display:flex;flex-direction:column;gap:16px}
+.sw-wait{display:flex;align-items:center;gap:12px}
+.sw-wait .ms{animation:sw-spin 1.6s linear infinite}
+@media (prefers-reduced-motion:reduce){.sw-wait .ms{animation:none}}
+@keyframes sw-spin{to{transform:rotate(360deg)}}
+.sw-summary{display:flex;flex-direction:column;gap:14px}
+.sw-score{display:flex;align-items:center;gap:14px}
+.sw-score .big{min-width:56px;text-align:center}
+.sw-acts{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.sw-bands{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:10px}
+.sw-band{border-radius:16px;padding:12px;background:var(--surf-low);border-left:4px solid var(--good)}
+.sw-band.warn{border-left-color:var(--warn)}
+.sw-band.bad{border-left-color:var(--bad)}
+.sw-band-head{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.sw-ssid{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.sw-stats{display:grid;grid-template-columns:auto 1fr;gap:2px 12px;margin:0;font-size:13.5px}
+.sw-stats dt{color:var(--sub)}
+.sw-stats dd{margin:0;font-weight:650;text-align:right}
+.sw-list{display:flex;flex-direction:column;gap:10px}
+.sw-list .h2{margin:0}
+.sw-finding{display:flex;flex-direction:column;gap:6px;border-radius:16px;padding:12px 14px;background:var(--surf-low);border-left:4px solid var(--warn)}
+.sw-finding.problem{border-left-color:var(--bad)}
+.sw-finding.tip.s1{border-left-color:var(--line)}
+.sw-f-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sw-finding p{margin:0}
+.sw-evidence{display:flex;align-items:flex-start;gap:4px}
+.sw-always{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:10px}
+.sw-tip{border-radius:14px;padding:10px 12px;background:var(--surf-low);display:flex;flex-direction:column;gap:4px;align-items:flex-start}
+.sw-tip p{margin:0}
