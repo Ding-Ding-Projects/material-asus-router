@@ -1,7 +1,7 @@
 // Pending changes and the review, apply and guard flow. Every edit in the app
-// lands here first. In Live mode the change is applied as soon as the person
-// presses Apply now (a Level 0 change applies by itself after a short pause);
-// in Review mode the change is previewed and checked first. Either way the
+// lands here first. In Live mode the change applies by itself after a short
+// pause (or at once with Apply now), and the server asks for the keys when the
+// change needs them; in Review mode it is previewed and checked first. Either way the
 // four keys, the household allowance and the live progress timeline come from
 // features/change-safety/safety.js.
 import { api, bus, clear, h, icon, openDialog, t, toast, tt } from "./core.js";
@@ -22,6 +22,7 @@ export function notice(kind, text) {
 export const dock = {
   changes: new Map(), // key -> { id?, key?, label, value, shown }
   ops: [], // { op: {...}, summary }
+  edits: 0, // goes up with every edit, so Live mode applies once per edit
   count() {
     return this.changes.size + this.ops.length;
   },
@@ -35,21 +36,25 @@ export const dock = {
     const original = entry.masked || entry.secret ? "" : entry.value;
     if (value === original) this.changes.delete(entry.id);
     else this.changes.set(entry.id, { id: entry.id, label: entry.label, value, shown: entry.secret ? "••••••••" : value });
+    this.edits += 1;
     bus.emit("dock");
   },
   setRaw(key, value, original, label) {
     const slot = `raw:${key}`;
     if (value === original) this.changes.delete(slot);
     else this.changes.set(slot, { key, label: label ?? { en: key, yue: key }, value, shown: value });
+    this.edits += 1;
     bus.emit("dock");
   },
   addOp(op, summary) {
     this.ops.push({ op, summary });
+    this.edits += 1;
     bus.emit("dock");
   },
   clear() {
     this.changes.clear();
     this.ops.length = 0;
+    this.edits += 1;
     bus.emit("dock");
   },
   toBody() {
@@ -84,7 +89,16 @@ export const dock = {
 
 // ---- the bar at the bottom ---------------------------------------------------
 
+// In Live mode the waiting changes apply by themselves after a short pause the person can use to
+// discard them. The server still asks for the keys or the household's say when a change needs
+// them. This happens once per edit: after a refusal or a cancelled confirmation the changes stay
+// in the bar until the person edits again or presses Apply now.
+export const LIVE_PAUSE_MS = 1600;
 let autoTimer = null;
+let autoTried = -1;
+// True while the person is still in a text field. A change that needs the keys waits until they leave it.
+const typing = () => Boolean(document.activeElement?.matches?.("textarea, input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=search]):not([type=button]):not([type=color]):not([type=file])"));
+
 export function renderDock(host) {
   host.replaceChildren();
   clearTimeout(autoTimer);
@@ -92,18 +106,29 @@ export function renderDock(host) {
   if (host.hidden) return;
   const lines = dock.lines();
   const { level, known } = dock.impact();
-  const auto = safety.live && known && level === 0 && !dock.ops.length && !safety.busy;
+  const edits = dock.edits;
+  const auto = safety.live && !safety.busy && autoTried !== edits;
   host.append(
     icon("edit_note"),
     h("b", {}, levelBadge(level, { label: false }), " ", t(`${lines.length} change${lines.length === 1 ? "" : "s"} waiting`, `${lines.length} 項改動等緊`), h("span", { class: "muted" }, ` ${lines.slice(0, 2).join(" · ")}${lines.length > 2 ? " …" : ""}`),
       auto ? h("span", { class: "muted dock-auto" }, ` · ${t("applies by itself in a moment", "一陣會自動套用")}`) : null),
     h("button", { class: "btn o sm", onClick: () => dock.clear() }, t("Discard", "放棄")),
     h("button", { class: "btn o sm", title: t("Apply later, or when the house is quiet", "遲啲，或者屋企冇人用嗰陣套用"), onClick: async () => { const out = await scheduleDialog(dock.toBody()); if (out) dock.clear(); } }, icon("schedule", "sm"), t("Later", "遲啲")),
-    h("button", { class: "btn o sm", onClick: () => reviewPending() }, icon("fact_check", "sm"), t("Review", "檢查")),
+    safety.live
+      ? h("button", { class: "btn o sm", onClick: () => reviewPending() }, icon("list_alt", "sm"), t("Details", "詳情"))
+      : h("button", { class: "btn o sm", onClick: () => reviewPending() }, icon("fact_check", "sm"), t("Review", "檢查")),
     safety.live ? h("button", { class: "btn f", disabled: safety.busy, onClick: () => applyNow() }, icon("bolt", "sm"), t("Apply now", "即時套用")) : h("button", { class: "btn f", onClick: () => reviewPending() }, icon("fact_check", "sm"), t("Review and apply", "檢查同套用")),
   );
-  // A Level 0 change needs no keys, so it applies by itself after a pause the person can use to discard.
-  if (auto) autoTimer = setTimeout(() => { if (dock.count() && safety.live && dock.impact().level === 0 && !dock.ops.length) applyNow(); }, 1600);
+  if (!auto) return;
+  // A change nobody at home notices needs no keys, so it does not wait for the person to leave the field.
+  const needsNoKeys = known && level === 0 && !dock.ops.length;
+  const fire = () => {
+    if (!dock.count() || !safety.live || safety.busy || dock.edits !== edits) return;
+    if (!needsNoKeys && typing()) return void (autoTimer = setTimeout(fire, 400));
+    autoTried = edits;
+    applyNow();
+  };
+  autoTimer = setTimeout(fire, LIVE_PAUSE_MS);
 }
 
 async function applyNow() {

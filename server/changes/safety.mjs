@@ -4,7 +4,8 @@
 //   live mode      each committed control change is applied at once (preview and
 //                  apply in one step); review mode keeps the preview dock
 //   impact         every change and action has a household impact from 0 to 3
-//   four keys      impact 1 or more needs the four-key confirmation (server side)
+//   four keys      a change above the level the household chose, or above what it allows
+//                  right now, needs the four-key confirmation (server side)
 //   allowance      a change above what the household allows right now is refused;
 //                  the owner can override, and the override is written in the history
 //   history        every applied change, undo and restore becomes a version in a
@@ -102,33 +103,53 @@ export class SafetyService {
   // Adds what the person needs to know before pressing apply.
   async decorate(view) {
     const level = view.impact.level;
-    const out = { ...view, impact: { ...view.impact, ...levelInfo(level) }, confirmation: { required: level >= 1 && this.options.fourKey, target: `preview:${view.id}` } };
+    const out = { ...view, impact: { ...view.impact, ...levelInfo(level) }, confirmation: { required: false, target: `preview:${view.id}` } };
     if (level >= 1) {
+      let allowance = null;
       try {
         const ctx = await this.session.context();
-        const allowance = await this.household.allowance(ctx);
+        allowance = await this.household.allowance(ctx);
         out.allowance = { allowed: allowance.allowed, ok: level <= allowance.allowed, madness: allowance.madness, people: allowance.people, configured: allowance.configured };
       } catch {
         out.allowance = null;
       }
+      out.confirmation.required = await this.keysNeeded(level, allowance);
     }
     return out;
   }
 
   async #allowanceCheck(level, who, override, { source = "change" } = {}) {
-    if (level < 1) return null;
+    if (level < 1) return { note: null, allowance: null };
     const ctx = await this.session.context({ fresh: true });
     const allowance = await this.household.allowance(ctx);
-    if (level <= allowance.allowed) return null;
+    if (level <= allowance.allowed) return { note: null, allowance };
     const why = allowance.people.filter((p) => p.allowed < level);
     const detail = { impact: level, allowed: allowance.allowed, limitedBy: allowance.limitedBy, people: why.map((p) => ({ id: p.id, name: p.name, nameYue: p.nameYue, presence: p.presence, allowed: p.allowed, reason: p.reason })) };
     if (!override) throw refuse(`This change would disturb the household more than allowed right now (level ${level}, allowed ${allowance.allowed}). ${why[0]?.reason.en ?? ""}`.trim(), `呢個改動會比家人而家容許嘅更擾人（影響級數 ${level}，容許 ${allowance.allowed}）。${why[0]?.reason.yue ?? ""}`.trim(), "ALLOWANCE", 403, detail);
     if (who.role !== "owner") throw refuse("Only the owner can override the household allowance.", "只有擁有人先可以越過家人容許嘅程度。", "OVERRIDE_OWNER", 403, detail);
-    return `allowance: level ${level} above ${allowance.allowed}${source === "quiet" ? " (set when scheduled)" : ""}`;
+    return { note: `allowance: level ${level} above ${allowance.allowed}${source === "quiet" ? " (set when scheduled)" : ""}`, allowance };
   }
 
-  #requireConfirmation({ who, target, level, proof, begin }) {
-    if (level < 1 || !this.options.fourKey) return;
+  // The four keys guard a change that disturbs the household more than the level it chose
+  // ("most brother madness allowed") or more than it allows right now. A change at or below
+  // both needs no keys. When the router cannot be read, the careful answer is to ask.
+  async keysNeeded(level, allowance = null) {
+    if (level < 1 || !this.options.fourKey) return false;
+    if (level > this.household.state().madness) return true;
+    try {
+      allowance ??= await this.household.allowance(await this.session.context());
+      return level > allowance.allowed;
+    } catch {
+      return true;
+    }
+  }
+
+  async #requireConfirmation({ who, target, level, proof, begin, allowance = null }) {
+    if (!(await this.keysNeeded(level, allowance))) return;
+    this.#demandKeys({ who, target, proof, begin });
+  }
+
+  #demandKeys({ who, target, proof, begin }) {
     if (!proof) throw refuse("This change needs the four-key confirmation.", "呢個改動要四重確認。", "CONFIRM_REQUIRED", 428, { confirmation: begin() });
     this.confirm.verify({ userId: who.userId, target, proof });
   }
@@ -147,8 +168,9 @@ export class SafetyService {
     const target = `preview:${previewId}`;
     let overrideNote;
     try {
-      overrideNote = await this.#allowanceCheck(level, w, override, { source: p.meta.source });
-      this.#requireConfirmation({ who: w, target, level, proof: confirmation, begin: () => this.beginConfirmation({ who: w, target, impact: level, shortName: p.shortName }) });
+      const checked = await this.#allowanceCheck(level, w, override, { source: p.meta.source });
+      overrideNote = checked.note;
+      await this.#requireConfirmation({ who: w, target, level, proof: confirmation, allowance: checked.allowance, begin: () => this.beginConfirmation({ who: w, target, impact: level, shortName: p.shortName }) });
     } catch (error) {
       // The person can carry on with this very preview (more keys, or an owner override).
       if (error.detail && typeof error.detail === "object") error.detail.previewId = previewId;
@@ -194,9 +216,9 @@ export class SafetyService {
     const { level } = this.actionImpact(name, body);
     if (name === "reboot" && this.options.launch) throw refuse("A reboot can only be sent through the launch sequence.", "重啟要經發射程序先可以送出。", "LAUNCH_REQUIRED", 403);
     if (level < 1) return { level, override: null };
-    const override = await this.#allowanceCheck(level, w, body.override === true);
+    const { note: override, allowance } = await this.#allowanceCheck(level, w, body.override === true);
     const target = `action:${name}`;
-    this.#requireConfirmation({ who: w, target, level, proof: body.confirmation, begin: () => this.beginConfirmation({ who: w, target, impact: level, shortName: this.actionShortName(name, body) }) });
+    await this.#requireConfirmation({ who: w, target, level, proof: body.confirmation, allowance, begin: () => this.beginConfirmation({ who: w, target, impact: level, shortName: this.actionShortName(name, body) }) });
     return { level, override };
   }
 
@@ -206,7 +228,8 @@ export class SafetyService {
     const w = this.#who(who);
     const level = 3;
     const target = "action:reboot";
-    this.#requireConfirmation({ who: w, target, level, proof: confirmation, begin: () => this.beginConfirmation({ who: w, target, impact: level, shortName: "Reboot" }) });
+    // A reboot always takes the keys, whatever the household allows.
+    if (this.options.fourKey) this.#demandKeys({ who: w, target, proof: confirmation, begin: () => this.beginConfirmation({ who: w, target, impact: level, shortName: "Reboot" }) });
     return this.launch.begin({ userId: w.userId });
   }
 
@@ -465,7 +488,7 @@ export class SafetyService {
     const preview = await this.engine.preview(input, { user: w.name, meta: { mode: "quiet", source: "quiet", userId: w.userId } });
     const level = preview.impact.level;
     const target = `schedule:${this.hash(input)}`;
-    this.#requireConfirmation({ who: w, target, level, proof: body.confirmation, begin: () => this.beginConfirmation({ who: w, target, impact: level, shortName: preview.shortName }) });
+    await this.#requireConfirmation({ who: w, target, level, proof: body.confirmation, begin: () => this.beginConfirmation({ who: w, target, impact: level, shortName: preview.shortName }) });
     const overrideNote = body.override === true && level >= 1 && w.role === "owner" ? "allowance: override approved when scheduled" : null;
     const item = { id: randomUUID(), userId: w.userId, user: w.name, role: w.role, createdAt: new Date(this.now()).toISOString(), input, when, status: "pending", note: "", impact: level, shortName: preview.shortName, summary: preview.items.map((i) => ({ key: i.key, label: i.label })), override: overrideNote, runId: null, historyId: null };
     await this.store.update((s) => {
@@ -566,7 +589,7 @@ export class SafetyService {
       const level = view.impact.level;
       let overrideNote = null;
       try {
-        overrideNote = await this.#allowanceCheck(level, who, Boolean(p.override), { source: "quiet" });
+        overrideNote = (await this.#allowanceCheck(level, who, Boolean(p.override), { source: "quiet" })).note;
       } catch (error) {
         if (error.code === "ALLOWANCE") {
           this.engine.previews.delete(view.id);

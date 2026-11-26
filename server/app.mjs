@@ -63,7 +63,13 @@ export async function createApp(options = {}) {
   const dataDir = path.resolve(options.dataDir ?? process.env.DATA_DIR ?? "./data");
   const store = await new Store(dataDir).load();
   const vault = await new Vault(dataDir).load();
-  const sessions = new Sessions();
+  // Sign-ins are saved on the data volume, so a restart or an update does not sign anyone out.
+  const sessions = await new Sessions({ dir: dataDir }).load((userId) => {
+    const state = store.read();
+    if (state.owner?.id === userId) return { role: "owner", name: state.owner.name };
+    const user = state.users.find((u) => u.id === userId);
+    return user ? { role: user.role, name: user.name } : null;
+  });
   const session = new RouterSession({ store, vault, verifyTimeoutMs: options.verifyTimeoutMs ?? 8000, cacheTtlMs: options.cacheTtlMs ?? 3000 });
   const engine = new ChangeEngine({ session, store, vault, guardSeconds: options.guardSeconds ?? 90, pollMs: options.pollMs ?? 3000, watchDeadlineMs: options.watchDeadlineMs ?? null });
   const app = { store, vault, sessions, session, engine, pendingHostKey: null, demoRouter: null };
@@ -114,6 +120,7 @@ export async function createApp(options = {}) {
       session.close();
       server.closeAllConnections?.();
       await new Promise((resolve) => server.close(resolve));
+      await sessions.flush();
       await app.demoRouter?.close();
     },
   };
@@ -187,7 +194,7 @@ async function api(app, routes, req, res, url) {
   const params = Object.fromEntries(found.names.map((n, i) => [n, decodeURIComponent(match[i + 1])]));
   let who = null;
   if (!found.public) {
-    who = app.sessions.get(req);
+    who = signedIn(app, req, res);
     if (!who) throw bad("Sign in to continue.", 401, { code: "SIGNED_OUT" });
     if (method !== "GET" && method !== "HEAD" && req.headers["x-csrf"] !== who.csrf) throw bad("The page is out of date. Reload and try again.", 403, { code: "CSRF" });
     if (!roleAllows(who.role, method, url.pathname)) throw bad(roleRefusal(who.role), 403, { code: "ROLE" });
@@ -207,8 +214,17 @@ function secureRequest(req) {
   return Boolean(req.socket.encrypted) || req.headers["x-forwarded-proto"] === "https";
 }
 
+// The signed-in person for this request. Using the app pushes the sign-in forward, and the
+// cookie is sent again then so the browser keeps it just as long.
+function signedIn(app, req, res) {
+  const who = app.sessions.get(req);
+  if (who?.renewed) res.setHeader("Set-Cookie", app.sessions.cookie(who.id, secureRequest(req)));
+  return who;
+}
+
 async function startSession(app, req, res, who) {
   const issued = app.sessions.issue(who);
+  await app.sessions.flush();
   res.setHeader("Set-Cookie", app.sessions.cookie(issued.id, secureRequest(req)));
   return { ok: true, csrf: issued.csrf, user: { name: who.name, role: who.role } };
 }
@@ -289,8 +305,8 @@ function defineRoutes(app, route) {
   route("GET", "/api/unkick", (c) => unkick(c, false), { public: true });
   route("POST", "/api/unkick", (c) => unkick(c, true), { public: true });
 
-  route("GET", "/api/session", ({ req }) => {
-    const who = sessions.get(req);
+  route("GET", "/api/session", ({ req, res }) => {
+    const who = signedIn(app, req, res);
     const state = store.read();
     return {
       version: VERSION,

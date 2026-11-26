@@ -23,6 +23,7 @@ Everything is in the `/data` volume.
 | Pinned host key fingerprint | `state.json` | Plain text. Not secret |
 | Settings (for example the timed revert length) | `state.json` | Plain text |
 | Change history | `state.json` | Plain text, with secret values kept masked |
+| Sign-ins | `sessions.json` | A SHA-256 of each session cookie, the account it belongs to and when it ends. The cookie value and the per-session token are never stored |
 
 Because the vault key sits beside the vault, the vault protects against someone reading `vault.json` alone (for example a stray copy of the state), but **not** against someone who holds the whole volume. Protect volume backups accordingly, see [Back up the data volume](../setup/backing-up-data.md).
 
@@ -33,7 +34,9 @@ Nothing is sent anywhere else. The app makes no outside network connections of i
 - Passwords are 12 to 256 characters.
 - Failed sign-ins are counted per address. After repeated failures the app refuses further tries for 15 minutes.
 - A sign-in attempt for an unknown user takes about the same work as one for a real user, so the reply does not reveal which user names exist.
-- Sessions last 8 hours, end on logout, and end for a person whose role or password you change or whom you remove.
+- You stay signed in. A session lasts 90 days from the last time that browser used the app, so regular use never signs you out, and it survives a restart or an update of the app. A browser that has not opened the app for 90 days signs in again.
+- A session ends on logout, and ends for a person whose role or password you change or whom you remove. After a restart a saved session is matched to the account as it is now, so it never keeps an old role.
+- Sign out on a shared computer: anyone who can use a signed-in browser can use the app.
 - The session cookie is `HttpOnly` and `SameSite=Strict`, and is marked `Secure` when the request came over HTTPS.
 - Every change request must include a per-session token in the `X-CSRF` header, so another website cannot make your browser change the router.
 

@@ -374,6 +374,7 @@ test("household: a waiting change needs the four keys when it is scheduled, not 
   const t = await startApp({ safety: { fourKey: true, now: () => clock.t } });
   try {
     t.router.assoc = {};
+    assert.equal((await t.owner.request("PUT", "/api/household", { madness: 0 })).status, 200);
     const body = { changes: [{ id: "qos.up", value: "25000" }], when: { quiet: true } };
     const first = await t.owner.post("/api/safety/pending", body);
     assert.equal(first.status, 428);
@@ -387,6 +388,61 @@ test("household: a waiting change needs the four keys when it is scheduled, not 
     assert.equal((await t.owner.post("/api/safety/pending", { ...body, confirmation: proof })).status, 201);
     await t.app.safety.tick();
     assert.equal(t.router.nvram.qos_obw, "25000", "the app ran it by itself, with no one at the keyboard");
+  } finally {
+    await t.stop();
+  }
+});
+
+test("household: the four keys are asked only above the level the household chose or allows right now", async () => {
+  const t = await startApp({ safety: { fourKey: true, now: () => at(14) } });
+  try {
+    // Nobody is set up yet and the household's chosen level is the default, Level 1.
+    assert.equal((await t.owner.get("/api/household")).data.madness, 1);
+    const blip = await t.owner.post("/api/changes/preview", { changes: [{ id: "qos.up", value: "25000" }] });
+    assert.equal(blip.data.impact.level, 1);
+    assert.equal(blip.data.confirmation.required, false, "the preview says no keys are needed");
+    assert.equal((await t.owner.post("/api/safety/confirm/begin", { previewId: blip.data.id })).data.required, false);
+    const applied = await t.owner.post("/api/changes/live", { previewId: blip.data.id });
+    assert.equal(applied.status, 200, applied.text);
+    assert.equal(t.router.nvram.qos_obw, "25000", "a Level 1 change applies without the keys");
+    assert.equal((await t.owner.post("/api/safety/pending", { changes: [{ id: "qos.up", value: "26000" }], when: { quiet: true } })).status, 201, "and schedules without them");
+
+    // Level 2 is above the chosen level, so it still takes the keys.
+    const drop = await live(t, [{ id: "wl0.ssid", value: "Harbour Home 5" }]);
+    assert.equal(drop.status, 428);
+    assert.equal(drop.data.code, "CONFIRM_REQUIRED");
+    assert.equal((await t.owner.post("/api/actions/restart-service", { service: "restart_wireless" })).status, 428);
+    assert.equal((await t.owner.post("/api/actions/restart-service", { service: "restart_firewall" })).status, 200, "a Level 1 action runs without them");
+
+    // Choosing Level 2 lifts the keys for Level 2 as well; Level 3 keeps them.
+    assert.equal((await t.owner.request("PUT", "/api/household", { madness: 2 })).status, 200);
+    assert.equal((await live(t, [{ id: "wl0.ssid", value: "Harbour Home 5" }])).status, 200);
+    assert.equal((await live(t, [{ id: "lan.mask", value: "255.255.254.0" }])).status, 428);
+
+    // Choosing Level 0 brings the keys back for everything above Level 0.
+    assert.equal((await t.owner.request("PUT", "/api/household", { madness: 0 })).status, 200);
+    assert.equal((await live(t, [{ id: "qos.up", value: "27000" }])).status, 428);
+
+    // A reboot takes the keys whatever the household chose.
+    assert.equal((await t.owner.request("PUT", "/api/household", { madness: 3 })).status, 200);
+    assert.equal((await t.owner.post("/api/safety/confirm/begin", { action: "reboot" })).data.required, true);
+    assert.equal((await t.owner.post("/api/safety/launch/begin", {})).data.code, "CONFIRM_REQUIRED");
+
+    // Someone is home and puts up with nothing right now: a Level 1 change is refused, and the
+    // owner's override still takes the keys even though Level 1 is the chosen level.
+    assert.equal((await t.owner.request("PUT", "/api/household", { madness: 1 })).status, 200);
+    await patch(t, { devices: [{ mac: PHONE, label: "Phone" }], homeAllowance: 0 });
+    t.router.assoc = { eth6: [], [BAND_5G]: [PHONE] };
+    const refused = await live(t, [{ id: "qos.up", value: "28000" }]);
+    assert.equal(refused.data.code, "ALLOWANCE");
+    const override = await t.owner.post("/api/changes/live", { previewId: refused.data.detail.previewId, override: true });
+    assert.equal(override.status, 428);
+    assert.equal(override.data.code, "CONFIRM_REQUIRED");
+    assert.equal(t.router.nvram.qos_obw, "25000");
+
+    // Once they are away the household allows it again, and no keys are asked.
+    t.router.assoc = {};
+    assert.equal((await live(t, [{ id: "qos.up", value: "28000" }])).status, 200);
   } finally {
     await t.stop();
   }

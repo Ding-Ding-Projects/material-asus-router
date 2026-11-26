@@ -13,7 +13,7 @@ The web pages talk to the server through a small JSON API. It is meant for the a
 
 - Requests and replies are JSON unless noted. A request body larger than 1 MiB is refused with `That request is too large.`; the restore route allows up to 6 MiB.
 - Errors return a JSON object with a readable `error` message and sometimes a `code`, with a matching HTTP status.
-- Signing in sets an `HttpOnly`, `SameSite=Strict` session cookie that lasts 8 hours.
+- Signing in sets an `HttpOnly`, `SameSite=Strict` session cookie that lasts 90 days from the last use. The app sends the cookie again about once a day while it is in use, and sessions survive a restart.
 - Every request that changes something (anything except `GET` and `HEAD`) must send the session's token in an `X-CSRF` header. The token comes from `/api/session` or from the sign-in reply. A wrong or missing token returns 403 with code `CSRF`.
 - Roles: **O** owner only, **W** owner and operator, **R** every signed-in role, **P** public (no sign-in).
 

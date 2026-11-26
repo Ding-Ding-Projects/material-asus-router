@@ -13,8 +13,9 @@ undo.
 - Reads the router's real settings and shows them as typed controls; a setting the router does not
   have is switched off with the reason.
 - Live mode applies each change at once; review mode shows a preview first. Every change has an
-  impact level, a four-key confirmation when it would disturb people at home, a local history,
-  undo and redo.
+  impact level, a four-key confirmation when it would disturb people at home more than the
+  household chose, a local history, undo and redo.
+- You stay signed in, across restarts and updates of the app, until you sign out.
 - Kick and ban: pause one device to share the connection fairly. The person on that device can
   always lift it from the Unkick page, without an account.
 - Lock IP in the device list, saved routers (Main and Testing), AiMesh nodes, modes, canvas

@@ -187,3 +187,128 @@ test("owners can reveal a secret on request; the value is not part of ordinary r
     await t.stop();
   }
 });
+
+// ---- staying signed in -------------------------------------------------------
+
+async function restart(t) {
+  const { createApp } = await import("../server/app.mjs");
+  await t.app.close();
+  const app = await createApp({ dataDir: t.dir, pollMs: 100, verifyTimeoutMs: 2000, cacheTtlMs: 0, safety: { fourKey: false, launch: false, quietPollMs: 0 } });
+  await app.listen(0, "127.0.0.1");
+  return { app, base: `http://127.0.0.1:${app.port}` };
+}
+
+async function stopRestarted(t, again) {
+  const { rm } = await import("node:fs/promises");
+  await again?.app.close();
+  await t.router.close();
+  await rm(t.dir, { recursive: true, force: true });
+}
+
+test("a sign-in survives a restart, and the saved file holds nothing a browser could present", async () => {
+  const t = await startApp();
+  let again;
+  try {
+    const cookieValue = t.owner.cookie.split("=")[1];
+    again = await restart(t);
+    const owner = new Client(again.base);
+    owner.cookie = t.owner.cookie;
+    const session = (await owner.get("/api/session")).data;
+    assert.equal(session.signedIn, true, "still signed in after the restart");
+    assert.equal(session.user.role, "owner");
+    assert.equal(session.csrf, t.owner.csrf, "the page's token still works");
+    owner.csrf = session.csrf;
+    assert.equal((await owner.post("/api/changes/preview", { changes: [{ id: "qos.up", value: "21000" }] })).status, 200);
+    const saved = await readFile(path.join(t.dir, "sessions.json"), "utf8");
+    assert.ok(!saved.includes(cookieValue), "the cookie value is not saved");
+    assert.ok(!saved.includes(t.owner.csrf), "the token is not saved");
+    assert.equal(JSON.parse(saved).sessions.length, 1);
+  } finally {
+    await stopRestarted(t, again);
+  }
+});
+
+test("signing out and removing a person stay in force across a restart", async () => {
+  const t = await startApp();
+  let again;
+  try {
+    const user = await addUser(t, { username: "temp", role: "operator" });
+    const temp = t.client();
+    await temp.signIn("temp", "a long enough password");
+    const left = t.client();
+    await left.signIn("pat", "correct horse battery");
+    const leftCookie = left.cookie;
+    assert.equal((await left.post("/api/logout")).status, 200);
+    assert.equal((await t.owner.request("DELETE", `/api/users/${user.id}`)).status, 200);
+    again = await restart(t);
+    for (const cookie of [temp.cookie, leftCookie]) {
+      const c = new Client(again.base);
+      c.cookie = cookie;
+      assert.equal((await c.get("/api/session")).data.signedIn, false);
+      assert.equal((await c.get("/api/catalog")).status, 401);
+    }
+    const owner = new Client(again.base);
+    owner.cookie = t.owner.cookie;
+    assert.equal((await owner.get("/api/session")).data.signedIn, true, "the owner's other browser is untouched");
+  } finally {
+    await stopRestarted(t, again);
+  }
+});
+
+test("a saved sign-in never outlives its account or keeps an old role", async () => {
+  const { Sessions } = await import("../server/auth.mjs");
+  const { mkdtemp, rm } = await import("node:fs/promises");
+  const os = await import("node:os");
+  const dir = await mkdtemp(path.join(os.tmpdir(), "mar-sessions-"));
+  try {
+    const first = new Sessions({ dir });
+    const kept = first.issue({ userId: "u1", role: "operator", name: "Sam" });
+    const gone = first.issue({ userId: "u2", role: "operator", name: "Alex" });
+    await first.flush();
+    const request = (id) => ({ headers: { cookie: `other=1; mar_session=${id}` } });
+    const second = await new Sessions({ dir }).load((userId) => (userId === "u1" ? { role: "viewer", name: "Sam" } : null));
+    assert.equal(second.get(request(kept.id)).role, "viewer", "the role comes from the account as it is now");
+    assert.equal(second.get(request(gone.id)), null, "no account, no session");
+    assert.equal(second.get(request("made-up")), null);
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
+test("using the app keeps the sign-in alive for 90 days at a time, and an unused one ends", async () => {
+  const { Sessions, SESSION_DAYS } = await import("../server/auth.mjs");
+  const day = 24 * 3600 * 1000;
+  let now = Date.UTC(2026, 0, 1);
+  const sessions = new Sessions({ now: () => now });
+  const issued = sessions.issue({ userId: "u1", role: "owner", name: "Pat" });
+  const request = { headers: { cookie: `mar_session=${issued.id}` } };
+  assert.equal(SESSION_DAYS, 90);
+  assert.match(sessions.cookie(issued.id, false), /Max-Age=7776000$/);
+  assert.match(sessions.cookie(issued.id, true), /Max-Age=7776000; Secure$/);
+  now += 3600 * 1000;
+  assert.equal(sessions.get(request).renewed, false, "not pushed forward on every request");
+  now += 2 * day;
+  const later = sessions.get(request);
+  assert.equal(later.renewed, true);
+  assert.equal(later.expires, now + 90 * day);
+  assert.equal(later.csrf, issued.csrf, "the token does not change when the sign-in is pushed forward");
+  now += 89 * day;
+  assert.ok(sessions.get(request), "still signed in 89 days after the last use");
+  now += 91 * day;
+  assert.equal(sessions.get(request), null, "an unused sign-in ends after 90 days");
+});
+
+test("using the app after a day sends the cookie again so the browser keeps it as long", async () => {
+  const t = await startApp();
+  try {
+    const first = await t.owner.get("/api/session");
+    assert.equal(first.headers.get("set-cookie"), null, "a fresh sign-in is not sent again");
+    for (const s of t.app.sessions.items.values()) s.expires -= 2 * 24 * 3600 * 1000;
+    const next = await t.owner.get("/api/domain/qos");
+    assert.equal(next.status, 200);
+    assert.match(next.headers.get("set-cookie"), /^mar_session=[^;]+; HttpOnly; SameSite=Strict; Path=\/; Max-Age=7776000$/);
+    assert.equal((await t.owner.get("/api/session")).data.signedIn, true);
+  } finally {
+    await t.stop();
+  }
+});

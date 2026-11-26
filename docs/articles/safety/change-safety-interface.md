@@ -15,7 +15,7 @@ Four things sit beside the search box. The **allowance chip** reads, for example
 
 ## Live and Review
 
-In **Live** mode (the default) the pending-changes bar shows **Apply now**. A change that has no effect on the house (Level 0) applies by itself after a short pause that you can use to discard it. In **Review** mode the same bar shows **Review and apply**, and you check the preview first. In both modes **Later** schedules the change for a set time or for when the house is quiet (nobody's devices on the home Wi-Fi).
+In **Live** mode (the default) a change applies by itself after a short pause that you can use to discard it; there is nothing to review. A change that needs the four keys waits until you leave the field you are typing in, then asks for them. If you cancel the keys the change stays in the pending-changes bar, where **Apply now** tries again and **Details** shows the exact old and new values. In **Review** mode the same bar shows **Review and apply**, and you check the preview first. In both modes **Later** schedules the change for a set time or for when the house is quiet (nobody's devices on the home Wi-Fi).
 
 After a live change an **Undo** toast stays for eight seconds.
 
@@ -29,7 +29,7 @@ Every setting that has a level shows a small badge beside its name: Level 0 gree
 
 ## Four keys
 
-A change above Level 0 asks for four keys, in any order:
+A change above the level your household chose, or above what it allows right now, asks for four keys, in any order. With the default choice of Level 1, a Level 1 change asks for none:
 
 1. **Acknowledge** each person who is affected.
 2. **Type the name** of the change exactly.

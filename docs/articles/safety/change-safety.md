@@ -11,7 +11,7 @@ This page describes what the server does to keep a change from surprising the pe
 
 ## Live mode and review mode
 
-**Live mode** is on by default. A control that is committed (a switch flipped, a field left) is previewed and applied in one step by `POST /api/changes/live`. It still goes through the router-side safety timer for anything that can cut the connection. Turn it off in the settings and the app goes back to the preview dock: `POST /api/changes/preview`, then `POST /api/changes/apply`.
+**Live mode** is on by default. A control that is committed (a switch flipped, a field left) is previewed and applied in one step by `POST /api/changes/live`, whatever its level; when the change needs the four keys or the household's say, the answer asks for them. It still goes through the router-side safety timer for anything that can cut the connection. Turn it off in the settings and the app goes back to the preview dock: `POST /api/changes/preview`, then `POST /api/changes/apply`.
 
 ## Impact levels
 
@@ -28,7 +28,7 @@ Every setting and every action has a level from 0 to 3, computed from the servic
 
 ## Four-key confirmation
 
-Any change or action with a level of 1 or more needs four keys, in live and review mode. The server checks them; a script that skips the screen is refused.
+A change or action needs four keys when its level is above the level the household chose (**Most brother madness allowed**, default 1) or above what the household allows right now. At or below both, no keys are asked, so with the default a Level 1 change applies without them and Level 2 and 3 still take them. Choose 0 to have every change above Level 0 take the keys. A reboot always takes them. The rule is the same in live and review mode, and the server checks it; a script that skips the screen is refused. Every preview says whether keys are needed in `confirmation.required`.
 
 1. Acknowledge every person who will be affected.
 2. Type the setting's short name exactly.

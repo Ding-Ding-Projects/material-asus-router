@@ -21,7 +21,7 @@ summary: 建立第一個帳戶（即係擁有者），同了解擁有者控制�
 
 ## 密碼點樣儲存
 
-密碼從來唔會照原樣儲存。每個密碼都用 scrypt 加隨機 salt 做雜湊。登入有次數限制：同一地址連續失敗太多次，app 會回應「Too many failed sign-ins. Wait 15 minutes and try again.」。登入階段有效 8 小時，用 `HttpOnly`、`SameSite=Strict` 嘅 cookie，同埋每次改動頁面都要附上嘅逐階段權杖。
+密碼從來唔會照原樣儲存。每個密碼都用 scrypt 加隨機 salt 做雜湊。登入有次數限制：同一地址連續失敗太多次，app 會回應「Too many failed sign-ins. Wait 15 minutes and try again.」。你會保持登入：階段由最後一次使用起計有效 90 日，重啟或者更新之後都仲喺度。階段用 `HttpOnly`、`SameSite=Strict` 嘅 cookie，同埋每次改動頁面都要附上嘅逐階段權杖。
 
 ## 擁有者可以做啲咩
 

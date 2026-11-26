@@ -9,7 +9,7 @@ summary: App 提供嘅每條 HTTP 路由、邊個可以呼叫，以及請求點�
 
 - 除非另有說明，請求同回應都係 JSON。超過 1 MiB 嘅請求會被拒絕，訊息係 `That request is too large.`；還原路由容許最多 6 MiB。
 - 錯誤會回傳帶有易讀 `error` 訊息、有時有 `code` 嘅 JSON 物件，並配對應嘅 HTTP 狀態碼。
-- 登入會設定 `HttpOnly`、`SameSite=Strict` 嘅階段 cookie，有效 8 小時。
+- 登入會設定 `HttpOnly`、`SameSite=Strict` 嘅階段 cookie，由最後一次使用起計有效 90 日。用緊嘅時候 app 大約每日會再發一次 cookie，而階段喺重啟之後仍然有效。
 - 每個會改嘢嘅請求（除咗 `GET` 同 `HEAD`）都要喺 `X-CSRF` 標頭送出階段權杖。權杖來自 `/api/session` 或登入回應。權杖錯或者冇，會回傳 403 同 code `CSRF`。
 - 角色：**O** 只限擁有者、**W** 擁有者同操作員、**R** 每個已登入角色、**P** 公開（唔使登入）。
 

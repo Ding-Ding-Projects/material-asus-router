@@ -19,6 +19,13 @@ State of the project for whoever picks it up next. See `ROADMAP.md` for the full
   by MAC address. The Unkick page is public on purpose: it may only lift a pause on the device the
   request comes from, and lifting needs the page's own header.
 - The app's own preferences are never written to the router; they are app preferences.
+- Sign-ins are saved in `sessions.json` on the data volume as a hash of each session cookie; the
+  cookie value and the per-session token (derived from the cookie) are never stored. A sign-in lasts
+  90 days from the last use and is pushed forward at most once a day.
+- The four keys are asked only when a change is above the household's chosen level ("most brother
+  madness allowed", default 1) or above what the household allows right now. A reboot always takes
+  them. Live mode applies every change by itself, once per edit; a cancelled confirmation leaves the
+  change in the bar.
 - The changelog merges by union (`.gitattributes`), because every branch adds lines at one place.
 
 ## Waiting on the owner

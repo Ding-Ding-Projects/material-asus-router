@@ -14,6 +14,9 @@ real browser. Unticked items say what is still missing.
 - [x] Save routers by name as Main or Testing and switch between them; a badge shows while a Testing router is in use
 - [x] Change engine: preview, router-side safety timer, apply, read back, undo
 - [x] Live mode (on by default), local change history, undo and redo, impact levels 1 to 3, four-key confirmation
+- [x] Stay signed in: a sign-in lasts 90 days from the last use and survives a restart or an update of the app; signing out, a role or password change and removing a person still end it (checked in a browser on 2026-11-25 by restarting the app under a signed-in page)
+- [x] Live mode applies every change by itself after a short pause, with nothing to review; it asks for the keys only when the change needs them (checked in a browser on 2026-11-25)
+- [x] The four keys are asked only above the level the household chose or above what it allows right now; a reboot always takes them
 - [x] Reboot only through the launch sequence
 - [x] Start-up failures show the error and a way out instead of a blank page; a loading card shows progress after sign-in
 

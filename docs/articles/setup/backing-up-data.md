@@ -16,6 +16,7 @@ Everything the app remembers is in one Docker volume mounted at `/data`. This gu
 | `state.json` | Accounts (password hashes only), the saved router connection (without the password), settings, change history |
 | `vault.json` | The router password and the app's SSH private key, each encrypted |
 | `vault.key` | The random AES-256-GCM key for the vault, mode 0600 |
+| `sessions.json` | Who is signed in: a hash of each session cookie, never the cookie itself. Without it everyone simply signs in again |
 
 > [!WARNING]
 > `vault.key` and `vault.json` together can unlock the stored router credentials. Treat a backup of the volume like a password: keep it somewhere private and encrypted. Keep it off shared drives.

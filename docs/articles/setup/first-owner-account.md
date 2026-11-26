@@ -25,7 +25,7 @@ The check that no owner exists is made atomically, so two people cannot both bec
 
 ## How passwords are kept
 
-Passwords are never stored as typed. Each is hashed with scrypt and a random salt. Sign-in is rate limited: after repeated failures from one address the app answers "Too many failed sign-ins. Wait 15 minutes and try again." Sessions last 8 hours, use a `HttpOnly`, `SameSite=Strict` cookie and a per-session token that the page must send with every change.
+Passwords are never stored as typed. Each is hashed with scrypt and a random salt. Sign-in is rate limited: after repeated failures from one address the app answers "Too many failed sign-ins. Wait 15 minutes and try again." You stay signed in: a session lasts 90 days from the last use and survives a restart or an update. Sessions use a `HttpOnly`, `SameSite=Strict` cookie and a per-session token that the page must send with every change.
 
 ## What the owner can do
 

@@ -39,20 +39,21 @@ export function defineSafetyRoutes(app, route, { liveContext, readDevices, actio
     if (body.previewId) {
       const p = app.engine.peek(String(body.previewId));
       if (!p) throw bad("That preview expired. Preview the changes again.", 410);
-      if (p.impact.level < 1 || !safety().options.fourKey) return { required: false, impact: p.impact.level };
+      if (!(await safety().keysNeeded(p.impact.level))) return { required: false, impact: p.impact.level };
       return { required: true, ...safety().beginConfirmation({ who, target: `preview:${body.previewId}`, impact: p.impact.level, shortName: p.shortName }) };
     }
     if (body.action) {
       const name = String(body.action);
       if (!ACTIONS.includes(name) && !actionInfo(name)) throw bad("That action does not exist.", 404);
       const { level } = safety().actionImpact(name, body.body ?? {});
-      if (level < 1 || !safety().options.fourKey) return { required: false, impact: level };
+      // A reboot always takes the keys, whatever the household allows.
+      if (!(name === "reboot" ? safety().options.fourKey : await safety().keysNeeded(level))) return { required: false, impact: level };
       return { required: true, ...safety().beginConfirmation({ who, target: `action:${name}`, impact: level, shortName: safety().actionShortName(name, body.body ?? {}) }) };
     }
     if (body.schedule) {
       const input = { changes: body.schedule.changes, ops: body.schedule.ops, restart: body.schedule.restart };
       const view = await app.engine.preview(input, { user: who.name, meta: { mode: "quiet", source: "quiet", userId: who.userId } });
-      if (view.impact.level < 1 || !safety().options.fourKey) return { required: false, impact: view.impact.level };
+      if (!(await safety().keysNeeded(view.impact.level))) return { required: false, impact: view.impact.level };
       return { required: true, ...safety().beginConfirmation({ who, target: `schedule:${safety().hash(input)}`, impact: view.impact.level, shortName: view.shortName }) };
     }
     throw bad("Say what to confirm: a previewId, an action or a schedule.");

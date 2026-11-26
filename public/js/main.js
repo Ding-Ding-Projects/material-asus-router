@@ -218,7 +218,7 @@ function buildShell() {
   drawTabs();
   drawBell();
   renderDock(dockEl);
-  const offs = [bus.on("dock", () => renderDock(dockEl)), bus.on("notices", drawBell), bus.on("lang", () => queueMicrotask(() => { shell.dispose(); buildShell(); navigate(app.route, { replace: true }); })), bus.on("changed", () => api.get("/api/catalog").then((c) => { app.catalog = c; if (app.route !== "overview") navigate(app.route, { replace: true, keepScroll: true }); }).catch(() => {}))];
+  const offs = [bus.on("dock", () => renderDock(dockEl)), bus.on("safety", () => renderDock(dockEl)), bus.on("notices", drawBell), bus.on("lang", () => queueMicrotask(() => { shell.dispose(); buildShell(); navigate(app.route, { replace: true }); })), bus.on("changed", () => api.get("/api/catalog").then((c) => { app.catalog = c; if (app.route !== "overview") navigate(app.route, { replace: true, keepScroll: true }); }).catch(() => {}))];
   const stopOverlays = mountOverlays();
   const stopSafety = mountBar(safetyHost, { onOpenHistory: (id) => navigate(id) });
   const stopBadges = mountBadges(() => app.catalog.entries);

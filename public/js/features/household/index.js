@@ -20,7 +20,7 @@ function madnessCard(data, owner, after) {
   } }, levelBadge(i, { label: false }), " ", tt(w)));
   return h("section", { class: "card rise" },
     h("h2", { class: "h2" }, icon("family_restroom", "sm"), " ", t("Most brother madness allowed", "最多容許你兄弟幾火")),
-    h("p", { class: "t2" }, t("The household’s own limit. A change that would disturb the house more than this is refused until the owner overrides it with the four keys. Each person can be stricter or looser below.", "屋企自己嘅上限。如果改動對屋企嘅影響大過呢個級數，就會被拒絕，除非擁有人用四把匙覆寫。每個人可以喺下面設得更嚴或者更鬆。")),
+    h("p", { class: "t2" }, t("The household’s own limit. A change up to this level applies without the four keys while the household allows it. A change that would disturb the house more than this asks for the keys, and one above what the household allows right now is refused until the owner overrides it with the four keys. Each person can be stricter or looser below.", "屋企自己嘅上限。屋企容許嘅時候，唔超過呢個級數嘅改動唔使四把匙就套用。影響大過呢個級數嘅改動要四把匙；大過屋企而家容許嘅級數就會被拒絕，除非擁有人用四把匙覆寫。每個人可以喺下面設得更嚴或者更鬆。")),
     h("div", { class: "seg madness", role: "radiogroup", "aria-label": t("Most brother madness allowed", "最多容許你兄弟幾火") }, buttons),
     owner ? null : h("div", { class: "muted" }, t("Only the owner can change this.", "只有擁有人可以修改。")));
 }

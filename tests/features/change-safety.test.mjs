@@ -293,6 +293,8 @@ test("change-safety: the four-key confirmation is checked by the server, step by
   const clock = clockAt();
   const t = await startApp({ safety: { fourKey: true, now: () => clock.t } });
   try {
+    // The household chose "no disturbance at all", so every change above Level 0 takes the keys.
+    assert.equal((await t.owner.request("PUT", "/api/household", { madness: 0 })).status, 200);
     // Impact 0 needs no keys at all.
     assert.equal((await live(t, [{ id: "ddns.host", value: "home.example.com" }])).status, 200);
 

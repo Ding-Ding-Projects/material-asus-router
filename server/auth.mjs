@@ -1,9 +1,16 @@
 // Password hashing and signed-in sessions. Adapted from Material QEMU.
-import { randomBytes, scrypt as scryptCallback, timingSafeEqual } from "node:crypto";
+import { createHash, createHmac, randomBytes, scrypt as scryptCallback, timingSafeEqual } from "node:crypto";
+import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
+import path from "node:path";
 import { promisify } from "node:util";
 
 const scrypt = promisify(scryptCallback);
-const SESSION_HOURS = 8;
+// A sign-in lasts this long since the browser was last used, so regular use never signs anyone out.
+export const SESSION_DAYS = 90;
+const LIFETIME_MS = SESSION_DAYS * 24 * 3600 * 1000;
+// The sign-in is pushed forward at most once a day, which keeps the saved file quiet.
+const RENEW_AFTER_MS = 24 * 3600 * 1000;
+const MAX_SESSIONS = 500;
 export const COOKIE = "mar_session";
 
 export async function hashPassword(password) {
@@ -19,24 +26,66 @@ export async function checkPassword(password, record) {
   return timingSafeEqual(actual, Buffer.from(record.hash, "hex"));
 }
 
+// Sessions are kept by the SHA-256 of the cookie value, and the per-session token is derived from
+// the cookie value, so neither memory nor the saved file holds anything a browser could present.
+const keyOf = (id) => createHash("sha256").update(id).digest("hex");
+const csrfOf = (id) => createHmac("sha256", id).update("csrf").digest("base64url");
+
 export class Sessions {
-  constructor(now = Date.now) {
+  constructor({ now = Date.now, dir = null } = {}) {
     this.now = now;
+    this.file = dir ? path.join(dir, "sessions.json") : null;
     this.items = new Map();
     this.failures = new Map();
+    this.queue = Promise.resolve();
+  }
+
+  // Reads the sessions saved before the last restart. `account(userId)` returns the person's
+  // current { role, name } or null, so a saved session never outlives its account or keeps an old role.
+  async load(account = () => null) {
+    if (!this.file) return this;
+    let saved = [];
+    try {
+      saved = JSON.parse(await readFile(this.file, "utf8")).sessions;
+    } catch {
+      // A missing or unreadable file only means everyone signs in again.
+    }
+    for (const s of Array.isArray(saved) ? saved : []) {
+      if (typeof s?.key !== "string" || !/^[0-9a-f]{64}$/.test(s.key) || !(s.expires > this.now())) continue;
+      const current = account(s.userId);
+      if (current) this.items.set(s.key, { expires: s.expires, userId: s.userId, role: current.role, name: current.name });
+    }
+    return this;
+  }
+
+  #save() {
+    if (!this.file) return;
+    const file = this.file;
+    const run = this.queue.then(async () => {
+      const now = this.now();
+      for (const [key, s] of this.items) if (s.expires < now) this.items.delete(key);
+      while (this.items.size > MAX_SESSIONS) this.items.delete(this.items.keys().next().value);
+      const sessions = [...this.items].map(([key, s]) => ({ key, userId: s.userId, expires: s.expires }));
+      await mkdir(path.dirname(file), { recursive: true });
+      const tmp = `${file}.${process.pid}.tmp`;
+      await writeFile(tmp, JSON.stringify({ version: 1, sessions }), { mode: 0o600 });
+      await rename(tmp, file);
+    });
+    // A failed save leaves the sessions working in memory until the next restart.
+    this.queue = run.catch(() => {});
+  }
+
+  // Resolves once every change so far is on disk.
+  flush() {
+    return this.queue;
   }
 
   issue(who) {
     const id = randomBytes(32).toString("base64url");
-    const value = {
-      csrf: randomBytes(24).toString("base64url"),
-      expires: this.now() + SESSION_HOURS * 3600 * 1000,
-      userId: who.userId,
-      role: who.role,
-      name: who.name,
-    };
-    this.items.set(id, value);
-    return { id, ...value };
+    const value = { expires: this.now() + LIFETIME_MS, userId: who.userId, role: who.role, name: who.name };
+    this.items.set(keyOf(id), value);
+    this.#save();
+    return { id, csrf: csrfOf(id), ...value };
   }
 
   get(request) {
@@ -45,21 +94,33 @@ export class Sessions {
       .map((part) => part.trim())
       .find((part) => part.startsWith(`${COOKIE}=`))
       ?.slice(COOKIE.length + 1);
-    const session = id && this.items.get(id);
+    if (!id) return null;
+    const key = keyOf(id);
+    const session = this.items.get(key);
     if (!session) return null;
-    if (session.expires < this.now()) {
-      this.items.delete(id);
+    const now = this.now();
+    if (session.expires < now) {
+      this.items.delete(key);
+      this.#save();
       return null;
     }
-    return { id, ...session };
+    // Using the app keeps the sign-in alive; the caller sends the cookie again when `renewed` is set.
+    const renewed = session.expires - now < LIFETIME_MS - RENEW_AFTER_MS;
+    if (renewed) {
+      session.expires = now + LIFETIME_MS;
+      this.#save();
+    }
+    return { id, csrf: csrfOf(id), renewed, ...session };
   }
 
   end(id) {
-    this.items.delete(id);
+    if (this.items.delete(keyOf(id))) this.#save();
   }
 
   revokeUser(userId) {
-    for (const [id, session] of this.items) if (session.userId === userId) this.items.delete(id);
+    let removed = false;
+    for (const [key, session] of this.items) if (session.userId === userId) removed = this.items.delete(key) || removed;
+    if (removed) this.#save();
   }
 
   // Five failed sign-ins from one address lock it out for fifteen minutes.
@@ -77,6 +138,6 @@ export class Sessions {
   }
 
   cookie(id, secure) {
-    return `${COOKIE}=${id}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${SESSION_HOURS * 3600}${secure ? "; Secure" : ""}`;
+    return `${COOKIE}=${id}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${SESSION_DAYS * 24 * 3600}${secure ? "; Secure" : ""}`;
   }
 }
