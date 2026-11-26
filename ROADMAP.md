@@ -51,6 +51,8 @@ real browser. Unticked items say what is still missing.
 - [x] Running on the home network at its own address, on port 80 and port 8790, updated to each verified image
 - [x] Router add-on package: install, on/off switch on the router's page, Material or Advanced version per browser, A/B updates with automatic rollback, uninstall; tested end to end on Linux
 - [ ] Install the add-on on the real router: needs a USB drive, JFFS custom scripts turned on, and the owner's go-ahead
+- [ ] Update the app from its own screen with automatic rollback, and optionally every night: the design board (AppUpdate) and the updater service (`updater/`, `compose.update.yaml`) exist; the app's screen, its routes and tests are still missing
+- [x] Personal wording loads the shared file format, keeps capital-only differences apart, and a dropped file is handled once
 - [x] Desktop app build (installer and portable) in the release workflow
 - [x] Install and launch the desktop app on Windows: release v0.1.0-45 installs and opens on its first-run screen (`docs/evidence/`)
 - [x] Documentation site with articles in English and Cantonese, and a phone PDF
