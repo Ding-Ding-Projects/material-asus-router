@@ -2044,6 +2044,56 @@
             },
             "description": "Source: server/features/aimesh-pro/index.mjs"
           }
+        },
+        {
+          "name": "POST /api/actions/aimesh-pro.node-led",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-csrf",
+                "value": "{{csrf}}",
+                "description": "The token from the sign-in answer; every write needs it."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/actions/aimesh-pro.node-led",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "actions",
+                "aimesh-pro.node-led"
+              ]
+            },
+            "description": "Source: server/features/aimesh-pro/index.mjs"
+          }
+        },
+        {
+          "name": "POST /api/actions/aimesh-pro.reboot-node",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-csrf",
+                "value": "{{csrf}}",
+                "description": "The token from the sign-in answer; every write needs it."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/actions/aimesh-pro.reboot-node",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "actions",
+                "aimesh-pro.reboot-node"
+              ]
+            },
+            "description": "Source: server/features/aimesh-pro/index.mjs"
+          }
         }
       ]
     },
@@ -3132,6 +3182,31 @@
             },
             "description": "Source: server/features/dsl/index.mjs"
           }
+        },
+        {
+          "name": "POST /api/actions/dsl.retrain",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-csrf",
+                "value": "{{csrf}}",
+                "description": "The token from the sign-in answer; every write needs it."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/actions/dsl.retrain",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "actions",
+                "dsl.retrain"
+              ]
+            },
+            "description": "Source: server/features/dsl/index.mjs"
+          }
         }
       ]
     },
@@ -3153,6 +3228,31 @@
                 "x",
                 "dual-wan",
                 "status"
+              ]
+            },
+            "description": "Source: server/features/dual-wan/index.mjs"
+          }
+        },
+        {
+          "name": "POST /api/actions/dual-wan.probe",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-csrf",
+                "value": "{{csrf}}",
+                "description": "The token from the sign-in answer; every write needs it."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/actions/dual-wan.probe",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "actions",
+                "dual-wan.probe"
               ]
             },
             "description": "Source: server/features/dual-wan/index.mjs"
@@ -3542,6 +3642,31 @@
                 "api",
                 "domain",
                 "example-uptime"
+              ]
+            },
+            "description": "Source: server/features/example-uptime/index.mjs"
+          }
+        },
+        {
+          "name": "POST /api/actions/example-uptime.mark",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-csrf",
+                "value": "{{csrf}}",
+                "description": "The token from the sign-in answer; every write needs it."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/actions/example-uptime.mark",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "actions",
+                "example-uptime.mark"
               ]
             },
             "description": "Source: server/features/example-uptime/index.mjs"
@@ -4205,6 +4330,56 @@
             },
             "description": "Source: server/features/internet-pro/index.mjs"
           }
+        },
+        {
+          "name": "POST /api/actions/internet-pro.reconnect",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-csrf",
+                "value": "{{csrf}}",
+                "description": "The token from the sign-in answer; every write needs it."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/actions/internet-pro.reconnect",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "actions",
+                "internet-pro.reconnect"
+              ]
+            },
+            "description": "Source: server/features/internet-pro/index.mjs"
+          }
+        },
+        {
+          "name": "POST /api/actions/internet-pro.check",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-csrf",
+                "value": "{{csrf}}",
+                "description": "The token from the sign-in answer; every write needs it."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/actions/internet-pro.check",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "actions",
+                "internet-pro.check"
+              ]
+            },
+            "description": "Source: server/features/internet-pro/index.mjs"
+          }
         }
       ]
     },
@@ -4700,6 +4875,81 @@
             },
             "description": "Source: server/features/merlin-pro/index.mjs"
           }
+        },
+        {
+          "name": "POST /api/actions/merlin-pro.save-script",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-csrf",
+                "value": "{{csrf}}",
+                "description": "The token from the sign-in answer; every write needs it."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/actions/merlin-pro.save-script",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "actions",
+                "merlin-pro.save-script"
+              ]
+            },
+            "description": "Source: server/features/merlin-pro/index.mjs"
+          }
+        },
+        {
+          "name": "POST /api/actions/merlin-pro.cron-add",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-csrf",
+                "value": "{{csrf}}",
+                "description": "The token from the sign-in answer; every write needs it."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/actions/merlin-pro.cron-add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "actions",
+                "merlin-pro.cron-add"
+              ]
+            },
+            "description": "Source: server/features/merlin-pro/index.mjs"
+          }
+        },
+        {
+          "name": "POST /api/actions/merlin-pro.cron-delete",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-csrf",
+                "value": "{{csrf}}",
+                "description": "The token from the sign-in answer; every write needs it."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/actions/merlin-pro.cron-delete",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "actions",
+                "merlin-pro.cron-delete"
+              ]
+            },
+            "description": "Source: server/features/merlin-pro/index.mjs"
+          }
         }
       ]
     },
@@ -4852,6 +5102,56 @@
                 "x",
                 "minecraft-world-generator",
                 "plan"
+              ]
+            },
+            "description": "Source: server/features/minecraft-world-generator/index.mjs"
+          }
+        },
+        {
+          "name": "POST /api/actions/minecraft-world-generator.prepare",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-csrf",
+                "value": "{{csrf}}",
+                "description": "The token from the sign-in answer; every write needs it."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/actions/minecraft-world-generator.prepare",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "actions",
+                "minecraft-world-generator.prepare"
+              ]
+            },
+            "description": "Source: server/features/minecraft-world-generator/index.mjs"
+          }
+        },
+        {
+          "name": "POST /api/actions/minecraft-world-generator.pack",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-csrf",
+                "value": "{{csrf}}",
+                "description": "The token from the sign-in answer; every write needs it."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/actions/minecraft-world-generator.pack",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "actions",
+                "minecraft-world-generator.pack"
               ]
             },
             "description": "Source: server/features/minecraft-world-generator/index.mjs"
@@ -6342,6 +6642,30 @@
       ]
     },
     {
+      "name": "Features / slow-wifi",
+      "item": [
+        {
+          "name": "GET /api/domain/slow-wifi",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/domain/slow-wifi",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "domain",
+                "slow-wifi"
+              ]
+            },
+            "description": "Source: server/features/slow-wifi/index.mjs"
+          }
+        }
+      ]
+    },
+    {
       "name": "Features / speed-test",
       "item": [
         {
@@ -7589,6 +7913,31 @@
             },
             "description": "Source: server/features/usb-apps/index.mjs"
           }
+        },
+        {
+          "name": "POST /api/actions/usb-apps.eject",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-csrf",
+                "value": "{{csrf}}",
+                "description": "The token from the sign-in answer; every write needs it."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/actions/usb-apps.eject",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "actions",
+                "usb-apps.eject"
+              ]
+            },
+            "description": "Source: server/features/usb-apps/index.mjs"
+          }
         }
       ]
     },
@@ -8256,6 +8605,31 @@
             },
             "description": "Source: server/features/wifi-advanced-gaps/index.mjs"
           }
+        },
+        {
+          "name": "POST /api/actions/wifi-advanced-gaps.set-mode",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-csrf",
+                "value": "{{csrf}}",
+                "description": "The token from the sign-in answer; every write needs it."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/actions/wifi-advanced-gaps.set-mode",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "actions",
+                "wifi-advanced-gaps.set-mode"
+              ]
+            },
+            "description": "Source: server/features/wifi-advanced-gaps/index.mjs"
+          }
         }
       ]
     },
@@ -8336,6 +8710,56 @@
                 "api",
                 "domain",
                 "wifi-diagnostics"
+              ]
+            },
+            "description": "Source: server/features/wifi-diagnostics/index.mjs"
+          }
+        },
+        {
+          "name": "POST /api/actions/wifi-diagnostics.kick",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-csrf",
+                "value": "{{csrf}}",
+                "description": "The token from the sign-in answer; every write needs it."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/actions/wifi-diagnostics.kick",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "actions",
+                "wifi-diagnostics.kick"
+              ]
+            },
+            "description": "Source: server/features/wifi-diagnostics/index.mjs"
+          }
+        },
+        {
+          "name": "POST /api/actions/wifi-diagnostics.acs",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-csrf",
+                "value": "{{csrf}}",
+                "description": "The token from the sign-in answer; every write needs it."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/actions/wifi-diagnostics.acs",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "actions",
+                "wifi-diagnostics.acs"
               ]
             },
             "description": "Source: server/features/wifi-diagnostics/index.mjs"
@@ -8569,6 +8993,31 @@
             },
             "description": "Source: server/features/wifi-wps-macfilter/index.mjs"
           }
+        },
+        {
+          "name": "POST /api/actions/wifi-wps-macfilter.push-button",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-csrf",
+                "value": "{{csrf}}",
+                "description": "The token from the sign-in answer; every write needs it."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/actions/wifi-wps-macfilter.push-button",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "actions",
+                "wifi-wps-macfilter.push-button"
+              ]
+            },
+            "description": "Source: server/features/wifi-wps-macfilter/index.mjs"
+          }
         }
       ]
     },
@@ -8761,6 +9210,31 @@
                 "api",
                 "domain",
                 "wol-schedules"
+              ]
+            },
+            "description": "Source: server/features/wol-schedules/index.mjs"
+          }
+        },
+        {
+          "name": "POST /api/actions/wol-schedules.wake",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-csrf",
+                "value": "{{csrf}}",
+                "description": "The token from the sign-in answer; every write needs it."
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/actions/wol-schedules.wake",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "actions",
+                "wol-schedules.wake"
               ]
             },
             "description": "Source: server/features/wol-schedules/index.mjs"
