@@ -26,6 +26,7 @@ Every release of Material Asus Router, newest first. Each change names the full 
 
 ### Fixed
 
+- Every router command answers about five times faster: the SSH connection no longer waits on delayed acknowledgements, which cost about 175 ms a command on Linux. A change of a dozen commands could outlast the test safety timer and be put back, which turned five tests red. (7e7fc31cc6a82a3bbf1891a5942846f0617d88a6)
 - The page no longer scrolls past the end of the app, which slid the side navigation away and left an empty band below it. (7a023210cf630eb904aa9d32aa03917b079c1f51)
 - With nobody set up in the household, the four-key confirmation asks to acknowledge every device at home instead of naming the placeholder member. (20113e7c0794a7094ec9630004ed5636808716d6)
 - The Postman collection lists every action again. (c03a9a27723c6f797b7b684762242789521d2afb)
