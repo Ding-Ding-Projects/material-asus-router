@@ -363,9 +363,11 @@ export class Household {
   }
 
   // The people a change will touch: everyone set up, or the household as a whole.
+  // A member nobody has set up (such as the default placeholder) is never named on
+  // their own, so the confirmation agrees with the "Who will notice" banner.
   affectedPeople() {
     const configured = this.state().members.filter(isConfigured);
-    const people = (configured.length ? configured : this.state().members).map((m) => ({ id: m.id, name: m.name, nameYue: m.nameYue }));
-    return people.length ? people : [{ id: "household", name: "Everyone at home", nameYue: "屋企所有人" }];
+    if (!configured.length) return [{ id: "household", name: "Everyone at home", nameYue: "屋企所有人" }];
+    return configured.map((m) => ({ id: m.id, name: m.name, nameYue: m.nameYue }));
   }
 }

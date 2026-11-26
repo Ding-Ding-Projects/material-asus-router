@@ -182,7 +182,7 @@ export async function confirmDialog(detail, context = {}) {
     const s = status();
     const mark = (ok) => h("span", { class: `key-ok ${ok ? "on" : ""}`, "aria-hidden": "true" }, icon(ok ? "check_circle" : "radio_button_unchecked", "sm"));
     const ackBox = people.length
-      ? people.map((p) => h("label", { class: "row" }, h("input", { type: "checkbox", checked: input.acked.includes(p.id), onChange: (e) => { input.acked = e.target.checked ? [...input.acked, p.id] : input.acked.filter((x) => x !== p.id); render(); } }), h("span", {}, t(`I know ${p.name.replace(/^Your /, "your ").replace(/^My /, "my ")}'s devices will be affected.`, `我知道${p.nameYue ?? p.name}嘅裝置會受影響。`))))
+      ? people.map((p) => h("label", { class: "row" }, h("input", { type: "checkbox", checked: input.acked.includes(p.id), onChange: (e) => { input.acked = e.target.checked ? [...input.acked, p.id] : input.acked.filter((x) => x !== p.id); render(); } }), h("span", {}, p.id === "household" ? t("I know every device at home will be affected.", "我知道屋企所有裝置都會受影響。") : t(`I know ${p.name.replace(/^Your /, "your ").replace(/^My /, "my ")}'s devices will be affected.`, `我知道${p.nameYue ?? p.name}嘅裝置會受影響。`))))
       : [h("label", { class: "row" }, h("input", { type: "checkbox", checked: input.noPeopleAck, onChange: (e) => { input.noPeopleAck = e.target.checked; render(); } }), h("span", {}, t("I know everyone at home may be affected.", "我知道屋企所有人都可能受影響。")))];
     holdFill = h("span", { class: "hold-fill" });
     const holdBtn = h("button", { class: `btn hold ${s.keys.hold ? "ok" : ""}`, type: "button", "aria-describedby": "hold-help",
