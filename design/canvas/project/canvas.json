@@ -71,6 +71,10 @@
       "name": "Settings, tabs, appearance, language, modes, locks, regex, updates"
     },
     {
+      "id": "updates",
+      "name": "App updates and the updater service"
+    },
+    {
       "id": "toolbox",
       "name": "Toolbox and server manager"
     },
@@ -615,6 +619,15 @@
       "is_interactive": true,
       "expand": "fill"
     },
+    "AppUpdate.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "App updates (owner only, Docker-hosted app)",
+      "page": "updates",
+      "is_interactive": true
+    },
     "Toolbox.dc.html": {
       "x": 0,
       "y": 0,
@@ -1024,6 +1037,7 @@
     "Locks.dc.html",
     "Regex.dc.html",
     "Updates.dc.html",
+    "AppUpdate.dc.html",
     "Toolbox.dc.html",
     "ServerManager.dc.html",
     "Deploy.dc.html",
@@ -1581,6 +1595,23 @@
       "maxW": 6100,
       "page": "app",
       "text": "Settings, tabs, appearance, language, modes, locks, regex, updates"
+    },
+    "s_appupdate": {
+      "x": 450,
+      "y": 0,
+      "w": 440,
+      "page": "updates",
+      "fill": "purple",
+      "text": "App updates for the Docker-hosted app at phone width, for the owner only. A header card with the running version (\"0.1.0 · sha-8e0f4ba7cb53 · built 2026-11-25 20:10\"), the newest version (\"sha-1a2b3c4d5e6f (built 21:05)\") and an \"Update available\" tag, or \"You are up to date\". Two buttons, Check for updates and Update now. While updating, a list of four steps that tick off: Downloading the new version, Starting it, Waiting for it to answer (up to 90 seconds), Done: now running the new image; with the line that accounts, router settings and change history are kept. The rollback state marks the step that failed, says the previous version was put back and nothing else changed, and offers Try again. \"Update automatically every night\" with a time choice (02:00, 03:00, 04:00) and the health-check line. The \"Updater not set up\" card with the compose command for the updater service. A Recent updates list. Try: Check for updates; Update now, then \"Finish this step\" three times (each step turns green; the last one names the new image and the tag becomes \"You are up to date\"); turn off \"The new version answers\" in the dashed canvas box and update again (the waiting step turns red and shakes once, the previous version is named as still running, Try again appears); turn off \"Updater service installed\" (the set-up card with the command appears, Update now and the night switch are off); Copy the command; the night switch and the three times; Start again; Tweaks > stage empty (updater not set up), success (updated) and failure (rolled back), role operator or viewer (only the owner can update), motion standard and calm, lang, dark, accent. Stands for: an App updates screen in the app settings and the updater service started with compose.update.yaml. Unbuilt in the app: All of it when this board was drawn: the app has no self-update screen and compose.update.yaml is not in the repository yet. In the app the steps tick off as the updater reports them; on this board \"Finish this step\" stands in for each report. The dashed box is for the canvas only."
+    },
+    "t_updates": {
+      "kind": "title1",
+      "x": 0,
+      "y": -300,
+      "w": 890,
+      "maxW": 890,
+      "page": "updates",
+      "text": "App updates and the updater service"
     },
     "s_toolbox": {
       "x": 1500,

@@ -659,6 +659,18 @@ A drag is two clicks on the canvas (pick, then place) because the canvas runtime
 - Stands for: the app version shown in settings.
 - Still unbuilt in the real app: Self-update, Update coming soon with live build stages and update history are design only.
 
+### App updates and the updater service (page id `updates`)
+
+**App updates (owner only, Docker-hosted app)** (`AppUpdate.dc.html`, 390 by 844, fixed root, interactive)
+
+- Shows: App updates for the Docker-hosted app at phone width, for the owner only. A header card with the running version ("0.1.0 · sha-8e0f4ba7cb53 · built 2026-11-25 20:10"), the newest version ("sha-1a2b3c4d5e6f (built 21:05)") and an "Update available" tag, or "You are up to date". Two buttons, Check for updates and Update now. While updating, a list of four steps that tick off: Downloading the new version, Starting it, Waiting for it to answer (up to 90 seconds), Done: now running the new image; with the line that accounts, router settings and change history are kept. The rollback state marks the step that failed, says the previous version was put back and nothing else changed, and offers Try again. "Update automatically every night" with a time choice (02:00, 03:00, 04:00) and the health-check line. The "Updater not set up" card with the compose command for the updater service. A Recent updates list.
+- Try: Check for updates; Update now, then "Finish this step" three times (each step turns green; the last one names the new image and the tag becomes "You are up to date"); turn off "The new version answers" in the dashed canvas box and update again (the waiting step turns red and shakes once, the previous version is named as still running, Try again appears); turn off "Updater service installed" (the set-up card with the command appears, Update now and the night switch are off); Copy the command; the night switch and the three times; Start again; Tweaks > stage empty (updater not set up), success (updated) and failure (rolled back), role operator or viewer (only the owner can update), motion standard and calm, lang, dark, accent.
+- Tweaks: accent, dark, motion, firmware, role, lang, plus `stage` (loading, empty, ready, success, failure; default ready).
+- Dramatic motion: The failed step shakes once when the new version does not answer; the Update now button has a rotating border while an update is available.
+- Normal motion: Step marks pop to a green tick one after another and the current step shows a small spinner; the tag, the checked line and the set-up card pop in; the time indicator slides; rows cascade in. With motion calm or reduced motion the spinner stops and the state words (Done, In progress, Waiting) still say where it is.
+- Stands for: an App updates screen in the app settings and the updater service started with compose.update.yaml.
+- Still unbuilt in the real app: All of it when this board was drawn: the app has no self-update screen and compose.update.yaml is not in the repository yet. In the app the steps tick off as the updater reports them; on this board "Finish this step" stands in for each report. The dashed box is for the canvas only.
+
 ### Toolbox and server manager (page id `toolbox`)
 
 **Toolbox** (`Toolbox.dc.html`, 1440 wide, fills, interactive)

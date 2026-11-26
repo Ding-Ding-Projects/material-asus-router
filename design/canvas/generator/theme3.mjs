@@ -1,6 +1,6 @@
 // Third part of the canvas theme: kick and ban, the public Unkick page, Lock
 // IP with the changes panel, saved routers and connection keys, the start-up
-// cards and the router's own add-on page. gen.mjs appends this string to the
+// cards, the router's own add-on page and app updates. gen.mjs appends this string to the
 // ones from theme.mjs and theme2.mjs.
 export const CSS3 = `
 /* ---------- narrow pages: these boards also read at 360 px ---------- */
@@ -127,4 +127,26 @@ export const CSS3 = `
 .mer .msub{font-size:12px;opacity:.9}
 .mer .mapply{align-self:center;min-height:44px;padding:0 28px;border-radius:6px;background:linear-gradient(#93a0a5,#66747b)!important;color:#fff!important;font-weight:700}
 .mer .mdone{padding:8px 10px;border:1px solid #ffcc00;border-radius:4px;animation:pop .45s var(--spring) both}
+
+/* ---------- app updates ---------- */
+.cv10{display:flex;flex-direction:column;gap:4px;padding:10px 14px;border-radius:22px;border:2px dashed var(--sub)}
+.cv10 .rowx{flex-wrap:nowrap}
+.cv10 .btn{align-self:flex-start}
+.ver10{display:flex;flex-direction:column;gap:2px;min-width:0}
+.ver10 .lab9{color:inherit;opacity:.8}
+.ver10 .mono{font-size:13px;font-weight:680;overflow-wrap:anywhere}
+.steps10{display:flex;flex-direction:column;gap:8px}
+.st10{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:18px;background:var(--surf-low);transition:background .35s,color .35s;animation:rise .5s var(--spring) both;animation-delay:calc(var(--j) * 70ms)}
+.st10 .grow{min-width:0}
+.st10 .sm10{width:28px;height:28px;flex:none;border-radius:50%;display:grid;place-items:center;box-shadow:inset 0 0 0 2px var(--sub);color:var(--sub)}
+.st10.done{background:var(--good-c);color:var(--on-good-c)}
+.st10.done .sm10{background:var(--good);color:#fff;box-shadow:none;animation:pop .5s var(--spring) both}
+.st10.now{box-shadow:inset 0 0 0 2px var(--primary)}
+.st10.now .sm10{box-shadow:none;border:3px solid var(--surf-high);border-top-color:var(--primary);animation:spin .9s linear infinite}
+.st10.fail{background:var(--bad-c);color:var(--on-bad-c);animation:shake .6s both}
+.st10.fail .sm10{background:var(--bad);color:#fff;box-shadow:none}
+.st10.done .t2,.st10.fail .t2{color:inherit}
+.empty .cmd10{display:block;margin-top:12px;text-align:left}
+.empty p:has(.cmd10){max-width:100%}
+.ph:has(.cmd10){max-width:100vw}
 `;
