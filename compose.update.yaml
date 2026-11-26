@@ -1,0 +1,39 @@
+# Self-updating: adds the small updater service that lets the owner update the app from its own
+# App updates screen, or automatically at night. Use it together with the other compose files:
+#
+#   docker compose -f compose.yaml -f compose.lan.yaml -f compose.update.yaml up -d
+#
+# The updater is the only service that can talk to Docker (through the Docker socket). It has no
+# network of its own, reads and writes only the shared updates folder and this folder's .env,
+# and restarts only the app's service. The app never gets Docker access: it writes a request into
+# the shared updates folder and reads the answer. An update pins the newest build's exact sha-
+# image and puts the previous one back by itself if the new one does not pass its health check.
+services:
+  asus-router:
+    environment:
+      UPDATES_DIR: /updates
+    volumes:
+      - router-updates:/updates
+
+  updater:
+    image: docker:27.5.1-cli
+    container_name: material-asus-router-updater
+    restart: unless-stopped
+    network_mode: none
+    entrypoint: ["sh", "/updater/updater.sh"]
+    environment:
+      UPDATES_DIR: /updates
+      DEPLOY_DIR: /deploy
+      IMAGE: ghcr.io/ding-ding-projects/material-asus-router
+      TARGET_SERVICE: asus-router
+      TARGET_CONTAINER: material-asus-router
+      COMPOSE_PROJECT_NAME: ${COMPOSE_PROJECT_NAME:-material-asus-router}
+      COMPOSE_FILE: ${ROUTER_APP_COMPOSE_FILES:-compose.yaml:compose.lan.yaml:compose.update.yaml}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./:/deploy
+      - ./updater:/updater:ro
+      - router-updates:/updates
+
+volumes:
+  router-updates:
