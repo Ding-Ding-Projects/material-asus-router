@@ -15,15 +15,17 @@ import { B5 } from './boards5.mjs';
 import { B6 } from './boards6.mjs';
 import { B7 } from './boards7.mjs';
 import { B8 } from './boards8.mjs';
+import { B9 } from './boards9.mjs';
 import { CSS2 } from './theme2.mjs';
+import { CSS3 } from './theme3.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const PROJ = path.join(here, '..', 'project');
 const PREV = process.env.PREVIEW_DIR || '';
-const SPECS = [...B1, ...B2, ...B3, ...B4, ...B5, ...B6, ...B7, ...B8];
+const SPECS = [...B1, ...B2, ...B3, ...B4, ...B5, ...B6, ...B7, ...B8, ...B9];
 const errors = [];
 
-fs.writeFileSync(path.join(PROJ, 'theme.css'), CSS + CSS2);
+fs.writeFileSync(path.join(PROJ, 'theme.css'), CSS + CSS2 + CSS3);
 fs.writeFileSync(path.join(PROJ, 'Rail.dc.html'), rail());
 fs.writeFileSync(path.join(PROJ, 'TopBar.dc.html'), topbar());
 const keep = new Set(['Rail.dc.html', 'TopBar.dc.html', ...SPECS.map(s => s.file)]);
@@ -112,8 +114,8 @@ scan(path.join(here, '..'));
 
 // ---- canvas.json ----
 const PAGES = [
-  ['setup', 'Setup and onboarding', 'blue', ['Setup']], ['overview', 'Overview and notifications', 'blue', ['Main', 'Notifications']],
-  ['modes', 'One-click modes', 'pink', ['Modes', 'ModeBuilder']], ['devices', 'Devices', 'teal', ['Devices']], ['wifi', 'Wi-Fi and AiMesh', 'teal', ['WiFi', 'Mesh']],
+  ['setup', 'Setup, onboarding and start-up', 'blue', ['Setup', 'Startup']], ['routers', 'Saved routers and connection keys', 'blue', ['Routers']], ['overview', 'Overview and notifications', 'blue', ['Main', 'Notifications']],
+  ['modes', 'One-click modes', 'pink', ['Modes', 'ModeBuilder']], ['devices', 'Devices and Lock IP', 'teal', ['Devices', 'LockIp']], ['kick', 'Kick, ban and the public Unkick page', 'red', ['KickBan', 'Unkick']], ['wifi', 'Wi-Fi and AiMesh', 'teal', ['WiFi', 'Mesh']],
   ['network', 'Internet, local network, ports, traffic priority', 'green', ['Network', 'Lan', 'Qos']], ['security', 'Firewall, parental controls, VPN', 'red', ['Security', 'Firewall', 'Parental', 'Vpn']],
   ['editors', 'Visual editors', 'purple', ['MapEditor', 'RuleCanvas', 'SchedulePaint', 'PriorityBoard', 'Spectrum', 'PortCanvas', 'VpnDirector', 'DhcpMap']],
   ['storage', 'USB and storage', 'orange', ['Storage']], ['tools', 'Logs, network tools, router tools, scheduled jobs', 'purple', ['Tools', 'SpeedLab', 'Utilities', 'Jobs']],
@@ -123,7 +125,7 @@ const PAGES = [
   ['ssh', 'SSH action catalogue, owner terminal, Entware, flash backup', 'red', ['SshActions', 'Terminal', 'Entware', 'FlashBackup']], ['fwup', 'Firmware upload, the dim sum moment and the three-word screen', 'orange', ['FirmwareUpload', 'DimSumOnly']],
   ['live', 'Live mode and the History manager', 'pink', ['LiveMode', 'HistoryManager']], ['danger', 'Four keys, the Level 3 warning, the reboot launch and its live timeline', 'red', ['FourKey', 'BrotherMad', 'MissileLaunch', 'RebootTimeline']],
   ['household', 'Household and who is using the most', 'teal', ['Household', 'Leaderboard']], ['wdiag', 'Wi-Fi diagnostics', 'teal', ['WifiDiag']], ['hardware', 'Ports and hardware', 'orange', ['PortsHardware']],
-  ['services', 'Network services, web access and cloud', 'green', ['Services', 'Cloud']], ['fwint', 'Firewall internals', 'red', ['FirewallInternals']], ['guest', 'Guest Pro and captive portal', 'purple', ['GuestPro']], ['dsl', 'DSL', 'gray', ['Dsl']],
+  ['services', 'Network services, web access and cloud', 'green', ['Services', 'Cloud']], ['fwint', 'Firewall internals', 'red', ['FirewallInternals']], ['guest', 'Guest Pro and captive portal', 'purple', ['GuestPro']], ['dsl', 'DSL', 'gray', ['Dsl']], ['addon', 'The router add-on page', 'orange', ['RouterAddon']],
   ['phone', 'Phone boards: where every desktop feature lands', 'pink', ['Phone', 'PhoneWifi', 'PhoneNav', 'PhoneDevices', 'PhoneGuard', 'PhoneTools', 'PhoneSetup', 'PhoneSettings']], ['components', 'Shared shell components', 'gray', ['Rail', 'TopBar']]
 ];
 const heights = fs.existsSync(path.join(here, 'heights.json')) ? JSON.parse(fs.readFileSync(path.join(here, 'heights.json'), 'utf8')) : {};

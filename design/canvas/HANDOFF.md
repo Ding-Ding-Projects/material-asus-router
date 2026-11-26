@@ -2,7 +2,7 @@
 
 This folder holds the design canvas for Material Asus Router, a self-hosted web app and Windows desktop app that manages an Asus router (stock ASUS or Asuswrt-Merlin) over SSH.
 
-- `design/canvas/project` is the canvas project: 79 boards (77 screens plus the two shared shell components), `theme.css` and `canvas.json`.
+- `design/canvas/project` is the canvas project: 85 boards (83 screens plus the two shared shell components), `theme.css` and `canvas.json`.
 - `design/canvas/generator` writes all of it. Run `node gen.mjs` in that folder. Nothing in `project` is edited by hand.
 - `HANDOFF.md` (this file) is also written by the generator, from `handoff-head.md`, the board specifications and `handoff-tail.md`.
 
@@ -36,6 +36,19 @@ The rail gained three groups (Owner tools, Household, Diagnostics and services) 
 
 The idea of a "brother level" runs through these boards: every action gets a level from 0 to 3, worked out from who is online and what they are doing. The Cantonese strings call the person 阿哥; the household screen lets the owner rename him.
 
+## Added in the fourth round
+
+Six boards for screens the app already has, written by one new generator file (`boards9.mjs`) and a third theme part (`theme3.mjs`). All six are drawn at phone width (390 by 844) because that is where these screens are hardest to get right, and every one also reads at 360 px wide with nothing sticking out: buttons and tags wrap, rows fold their actions onto a second line, and long content scrolls inside the frame.
+
+- **Kick and ban** (page `kick`): the card for the person who was paused, the Paused now list, the device list with its Kick buttons, the Kick sheet (impact, three ways to pause, the pointer to the speed limiter, durations up to a ban, a note) and the Recent log.
+- **The Unkick page** (page `kick`): the public page with no sign-in, with its paused, banned, not paused, unknown device and lifted states.
+- **Lock IP** (page `devices`): one-tap Lock IP and Unlock IP on the device list, the "IP locked" tag in words, lock to a different address, the selection bar, and the changes panel with the four-key confirmation. Key 4 has its touch form: "No keyboard? Tap in order:" with the buttons 3, 1, 2.
+- **Saved routers** (page `routers`): the router in use, the Main or Testing choice, the saved list, the "Testing router" badge that sits on the top bar, and the key choices on the connect screen with the passphrase refusal.
+- **Start-up** (page `setup`): the loading card with its feature count and the start-up error card.
+- **Router add-on page** (page `addon`): the page the add-on adds to the router's own web interface, drawn in the router's style and not in the app's.
+
+Three of them are not screens of the signed-in app (the Unkick page, Start-up and the router add-on page), so they carry no app bar and no bottom bar (`bare` in the board specification) and they preview their states with their own switcher instead of the `stage` Tweak.
+
 ## Tweaks carried by every board
 
 Every board, including the two shell components, declares the same Tweaks with the same names and defaults:
@@ -50,7 +63,7 @@ Every board, including the two shell components, declares the same Tweaks with t
 | `lang` | enum | `en` | `en`, `yue`, `both` |
 | `stage` | enum | `ready` | `loading`, `empty`, `ready`, `success`, `failure` |
 
-`stage` is on all 77 screen boards (not on the two shell components, which have no stages). The shell components add their own content props: `page` and `pending` on the rail; `title`, `tabs` and `active` on the top bar.
+`stage` is on 80 of the 83 screen boards. It is not on the two shell components, which have no stages, nor on the Unkick page, Start-up and the router add-on page, which preview their own states with a switcher on the board. The shell components add their own content props: `page` and `pending` on the rail; `title`, `tabs` and `active` on the top bar.
 
 What each Tweak does on every board:
 
@@ -98,7 +111,7 @@ Nothing loops without a reason: the loops are the ambient hero aurora, live indi
 
 ## Interactive boards
 
-Every board is interactive: all 2 200 or so handlers are wired to board state, and the generator operates each one and re-renders the board as a check. The boards with their own logic beyond the shared controls:
+Every board is interactive: all 2 300 or so handlers are wired to board state, and the generator operates each one and re-renders the board as a check. The boards with their own logic beyond the shared controls:
 
 - **One-click modes**: opening a mode, the preview sheet with old and new values, apply, undo.
 - **Mode builder**: pick a palette card, drop it on the canvas, flip its value, remove it.
@@ -126,12 +139,17 @@ Every board is interactive: all 2 200 or so handlers are wired to board state, a
 - **Household**: presence states and the allowed level.
 - **Who's using the most**: two tabs, direction, period, slow down a device.
 - **Ports and hardware**, **Firewall internals**, **Guest Pro**: pick a socket, pick a chain, design the portal with a live phone preview.
+- **Kick and ban**: open the sheet from a device, choose how and for how long, kick, ban or disconnect; lift a pause; the log follows.
+- **The Unkick page**: every state, and the lift.
+- **Lock IP**: lock, unlock, lock to another address, select several, and turn the four keys including the tap-in-order form of key 4.
+- **Saved routers**: switch router, rename, Main or Testing, remove, and the three key choices.
+- **Start-up** and **Router add-on page**: loading and error; on and off, port, version.
 
 A drag is two clicks on the canvas (pick, then place) because the canvas runtime exposes click handlers. The app should offer pointer drag and keep the two-click route as the keyboard and switch-access path.
 
 ## Pages and boards
 
-### Setup and onboarding (page id `setup`)
+### Setup, onboarding and start-up (page id `setup`)
 
 **First run** (`Setup.dc.html`, 1440 wide, fills, interactive)
 
@@ -142,6 +160,28 @@ A drag is two clicks on the canvas (pick, then place) because the canvas runtime
 - Normal motion: staggered spring entrances for every tile and row, hover lift and tilt, press ripple and scale, spring switch thumbs, sliding segmented indicators, expanding chips, animated focus rings.
 - Stands for: the app first-run screens: owner account, connect, host key approval.
 - Still unbuilt in the real app: Network scan radar, firmware detection summary and the look step are design only.
+
+**Start-up: loading and the start-up error** (`Startup.dc.html`, 390 by 844, fixed root, interactive)
+
+- Shows: The two cards a person can see between signing in and the app being ready. The loading card: "Opening your router", a spinner, a progress bar and the count "Loading features: 120 of 182", so a slow start is visibly still moving. The start-up error card: "The app could not start", the error text in a monospace box so it can be copied into a report, and two ways out, "Clear saved settings and retry" and "Try again".
+- Try: the two state buttons (Loading, Could not start); the slider under the loading card (the bar and the count follow); Try again and Clear saved settings and retry (both go back to loading from zero; the second one says what was cleared); Tweaks > motion calm (the spinner stops and the count still tells you where it is), lang, dark, accent.
+- Tweaks: accent, dark, motion, firmware, role, lang.
+- Dramatic motion: The error card shakes once when it appears.
+- Normal motion: The spinner turns; the progress bar grows with a spring and shimmers; the card rises in.
+- Stands for: the loading card and the start-up error card the app shows after sign-in.
+- Still unbuilt in the real app: Nothing on this board is missing from the app. The slider is for the canvas only.
+
+### Saved routers and connection keys (page id `routers`)
+
+**Saved routers and connection keys** (`Routers.dc.html`, 390 by 844, fixed root, interactive)
+
+- Shows: Saved routers at phone width. At the top, the badge that sits on the top bar of the whole app for as long as a Testing router is in use ("Testing router: Bench"), so a change meant for the bench is never made at home by mistake. "The router in use" card with a name field, a Main or Testing choice and Save. The list of saved routers with Main and Testing chips, "In use" on the current one, "Use this router" on the others, and remove. The second section is the key choice on the connect screen: Create a key, Make a new key (asks first) and Use a key I already have, with the refusal for a key that is protected by a passphrase.
+- Try: Use this router on Home (the Testing badge leaves); switch the router in use between Main and Testing and Save (the chip and the badge follow); type a new name and Save; remove a router that is not in use; the Connection keys section: each of the three choices, Make a new key then Cancel or confirm, and the two sample key files (the one with a passphrase is refused with the reason); Tweaks > role viewer, lang, dark, stage.
+- Tweaks: accent, dark, motion, firmware, role, lang, plus `stage` (loading, empty, ready, success, failure; default ready).
+- Dramatic motion: The dot on the Testing badge pulses for as long as a Testing router is in use.
+- Normal motion: The badge pops in and out; the Main or Testing indicator slides; rows cascade in; option cards change shape when chosen; the question and the refusal pop in.
+- Stands for: the saved routers screen, the Testing badge on the top bar and the key choices on the connect screen.
+- Still unbuilt in the real app: Nothing on this board is missing from the app. The two sample key files stand in for the file chooser.
 
 ### Overview and notifications (page id `overview`)
 
@@ -187,7 +227,7 @@ A drag is two clicks on the canvas (pick, then place) because the canvas runtime
 - Stands for: the settings catalogue (each palette card is one catalogue entry).
 - Still unbuilt in the real app: The builder does not exist in the app. On the canvas a drag is two clicks (pick, then drop); the app would use pointer drag with the same keyboard route.
 
-### Devices (page id `devices`)
+### Devices and Lock IP (page id `devices`)
 
 **Devices** (`Devices.dc.html`, 1440 wide, fills, interactive)
 
@@ -198,6 +238,38 @@ A drag is two clicks on the canvas (pick, then place) because the canvas runtime
 - Normal motion: staggered spring entrances for every tile and row, hover lift and tilt, press ripple and scale, spring switch thumbs, sliding segmented indicators, expanding chips, animated focus rings.
 - Stands for: the app devices screen (name, address, MAC, band).
 - Still unbuilt in the real app: Signal history, per-device live rate, owner assignment and bulk actions are design only.
+
+**Lock IP on the device list** (`LockIp.dc.html`, 390 by 844, fixed root, interactive)
+
+- Shows: Lock IP on the device list at phone width. Each row has a one-tap Lock IP or Unlock IP button, the words "IP locked" as a tag beside the address (not a colour alone), an icon button to lock the device to a different address, and a Kick shortcut. Ticking rows brings up the selection bar with Lock IPs and Unlock IPs. Docked at the bottom of the list is the waiting change, written out ("Lock IP 198.51.100.103 → kitchen-speaker"), with Review. Review opens the Changes waiting section: the changes panel and the four-key confirmation. Key 4 offers "No keyboard? Tap in order:" with the buttons 3, 1, 2, which is the touch form of the key combination.
+- Try: Lock IP on Living-TV (the docked line counts a second change); Unlock IP on Pat-Laptop; the pencil on a row (an address stepper opens; Lock to this address queues it); tick and untick rows, then Lock IPs or Unlock IPs in the selection bar; Review, or the Changes waiting section button; in the panel turn key 1, type kitchen-speaker for key 2, tap Press and hold for key 3, then tap 1, 2, 3 in order for key 4 (the buttons are laid out 3, 1, 2, and a wrong tap starts again); Turn all four keys; Discard; Tweaks > role viewer, stage success and failure, lang, dark.
+- Tweaks: accent, dark, motion, firmware, role, lang, plus `stage` (loading, empty, ready, success, failure; default ready).
+- Dramatic motion: When all four keys are on, the Turn all four keys button gets a rotating conic border.
+- Normal motion: Rows cascade in; the selection bar and the address editor pop in; each key card turns green and its mark spins once when the key is on; tapped numbers turn green.
+- Stands for: the device list with Lock IP, the pending changes panel and the four-key confirmation, as the app shows them on a phone.
+- Still unbuilt in the real app: Nothing on this board is missing from the app. In the app key 3 is a real press and hold; on this board one tap stands in for it.
+
+### Kick, ban and the public Unkick page (page id `kick`)
+
+**Kick and ban** (`KickBan.dc.html`, 390 by 844, fixed root, interactive)
+
+- Shows: The Kick and ban screen at phone width. A card for the person who was paused, with the link to the Unkick page. A Paused now list where each row says how the device is held, until when ("until 19:49, 30 min left"), who did it and the note, with an Unkick or Unban button. The device list, each row with its owner ("belongs to Your brother") and a Kick button. The Kick sheet: the impact line, the three ways to pause with an explanation under each, a dashed box that points to the speed limiter instead, the duration choices from 15 minutes to "Until lifted (ban)", a note for the person, and one action that reads Kick, Ban or Disconnect. A Recent log.
+- Try: the three section buttons (Paused now, Devices, Recent); Unkick on Living-TV and Unban on Alex-Tablet (the row leaves and the log gains a line); Kick on Game-Console (the impact line turns into the brother warning and shakes once); in the sheet pick each way to pause (Disconnect hides the duration and renames the action), pick "Until lifted (ban)" (the action becomes Ban and the ban note appears), then Kick (the device moves to Paused now); Copy the link; Tweaks > role viewer (nothing can be kicked), motion standard (the warning stops shaking), lang, dark, stage.
+- Tweaks: accent, dark, motion, firmware, role, lang, plus `stage` (loading, empty, ready, success, failure; default ready).
+- Dramatic motion: The brother warning in the Kick sheet shakes once when it appears.
+- Normal motion: The sheet springs up over a scrim; rows cascade in; the section indicator slides; chips and option cards change shape when chosen; the result line pops in.
+- Stands for: the Kick and ban screen in the app, including the sheet opened from the device list.
+- Still unbuilt in the real app: Nothing on this board is missing from the app. The brother wording follows the household setting, which this board fixes to one name.
+
+**The Unkick page (public, no sign-in)** (`Unkick.dc.html`, 390 by 844, fixed root, interactive)
+
+- Shows: The public Unkick page, which needs no sign-in: the page a paused person opens on their own device. A breathing circle, "Your internet is paused", why and the note that was left, "until 19:49 (30 min left), by Pat", and one big "Unkick me" button (it reads "Unban me" for a ban). Under it, the line that says the page can only lift a pause on the device you are using now and never shows anyone else's devices. The other states are here too: not paused, the router does not know this device, and lifted ("Unkicked. You are back online.").
+- Try: the five state buttons (Paused, Banned, Not paused, Unknown, Lifted); Unkick me (the circle turns into a green tick and the title changes); Check again; Tweaks > lang (the page follows the language of the browser), dark, accent, motion standard and calm (the circle stops breathing).
+- Tweaks: accent, dark, motion, firmware, role, lang.
+- Dramatic motion: The circle breathes and sends out two slow rings while the device is paused; the green tick pops in when the pause is lifted.
+- Normal motion: The card rises in; the button lifts on hover and presses in.
+- Stands for: the Unkick page the app serves without sign-in, opened from the link on the Kick and ban screen.
+- Still unbuilt in the real app: Nothing on this board is missing from the app. The state buttons at the top are for the canvas only.
 
 ### Wi-Fi and AiMesh (page id `wifi`)
 
@@ -874,6 +946,18 @@ A drag is two clicks on the canvas (pick, then place) because the canvas runtime
 - Normal motion: staggered spring entrances for every tile and row, hover lift and tilt, press ripple and scale, spring switch thumbs, sliding segmented indicators, expanding chips, animated focus rings.
 - Stands for: nothing yet: the app has only been used with Ethernet-WAN models.
 - Still unbuilt in the real app: The whole DSL page is design only.
+
+### The router add-on page (page id `addon`)
+
+**The router's own page for the add-on** (`RouterAddon.dc.html`, 390 by 844, fixed root, interactive)
+
+- Shows: The page the add-on adds to the router's own web interface, drawn in the style of the Asuswrt-Merlin administration pages (the dark grey #4D595D panel) and not in the app's style, because that is where it lives. Title "Material Router", On and Off, the port (8790), "Which version opens (remembered by this browser)" with a Material version card and an Advanced version card, the Open link, and the note that switching it on or off restarts only this app.
+- Try: On and Off (the Open link leaves when it is off); the port buttons (the link follows); the two version cards (the link text and address follow); Apply; Tweaks > lang, accent (only the Open link takes the accent), role viewer. Dark has no effect here on purpose: the router page has one look.
+- Tweaks: accent, dark, motion, firmware, role, lang.
+- Dramatic motion: None; this page only carries normal motion.
+- Normal motion: The page fades in; the chosen version card lifts; the Open link and the saved line pop in.
+- Stands for: the add-on page on the router (addon/webui), reached from the router's own menu.
+- Still unbuilt in the real app: Nothing on this board is missing from the add-on.
 
 ### Phone boards: where every desktop feature lands (page id `phone`)
 

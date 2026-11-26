@@ -15,7 +15,10 @@ test("compose.lan.yaml: macvlan network with the documented variables, no publis
   assert.match(lan, /ip_range: \$\{ROUTER_APP_LAN_RANGE:-\$\{ROUTER_APP_LAN_IP\}\/32\}/);
   assert.match(lan, /ipv4_address: \$\{ROUTER_APP_LAN_IP:\?/);
   // The override adds the network and never loosens the base hardening.
-  for (const loosened of ["read_only", "cap_drop", "security_opt", "privileged", "cap_add", "healthcheck"]) assert.ok(!lan.includes(loosened), `${loosened} must stay only in compose.yaml`);
+  // Each of these is a compose option; it must not appear as a key in the LAN file (text such as the
+  // sysctl name ip_unprivileged_port_start is not the privileged option).
+  for (const loosened of ["read_only", "cap_drop", "security_opt", "privileged", "cap_add", "healthcheck"]) assert.ok(!new RegExp(`^[ \\t]*${loosened}:`, "m").test(lan), `${loosened} must stay only in compose.yaml`);
+  assert.doesNotMatch(lan, /^\s*cap_add:|^\s*privileged:\s*true/m, "the LAN file never adds capabilities or privileged mode");
   const base = await read("compose.yaml");
   for (const kept of ["read_only: true", "no-new-privileges:true", "- ALL", "http://127.0.0.1:8790/health"]) assert.ok(base.includes(kept), kept);
   assert.match(base, /ROUTER_APP_PORT:-8790\}:8790/, "published port stays the default mode");

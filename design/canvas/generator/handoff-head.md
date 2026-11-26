@@ -2,7 +2,7 @@
 
 This folder holds the design canvas for Material Asus Router, a self-hosted web app and Windows desktop app that manages an Asus router (stock ASUS or Asuswrt-Merlin) over SSH.
 
-- `design/canvas/project` is the canvas project: 79 boards (77 screens plus the two shared shell components), `theme.css` and `canvas.json`.
+- `design/canvas/project` is the canvas project: 85 boards (83 screens plus the two shared shell components), `theme.css` and `canvas.json`.
 - `design/canvas/generator` writes all of it. Run `node gen.mjs` in that folder. Nothing in `project` is edited by hand.
 - `HANDOFF.md` (this file) is also written by the generator, from `handoff-head.md`, the board specifications and `handoff-tail.md`.
 
@@ -36,6 +36,19 @@ The rail gained three groups (Owner tools, Household, Diagnostics and services) 
 
 The idea of a "brother level" runs through these boards: every action gets a level from 0 to 3, worked out from who is online and what they are doing. The Cantonese strings call the person 阿哥; the household screen lets the owner rename him.
 
+## Added in the fourth round
+
+Six boards for screens the app already has, written by one new generator file (`boards9.mjs`) and a third theme part (`theme3.mjs`). All six are drawn at phone width (390 by 844) because that is where these screens are hardest to get right, and every one also reads at 360 px wide with nothing sticking out: buttons and tags wrap, rows fold their actions onto a second line, and long content scrolls inside the frame.
+
+- **Kick and ban** (page `kick`): the card for the person who was paused, the Paused now list, the device list with its Kick buttons, the Kick sheet (impact, three ways to pause, the pointer to the speed limiter, durations up to a ban, a note) and the Recent log.
+- **The Unkick page** (page `kick`): the public page with no sign-in, with its paused, banned, not paused, unknown device and lifted states.
+- **Lock IP** (page `devices`): one-tap Lock IP and Unlock IP on the device list, the "IP locked" tag in words, lock to a different address, the selection bar, and the changes panel with the four-key confirmation. Key 4 has its touch form: "No keyboard? Tap in order:" with the buttons 3, 1, 2.
+- **Saved routers** (page `routers`): the router in use, the Main or Testing choice, the saved list, the "Testing router" badge that sits on the top bar, and the key choices on the connect screen with the passphrase refusal.
+- **Start-up** (page `setup`): the loading card with its feature count and the start-up error card.
+- **Router add-on page** (page `addon`): the page the add-on adds to the router's own web interface, drawn in the router's style and not in the app's.
+
+Three of them are not screens of the signed-in app (the Unkick page, Start-up and the router add-on page), so they carry no app bar and no bottom bar (`bare` in the board specification) and they preview their states with their own switcher instead of the `stage` Tweak.
+
 ## Tweaks carried by every board
 
 Every board, including the two shell components, declares the same Tweaks with the same names and defaults:
@@ -50,7 +63,7 @@ Every board, including the two shell components, declares the same Tweaks with t
 | `lang` | enum | `en` | `en`, `yue`, `both` |
 | `stage` | enum | `ready` | `loading`, `empty`, `ready`, `success`, `failure` |
 
-`stage` is on all 77 screen boards (not on the two shell components, which have no stages). The shell components add their own content props: `page` and `pending` on the rail; `title`, `tabs` and `active` on the top bar.
+`stage` is on 80 of the 83 screen boards. It is not on the two shell components, which have no stages, nor on the Unkick page, Start-up and the router add-on page, which preview their own states with a switcher on the board. The shell components add their own content props: `page` and `pending` on the rail; `title`, `tabs` and `active` on the top bar.
 
 What each Tweak does on every board:
 
@@ -98,7 +111,7 @@ Nothing loops without a reason: the loops are the ambient hero aurora, live indi
 
 ## Interactive boards
 
-Every board is interactive: all 2 200 or so handlers are wired to board state, and the generator operates each one and re-renders the board as a check. The boards with their own logic beyond the shared controls:
+Every board is interactive: all 2 300 or so handlers are wired to board state, and the generator operates each one and re-renders the board as a check. The boards with their own logic beyond the shared controls:
 
 - **One-click modes**: opening a mode, the preview sheet with old and new values, apply, undo.
 - **Mode builder**: pick a palette card, drop it on the canvas, flip its value, remove it.
@@ -126,5 +139,10 @@ Every board is interactive: all 2 200 or so handlers are wired to board state, a
 - **Household**: presence states and the allowed level.
 - **Who's using the most**: two tabs, direction, period, slow down a device.
 - **Ports and hardware**, **Firewall internals**, **Guest Pro**: pick a socket, pick a chain, design the portal with a live phone preview.
+- **Kick and ban**: open the sheet from a device, choose how and for how long, kick, ban or disconnect; lift a pause; the log follows.
+- **The Unkick page**: every state, and the lift.
+- **Lock IP**: lock, unlock, lock to another address, select several, and turn the four keys including the tap-in-order form of key 4.
+- **Saved routers**: switch router, rename, Main or Testing, remove, and the three key choices.
+- **Start-up** and **Router add-on page**: loading and error; on and off, port, version.
 
 A drag is two clicks on the canvas (pick, then place) because the canvas runtime exposes click handlers. The app should offer pointer drag and keep the two-click route as the keyboard and switch-access path.
