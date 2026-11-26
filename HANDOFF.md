@@ -29,8 +29,8 @@ State of the project for whoever picks it up next. See `ROADMAP.md` for the full
 
 ## Next steps
 
-1. Design canvas boards for the new screens (Kick and ban, Unkick, Lock IP, Routers, loading and
-   start-up error), then match the screens to them.
+1. Match the new screens (Kick and ban, Unkick, Lock IP, Routers, loading, start-up error and the
+   router add-on page) to their design canvas boards, which were added in canvas round 4.
 2. A 360-pixel sweep of every screen, fixing anything that hides a control.
 3. Install and launch the desktop app on Windows and record the result.
 4. Replace the README captures with captures of the current build.

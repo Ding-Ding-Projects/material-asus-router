@@ -170,10 +170,11 @@ export function emit(spec) {
   const ro = `<sc-if value="{{viewer}}" hint-placeholder-val="{{ false }}"><div class="ro" role="status">${ic('eye')}<span>{{readOnly}}</span></div></sc-if>`;
   let markup;
   if (spec.kind === 'phone') {
+    // spec.bare: a page outside the signed-in app, so no app bar, bottom bar or read-only banner
     const sb = `<div class="sb" aria-hidden="true"><span>9:41</span><span style="display:flex;gap:6px;align-items:center">${ic('wifi', 16, 2.4)}<svg width="26" height="13" viewBox="0 0 26 13"><rect x=".7" y=".7" width="22" height="11.6" rx="3.5" fill="none" stroke="currentColor" stroke-opacity=".5"/><rect x="2.4" y="2.4" width="15" height="8.2" rx="2" fill="currentColor"/></svg></span></div>`;
     const ab = `<header class="ab"><h1>{{title}}</h1><a class="icb" href="PhoneNav.dc.html" aria-label="${L('Search everything|搜尋所有嘢')}">${ic('search')}</a><a class="icb" href="PhoneSettings.dc.html" aria-label="${L('Notifications, 4 unread|通知，4 則未讀')}">${ic('bell')}<span class="dotb">4</span></a></header>`;
     const bn = `<nav class="bn" aria-label="${L('Main areas|主要功能')}">${PNAV.map((n, i) => `<a class="${i === spec.bn ? 'on' : ''}" href="${n[2]}"${i === spec.bn ? ' aria-current="page"' : ''}><span class="pl">${ic(n[0], 22)}</span>${L(n[1])}</a>`).join('')}</nav>`;
-    markup = `<div class="mx ph {{motionCls}} {{rootCls}}" ${root}>${sb}${ab}<main class="pc">${ro}${body}</main>${spec.noNav ? '' : bn}${C.over}</div>`;
+    markup = `<div class="mx ph {{motionCls}} {{rootCls}}" ${root}>${sb}${spec.bare ? '' : ab}<main class="pc">${spec.bare ? '' : ro}${body}</main>${spec.noNav || spec.bare ? '' : bn}${C.over}</div>`;
   } else {
     const imp = 'lang="{{lang}}" role="{{role}}" firmware="{{firmware}}" motion="{{motion}}" accent="{{accent}}" dark="{{dark}}"';
     markup = `<div class="mx shell {{motionCls}} {{rootCls}}" ${root}>

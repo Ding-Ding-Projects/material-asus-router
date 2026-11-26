@@ -56,6 +56,7 @@ real browser. Unticked items say what is still missing.
 ## Design and records
 
 - [x] Design canvas rounds 1 to 3
-- [ ] Canvas boards for Kick and ban, the Unkick page, Lock IP, Routers, the loading card and the start-up error
+- [x] Design canvas round 4: boards for Kick and ban, the Unkick page, Lock IP, Routers, the loading card, the start-up error and the router add-on page
+- [ ] Match those screens to their round 4 boards
 - [ ] Replace the README captures with captures of the current build
 - [ ] Postman collection for the HTTP API
