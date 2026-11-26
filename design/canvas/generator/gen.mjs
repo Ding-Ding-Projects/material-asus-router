@@ -16,13 +16,14 @@ import { B6 } from './boards6.mjs';
 import { B7 } from './boards7.mjs';
 import { B8 } from './boards8.mjs';
 import { B9 } from './boards9.mjs';
+import { B10 } from './boards10.mjs';
 import { CSS2 } from './theme2.mjs';
 import { CSS3 } from './theme3.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const PROJ = path.join(here, '..', 'project');
 const PREV = process.env.PREVIEW_DIR || '';
-const SPECS = [...B1, ...B2, ...B3, ...B4, ...B5, ...B6, ...B7, ...B8, ...B9];
+const SPECS = [...B1, ...B2, ...B3, ...B4, ...B5, ...B6, ...B7, ...B8, ...B9, ...B10];
 const errors = [];
 
 fs.writeFileSync(path.join(PROJ, 'theme.css'), CSS + CSS2 + CSS3);
@@ -120,7 +121,7 @@ const PAGES = [
   ['editors', 'Visual editors', 'purple', ['MapEditor', 'RuleCanvas', 'SchedulePaint', 'PriorityBoard', 'Spectrum', 'PortCanvas', 'VpnDirector', 'DhcpMap']],
   ['storage', 'USB and storage', 'orange', ['Storage']], ['tools', 'Logs, network tools, router tools, scheduled jobs', 'purple', ['Tools', 'SpeedLab', 'Utilities', 'Jobs']],
   ['router', 'Firmware, system, maintenance, backup, advanced, Merlin', 'orange', ['Firmware', 'System', 'Backup', 'Advanced']], ['changes', 'Change history, write stages, takeovers, exports', 'pink', ['Changes', 'Takeover', 'Records']],
-  ['app', 'Settings, tabs, appearance, language, modes, locks, regex, updates', 'purple', ['Settings', 'Tabs', 'Appearance', 'Language', 'Focus', 'Locks', 'Regex', 'Updates']],
+  ['app', 'Settings, tabs, appearance, language, modes, locks, regex, updates', 'purple', ['Settings', 'Tabs', 'Appearance', 'Language', 'Focus', 'Locks', 'Regex', 'Updates']], ['updates', 'App updates and the updater service', 'purple', ['AppUpdate']],
   ['toolbox', 'Toolbox and server manager', 'green', ['Toolbox', 'ServerManager']], ['deploy', 'Deploy assistant and instances', 'gray', ['Deploy']], ['docs', 'Documentation website and offline docs', 'gray', ['Docs', 'Help']],
   ['ssh', 'SSH action catalogue, owner terminal, Entware, flash backup', 'red', ['SshActions', 'Terminal', 'Entware', 'FlashBackup']], ['fwup', 'Firmware upload, the dim sum moment and the three-word screen', 'orange', ['FirmwareUpload', 'DimSumOnly']],
   ['live', 'Live mode and the History manager', 'pink', ['LiveMode', 'HistoryManager']], ['danger', 'Four keys, the Level 3 warning, the reboot launch and its live timeline', 'red', ['FourKey', 'BrotherMad', 'MissileLaunch', 'RebootTimeline']],
