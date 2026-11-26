@@ -252,6 +252,7 @@ export class FakeRouter {
 
   listen(port = 0, host = "127.0.0.1") {
     this.server = new Server({ hostKeys: [this.hostKey] }, (client) => {
+      client.setNoDelay(true); // answer each command at once, as a router's SSH server does
       if (!this.reachable) return client.end();
       client.on("error", () => {});
       client.on("authentication", (ctx) => {
