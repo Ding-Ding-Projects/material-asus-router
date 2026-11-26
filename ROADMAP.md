@@ -42,7 +42,8 @@ real browser. Unticked items say what is still missing.
 - [x] The bottom bar is one short row
 - [x] The fourth confirmation key can be turned by tapping 1, 2 and 3 in order
 - [x] Every one of the 125 screens fits at 360 pixels: no screen widens the page and nothing sticks out outside a scrolling area (checked in a browser on 2026-11-25)
-- [ ] Prove every action reachable at desktop width is also reachable at 360 pixels (only Kick and ban, Devices with Lock IP, the Unkick page and the confirmation were driven by hand)
+- [x] Every control shown at 1440 pixels is also shown at 360 pixels: 5,568 controls on 125 screens, none missing (each screen's opening state, checked in a browser on 2026-11-25)
+- [ ] The same check for dialogs and deeper states (Kick and ban, Lock IP with the four-key confirmation, and the Unkick page were driven by hand at phone width)
 
 ## Delivery
 
