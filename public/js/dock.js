@@ -5,7 +5,7 @@
 // four keys, the household allowance and the live progress timeline come from
 // features/change-safety/safety.js.
 import { api, bus, clear, h, icon, openDialog, t, toast, tt } from "./core.js";
-import { applyLive, guarded, levelBadge, markSeen, progressTimeline, rawPost, refreshUndo, safety, scheduleDialog, simulationHost, undoToast, watchRun } from "./features/change-safety/safety.js";
+import { applyLive, guarded, levelBadge, markSeen, oneClick, progressTimeline, rawPost, refreshUndo, safety, scheduleDialog, simulationHost, undoToast, watchRun } from "./features/change-safety/safety.js";
 import { levelOf, outageText } from "./features/change-safety/model.js";
 
 export const app = { me: null, router: null, catalog: null, route: "overview", canWrite: false, notices: [], unseen: 0 };
@@ -89,14 +89,16 @@ export const dock = {
 
 // ---- the bar at the bottom ---------------------------------------------------
 
-// In Live mode the waiting changes apply by themselves after a short pause the person can use to
-// discard them. The server still asks for the keys or the household's say when a change needs
-// them. This happens once per edit: after a refusal or a cancelled confirmation the changes stay
-// in the bar until the person edits again or presses Apply now.
-export const LIVE_PAUSE_MS = 1600;
+// In Live mode one click is enough: a change applies by itself as soon as it is made, and an Undo
+// toast follows. Text being typed waits until the person leaves the field or presses Enter. The
+// server still asks for the keys or the household's say when a change needs them. This happens
+// once per edit: after a refusal or a cancelled confirmation the changes stay in the bar until
+// the person edits again or presses Apply now.
+// The short pause lets one action that makes several edits land as one change.
+export const LIVE_PAUSE_MS = 250;
 let autoTimer = null;
 let autoTried = -1;
-// True while the person is still in a text field. A change that needs the keys waits until they leave it.
+// True while the person is still in a text field.
 const typing = () => Boolean(document.activeElement?.matches?.("textarea, input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=search]):not([type=button]):not([type=color]):not([type=file])"));
 
 export function renderDock(host) {
@@ -111,7 +113,7 @@ export function renderDock(host) {
   host.append(
     icon("edit_note"),
     h("b", {}, levelBadge(level, { label: false }), " ", t(`${lines.length} change${lines.length === 1 ? "" : "s"} waiting`, `${lines.length} 項改動等緊`), h("span", { class: "muted" }, ` ${lines.slice(0, 2).join(" · ")}${lines.length > 2 ? " …" : ""}`),
-      auto ? h("span", { class: "muted dock-auto" }, ` · ${t("applies by itself in a moment", "一陣會自動套用")}`) : null),
+      auto ? h("span", { class: "muted dock-auto" }, ` · ${typing() ? t("applies when you leave the field or press Enter", "離開欄位或者撳 Enter 就會套用") : t("applying", "套用緊")}`) : null),
     h("button", { class: "btn o sm", onClick: () => dock.clear() }, t("Discard", "放棄")),
     h("button", { class: "btn o sm", title: t("Apply later, or when the house is quiet", "遲啲，或者屋企冇人用嗰陣套用"), onClick: async () => { const out = await scheduleDialog(dock.toBody()); if (out) dock.clear(); } }, icon("schedule", "sm"), t("Later", "遲啲")),
     safety.live
@@ -120,16 +122,23 @@ export function renderDock(host) {
     safety.live ? h("button", { class: "btn f", disabled: safety.busy, onClick: () => applyNow() }, icon("bolt", "sm"), t("Apply now", "即時套用")) : h("button", { class: "btn f", onClick: () => reviewPending() }, icon("fact_check", "sm"), t("Review and apply", "檢查同套用")),
   );
   if (!auto) return;
-  // A change nobody at home notices needs no keys, so it does not wait for the person to leave the field.
-  const needsNoKeys = known && level === 0 && !dock.ops.length;
   const fire = () => {
     if (!dock.count() || !safety.live || safety.busy || dock.edits !== edits) return;
-    if (!needsNoKeys && typing()) return void (autoTimer = setTimeout(fire, 400));
+    if (typing()) return void (autoTimer = setTimeout(fire, 300));
     autoTried = edits;
     applyNow();
   };
   autoTimer = setTimeout(fire, LIVE_PAUSE_MS);
 }
+
+// Enter in a setting's text field applies what is waiting, the same as leaving the field.
+globalThis.document?.addEventListener?.("keydown", (e) => {
+  if (e.key !== "Enter" || e.isComposing || !safety.live || safety.busy || !dock.count() || !app.canWrite) return;
+  const field = document.activeElement;
+  if (!field?.matches?.("input") || !typing() || !field.closest?.(".setting")) return;
+  autoTried = dock.edits;
+  applyNow();
+});
 
 async function applyNow() {
   clearTimeout(autoTimer);
@@ -154,7 +163,7 @@ async function previewOf(body) {
 export async function reviewPending() {
   clearTimeout(autoTimer);
   const preview = await previewOf(dock.toBody());
-  if (preview) return runPreview(preview, { clearOnApplied: true });
+  if (preview) return runPreview(preview, { clearOnApplied: true, review: true });
 }
 
 // ---- the review dialog ---------------------------------------------------
@@ -194,8 +203,12 @@ function impactSummary(preview) {
       : t(`The household does not allow this right now (up to Level ${preview.allowance.allowed ?? 0}). The owner can override.`, `屋企依家唔容許（最多容許級數 ${preview.allowance.allowed ?? 0}），擁有人可以覆寫。`))) : null);
 }
 
-export function runPreview(preview, { clearOnApplied = false, title, applyVia } = {}) {
-  let phase = "review";
+// review: true always shows what will change first. Without it, Live mode applies at once when
+// the change needs no keys and the household allows it, and closes by itself when it worked.
+export function runPreview(preview, { clearOnApplied = false, title, applyVia, review = false } = {}) {
+  const direct = !review && oneClick(preview);
+  let phase = direct ? "applying" : "review";
+  let closeSheet = null;
   let record = null;
   let error = null;
   let timer = null;
@@ -237,6 +250,7 @@ export function runPreview(preview, { clearOnApplied = false, title, applyVia } 
       refreshUndo();
       bus.emit("changed");
       if (record.status === "applied") undoToast(record, preview);
+      if (direct && record.status === "applied") return void closeSheet?.(true);
     } catch (e) {
       error = e;
       phase = "error";
@@ -247,8 +261,9 @@ export function runPreview(preview, { clearOnApplied = false, title, applyVia } 
     render();
   };
 
-  return openDialog(
+  const dialog = openDialog(
     (close, render) => {
+      closeSheet = close;
       const heading = title ?? t("Review changes", "檢查改動");
       if (phase === "review")
         return [
@@ -300,6 +315,8 @@ export function runPreview(preview, { clearOnApplied = false, title, applyVia } 
     },
     { label: t("Review changes", "檢查改動") },
   );
+  if (direct) apply(dialog.render);
+  return dialog;
 }
 export const reviewPreview = runPreview;
 

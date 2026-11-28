@@ -7,6 +7,7 @@
 // See README.md in this folder for the exact shapes and the ctx every
 // callback receives. One broken module is reported and skipped; it never
 // stops the app or the other features.
+import { oneClick } from "./change-safety/safety.js";
 import * as core from "../core.js";
 import { app, dock, notice } from "../dock.js";
 import * as controls from "../controls.js";
@@ -20,7 +21,7 @@ export const featureState = { screens: new Map(), settings: [], commands: [], ov
 function context(navigate) {
   // One page: a heading, a lede and children, the same look as the stock screens.
   const page = (title, lede, ...children) => h("div", { class: "page" }, h("div", { class: "rise" }, h("h1", { class: "disp" }, tt(title)), lede ? h("p", { class: "lede" }, tt(lede)) : null), children);
-  return Object.freeze({ api, t, tt, h, icon, clear, toast, openDialog, confirmDialog, bus, getLang, state: app, dock, notice, controls: { ...controls }, navigate, page, notifications: { notice, toast } });
+  return Object.freeze({ api, t, tt, h, icon, clear, toast, openDialog, confirmDialog, bus, getLang, oneClick, state: app, dock, notice, controls: { ...controls }, navigate, page, notifications: { notice, toast } });
 }
 
 export async function loadFeatures({ navigate, reserved = new Set(), onProgress = null }) {

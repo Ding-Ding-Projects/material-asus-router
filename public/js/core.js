@@ -2,6 +2,8 @@
 // API client, dialogs and toasts. Nothing here uses innerHTML, so text from
 // the router can never turn into markup.
 
+import "./dom-guard.js";
+
 export function h(tag, props, ...kids) {
   const el = document.createElement(tag);
   for (const [key, value] of Object.entries(props ?? {})) {

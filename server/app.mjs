@@ -569,7 +569,7 @@ function defineRoutes(app, route) {
     if (custom || ACTIONS.includes(params.name)) await app.safety.gateAction(params.name, body, who);
     if (custom) {
       const info = await session.info();
-      return runFeatureAction(custom, body, { session, info, who, exec: (c, o) => session.exec(c, o), nvram: () => session.nvram({ fresh: true }), preview: (input) => engine.preview(input, { user: who.name }) });
+      return runFeatureAction(custom, body, { session, info, who, exec: (c, o) => session.exec(c, o), nvram: () => session.nvram({ fresh: true }), preview: async (input) => app.safety.decorate(await engine.preview(input, { user: who.name, meta: { mode: app.safety.liveMode ? "live" : "review", userId: who.userId } })) });
     }
     if (!ACTIONS.includes(params.name)) throw bad("That action does not exist.", 404);
     if (params.name === "install-key") {
@@ -600,7 +600,7 @@ function defineRoutes(app, route) {
   });
   mountFeatureRoutes((id, method, sub, handler, flags = {}) => {
     const { public: _ignored, ...allowed } = flags;
-    route(method, `/api/x/${id}${sub}`, (c) => handler({ ...c, live: () => liveContext(app), preview: (input) => engine.preview(input, { user: c.who.name }), bad }), allowed);
+    route(method, `/api/x/${id}${sub}`, (c) => handler({ ...c, live: () => liveContext(app), preview: async (input) => app.safety.decorate(await engine.preview(input, { user: c.who.name, meta: { mode: app.safety.liveMode ? "live" : "review", userId: c.who.userId } })), bad }), allowed);
   });
 
   // -- backup and restore --

@@ -1,5 +1,8 @@
 // The mode builder: pick settings from the whole catalogue, choose the value
 // each one gets with its real control, name the mode, choose an icon and save it.
+// Saving writes nothing to the router: modes are kept by the app, as many as you
+// like. A setting this router cannot store right now can still go in a mode; it is
+// kept for later use and left out when the mode is turned on.
 // Saving writes nothing to the router. The saved mode then appears on the Modes
 // screen, where it is previewed, applied and undone like the ready-made ones.
 import { canEdit, itemControl, loadControls } from "./item-control.js";
@@ -15,9 +18,9 @@ async function screen(ctx) {
 
   let entries = [];
   let refused = {};
+  let later = {}; // settings this router cannot store now: allowed in a mode, kept for later
   let icons = ["bolt"];
   let saved = [];
-  let max = 24;
   const model = { id: null, name: "", icon: "movie", items: [] }; // items: [{ id, value }]
   let query = "";
   let showAll = false;
@@ -65,8 +68,10 @@ async function screen(ctx) {
     for (const entry of shown) {
       const why = refused[entry.id] ?? (canEdit(entry) ? null : { en: "This kind of setting cannot be edited inside a mode yet.", yue: "呢類設定暫時唔可以喺模式入面編輯。" });
       const taken = inMode.has(entry.id);
+      const wait = why ? null : later[entry.id];
       palette.append(h("div", { class: `mb-entry${why ? " off" : ""}` },
-        h("div", { class: "grow" }, h("div", { class: "t1" }, tt(entry.label)), h("div", { class: "t2" }, tt(entry.groupLabel ?? { en: "", yue: "" })), why ? h("div", { class: "t2" }, icon("lock", "sm"), " ", tt(why)) : null),
+        h("div", { class: "grow" }, h("div", { class: "t1" }, tt(entry.label)), h("div", { class: "t2" }, tt(entry.groupLabel ?? { en: "", yue: "" })), why ? h("div", { class: "t2" }, icon("lock", "sm"), " ", tt(why)) : null,
+          wait ? h("div", { class: "t2" }, icon("inventory_2", "sm"), " ", tt(wait), " ", t("It can still go in a mode, kept for later.", "仍然可以放入模式，留返之後用。")) : null),
         h("button", { class: "btn t sm", disabled: locked || Boolean(why) || taken, "aria-label": `${taken ? t("Already in the mode", "已經喺模式入面") : t("Add to the mode", "加入模式")}: ${tt(entry.label)}`, onClick: () => add(entry) }, icon(taken ? "check" : "add", "sm"), taken ? t("Added", "已加入") : t("Add", "加入"))));
     }
     if (found.length > shown.length) palette.append(h("button", { class: "btn o sm", onClick: () => { showAll = true; paintPalette(); } }, t(`Show all ${found.length}`, `顯示全部 ${found.length} 項`)));
@@ -99,11 +104,13 @@ async function screen(ctx) {
     }
     model.items.forEach((item, index) => {
       const entry = byId(item.id);
-      const why = !entry ? { en: "This router does not have that setting.", yue: "呢部路由器冇呢個設定。" } : refused[item.id];
-      const control = entry && !why ? itemControl(ctx, entry, () => item.value, (value) => { item.value = value; outcome = null; scheduleCheck(); }, locked) : null;
+      const why = entry ? refused[item.id] : null;
+      const wait = !entry ? { en: "This router does not have that setting.", yue: "呢部路由器冇呢個設定。" } : why ? null : later[item.id];
+      const control = entry && !why && canEdit(entry) ? itemControl(ctx, entry, () => item.value, (value) => { item.value = value; outcome = null; scheduleCheck(); }, locked) : null;
       const card = h("div", { class: `mb-item${why ? " off" : ""}` },
         h("div", { class: "mb-item-top" },
-          h("div", { class: "grow" }, h("div", { class: "t1" }, entry ? tt(entry.label) : item.id), h("div", { class: "t2" }, entry ? t(`Now: ${entry.value === "" ? "empty" : entry.value}`, `而家：${entry.value === "" ? "空" : entry.value}`) : ""), why ? h("div", { class: "t2" }, icon("lock", "sm"), " ", tt(why)) : null),
+          h("div", { class: "grow" }, h("div", { class: "t1" }, entry ? tt(entry.label) : item.id), h("div", { class: "t2" }, entry ? t(`Now: ${entry.value === "" ? "empty" : entry.value}`, `而家：${entry.value === "" ? "空" : entry.value}`) : ""), why ? h("div", { class: "t2" }, icon("lock", "sm"), " ", tt(why)) : null,
+            wait ? h("div", { class: "t2" }, icon("inventory_2", "sm"), " ", tt(wait), " ", t("Kept in the mode for later use, and left out when the mode is turned on.", "會留喺模式入面之後用，開啟模式嗰陣會略過。")) : null),
           h("button", { class: "btn o sm", disabled: locked, "aria-label": `${t("Remove from mode", "由模式移走")}: ${entry ? tt(entry.label) : item.id}`, onClick: () => remove(item.id) }, icon("close", "sm"), t("Remove", "移走"))),
         control ? h("div", { class: "mb-item-ctl" }, control.el) : null);
       card.style.setProperty("--i", String(index));
@@ -197,7 +204,8 @@ async function screen(ctx) {
     try {
       const mode = await api.post("/api/x/mode-builder/modes", { id: model.id ?? undefined, name: model.name, icon: model.icon, items: model.items });
       model.id = mode.id;
-      outcome = { kind: "ok", title: t("Mode saved", "模式已儲存"), text: t(`${mode.name} is now a card on the Modes screen. Nothing was written to the router yet.`, `「${mode.name}」已經變成模式頁嘅一張卡。暫時乜都未寫入路由器。`) };
+      const kept = mode.later?.length ?? 0;
+      outcome = { kind: "ok", title: t("Mode saved", "模式已儲存"), text: t(`${mode.name} is now a card on the Modes screen. Nothing was written to the router yet.`, `「${mode.name}」已經變成模式頁嘅一張卡。暫時乜都未寫入路由器。`) + (kept ? ` ${t(`${kept} setting${kept === 1 ? "" : "s"} this router cannot store now ${kept === 1 ? "is" : "are"} kept in the mode for later use.`, `有 ${kept} 個設定呢部路由器而家存唔到，已經留喺模式入面之後用。`)}` : "") };
       await load();
     } catch (error) {
       outcome = { kind: "no", title: error.status === 409 ? t("This mode contradicts itself", "呢個模式自相矛盾") : t("The mode was not saved", "模式未儲存"), text: error.message };
@@ -238,9 +246,9 @@ async function screen(ctx) {
     const [list, catalog, built] = await Promise.all([api.get("/api/x/mode-builder/modes"), api.get("/api/catalog"), api.get("/api/x/mode-builder/palette")]);
     saved = list.modes;
     icons = list.icons;
-    max = list.max;
     entries = catalog.entries;
     refused = built.refused;
+    later = built.later ?? {};
     paintAll();
   }
 
@@ -251,7 +259,7 @@ async function screen(ctx) {
         h("h2", { class: "h2" }, t("Mode builder", "砌模式")),
         h("label", { class: "mode-param" }, h("span", { class: "t1" }, t("Name", "名稱")), nameInput),
         h("div", { class: "mode-param" }, h("span", { class: "t1" }, t("Icon", "圖示")), iconBox),
-        h("div", { class: "chips" }, count, t(`You can keep ${max} modes of your own.`, `你可以保留 ${max} 個自己嘅模式。`)),
+        h("div", { class: "chips" }, count, t("Keep as many modes as you like. They are saved by this app, not on the router.", "想留幾多個模式都得。模式由呢個程式儲存，唔係存喺路由器。")),
         problemBox,
         canvas,
         h("div", { class: "actions" }, saveButton, previewButton, h("button", { class: "btn o", onClick: () => reset() }, icon("restart_alt", "sm"), t("Start again", "重新開始"))))));

@@ -69,6 +69,10 @@ export async function setLiveMode(on) {
   bus.emit("safety");
 }
 
+// In Live mode one click is enough when the change needs no keys and the household allows it
+// right now. Anything else (keys, a refusal, Review mode) still shows what will change first.
+export const oneClick = (preview) => safety.live && preview?.confirmation?.required === false && ((preview.impact?.level ?? 0) < 1 || preview.allowance?.ok === true);
+
 // ---- badges --------------------------------------------------------------------------
 
 export function levelBadge(level, { label = true, size = "sm" } = {}) {
@@ -339,7 +343,9 @@ export async function applyLive(body, { preview = null, title } = {}) {
   safety.busy = true;
   bus.emit("safety");
   try {
-    const record = await guarded((extra) => rawPost("/api/changes/live", { ...body, ...extra }), { preview });
+    const call = () => guarded((extra) => rawPost("/api/changes/live", { ...body, ...extra }), { preview });
+    // A change under the router's safety timer can take a while, so its steps are shown while it runs.
+    const record = preview?.guard?.armed ? await withProgress(call, { previewId: body.previewId ?? null, title, preview }) : await call();
     if (!record) return null;
     await afterApply(record, preview, title);
     return record;
@@ -373,7 +379,8 @@ async function afterApply(record, preview, title) {
   await refreshUndo();
   bus.emit("changed");
   // The picture comes from the preview when there is one, and from the record's own old and new values otherwise (undo, redo, restore).
-  if (record.runId && !seen.has(record.runId)) openProgress(record.runId, title, preview ?? { items: record.items ?? [] });
+  // A change that simply worked gets the Undo toast and nothing to close. The steps are shown when it did not.
+  if (record.runId && record.status !== "applied" && !seen.has(record.runId)) openProgress(record.runId, title, preview ?? { items: record.items ?? [] });
   if (record.status === "applied") undoToast(record, preview);
 }
 

@@ -17,8 +17,12 @@ export function createUi(ctx) {
 
   // Shows a preview built by the server, applies it on request and waits for
   // the result. Resolves true when the router now has the new settings.
+  // In Live mode a change that needs no keys and that the household allows applies at once and
+  // closes by itself when it worked (ctx.oneClick decides).
   function review(preview, { title } = {}) {
-    let phase = "review";
+    const direct = ctx.oneClick?.(preview) === true;
+    let phase = direct ? "applying" : "review";
+    let closeSheet = null;
     let record = null;
     let error = null;
     const show = (value, item) => (item.secret ? "••••••••" : value === null ? t("not set", "未設定") : value === "" ? t("empty", "空") : clip(String(value)));
@@ -42,6 +46,10 @@ export function createUi(ctx) {
         }
         phase = "done";
         ctx.bus.emit("changed");
+        if (direct && record.status === "applied") {
+          toast(t("Applied. Undo it from Change history.", "已套用，可以喺「變更記錄」還原。"));
+          return void closeSheet?.(true);
+        }
       } catch (caught) {
         error = caught;
         phase = "error";
@@ -49,7 +57,8 @@ export function createUi(ctx) {
       render();
     };
 
-    return openDialog((close, render) => {
+    const dialog = openDialog((close, render) => {
+      closeSheet = close;
       const heading = h("h2", { class: "h2" }, title ?? t("Review changes", "檢查改動"));
       if (phase === "review")
         return [
@@ -74,6 +83,8 @@ export function createUi(ctx) {
           h("button", { class: "btn f", onClick: () => close(record.status === "applied") }, t("Done", "完成"))),
       ];
     }, { label: t("Review changes", "檢查改動") });
+    if (direct) apply(dialog.render);
+    return dialog;
   }
 
   // Asks the server for a preview, then shows it. Resolves true once applied.

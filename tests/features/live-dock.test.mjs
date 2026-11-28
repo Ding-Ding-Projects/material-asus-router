@@ -12,8 +12,8 @@ import { Element, document, install } from "../dom-stub.mjs";
 install();
 Object.defineProperty(Element.prototype, "parentNode", { get() { return this.parent; }, configurable: true });
 const core = await import("../../public/js/core.js");
-const { app, dock, renderDock, LIVE_PAUSE_MS } = await import("../../public/js/dock.js");
-const { loadSafety, safety, setLiveMode } = await import("../../public/js/features/change-safety/safety.js");
+const { app, dock, renderDock, runPreview, LIVE_PAUSE_MS } = await import("../../public/js/dock.js");
+const { loadSafety, oneClick, safety, setLiveMode } = await import("../../public/js/features/change-safety/safety.js");
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -48,7 +48,7 @@ async function boot(options) {
   };
 }
 
-test("live mode: a change that people at home notice applies by itself, with nothing to review", async () => {
+test("live mode: one click applies a change the household allows, with nothing to review and nothing to close", async () => {
   const s = await boot();
   try {
     const up = s.entry("qos.up");
@@ -56,13 +56,63 @@ test("live mode: a change that people at home notice applies by itself, with not
     assert.equal(safety.live, true);
     dock.setEntry(up, "21000");
     assert.equal(s.bar.hidden, false);
-    assert.match(s.bar.textContent, /applies by itself in a moment/);
+    assert.match(s.bar.textContent, /applying/);
+    assert.ok(LIVE_PAUSE_MS <= 300, "the change does not wait to be noticed");
     assert.ok(button(s.bar, "Apply now"));
     assert.equal(button(s.bar, "Review"), undefined, "the bar does not ask for a review in Live mode");
     assert.equal(s.t.router.nvram.qos_obw, "20000", "nothing is written during the pause");
     await waitFor(() => s.t.router.nvram.qos_obw === "21000", { timeoutMs: LIVE_PAUSE_MS + 8000 });
     await waitFor(() => dock.count() === 0);
     assert.equal(s.bar.hidden, true);
+    await waitFor(() => safety.busy === false);
+    assert.equal(dialogs().length, 0, "a change that simply worked opens no dialog");
+  } finally {
+    await s.stop();
+  }
+});
+
+test("live mode: text being typed waits until the person leaves the field", async () => {
+  const s = await boot();
+  try {
+    document.activeElement = { matches: () => true, closest: () => ({}) };
+    dock.setEntry(s.entry("qos.up"), "2");
+    assert.match(s.bar.textContent, /applies when you leave the field or press Enter/);
+    dock.setEntry(s.entry("qos.up"), "21");
+    await sleep(LIVE_PAUSE_MS + 900);
+    assert.equal(s.t.router.nvram.qos_obw, "20000", "half-typed text is never applied");
+    dock.setEntry(s.entry("qos.up"), "21000");
+    document.activeElement = null;
+    await waitFor(() => s.t.router.nvram.qos_obw === "21000", { timeoutMs: 8000 });
+  } finally {
+    document.activeElement = null;
+    await s.stop();
+  }
+});
+
+test("live mode: a preview from any screen applies in one click when no keys are needed, and Review mode still shows it", async () => {
+  const s = await boot({ safety: { fourKey: true } });
+  try {
+    const ask = () => core.api.post("/api/changes/preview", { changes: [{ id: "qos.up", value: "22000" }] });
+    const allowed = await ask();
+    assert.deepEqual([allowed.impact.level, allowed.confirmation.required, allowed.allowance.ok], [1, false, true]);
+    assert.equal(oneClick(allowed), true);
+    assert.equal(oneClick({ ...allowed, confirmation: { required: true } }), false, "keys still show the change first");
+    assert.equal(oneClick({ ...allowed, allowance: { ok: false } }), false, "so does a change the household does not allow");
+    assert.equal(oneClick({ ...allowed, confirmation: undefined }), false, "and a preview that does not say");
+    const done = await runPreview(allowed).closed;
+    assert.equal(done, true, "the dialog closed by itself");
+    assert.equal(s.t.router.nvram.qos_obw, "22000");
+    assert.equal(dialogs().length, 0);
+
+    // Asking to see the details always shows them, and so does Review mode.
+    const detail = runPreview(await ask().catch(() => allowed), { review: true });
+    await sleep(50);
+    const open = dialogs().at(-1);
+    assert.ok(button(open, "Apply"), "the review step is shown");
+    button(open, "Cancel").click();
+    await detail.closed;
+    await setLiveMode(false);
+    assert.equal(oneClick(allowed), false);
   } finally {
     await s.stop();
   }
@@ -81,7 +131,7 @@ test("live mode: a change that needs the keys asks for them by itself, once, and
     assert.equal(dock.count(), 1, "the change is still waiting");
     assert.ok(button(s.bar, "Apply now"));
     assert.doesNotMatch(s.bar.textContent, /applies by itself/);
-    await sleep(LIVE_PAUSE_MS + 600);
+    await sleep(LIVE_PAUSE_MS + 1200);
     assert.equal(dialogs().length, 0, "it does not ask again until the person edits or presses Apply now");
     assert.equal(s.t.router.nvram.qos_obw, "20000");
   } finally {
@@ -96,7 +146,7 @@ test("review mode: nothing applies by itself, and switching to Live takes over t
     dock.setEntry(s.entry("qos.up"), "21000");
     assert.ok(button(s.bar, "Review and apply"));
     assert.equal(button(s.bar, "Apply now"), undefined);
-    await sleep(LIVE_PAUSE_MS + 600);
+    await sleep(LIVE_PAUSE_MS + 1200);
     assert.equal(s.t.router.nvram.qos_obw, "20000");
     assert.equal(dock.count(), 1);
     await setLiveMode(true);

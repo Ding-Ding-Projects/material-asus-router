@@ -122,7 +122,7 @@ export async function backup(root) {
         try {
           const res = await api.post("/api/restore", { backup: JSON.parse(await file.text()) });
           if (res.skipped.length) toast(t(`${res.skipped.length} settings skipped (secrets or invalid values).`, `略過咗 ${res.skipped.length} 項（機密或者無效嘅值）。`));
-          runPreview(res.preview, { title: t("Restore from backup", "由備份還原") });
+          runPreview(res.preview, { title: t("Restore from backup", "由備份還原"), review: true });
         } catch (err) { toast(err.message, "bad"); }
         e.target.value = "";
       } }))))));

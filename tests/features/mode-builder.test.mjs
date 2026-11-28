@@ -79,8 +79,12 @@ test("mode-builder: a bad mode is refused with the reason, and nothing unreal ca
     await refuse({ ...movie, items: [{ id: "qos.enabled", value: "maybe" }] }, 400, /on or off/);
     await refuse({ ...movie, items: [{ id: "qos.up", value: "-4" }] }, 400, /whole number/);
     await refuse({ ...movie, items: [{ id: "wl0.password", value: "longenoughpassword" }] }, 400, /Passwords and keys/);
-    await refuse({ ...movie, items: [{ id: "no.such.setting", value: "1" }] }, 400, /does not have/);
-    await refuse({ ...movie, items: [{ id: "dns-pro.dot-enable", value: "1" }] }, 400, /Merlin/);
+    // A setting this router cannot store is not refused: the check says it would be kept for later use.
+    const later = (await t.owner.post("/api/x/mode-builder/check", { items: [{ id: "no.such.setting", value: "1" }, { id: "dns-pro.dot-enable", value: "1" }, { id: "qos.enabled", value: "1" }] })).data;
+    assert.equal(later.ok, true);
+    assert.deepEqual(later.later.map((l) => l.id), ["no.such.setting", "dns-pro.dot-enable"]);
+    assert.match(later.later[0].why.en, /does not have/);
+    assert.match(later.later[1].why.en, /Merlin/);
     await refuse({ ...movie, items: [{ id: "wl1.radio", value: "0" }, { id: "wl1.1.enabled", value: "1" }] }, 409, /contradicts itself/);
     await refuse({ ...movie, items: [{ id: "qos.enabled", value: "0" }, { id: "qos.type", value: "1" }] }, 409, /traffic priority off/);
 
@@ -88,9 +92,26 @@ test("mode-builder: a bad mode is refused with the reason, and nothing unreal ca
     await refuse(movie, 409, /already has that name/);
     assert.equal((await save(t, { ...movie, id: "custom-nope" })).status, 404);
 
-    // A setting that is in the catalogue but not in the router's own list is refused by name.
+    // A setting that is in the catalogue but not in the router's own list is kept in the mode for later use.
     delete t.router.nvram.AllLED;
-    await refuse({ ...movie, name: "Other", items: [{ id: "sys.led", value: "0" }] }, 400, /This router does not have the setting AllLED/);
+    const kept = await save(t, { ...movie, name: "Other", items: [{ id: "sys.led", value: "0" }, { id: "qos.enabled", value: "1" }] });
+    assert.equal(kept.status, 200, kept.text);
+    assert.deepEqual(kept.data.later.map((l) => l.id), ["sys.led"]);
+    assert.match(kept.data.later[0].why.en, /This router does not have the setting AllLED/);
+    assert.deepEqual(kept.data.items, [{ id: "sys.led", value: "0" }, { id: "qos.enabled", value: "1" }], "the whole mode is saved by the app");
+    // So is a setting this router's catalogue does not know at all, such as one from another router.
+    const foreign = await save(t, { ...movie, name: "From another router", items: [{ id: "other-router.setting", value: "1" }] });
+    assert.equal(foreign.status, 200, foreign.text);
+    assert.deepEqual(foreign.data.later.map((l) => l.id), ["other-router.setting"]);
+    await refuse({ ...movie, name: "Bad name", items: [{ id: "no spaces <here>", value: "1" }] }, 400, /no valid name/);
+    await refuse({ ...movie, name: "Secret", items: [{ id: "wl0.password", value: "x" }] }, 400, /never part of a mode/);
+    // On the Modes screen the kept setting is shown as unavailable and is never written.
+    const cards = (await t.owner.get("/api/x/modes/list")).data.modes;
+    const other = cards.find((m) => m.id === kept.data.id);
+    assert.equal(other.unavailable, 1);
+    const preview = await t.owner.post("/api/x/modes/preview", { id: kept.data.id, action: "apply" });
+    assert.equal(preview.status, 200, preview.text);
+    assert.deepEqual(preview.data.preview.items.map((i) => i.key), ["qos_enable"]);
 
     const check = await t.owner.post("/api/x/mode-builder/check", { items: [{ id: "qos.enabled", value: "0" }, { id: "qos.type", value: "1" }] });
     assert.equal(check.data.ok, false);
@@ -98,15 +119,15 @@ test("mode-builder: a bad mode is refused with the reason, and nothing unreal ca
 
     const palette = (await t.owner.get("/api/x/mode-builder/palette")).data;
     assert.ok(palette.present.includes("qos.enabled"));
-    assert.match(palette.refused["dns-pro.dot-enable"].en, /Merlin/);
     assert.ok(palette.refused["wl0.password"], "passwords are never offered");
-    assert.ok(palette.refused["sys.led"], "a setting the router lacks is refused");
+    assert.match(palette.later["sys.led"].en, /does not have the setting AllLED/, "a setting the router lacks can be kept for later");
+    assert.equal(palette.refused["sys.led"], undefined);
   } finally {
     await t.stop();
   }
 });
 
-test("mode-builder: a viewer can read but not save, and the limit is enforced", async () => {
+test("mode-builder: a viewer can read but not save, and there is no limit on how many modes are kept", async () => {
   const t = await startApp();
   try {
     assert.equal((await t.client().get("/api/x/mode-builder/modes")).status, 401);
@@ -116,8 +137,11 @@ test("mode-builder: a viewer can read but not save, and the limit is enforced", 
     assert.equal((await viewer.get("/api/x/mode-builder/modes")).status, 200);
     assert.equal((await viewer.post("/api/x/mode-builder/modes", movie)).status, 403);
 
-    for (let i = 0; i < 24; i += 1) assert.equal((await save(t, { ...movie, name: `Mode ${i}`, items: [{ id: "qos.enabled", value: "1" }] })).status, 200);
-    assert.equal((await save(t, { ...movie, name: "One too many" })).status, 409);
+    for (let i = 0; i < 60; i += 1) assert.equal((await save(t, { ...movie, name: `Mode ${i}`, items: [{ id: "qos.enabled", value: "1" }] })).status, 200);
+    const list = (await t.owner.get("/api/x/mode-builder/modes")).data;
+    assert.equal(list.modes.length, 60);
+    assert.equal(list.max, null, "no limit is reported");
+    assert.equal((await t.owner.get("/api/x/modes/list")).data.modes.filter((m) => m.custom).length, 60, "every one is a card on the Modes screen");
   } finally {
     await t.stop();
   }

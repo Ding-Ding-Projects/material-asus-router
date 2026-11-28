@@ -28,6 +28,7 @@ export function ipv4Field(value, onChange, disabled) {
     }),
   );
   const wrap = h("span", { class: "ipv4", role: "group" });
-  inputs.forEach((input, i) => wrap.append(i ? h("span", { "aria-hidden": "true" }, ".") : null, input));
+  // append() turns null into the text "null", so the dot is only passed where there is one.
+  inputs.forEach((input, i) => (i ? wrap.append(h("span", { "aria-hidden": "true" }, "."), input) : wrap.append(input)));
   return { el: wrap, set: (v) => String(v).split(".").forEach((p, i) => inputs[i] && (inputs[i].value = p)) };
 }

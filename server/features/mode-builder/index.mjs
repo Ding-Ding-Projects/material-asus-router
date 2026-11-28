@@ -3,17 +3,20 @@
 // A custom mode is a name, an icon and a list of "this setting gets this value"
 // items, saved in the app's own state. It never writes to the router by itself:
 // the modes feature reads these saved modes and previews, applies and undoes
-// them through the change engine exactly like the ready-made ones.
+// them through the change engine exactly like the ready-made ones. There is no
+// limit on how many modes are kept: they live in the app's data folder, not on
+// the router.
 //
-// Every item has to be a real setting of this router: it must exist in the
-// catalogue, be writable, hold no password or key, and be present in the
-// router's own settings list. A mode that contradicts itself (a radio off and a
-// guest network on that same radio) is refused with the reason.
+// An item must be writable and hold no password or key. A setting the connected
+// router cannot store right now (it is not in the router's own settings list, or
+// this firmware switches it off) is still kept in the mode, for later use: the
+// modes feature shows it as unavailable and leaves it out of every write until a
+// router has it. A mode that contradicts itself (a radio off and a guest network
+// on that same radio) is refused with the reason.
 import { L } from "../kit.mjs";
 import { featureState } from "./state.mjs";
 
 const store = featureState("mode-builder", { modes: [] });
-const MAX_MODES = 24;
 const MAX_ITEMS = 60;
 const NAME_LIMIT = 40;
 
@@ -21,14 +24,17 @@ export const ICONS = ["tv", "nightlight", "star", "favorite", "movie", "sports_e
 
 const isSecretEntry = (entry) => entry.secret === true || entry.control === "password";
 
-// The entry as the mode can use it, or the reason it cannot be used.
-function usableEntry(entry, ctx) {
-  if (!entry) return L("This router does not have that setting.", "呢部路由器冇呢個設定。");
-  if (entry.disabled) return entry.disabled;
-  if (entry.readOnly) return L("This setting is read only.", "呢個設定淨係可以睇。");
-  if (isSecretEntry(entry)) return L("Passwords and keys are never part of a mode.", "密碼同金鑰唔會放入模式。");
-  if (!ctx.nvram.has(entry.key)) return L(`This router does not have the setting ${entry.key}`, `呢部路由器冇「${entry.key}」呢個設定`);
-  return null;
+const ITEM_ID = /^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$/;
+
+// How a mode can use an entry: { refused } never, { later } kept in the mode but not written to this
+// router for now, or {} when the router can store it today.
+function standing(entry, ctx) {
+  if (!entry) return { later: L("This router does not have that setting.", "呢部路由器冇呢個設定。") };
+  if (entry.readOnly) return { refused: L("This setting is read only.", "呢個設定淨係可以睇。") };
+  if (isSecretEntry(entry)) return { refused: L("Passwords and keys are never part of a mode.", "密碼同金鑰唔會放入模式。") };
+  if (entry.disabled) return { later: entry.disabled };
+  if (!ctx.nvram.has(entry.key)) return { later: L(`This router does not have the setting ${entry.key}`, `呢部路由器冇「${entry.key}」呢個設定`) };
+  return {};
 }
 
 // A quick check of the simple controls. Every other kind is checked in full by the change engine when the mode is previewed.
@@ -88,21 +94,28 @@ function cleanItems(raw, ctx, bad) {
   if (raw.length > MAX_ITEMS) throw bad(`A mode can hold at most ${MAX_ITEMS} settings.`);
   const byId = new Map(ctx.catalog.map((e) => [e.id, e]));
   const seen = new Set();
+  const later = [];
   const items = raw.map((item) => {
     const id = String(item?.id ?? "");
+    if (!ITEM_ID.test(id)) throw bad("A setting in the mode has no valid name.");
     const entry = byId.get(id);
-    const why = usableEntry(entry, ctx);
-    if (why) throw bad(`${id || "A setting"}: ${why.en}`);
-    if (seen.has(entry.key)) throw bad(`${entry.label.en} is in the mode twice.`);
-    seen.add(entry.key);
-    if (typeof item.value !== "string") throw bad(`${entry.label.en}: choose a value.`);
-    const problem = badValue(entry, item.value);
-    if (problem) throw bad(`${entry.label.en}: ${problem}`);
+    const name = entry?.label.en ?? id;
+    const { refused, later: why } = standing(entry, ctx);
+    if (refused) throw bad(`${name}: ${refused.en}`);
+    const slot = entry?.key ?? `id:${id}`;
+    if (seen.has(slot)) throw bad(`${name} is in the mode twice.`);
+    seen.add(slot);
+    if (typeof item.value !== "string") throw bad(`${name}: choose a value.`);
+    // A setting this router does not know at all cannot be checked here; the change engine checks it in full
+    // on the router that has it, before anything is written.
+    const problem = entry ? badValue(entry, item.value) : item.value.length > 4096 ? "the value is too long." : null;
+    if (problem) throw bad(`${name}: ${problem}`);
+    if (why) later.push({ id, label: entry?.label ?? { en: id, yue: id }, why });
     return { id, value: item.value };
   });
   const clash = contradictions(items, byId);
   if (clash.length) throw bad(`This mode contradicts itself. ${clash[0].en}`, 409);
-  return items;
+  return { items, later };
 }
 
 const hueOf = (id) => [...id].reduce((h, c) => (h * 31 + c.charCodeAt(0)) % 360, 7);
@@ -112,33 +125,38 @@ export default {
   id: "mode-builder",
 
   routes(api) {
-    api.get("/modes", async () => ({ modes: (await store.read()).modes, icons: ICONS, max: MAX_MODES }));
+    // max is null: there is no limit on how many modes are kept.
+    api.get("/modes", async () => ({ modes: (await store.read()).modes, icons: ICONS, max: null }));
 
-    // GET /palette : which catalogue settings this router really has, so the picker can disable the rest.
+    // GET /palette : which catalogue settings this router can store today (present), which a mode may hold
+    // for later use although this router cannot store them now (later), and which never go in a mode (refused).
     api.get("/palette", async ({ live }) => {
       const ctx = await live();
       const present = [];
       const refused = {};
+      const later = {};
       for (const entry of ctx.catalog) {
-        const why = usableEntry(entry, ctx);
-        if (why) refused[entry.id] = why;
+        const s = standing(entry, ctx);
+        if (s.refused) refused[entry.id] = s.refused;
+        else if (s.later) later[entry.id] = s.later;
         else present.push(entry.id);
       }
-      return { present, refused };
+      return { present, refused, later };
     });
 
     // POST /check { items } : the same checks as saving, without saving.
     api.post("/check", async ({ body, live, bad }) => {
       const ctx = await live();
       try {
-        const items = cleanItems(body.items, ctx, bad);
-        return { ok: true, count: items.length, problems: [] };
+        const { items, later } = cleanItems(body.items, ctx, bad);
+        return { ok: true, count: items.length, problems: [], later };
       } catch (error) {
         return { ok: false, count: 0, problems: [{ en: error.message, yue: error.message }] };
       }
     });
 
-    // POST /modes { id?, name, icon, items } : saves a new mode, or replaces the mode with that id.
+    // POST /modes { id?, name, icon, items } : saves a new mode, or replaces the mode with that id. The answer's
+    // "later" lists the settings this router cannot store now; they stay in the mode for later use.
     api.post("/modes", async ({ body, live, bad }) => {
       const ctx = await live();
       const name = String(body.name ?? "").trim();
@@ -146,16 +164,15 @@ export default {
       if (name.length > NAME_LIMIT || /[\x00-\x1f<>]/.test(name)) throw bad(`Use at most ${NAME_LIMIT} characters for the name, without line breaks or < >.`);
       const icon = String(body.icon ?? "bolt");
       if (!ICONS.includes(icon)) throw bad("Choose one of the listed icons.");
-      const items = cleanItems(body.items, ctx, bad);
+      const { items, later } = cleanItems(body.items, ctx, bad);
       const existing = body.id === undefined ? null : String(body.id);
       return store.update((s) => {
         if (existing !== null && !s.modes.some((m) => m.id === existing)) throw bad("That mode does not exist.", 404);
-        if (existing === null && s.modes.length >= MAX_MODES) throw bad(`You can keep at most ${MAX_MODES} modes of your own. Delete one first.`, 409);
         if (s.modes.some((m) => m.id !== existing && m.name.toLowerCase() === name.toLowerCase())) throw bad("Another mode of yours already has that name.", 409);
         const id = existing ?? newId();
         const mode = { id, name, icon, hue: hueOf(id), items, savedAt: new Date().toISOString() };
         s.modes = existing === null ? [...s.modes, mode] : s.modes.map((m) => (m.id === existing ? mode : m));
-        return mode;
+        return { ...mode, later };
       });
     });
 

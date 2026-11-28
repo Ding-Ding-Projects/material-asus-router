@@ -46,7 +46,7 @@ async function screen(ctx) {
       }
     },
     onApply: (mode) => start(mode, "apply", true),
-    onPreview: (mode) => start(mode, "apply", false),
+    onPreview: (mode) => start(mode, "apply", null),
     onUndo: (mode) => start(mode, "undo", false),
     onGuestCard: () => showGuestCard(ctx),
     onEdit: () => ctx.navigate("mode-builder"),
@@ -63,8 +63,10 @@ async function screen(ctx) {
       await load({ quiet: true });
       return;
     }
-    // A low-risk mode applies on the first tap, because its exact values are already on the card.
-    reviewMode(ctx, { mode, action, result, startNow: quick && !result.preview.guard.armed && action === "apply", onDone: () => load({ quiet: true }) });
+    // A low-risk mode applies on the first tap, because its exact values are already on the card. In Live
+    // mode so does any mode or undo that needs no keys and that the household allows right now.
+    const startNow = (quick && !result.preview.guard.armed && action === "apply") || (quick !== null && ctx.oneClick?.(result.preview) === true);
+    reviewMode(ctx, { mode, action, result, startNow, onDone: () => load({ quiet: true }) });
   }
 
   const cardFor = (mode, index) => modeCard(ctx, mode, { index, devices, expanded: expanded.has(mode.id), ...handlers });
